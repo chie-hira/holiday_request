@@ -20,7 +20,8 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->integer('employee')->nullable()->unique();
-            $table->foreignId('department_id')
+            $table->foreignId('department_id') # 総務課、工場長、社長
+                ->nullable()
                 ->constrained('department_categories')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
