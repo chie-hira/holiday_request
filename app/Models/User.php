@@ -41,4 +41,34 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Get the department that owns the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function department()
+    {
+        return $this->belongsTo(DepartmentCategory::class, 'department_id', 'id');
+    }
+
+    /**
+     * Get all of the limits for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function limits()
+    {
+        return $this->hasMany(Limit::class, 'limit_id', 'id');
+    }
+
+    /**
+     * Get all of the reports for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function reports()
+    {
+        return $this->hasMany(Report::class, 'user_id', 'id');
+    }
 }
