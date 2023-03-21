@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\LimitController;
+use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,11 +16,14 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    return view('menu.index');
+})->name('menu');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
+
+Route::resource('reports', ReportController::class);
+Route::resource('limits', LimitController::class);
 
 require __DIR__.'/auth.php';

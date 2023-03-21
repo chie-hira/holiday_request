@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreReportRequest;
 use App\Http\Requests\UpdateReportRequest;
+use App\Models\ReasonCategory;
 use App\Models\Report;
+use App\Models\ReportCategory;
 
 class ReportController extends Controller
 {
@@ -15,7 +17,9 @@ class ReportController extends Controller
      */
     public function index()
     {
-        //
+        $reports = Report::all();
+
+        return view('reports.index')->with(compact('reports'));
     }
 
     /**
@@ -25,7 +29,9 @@ class ReportController extends Controller
      */
     public function create()
     {
-        //
+        $report_categories = ReportCategory::all();
+        $reasons = ReasonCategory::all();
+        return view('reports.create')->with(compact('report_categories', 'reasons'));
     }
 
     /**
