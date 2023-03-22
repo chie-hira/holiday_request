@@ -17,18 +17,17 @@ class LimitController extends Controller
      */
     public function index()
     {
-        $own_limits = Limit::all()
-            ->where('use_id', '==', Auth::id());
-        if (empty($own_limits->first())) {
-            $limit = new Limit();
-            $limit->user_id = Auth::id();
-            $limit->report_id = 1;
-            $report_category = ReportCategory::find(1);
-            $limit->limit_days = $report_category->max_days;
-            $limit->limit_times = $report_category->max_times;
-            dd($limit);
+        $own_limits = Limit::all()->where('user_id', '=', Auth::id());
 
+        if (empty($own_limits->first())) {
+            $report_ids = [1, 4, 5, 6, 7, 8, 9, 15];
+            // $report_ids = [1, 4, 5, 6, 7, 8, 9, 10, 15, 17];
+            foreach ($report_ids as $report_id) {
+                self::newLimit($report_id);
+            }
+            $own_limits = Limit::all()->where('user_id', '==', Auth::id());
         }
+        // dd($own_limits);
 
         return view('limits.index')->with(compact('own_limits'));
     }

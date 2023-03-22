@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreReportRequest;
 use App\Http\Requests\UpdateReportRequest;
+use App\Models\Limit;
 use App\Models\ReasonCategory;
 use App\Models\Report;
 use App\Models\ReportCategory;
+use Illuminate\Support\Facades\Auth;
 
 class ReportController extends Controller
 {
@@ -31,7 +33,11 @@ class ReportController extends Controller
     {
         $report_categories = ReportCategory::all();
         $reasons = ReasonCategory::all();
-        return view('reports.create')->with(compact('report_categories', 'reasons'));
+        $own_limits = Limit::all()->where('user_id', '=', Auth::id());
+        // dd($own_limits);
+        return view('reports.create')->with(
+            compact('report_categories', 'reasons', 'own_limits')
+        );
     }
 
     /**
@@ -42,7 +48,29 @@ class ReportController extends Controller
      */
     public function store(StoreReportRequest $request)
     {
-        //
+        // dd($request);
+        if ($request->reason_id == 7) {
+            $request->validate(
+                [
+                    'report_detail' => 'required|max:200',
+                ],
+                [
+                    'report_detail.required' => '理由は必須です。',
+                ]
+            );
+        }
+
+        $report = new Report();
+        $report->fill($request->all());
+
+        try {
+            $report->save();
+            return redirect(route('reports.index'))
+                ->with('notice', '提出しました');
+        } catch (\Throwable $th) {
+            //throw $th;
+            return back()->withErrors($th->getMessage())->withInput();
+        }
     }
 
     /**

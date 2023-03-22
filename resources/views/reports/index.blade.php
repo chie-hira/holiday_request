@@ -5,7 +5,7 @@
                 <h1 class="sm:text-4xl text-3xl font-medium title-font text-gray-900">出退勤届け一覧</h1>
             </div>
 
-            <x-notice :message="session('notice')" />
+            {{-- <x-notice :message="session('notice')" /> --}}
 
             <div class="w-full mx-auto overflow-x-auto">
                 <table class="table-auto w-full text-left whitespace-nowrap">
@@ -94,7 +94,7 @@
                 </table>
             </div>
             <div class="flex pl-4 mt-4 lg:w-2/3 w-full mx-auto">
-                <a href="" class="text-indigo-500 inline-flex items-center md:mb-2 lg:mb-0 hover:-translate-y-1">
+                <a href="" class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                         <path fill-rule="evenodd"
                             d="M9.53 2.47a.75.75 0 010 1.06L4.81 8.25H15a6.75 6.75 0 010 13.5h-3a.75.75 0 010-1.5h3a5.25 5.25 0 100-10.5H4.81l4.72 4.72a.75.75 0 11-1.06 1.06l-6-6a.75.75 0 010-1.06l6-6a.75.75 0 011.06 0z"
