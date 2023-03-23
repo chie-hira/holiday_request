@@ -30,7 +30,7 @@
                         </svg>
                     </a>
 
-                    <a href={{ route('limits.index') }}
+                    <a href={{ route('remainings.index') }}
                         class="inline-flex items-center justify-center p-5 text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 mr-3">
                             <path fill-rule="evenodd"

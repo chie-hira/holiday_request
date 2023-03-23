@@ -31,8 +31,9 @@ class CreateReportsTable extends Migration
             $table->string('reason_detail')->nullable();
             $table->date('start_date');
             $table->date('end_date');
-            $table->integer('remaining_days');
-            $table->integer('remaining_times')->nullable();
+            $table->integer('get_days')->nullable();
+            $table->integer('get_hours')->nullable();
+            $table->boolean('am_pm')->default(0);
             $table->boolean('approval1')->default(0);
             $table->boolean('approval2')->default(0);
             $table->boolean('approval3')->default(0);

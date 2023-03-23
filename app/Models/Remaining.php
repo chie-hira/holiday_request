@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
-class Limit extends Model
+class Remaining extends Model
 {
     use HasFactory;
 
@@ -18,7 +18,7 @@ class Limit extends Model
     ];
 
     /**
-     * Get the user that owns the Limit
+     * Get the user that owns the Remaining
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

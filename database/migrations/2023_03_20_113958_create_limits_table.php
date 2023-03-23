@@ -13,7 +13,7 @@ class CreateLimitsTable extends Migration
      */
     public function up()
     {
-        Schema::create('limits', function (Blueprint $table) {
+        Schema::create('remainings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')
                 ->constrained('users')
@@ -23,8 +23,9 @@ class CreateLimitsTable extends Migration
                 ->constrained('report_categories')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
-            $table->integer('limit_days');
-            $table->integer('limit_times')->nullable();
+            $table->integer('remaining_days')->nullable();
+            $table->integer('remaining_hours')->nullable();
+            $table->integer('remaining_times')->nullable();
             $table->timestamps();
 
             // 複合ユニーク制約

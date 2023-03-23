@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class LimitFactory extends Factory
+class RemainingFactory extends Factory
 {
     /**
      * Define the model's default state.

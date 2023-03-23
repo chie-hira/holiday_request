@@ -6,6 +6,7 @@ use App\Http\Requests\StoreReportRequest;
 use App\Http\Requests\UpdateReportRequest;
 use App\Models\Limit;
 use App\Models\ReasonCategory;
+use App\Models\Remaining;
 use App\Models\Report;
 use App\Models\ReportCategory;
 use Illuminate\Support\Facades\Auth;
@@ -33,7 +34,7 @@ class ReportController extends Controller
     {
         $report_categories = ReportCategory::all();
         $reasons = ReasonCategory::all();
-        $own_limits = Limit::all()->where('user_id', '=', Auth::id());
+        $own_limits = Remaining::all()->where('user_id', '=', Auth::id());
         // dd($own_limits);
         return view('reports.create')->with(
             compact('report_categories', 'reasons', 'own_limits')

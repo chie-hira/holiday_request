@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\LimitController;
+use App\Http\Controllers\RemainingController;
 use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +24,6 @@ Route::get('/dashboard', function () {
 })->middleware(['auth'])->name('dashboard');
 
 Route::resource('reports', ReportController::class);
-Route::resource('limits', LimitController::class);
+Route::resource('remainings', RemainingController::class);
 
 require __DIR__.'/auth.php';

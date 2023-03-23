@@ -52,9 +52,9 @@
                         @foreach ($own_limits as $own_limit)
                             <tr class="bg-white">
                                 <td class="pl-6 pr-4 py-3">{{ $own_limit->report_category->report_name }}</td>
-                                <td class="px-4 py-3 text-center">{{ $own_limit->limit_days }} 日</td>
+                                <td class="px-4 py-3 text-center">{{ $own_limit->remaining_days }} 日</td>
                                 @if (!empty($own_limit->limit_times))
-                                    <td class="px-4 py-3 text-center">{{ $own_limit->limit_times }}回</td>
+                                    <td class="px-4 py-3 text-center">{{ $own_limit->remaining_times }}回</td>
                                 @else
                                     <td class="px-4 py-3 text-center">-</td>
                                 @endif

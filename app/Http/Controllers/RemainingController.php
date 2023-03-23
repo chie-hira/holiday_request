@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreLimitRequest;
-use App\Http\Requests\UpdateLimitRequest;
-use App\Models\Limit;
+use App\Http\Requests\StoreRemainingRequest;
+use App\Http\Requests\UpdateRemainingRequest;
+use App\Models\Remaining;
 use App\Models\ReportCategory;
 use Illuminate\Support\Facades\Auth;
 
-class LimitController extends Controller
+class RemainingController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,19 +17,19 @@ class LimitController extends Controller
      */
     public function index()
     {
-        $own_limits = Limit::all()->where('user_id', '=', Auth::id());
+        $own_limits = Remaining::all()->where('user_id', '=', Auth::id());
 
         if (empty($own_limits->first())) {
             $report_ids = [1, 4, 5, 6, 7, 8, 9, 15];
             // $report_ids = [1, 4, 5, 6, 7, 8, 9, 10, 15, 17];
             foreach ($report_ids as $report_id) {
-                self::newLimit($report_id);
+                self::newRemaining($report_id);
             }
-            $own_limits = Limit::all()->where('user_id', '==', Auth::id());
+            $own_limits = Remaining::all()->where('user_id', '==', Auth::id());
         }
         // dd($own_limits);
 
-        return view('limits.index')->with(compact('own_limits'));
+        return view('remainings.index')->with(compact('own_limits'));
     }
 
     /**
@@ -45,10 +45,10 @@ class LimitController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreLimitRequest  $request
+     * @param  \App\Http\Requests\StoreRemainingRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreLimitRequest $request)
+    public function store(StoreRemainingRequest $request)
     {
         //
     }
@@ -56,10 +56,10 @@ class LimitController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Limit  $limit
+     * @param  \App\Models\Remaining  $remaining
      * @return \Illuminate\Http\Response
      */
-    public function show(Limit $limit)
+    public function show(Remaining $remaining)
     {
         //
     }
@@ -67,10 +67,10 @@ class LimitController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Limit  $limit
+     * @param  \App\Models\Remaining  $remaining
      * @return \Illuminate\Http\Response
      */
-    public function edit(Limit $limit)
+    public function edit(Remaining $remaining)
     {
         //
     }
@@ -78,11 +78,11 @@ class LimitController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateLimitRequest  $request
+     * @param  \App\Http\Requests\UpdateRemainingRequest  $request
      * @param  \App\Models\Limit  $limit
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateLimitRequest $request, Limit $limit)
+    public function update(UpdateRemainingRequest $request, Remaining $remaining)
     {
         //
     }
@@ -90,10 +90,10 @@ class LimitController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Limit  $limit
+     * @param  \App\Models\Remaining  $remaining
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Limit $limit)
+    public function destroy(Remaining $remaining)
     {
         //
     }

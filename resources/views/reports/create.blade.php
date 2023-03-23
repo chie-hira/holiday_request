@@ -178,9 +178,20 @@
 
 
         function reportChange() {
+            if (reportCategory.value == "1") {
+                halfDateForm.style.display = "none";
+                amPmForm.style.display = "none";
+                timeForm.style.display = "none";
+                startTimeForm.style.display = "none";
+                endTimeForm.style.display = "none";
+                startDateForm.style.display = "";
+                endDateForm.style.display = "";
+            }
             if (reportCategory.value == "2") {
                 halfDateForm.style.display = "";
                 amPmForm.style.display = "";
+                startTimeForm.style.display = "none";
+                endTimeForm.style.display = "none";
                 startDateForm.style.display = "none";
                 endDateForm.style.display = "none";
             }
