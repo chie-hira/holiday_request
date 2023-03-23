@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Report extends Model
 {
@@ -19,6 +20,9 @@ class Report extends Model
         'end_date',
         'remaining_days',
         'remaining_times',
+        'approval1',
+        'approval2',
+        'approval3',
     ];
 
     /**
@@ -49,5 +53,28 @@ class Report extends Model
     public function reason()
     {
         return $this->belongsTo(ReasonCategory::class, 'reason_id', 'id');
+    }
+
+    # アクセサ
+    // FIXME:休業日考慮
+    public function getGetDaysAttribute()
+    {
+        $start_date = Carbon::create($this->start_date);
+        $end_date = Carbon::create($this->end_date);
+        // return $start_date->diffInDays($end_date);
+        $diff_days = $start_date->diffInDays($end_date);
+
+        $remainder_days = $diff_days % 7;
+        $day_offs = ($diff_days - $remainder_days) / 7 * 2;
+        $start_day = date('w', strtotime($start_date)); //0~6の曜日数値
+        // dd($start_day);
+        for ($i = 0; $i < $remainder_days; $i++) {
+            if ($start_day + $i == 0 || $start_day + $i == 6) {
+                //定休日の配列に含まれる場合、休日数に加算する
+                $day_offs++;
+            }
+        }
+
+        return $diff_days - $day_offs;
     }
 }

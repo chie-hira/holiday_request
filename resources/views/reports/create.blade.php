@@ -15,9 +15,9 @@
                 <div class="grid gap-6 mb-6 md:grid-cols-2">
                     <div>
                         <label for="report_id" class="block mb-2 text-sm font-medium text-gray-900">
-                            申請内容
+                            届け出内容
                         </label>
-                        <select name="report_id" id="report_id"
+                        <select name="report_id" id="report_id" onchange="reportChange();"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                             @foreach ($report_categories as $report_category)
                                 <option value="{{ old('report_id', $report_category->id) }}">
@@ -29,7 +29,7 @@
                         <label for="reason_id" class="block mb-2 text-sm font-medium text-gray-900">
                             理由
                         </label>
-                        <select name="reason_id" id="reason_id" onchange="change();"
+                        <select name="reason_id" id="reason_id" onchange="reasonChange();"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                             @foreach ($reasons as $reason)
                                 <option value="{{ $reason->id }}">{{ $reason->reason }}</option>
@@ -54,29 +54,74 @@
                     </div>
                     <div>
                         <label for="user_id" class="block mb-2 text-sm font-medium text-gray-900">
-                            申請者名
+                            氏名
                         </label>
                         <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
                         <input type="text" id="user_id"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             value="{{ Auth::user()->name }}" readonly>
                     </div>
-                    <div>
+
+                    <!-- 有給休暇 - start -->
+                    <div style="display: " id="start_date_form">
                         <label for="start_date" class="block mb-2 text-sm font-medium text-gray-900">
-                            始期
+                            何日から
                         </label>
                         <input type="date" id="start_date" name="start_date"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            value="{{ old('start_date') }}" required>
+                            value="{{ old('start_date') }}">
                     </div>
-                    <div>
+                    <div style="display: " id="end_date_form">
                         <label for="end_date" class="block mb-2 text-sm font-medium text-gray-900">
-                            終期
+                            何日まで
                         </label>
                         <input type="date" id="end_date" name="end_date"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            value="{{ old('end_date') }}" required>
+                            value="{{ old('end_date') }}">
                     </div>
+                    <!-- 有給休暇 - end -->
+
+                    <!-- 半日有給 - start -->
+                    <div style="display: none" id="half_date_form">
+                        <label for="half_day" class="block mb-2 text-sm font-medium text-gray-900">
+                            日付
+                        </label>
+                        <input type="date" id="half_date" name="half_date"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            value="{{ old('half_date') }}">
+                    </div>
+                    <div style="display: none" id="am_pm_form">
+                        <label for="am_pm" class="block mb-2 text-sm font-medium text-gray-900">
+                            午前・午後
+                        </label>
+                        <select name="am_pm" id="am_pm"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                            <option value="0">午前</option>
+                            <option value="1">午後</option>
+                        </select>
+                    </div>
+                    <!-- 半日有給 - end -->
+
+                    <!-- 時間休 - start -->
+                    <div style="display: none" id="time_form">
+                    </div>
+                    <div style="display: none" id="start_time_form">
+                        <label for="start_time" class="block mb-2 text-sm font-medium text-gray-900">
+                            何時から
+                        </label>
+                        <input type="time" id="start_time" name="start_date"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            value="{{ old('start_time') }}">
+                    </div>
+                    <div style="display: none" id="end_time_form">
+                        <label for="end_time" class="block mb-2 text-sm font-medium text-gray-900">
+                            何時まで
+                        </label>
+                        <input type="time" id="end_time" name="end_date"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            value="{{ old('end_time') }}">
+                    </div>
+                    <!-- 時間休 - end -->
                 </div>
                 <div class="grid gap-6 mb-6 md:grid-cols-3">
                     <div>
@@ -119,70 +164,111 @@
 
     <!-- script - start -->
     <script>
-        let reportCategory = document.getElementById('report_id');
+        var reportCategory = document.getElementById('report_id');
         let reasonCategory = document.getElementById('reason_id');
         let reasonDetail = document.getElementById('reason_detail');
+        let startDateForm = document.getElementById('start_date_form');
+        let endDateForm = document.getElementById('end_date_form');
+        let timeForm = document.getElementById('time_form');
+        let startTimeForm = document.getElementById('start_time_form');
+        let endTimeForm = document.getElementById('end_time_form');
+        let halfDateForm = document.getElementById('half_date_form');
+        let amPmForm = document.getElementById('am_pm_form');
 
-        let button = document.getElementById('button');
-        let start = document.getElementById('start_date');
-        let end = document.getElementById('end_date');
 
 
-        function change() {
-            // reportValue = reportCategory.value;
-            // console.log(reportValue);
-            if (reasonCategory.value == "7") {
-                reasonDetail.style.display = "";
+        function reportChange() {
+            if (reportCategory.value == "2") {
+                halfDateForm.style.display = "";
+                amPmForm.style.display = "";
+                startDateForm.style.display = "none";
+                endDateForm.style.display = "none";
+            }
+            if (reportCategory.value == "3") {
+                halfDateForm.style.display = "";
+                timeForm.style.display = "";
+                startTimeForm.style.display = "";
+                endTimeForm.style.display = "";
+                startDateForm.style.display = "none";
+                endDateForm.style.display = "none";
             }
         }
 
+        function reasonChange() {
+            if (reasonCategory.value == "7") {
+                reasonDetail.style.display = "";
+            }
+            if (reasonCategory.value != "7") {
+                reasonDetail.style.display = "none";
+            }
+        }
+
+        let button = document.getElementById('button');
+        let startDate = document.getElementById('start_date');
+        let endDate = document.getElementById('end_date');
+        let startTime = document.getElementById('start_time');
+        let endTime = document.getElementById('end_time');
+        let halfDate = document.getElementById('half_date');
 
         button.addEventListener("click", function() {
             let ownLimits = @json($own_limits);
             const arr = Object.keys(ownLimits);
+            console.log(startTime.value);
 
             // 取得日数
-            let startDate = new Date(start.value);
-            let endDate = new Date(end.value);
-            let diffDays = (endDate - startDate) / 86400000 + 1; // 単純な差
+            let startVal = new Date(startDate.value);
+            let endVal = new Date(endDate.value);
+            let startTimeVal = new Date(halfDate.value + ' ' + startTime.value);
+            let endTimeVal = new Date(halfDate.value + ' ' + endTime.value);
+            let halfVal = new Date(halfDate.value);
+            var reportId = reportCategory.value;
+            let diffDays = (endVal - startVal) / 86400000 + 1; // 単純な差
             let limitDays = 0;
-            let reportId = reportCategory.value;
-            let getDays = 0; // diffDaysから土日を引く
+            let getDays = 0;
             let dayOffs = 0;
 
-            //余りの日がある場合、開始日付から余りの日数だけ曜日が定休日かの判定を行う
+            console.log((endTimeVal - startTimeVal)/60000); // 分
+            // 時間休:1時間単位 8時間で1日 1時間=1/8日 0.125
+
             //開始日付の曜日数値の取得
             var remainderDays = diffDays % 7
             dayOffs = (diffDays - remainderDays) / 7 * 2;
-            var startDay = startDate.getDay(); //0~6の曜日数値
+            var startWeek = startVal.getDay(); //0~6の曜日数値
             for (var i = 0; i < remainderDays; i++) {
-                //曜日数値に余りの日数を加算していき、7で割った余りの曜日数値が定休日の配列に含まれるか
-                if (startDay + i == 0 || startDay + i == 6) {
-                    //定休日の配列に含まれる場合、休日数に加算する
-                    dayOffs++;
+                if (startWeek + i == 0 || startWeek + i == 6) {
+                    dayOffs++; // 土日は休日数に加算
                 }
             }
 
-            getDays = diffDays - dayOffs;
-            console.log(dayOffs);
+            if (reportCategory.value == 1) {
+                getDays = diffDays - dayOffs;
+            }
+            if (reportCategory.value == 2) {
+                getDays = 0.5;
+            }
+            if (reportCategory.value == 3) {
+                getDays = endTimeVal - startTimeVal;
+                // console.log(endTimeVal);
+            }
 
+            // console.log(dayOffs);
             // console.log(getDays);
 
+            // get_days書き出し
             document.getElementById('get_days').setAttribute('value', getDays);
-            // console.log(arr);
+            
+            if (reportId == 2 || reportId == 3 ) {
+                reportId = 1; // 半日有給、時間給は有給休暇のreport_id
+            }
+
             arr.forEach((el) => {
                 if (ownLimits[el].report_id == reportId) {
                     limitDays = ownLimits[el].limit_days;
                 }
             });
 
-            // 残日数
-            // var remainingDay = maxDay - getDay;
-            // console.log(remainingDay);
-            // document.getElementById('remaining_day').setAttribute('value', remainingDay);
-            // console.log(myApp);
-            // if (myApp == null) {
             let remainingDays = limitDays - getDays;
+            // 残日数書き出し
             document.getElementById('remaining_days').setAttribute('value', remainingDays);
         });
     </script>

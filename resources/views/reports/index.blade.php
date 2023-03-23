@@ -56,7 +56,7 @@
                                 <td class="px-4 py-3">{{ $report->report_category->report_name }}</td>
                                 <td class="px-4 py-3">{{ $report->start_date }}</td>
                                 <td class="px-4 py-3">{{ $report->end_date }}</td>
-                                <td class="px-4 py-3 text-center">{{ $report->days }} 日</td>
+                                <td class="px-4 py-3 text-center">{{ $report->get_days }} 日</td>
                                 <td class="px-4 py-3 text-center">{{ $report->remaining_days }} 日</td>
                                 <td class="px-4 py-3 text-center">
                                     @if ($report->remaining_times != null)

@@ -33,6 +33,9 @@ class CreateReportsTable extends Migration
             $table->date('end_date');
             $table->integer('remaining_days');
             $table->integer('remaining_times')->nullable();
+            $table->boolean('approval1')->default(0);
+            $table->boolean('approval2')->default(0);
+            $table->boolean('approval3')->default(0);
             $table->timestamps();
         });
     }
