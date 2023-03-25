@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use App\Models\Remaining;
 
 class Report extends Model
 {
@@ -18,8 +19,8 @@ class Report extends Model
         'reason_detail',
         'start_date',
         'end_date',
-        'remaining_days',
-        'remaining_times',
+        'get_days',
+        'am_pm',
         'approval1',
         'approval2',
         'approval3',
@@ -56,25 +57,67 @@ class Report extends Model
     }
 
     # アクセサ
-    // FIXME:休業日考慮
-    public function getGetDaysAttribute()
+    public function getRemainingDaysAttribute()
     {
-        $start_date = Carbon::create($this->start_date);
-        $end_date = Carbon::create($this->end_date);
-        // return $start_date->diffInDays($end_date);
-        $diff_days = $start_date->diffInDays($end_date);
+        $user_id = $this->user_id;
+        $report_id = $this->report_id;
 
-        $remainder_days = $diff_days % 7;
-        $day_offs = ($diff_days - $remainder_days) / 7 * 2;
-        $start_day = date('w', strtotime($start_date)); //0~6の曜日数値
-        // dd($start_day);
-        for ($i = 0; $i < $remainder_days; $i++) {
-            if ($start_day + $i == 0 || $start_day + $i == 6) {
-                //定休日の配列に含まれる場合、休日数に加算する
-                $day_offs++;
-            }
+        if ($report_id == 2 || $report_id == 3) {
+            $report_id = 1;
         }
 
-        return $diff_days - $day_offs;
+        $remaining = Remaining::where('user_id', '=', $user_id)
+                    ->where('report_id', '=', $report_id)
+                    ->first();
+
+        $exp = explode('.', $remaining->remaining_days);
+        return $exp[0];
+        // return $remaining->remaining_days;
+        // return floor($remaining->remaining_days);
     }
+    public function getRemainingHoursAttribute()
+    {
+        $user_id = $this->user_id;
+        $report_id = $this->report_id;
+
+        if ($report_id == 2 || $report_id == 3) {
+            $report_id = 1;
+        }
+
+        $remaining = Remaining::where('user_id', '=', $user_id)
+                    ->where('report_id', '=', $report_id)
+                    ->first();
+
+        $exp = explode('.', $remaining->remaining_days);
+        $exp_key1 = array_key_exists(1, $exp);
+        if ($exp_key1) {
+            return $exp[1]*0.8;
+        } else {
+            return 0;
+        }
+        // return $remaining->remaining_days;
+        // return floor($remaining->remaining_days);
+    }
+
+    // // FIXME:休業日考慮
+    // public function getGetDaysAttribute()
+    // {
+    //     $start_date = Carbon::create($this->start_date);
+    //     $end_date = Carbon::create($this->end_date);
+    //     // return $start_date->diffInDays($end_date);
+    //     $diff_days = $start_date->diffInDays($end_date);
+
+    //     $remainder_days = $diff_days % 7;
+    //     $day_offs = ($diff_days - $remainder_days) / 7 * 2;
+    //     $start_day = date('w', strtotime($start_date)); //0~6の曜日数値
+    //     // dd($start_day);
+    //     for ($i = 0; $i < $remainder_days; $i++) {
+    //         if ($start_day + $i == 0 || $start_day + $i == 6) {
+    //             //定休日の配列に含まれる場合、休日数に加算する
+    //             $day_offs++;
+    //         }
+    //     }
+
+    //     return $diff_days - $day_offs;
+    // }
 }

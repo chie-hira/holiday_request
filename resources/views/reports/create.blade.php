@@ -109,7 +109,7 @@
                         <label for="start_time" class="block mb-2 text-sm font-medium text-gray-900">
                             何時から
                         </label>
-                        <input type="time" id="start_time" name="start_date"
+                        <input type="time" id="start_time" name="start_time"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             value="{{ old('start_time') }}">
                     </div>
@@ -117,7 +117,7 @@
                         <label for="end_time" class="block mb-2 text-sm font-medium text-gray-900">
                             何時まで
                         </label>
-                        <input type="time" id="end_time" name="end_date"
+                        <input type="time" id="end_time" name="end_time"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             value="{{ old('end_time') }}">
                     </div>
@@ -128,7 +128,7 @@
                         <label for="get_days" class="block mb-2 text-sm font-medium text-gray-900">
                             取得日数
                         </label>
-                        <input type="number" id="get_days"
+                        <input type="number" id="get_days" name="get_days"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             value="{{ old('get_days') }}" readonly required>
                     </div>
@@ -222,9 +222,7 @@
         let halfDate = document.getElementById('half_date');
 
         button.addEventListener("click", function() {
-            let ownLimits = @json($own_limits);
-            const arr = Object.keys(ownLimits);
-            console.log(startTime.value);
+            // console.log(startTime.value);
 
             // 取得日数
             let startVal = new Date(startDate.value);
@@ -234,7 +232,6 @@
             let halfVal = new Date(halfDate.value);
             var reportId = reportCategory.value;
             let diffDays = (endVal - startVal) / 86400000 + 1; // 単純な差
-            let limitDays = 0;
             let getDays = 0;
             let dayOffs = 0;
 
@@ -272,13 +269,17 @@
                 reportId = 1; // 半日有給、時間給は有給休暇のreport_id
             }
 
+            let ownRemainings = @json($own_remainings);
+            const arr = Object.keys(ownRemainings);
+            let ownRemainingDays = 0;
+            // console.log(arr);
             arr.forEach((el) => {
-                if (ownLimits[el].report_id == reportId) {
-                    limitDays = ownLimits[el].limit_days;
+                if (ownRemainings[el].report_id == reportId) {
+                    ownRemainingDays = ownRemainings[el].remaining_days;
                 }
             });
 
-            let remainingDays = limitDays - getDays;
+            let remainingDays = ownRemainingDays - getDays;
             // 残日数書き出し
             document.getElementById('remaining_days').setAttribute('value', remainingDays);
         });

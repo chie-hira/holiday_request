@@ -13,8 +13,8 @@ class Remaining extends Model
     protected $fillable = [
         'user_id',
         'report_id',
-        'limit_days',
-        'limit_times',
+        'remaining_days',
+        'am_pm',
     ];
 
     /**
@@ -35,5 +35,26 @@ class Remaining extends Model
     public function report_category()
     {
         return $this->belongsTo(ReportCategory::class, 'report_id', 'id');
+    }
+
+    # アクセサ
+    public function getDaysAttribute()
+    {
+        $exp = explode('.', $this->remaining_days);
+        return $exp[0];
+        // return $remaining->remaining_days;
+        // return floor($remaining->remaining_days);
+    }
+    public function getHoursAttribute()
+    {
+        $exp = explode('.', $this->remaining_days);
+        $exp_key1 = array_key_exists(1, $exp);
+        if ($exp_key1) {
+            return $exp[1]*0.8;
+        } else {
+            return 0;
+        }
+        // return $remaining->remaining_days;
+        // return floor($remaining->remaining_days);
     }
 }

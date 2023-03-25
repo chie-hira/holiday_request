@@ -29,10 +29,9 @@ class CreateReportsTable extends Migration
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
             $table->string('reason_detail')->nullable();
-            $table->date('start_date');
-            $table->date('end_date');
-            $table->integer('get_days')->nullable();
-            $table->integer('get_hours')->nullable();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
+            $table->float('get_days', 8, 2);
             $table->boolean('am_pm')->default(0);
             $table->boolean('approval1')->default(0);
             $table->boolean('approval2')->default(0);

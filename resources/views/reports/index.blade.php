@@ -36,7 +36,7 @@
                                 届出日数
                             </th>
                             <th
-                                class="w-32 px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
+                                colspan="2" class="w-32 px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
                                 残日数
                             </th>
                             <th
@@ -54,10 +54,23 @@
                                 <td class="px-4 py-3">{{ $report->report_date }}</td>
                                 <td class="px-4 py-3">{{ $report->user->name }}</td>
                                 <td class="px-4 py-3">{{ $report->report_category->report_name }}</td>
-                                <td class="px-4 py-3">{{ $report->start_date }}</td>
-                                <td class="px-4 py-3">{{ $report->end_date }}</td>
+                                <td class="px-4 py-3">
+                                    @if ($report->start_date != null)
+                                        {{ $report->start_date }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                                <td class="px-4 py-3">
+                                    @if ($report->start_date != null)
+                                        {{ $report->end_date }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
                                 <td class="px-4 py-3 text-center">{{ $report->get_days }} 日</td>
                                 <td class="px-4 py-3 text-center">{{ $report->remaining_days }} 日</td>
+                                <td class="px-4 py-3 text-center">{{ $report->remaining_hours }} 時間</td>
                                 <td class="px-4 py-3 text-center">
                                     @if ($report->remaining_times != null)
                                         {{ $report->remaining_times }} 回
@@ -84,7 +97,7 @@
                                         @csrf
                                         @method('DELETE')
                                         <input type="submit" value="取消"
-                                            onclick="if(!confirm('申請を取消しますか？')){return false};" {{-- class="text-sm bg-red-400 hover:bg-red-600 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline w-20"> --}}
+                                            onclick="if(!confirm('届けを取消しますか？')){return false};" {{-- class="text-sm bg-red-400 hover:bg-red-600 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline w-20"> --}}
                                             class="px-3 py-1 text-sm text-pink-500 rounded-full bg-pink-100/60 hover:text-white hover:bg-pink-500">
                                     </form>
                                 </td>

@@ -38,7 +38,7 @@
                                 class="w-32 px-4 py-3 text-center title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl">
                                 名 称
                             </th>
-                            <th
+                            <th colspan="2"
                                 class="w-32 px-4 py-3 text-center title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
                                 取得可能日数
                             </th>
@@ -49,12 +49,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($own_limits as $own_limit)
+                        @foreach ($own_remainings as $own_remaining)
                             <tr class="bg-white">
-                                <td class="pl-6 pr-4 py-3">{{ $own_limit->report_category->report_name }}</td>
-                                <td class="px-4 py-3 text-center">{{ $own_limit->remaining_days }} 日</td>
-                                @if (!empty($own_limit->limit_times))
-                                    <td class="px-4 py-3 text-center">{{ $own_limit->remaining_times }}回</td>
+                                <td class="pl-6 pr-4 py-3">{{ $own_remaining->report_category->report_name }}</td>
+                                <td class="px-4 py-3 text-center">{{ $own_remaining->remaining_days }} 日</td>
+                                <td class="px-4 py-3 text-center">{{ $own_remaining->remaining_days }} 日</td>
+                                @if (!empty($own_remaining->remaining_times))
+                                    <td class="px-4 py-3 text-center">{{ $own_remaining->remaining_times }}回</td>
                                 @else
                                     <td class="px-4 py-3 text-center">-</td>
                                 @endif
