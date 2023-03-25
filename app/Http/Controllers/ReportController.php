@@ -49,6 +49,14 @@ class ReportController extends Controller
      */
     public function store(StoreReportRequest $request)
     {
+        if ($request->reason_id == 1) {
+            $request->validate(
+                [
+                    'start_date' => 'required|date',
+                    'end_date' => 'required|date|after:start_date',
+                ],
+            );
+        }
         if ($request->reason_id == 7) {
             $request->validate(
                 [
@@ -70,7 +78,7 @@ class ReportController extends Controller
         $remaining = Remaining::where('user_id', '=', $request->user_id)
             ->where('report_id', '=', $report_id)
             ->first();
-        $remaining->remaining_days = $request->remaining_days;
+        $remaining->remaining = $request->remaining;
 
         try {
             $report->save();

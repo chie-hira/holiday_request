@@ -28,7 +28,7 @@ class StoreReportRequest extends FormRequest
             'user_id' => 'required|integer',
             'report_id' => 'required|integer',
             'reason_id' => 'required|integer',
-            'get_days' => 'required|min:0',
+            'get_days' => 'required',
         ];
     }
 }

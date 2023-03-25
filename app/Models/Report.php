@@ -57,38 +57,16 @@ class Report extends Model
     }
 
     # アクセサ
-    public function getRemainingDaysAttribute()
+    public function getGetDaysOnlyAttribute()
     {
-        $user_id = $this->user_id;
-        $report_id = $this->report_id;
-
-        if ($report_id == 2 || $report_id == 3) {
-            $report_id = 1;
-        }
-
-        $remaining = Remaining::where('user_id', '=', $user_id)
-                    ->where('report_id', '=', $report_id)
-                    ->first();
-
-        $exp = explode('.', $remaining->remaining_days);
+        $exp = explode('.', $this->get_days);
         return $exp[0];
         // return $remaining->remaining_days;
         // return floor($remaining->remaining_days);
     }
-    public function getRemainingHoursAttribute()
+    public function getGetHoursAttribute()
     {
-        $user_id = $this->user_id;
-        $report_id = $this->report_id;
-
-        if ($report_id == 2 || $report_id == 3) {
-            $report_id = 1;
-        }
-
-        $remaining = Remaining::where('user_id', '=', $user_id)
-                    ->where('report_id', '=', $report_id)
-                    ->first();
-
-        $exp = explode('.', $remaining->remaining_days);
+        $exp = explode('.', $this->get_days);
         $exp_key1 = array_key_exists(1, $exp);
         if ($exp_key1) {
             return $exp[1]*0.8;

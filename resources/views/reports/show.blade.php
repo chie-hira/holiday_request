@@ -11,16 +11,21 @@
             </a>
         </div>
         <div class="flow-root">
-            <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
+            <ul role="list" class="divide-y divide-gray-200"> <!-- divide-y アンダーライン仕切り -->
                 <li class="py-3 sm:py-4">
                     <div class="flex items-center space-x-4">
                         <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
+                            <p class="text-sm font-medium text-gray-900 pb-1 truncate">
                                 {{ $report->report_category->report_name }}
                             </p>
-                            <p class="text-sm text-gray-500 truncate dark:text-gray-400">
-                                理由
+                            <p class="text-sm text-gray-500 pb-1 truncate">
+                                理由 : {{ $report->reason->reason }}
                             </p>
+                            @if ($report->reason_detail)
+                            <p class="text-sm text-gray-500 truncate">
+                                {{ $report->reason_detail }}
+                            </p>
+                            @endif
                         </div>
                     </div>
                 </li>

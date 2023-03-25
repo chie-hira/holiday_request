@@ -38,16 +38,16 @@ class Remaining extends Model
     }
 
     # アクセサ
-    public function getDaysAttribute()
+    public function getRemainingDaysAttribute()
     {
-        $exp = explode('.', $this->remaining_days);
+        $exp = explode('.', $this->remaining);
         return $exp[0];
         // return $remaining->remaining_days;
         // return floor($remaining->remaining_days);
     }
-    public function getHoursAttribute()
+    public function getRemainingHoursAttribute()
     {
-        $exp = explode('.', $this->remaining_days);
+        $exp = explode('.', $this->remaining);
         $exp_key1 = array_key_exists(1, $exp);
         if ($exp_key1) {
             return $exp[1]*0.8;

@@ -38,13 +38,9 @@
                                 class="w-32 px-4 py-3 text-center title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl">
                                 名 称
                             </th>
-                            <th colspan="2"
+                            <th 
                                 class="w-32 px-4 py-3 text-center title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
                                 取得可能日数
-                            </th>
-                            <th
-                                class="w-40 px-4 py-3 text-center title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tr">
-                                取得可能回数
                             </th>
                         </tr>
                     </thead>
@@ -52,13 +48,14 @@
                         @foreach ($own_remainings as $own_remaining)
                             <tr class="bg-white">
                                 <td class="pl-6 pr-4 py-3">{{ $own_remaining->report_category->report_name }}</td>
-                                <td class="px-4 py-3 text-center">{{ $own_remaining->remaining_days }} 日</td>
-                                <td class="px-4 py-3 text-center">{{ $own_remaining->remaining_days }} 日</td>
-                                @if (!empty($own_remaining->remaining_times))
-                                    <td class="px-4 py-3 text-center">{{ $own_remaining->remaining_times }}回</td>
+                                <td class="px-4 py-3 text-center">
+                                {{ $own_remaining->remaining_days }} 日
+                                @if (!empty($own_remaining->remaining_hours))
+                                    &ensp;{{ $own_remaining->remaining_hours }} 時間
                                 @else
-                                    <td class="px-4 py-3 text-center">-</td>
+                                    
                                 @endif
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>

@@ -103,13 +103,13 @@
                     <!-- 半日有給 - end -->
 
                     <!-- 時間休 - start -->
-                    <div style="display: none" id="time_form">
+                    <div style="display: none" id="time_empty_form">
                     </div>
                     <div style="display: none" id="start_time_form">
                         <label for="start_time" class="block mb-2 text-sm font-medium text-gray-900">
                             何時から
                         </label>
-                        <input type="time" id="start_time" name="start_time"
+                        <input type="time" id="start_time" name="start_time" step="300"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             value="{{ old('start_time') }}">
                     </div>
@@ -117,9 +117,24 @@
                         <label for="end_time" class="block mb-2 text-sm font-medium text-gray-900">
                             何時まで
                         </label>
-                        <input type="time" id="end_time" name="end_time"
+                        <input type="time" id="end_time" name="end_time" step="300"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             value="{{ old('end_time') }}">
+                    </div>
+                    <div style="display: none" id="time_form">
+                        <p class="block mb-2 text-sm font-semibold">
+                            <div class="flex h-8 leading-8 items-center text-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                    class="w-5 h-5 mr-2">
+                                    <path fill-rule="evenodd"
+                                        d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                                        clip-rule="evenodd" fill="#9999ff"/>
+                                </svg>
+                                <div class="items-center text-center">
+                                    時間休は1時間単位で取得できます
+                                </div>
+                            </div>
+                        </p>
                     </div>
                     <!-- 時間休 - end -->
                 </div>
@@ -136,18 +151,19 @@
                         <label for="remaining_days" class="block mb-2 text-sm font-medium text-gray-900">
                             残日数
                         </label>
-                        <input type="number" id="remaining_days" name="remaining_days"
+                        <input type="number" id="remaining_days" name="remaining"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             value="{{ old('remaining_days') }}" readonly required>
                     </div>
                     <button type="button" id="button"
                         class="sm:w-auto mt-6 flex items-center text-indigo-400 hover:-translate-x-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 mr-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="w-6 h-6 mr-1">
                             <path
                                 d="M9.195 18.44c1.25.713 2.805-.19 2.805-1.629v-2.34l6.945 3.968c1.25.714 2.805-.188 2.805-1.628V8.688c0-1.44-1.555-2.342-2.805-1.628L12 11.03v-2.34c0-1.44-1.555-2.343-2.805-1.629l-7.108 4.062c-1.26.72-1.26 2.536 0 3.256l7.108 4.061z" />
                         </svg>
                         <div class="pt-1">
-                        日数算出
+                            日数算出
                         </div>
                     </button>
                 </div>
@@ -169,6 +185,7 @@
         let reasonDetail = document.getElementById('reason_detail');
         let startDateForm = document.getElementById('start_date_form');
         let endDateForm = document.getElementById('end_date_form');
+        let timeEmptyForm = document.getElementById('time_empty_form');
         let timeForm = document.getElementById('time_form');
         let startTimeForm = document.getElementById('start_time_form');
         let endTimeForm = document.getElementById('end_time_form');
@@ -181,6 +198,7 @@
             if (reportCategory.value == "1") {
                 halfDateForm.style.display = "none";
                 amPmForm.style.display = "none";
+                timeEmptyForm.style.display = "none";
                 timeForm.style.display = "none";
                 startTimeForm.style.display = "none";
                 endTimeForm.style.display = "none";
@@ -190,6 +208,8 @@
             if (reportCategory.value == "2") {
                 halfDateForm.style.display = "";
                 amPmForm.style.display = "";
+                timeEmptyForm.style.display = "none";
+                timeForm.style.display = "none";
                 startTimeForm.style.display = "none";
                 endTimeForm.style.display = "none";
                 startDateForm.style.display = "none";
@@ -197,6 +217,7 @@
             }
             if (reportCategory.value == "3") {
                 halfDateForm.style.display = "";
+                timeEmptyForm.style.display = "";
                 timeForm.style.display = "";
                 startTimeForm.style.display = "";
                 endTimeForm.style.display = "";
@@ -235,7 +256,7 @@
             let getDays = 0;
             let dayOffs = 0;
 
-            console.log((endTimeVal - startTimeVal)/60000); // 分
+            console.log(((endTimeVal - startTimeVal) / 60000) / 60 * 0.125); // 分
             // 時間休:1時間単位 8時間で1日 1時間=1/8日 0.125
 
             //開始日付の曜日数値の取得
@@ -255,8 +276,8 @@
                 getDays = 0.5;
             }
             if (reportCategory.value == 3) {
-                getDays = endTimeVal - startTimeVal;
-                // console.log(endTimeVal);
+                getDays = ((endTimeVal - startTimeVal) / 60000) / 60 * 0.125;
+                // 時間休:1時間単位 8時間で1日 1時間=1/8日 0.125
             }
 
             // console.log(dayOffs);
@@ -264,8 +285,8 @@
 
             // get_days書き出し
             document.getElementById('get_days').setAttribute('value', getDays);
-            
-            if (reportId == 2 || reportId == 3 ) {
+
+            if (reportId == 2 || reportId == 3) {
                 reportId = 1; // 半日有給、時間給は有給休暇のreport_id
             }
 
@@ -275,7 +296,7 @@
             // console.log(arr);
             arr.forEach((el) => {
                 if (ownRemainings[el].report_id == reportId) {
-                    ownRemainingDays = ownRemainings[el].remaining_days;
+                    ownRemainingDays = ownRemainings[el].remaining;
                 }
             });
 

@@ -23,9 +23,10 @@ class CreateLimitsTable extends Migration
                 ->constrained('report_categories')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
-            $table->float('remaining_days', 8, 2)->nullable();
+            $table->float('remaining', 8, 2)->nullable();
+            // $table->float('remaining_days', 8, 2)->nullable();
             // $table->integer('remaining_hours')->nullable();
-            $table->integer('remaining_times')->nullable();
+            // $table->integer('remaining_times')->nullable();
             $table->timestamps();
 
             // 複合ユニーク制約

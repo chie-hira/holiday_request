@@ -20,8 +20,7 @@ class Controller extends BaseController
         $remaining->user_id = Auth::id();
         $remaining->report_id = $report_id;
         $report_category = ReportCategory::find($report_id);
-        $remaining->remaining_days = $report_category->max_days;
-        $remaining->remaining_times = $report_category->max_times;
+        $remaining->remaining = $report_category->max_days;
         return $remaining->save();
     }
 }

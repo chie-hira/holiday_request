@@ -1300,6 +1300,9 @@ select {
 .uppercase {
   text-transform: uppercase;
 }
+.leading-10 {
+  line-height: 2.5rem;
+}
 .leading-5 {
   line-height: 1.25rem;
 }
@@ -1654,11 +1657,6 @@ select {
   opacity: 0.25;
 }
 @media (prefers-color-scheme: dark) {
-
-  .dark\:divide-gray-700 > :not([hidden]) ~ :not([hidden]) {
-    --tw-divide-opacity: 1;
-    border-color: rgb(55 65 81 / var(--tw-divide-opacity));
-  }
 
   .dark\:border-gray-700 {
     --tw-border-opacity: 1;

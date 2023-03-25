@@ -33,15 +33,7 @@
                             </th>
                             <th
                                 class="w-32 px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
-                                届出日数
-                            </th>
-                            <th
-                                colspan="2" class="w-32 px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
-                                残日数
-                            </th>
-                            <th
-                                class="w-32 px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
-                                残回数
+                                届出日数・時間
                             </th>
                             <th colspan="3"
                                 class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
@@ -68,14 +60,12 @@
                                         -
                                     @endif
                                 </td>
-                                <td class="px-4 py-3 text-center">{{ $report->get_days }} 日</td>
-                                <td class="px-4 py-3 text-center">{{ $report->remaining_days }} 日</td>
-                                <td class="px-4 py-3 text-center">{{ $report->remaining_hours }} 時間</td>
                                 <td class="px-4 py-3 text-center">
-                                    @if ($report->remaining_times != null)
-                                        {{ $report->remaining_times }} 回
-                                    @else
-                                        -
+                                    @if ($report->get_days_only != 0)
+                                        {{ $report->get_days_only }} 日
+                                    @endif
+                                    @if ($report->get_hours != 0)
+                                        {{ $report->get_hours }} 時間
                                     @endif
                                 </td>
                                 <td class="px-4 py-3">
