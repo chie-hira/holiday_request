@@ -23,14 +23,14 @@
                                 class="w-40 px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
                                 届出内容
                             </th>
-                            <th
+                            <th colspan="2"
                                 class="w-32 px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
-                                始期
+                                期間
                             </th>
-                            <th
+                            {{-- <th
                                 class="w-32 px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
                                 終期
-                            </th>
+                            </th> --}}
                             <th
                                 class="w-32 px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
                                 届出日数・時間
@@ -52,12 +52,19 @@
                                     @else
                                         -
                                     @endif
+                                    @if ($report->start_time != null)
+                                        &ensp;{{ Str::substr($report->start_time, 0, 5) }}
+                                    @endif
                                 </td>
                                 <td class="px-4 py-3">
-                                    @if ($report->start_date != null)
-                                        {{ $report->end_date }}
-                                    @else
-                                        -
+                                    @if ($report->end_date != null)
+                                        ~&emsp;&emsp;{{ $report->end_date }}
+                                    @endif
+                                    @if ($report->end_time != null)
+                                        ~&emsp;&emsp;{{ Str::substr($report->end_time, 0, 5) }}
+                                    @endif
+                                    @if ($report->am_pm != null)
+                                        {{ ($report->am_pm == 0)? '午前' : '午後' }}
                                     @endif
                                 </td>
                                 <td class="px-4 py-3 text-center">
@@ -71,7 +78,7 @@
                                 <td class="px-4 py-3">
                                     <a href="{{ route('reports.show', $report) }}"
                                         class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
-                                        出退勤届け表示
+                                        届け表示
                                     </a>
                                 </td>
                                 <td class="px-4 py-3">

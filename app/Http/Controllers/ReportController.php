@@ -49,21 +49,39 @@ class ReportController extends Controller
      */
     public function store(StoreReportRequest $request)
     {
-        if ($request->reason_id == 1) {
+        // dd($request);
+        if ($request->report_id == 1) {
             $request->validate(
                 [
-                    'start_date' => 'required|date',
+                    'start_date' => 'required|date|after_or_equal:report_date',
                     'end_date' => 'required|date|after:start_date',
                 ],
+            );
+        }
+        if ($request->report_id == 2) {
+            $request->validate(
+                [
+                    'start_date' => 'required|date|after_or_equal:report_date',
+                ],
+            );
+        }
+        if ($request->report_id == 3) {
+            $request->validate(
+                [
+                    'get_days' => 'required|multiple_of:0.125',
+                ],
+                [
+                    'get_days.multiple_of' => '時間休は1時間単位で取得可能です。',
+                ]
             );
         }
         if ($request->reason_id == 7) {
             $request->validate(
                 [
-                    'report_detail' => 'required|max:200',
+                    'reason_detail' => 'required|max:200',
                 ],
                 [
-                    'report_detail.required' => '理由は必須です。',
+                    'reason_detail.required' => '理由は必須です。',
                 ]
             );
         }

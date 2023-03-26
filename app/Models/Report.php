@@ -19,6 +19,8 @@ class Report extends Model
         'reason_detail',
         'start_date',
         'end_date',
+        'start_time',
+        'end_time',
         'get_days',
         'am_pm',
         'approval1',
@@ -69,7 +71,8 @@ class Report extends Model
         $exp = explode('.', $this->get_days);
         $exp_key1 = array_key_exists(1, $exp);
         if ($exp_key1) {
-            return $exp[1]*0.8;
+            $decimal_p = '0.'. $exp[1];
+            return $decimal_p * 8; # 8時間で1日
         } else {
             return 0;
         }

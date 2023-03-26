@@ -737,6 +737,9 @@ select {
 .-mt-px {
   margin-top: -1px;
 }
+.mb-1 {
+  margin-bottom: 0.25rem;
+}
 .mb-10 {
   margin-bottom: 2.5rem;
 }
@@ -1300,14 +1303,14 @@ select {
 .uppercase {
   text-transform: uppercase;
 }
-.leading-10 {
-  line-height: 2.5rem;
-}
 .leading-5 {
   line-height: 1.25rem;
 }
 .leading-7 {
   line-height: 1.75rem;
+}
+.leading-8 {
+  line-height: 2rem;
 }
 .leading-none {
   line-height: 1;

@@ -50,7 +50,8 @@ class Remaining extends Model
         $exp = explode('.', $this->remaining);
         $exp_key1 = array_key_exists(1, $exp);
         if ($exp_key1) {
-            return $exp[1]*0.8;
+            $decimal_p = '0.'. $exp[1];
+            return $decimal_p * 8; # 8時間で1日
         } else {
             return 0;
         }
