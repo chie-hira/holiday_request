@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(DepartmentCategorySeeder::class);
         $this->call(CompanyCategorySeeder::class);
+        $this->call(ApprovalCategorySeeder::class);
         \App\Models\User::factory(10)->create();
         $this->call(ReportCategorySeeder::class);
         $this->call(ReasonCategorySeeder::class);

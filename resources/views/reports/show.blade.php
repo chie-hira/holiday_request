@@ -8,7 +8,7 @@
             </h5>
             <p
                 class="border-solid border-2 px-4 py-1 border-indigo-500 rounded-md text-md font-medium text-indigo-600 hover:underline">
-                {{ Auth::user()->company->company_name }}工場
+                {{ $report->user->company->company_name }}工場
             </p>
         </div>
         <div class="flow-root">
@@ -117,8 +117,44 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="w-20 h-12 border border-gray-500 text-center">{{ $report->approval1 }}</td>
-                                <td class="w-20 h-12 border border-gray-500 text-center">{{ $report->approval2 }}</td>
+                                <td class="w-20 h-12 border border-gray-500 text-center">
+                                    @if (Auth::user()->approval_id == 1 && $report->approval1 == 0)
+                                        <a href="{{ route('approval1', $report) }}"
+                                            onclick="if(!confirm('承認しますか？')){return false};"
+                                            class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
+                                            承認
+                                        </a>
+                                    @endif
+                                    @if ($report->approval1 == 1)
+                                        <div class="py-2 text-purple-300 inline-flex">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                fill="currentColor" class="w-8 h-8">
+                                                <path fill-rule="evenodd"
+                                                    d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
+                                                    clip-rule="evenodd" fill=""/>
+                                            </svg>
+                                        </div>
+                                    @endif
+                                </td>
+                                <td class="w-20 h-12 border border-gray-500 text-center">
+                                    @if (Auth::user()->approval_id == 2 && Auth::user()->company_id == $report->user->company_id && $report->approval2 == 0)
+                                        <a href="{{ route('approval2', $report) }}"
+                                            onclick="if(!confirm('承認しますか？')){return false};"
+                                            class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
+                                            承認
+                                        </a>
+                                    @endif
+                                    @if ($report->approval2 == 1)
+                                        <div class="py-2 text-purple-300 inline-flex">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                fill="currentColor" class="w-8 h-8">
+                                                <path fill-rule="evenodd"
+                                                    d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
+                                                    clip-rule="evenodd" fill=""/>
+                                            </svg>
+                                        </div>
+                                    @endif
+                                </td>
                                 <td class="w-20 h-12 border border-gray-500 text-center">{{ $report->approval3 }}</td>
                             </tr>
                         </tbody>
@@ -128,7 +164,8 @@
         </div>
     </div>
     <div class="flex pl-4 mt-4 lg:w-2/3 w-full mx-auto">
-        <a href="{{ route('reports.index') }}" class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
+        <a href="{{ route('reports.index') }}"
+            class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                 <path fill-rule="evenodd"
                     d="M9.53 2.47a.75.75 0 010 1.06L4.81 8.25H15a6.75 6.75 0 010 13.5h-3a.75.75 0 010-1.5h3a5.25 5.25 0 100-10.5H4.81l4.72 4.72a.75.75 0 11-1.06 1.06l-6-6a.75.75 0 010-1.06l6-6a.75.75 0 011.06 0z"

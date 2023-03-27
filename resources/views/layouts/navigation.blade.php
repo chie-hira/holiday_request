@@ -16,16 +16,29 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
                 </div>
+
             </div>
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6">
+                @auth
+
+                    @if (Auth::user()->approval)
+                        <p class="text-sm text-white">
+                            {{ Auth::user()->approval->approval_name }}&emsp;/&emsp;
+                        </p>
+                    @endif
+                    <p class="text-sm text-white">
+                        {{ Auth::user()->company->company_name }}工場・{{ Auth::user()->department->department_name }}&emsp;/&emsp;
+                    </p>
+                @endauth
+
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button {{-- class="flex items-center text-sm font-medium text-white hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out"> --}}
                             class="flex items-center text-sm font-medium text-white transition duration-150 ease-in-out hover:-translate-y-1">
                             @auth
-                                <div>{{ Auth::user()->name }}</div>
+                                <div>{{ Auth::user()->employee }}&ensp;{{ Auth::user()->name }}</div>
                             @else
                                 <div>ゲスト</div>
                             @endauth

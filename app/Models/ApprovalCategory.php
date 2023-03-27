@@ -5,21 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CompanyCategory extends Model
+class ApprovalCategory extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'company_name',
+        'approval_name',
     ];
 
     /**
-     * Get all of the users for the CompanyCategory
+     * Get all of the users for the ApprovalCategory
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function users()
     {
-        return $this->hasMany(User::class, 'company_id', 'id');
+        return $this->hasMany(User::class, 'approval_id', 'id');
     }
 }

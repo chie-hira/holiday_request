@@ -31,10 +31,7 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    protected $hidden = ['password', 'remember_token'];
 
     /**
      * The attributes that should be cast.
@@ -44,16 +41,6 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
-    /**
-     * Get the department that owns the User
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function department()
-    {
-        return $this->belongsTo(DepartmentCategory::class, 'department_id', 'id');
-    }
 
     /**
      * Get all of the remainings for the User
@@ -86,12 +73,26 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the departments that owns the User
+     * Get the department that owns the User
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function departments()
+    public function department()
     {
-        return $this->belongsTo(DepartmentCategory::class, 'department_id', 'id');
+        return $this->belongsTo(
+            DepartmentCategory::class,
+            'department_id',
+            'id'
+        );
+    }
+
+    /**
+     * Get the approval that owns the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function approval()
+    {
+        return $this->belongsTo(ApprovalCategory::class, 'approval_id', 'id');
     }
 }

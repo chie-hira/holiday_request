@@ -1251,6 +1251,9 @@ select {
 .pb-3 {
   padding-bottom: 0.75rem;
 }
+.pl-1 {
+  padding-left: 0.25rem;
+}
 .pl-3 {
   padding-left: 0.75rem;
 }
@@ -1417,6 +1420,10 @@ select {
 .text-pink-800 {
   --tw-text-opacity: 1;
   color: rgb(157 23 77 / var(--tw-text-opacity));
+}
+.text-purple-300 {
+  --tw-text-opacity: 1;
+  color: rgb(216 180 254 / var(--tw-text-opacity));
 }
 .text-red-600 {
   --tw-text-opacity: 1;

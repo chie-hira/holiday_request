@@ -25,9 +25,14 @@ class CreateUsersTable extends Migration
                 ->constrained('company_categories')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
-            $table->foreignId('department_id') # 総務課、工場長、社長
+            $table->foreignId('department_id')
                 ->nullable()
                 ->constrained('department_categories')
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
+            $table->foreignId('approval_id')
+                ->nullable()
+                ->constrained('approval_categories')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
             $table->rememberToken();

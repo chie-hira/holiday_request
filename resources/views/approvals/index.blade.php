@@ -2,7 +2,7 @@
     <section class="text-gray-600 body-font">
         <div class="container px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-10">
-                <h1 class="sm:text-4xl text-3xl font-medium title-font text-gray-900">出退勤届け一覧</h1>
+                <h1 class="sm:text-4xl text-3xl font-medium title-font text-gray-900">承諾待 届け一覧</h1>
             </div>
 
             {{-- <x-notice :message="session('notice')" /> --}}
@@ -31,7 +31,7 @@
                                 class="w-32 px-4 py-3 text-center title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
                                 日数・時間
                             </th>
-                            <th colspan="3"
+                            <th 
                                 class="px-4 py-3 text-center title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
                             </th>
                         </tr>
@@ -39,10 +39,10 @@
                     <tbody>
                         @foreach ($reports as $report)
                             <tr>
-                                <td class="px-4 py-3">{{ $report->report_date }}</td>
-                                <td class="px-4 py-3">{{ $report->user->name }}</td>
-                                <td class="px-4 py-3">{{ $report->report_category->report_name }}</td>
-                                <td class="px-4 py-3">
+                                <td class="px-4 py-3 text-center">{{ $report->report_date }}</td>
+                                <td class="px-4 py-3 text-center">{{ $report->user->name }}</td>
+                                <td class="px-4 py-3 text-center">{{ $report->report_category->report_name }}</td>
+                                <td class="px-4 py-3 text-center">
                                     @if ($report->start_date != null)
                                         {{ $report->start_date }}
                                     @else
@@ -52,7 +52,7 @@
                                         &emsp;{{ Str::substr($report->start_time, 0, 5) }}
                                     @endif
                                 </td>
-                                <td class="px-4 py-3">
+                                <td class="px-4 py-3 text-center">
                                     @if ($report->end_date != null)
                                         ~&emsp;&emsp;{{ $report->end_date }}
                                     @endif
@@ -76,23 +76,6 @@
                                         class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
                                         届表示
                                     </a>
-                                </td>
-                                <td class="px-1 py-3">
-                                    <a href="{{ route('reports.edit', $report) }}"
-                                        class="px-3 py-1 text-sm text-blue-500 rounded-full bg-blue-100/60 hover:text-white hover:bg-blue-500">
-                                        変更
-                                    </a>
-                                </td>
-                                <td class="pl-1 pr-4 py-3 text-lg text-gray-900">
-                                    <form
-                                        action="{{ route('reports.destroy', $report) }}"
-                                        method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <input type="submit" value="取消"
-                                            onclick="if(!confirm('届けを取消しますか？')){return false};" {{-- class="text-sm bg-red-400 hover:bg-red-600 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline w-20"> --}}
-                                            class="px-3 py-1 text-sm text-pink-500 rounded-full bg-pink-100/60 hover:text-white hover:bg-pink-500">
-                                    </form>
                                 </td>
                             </tr>
                         @endforeach

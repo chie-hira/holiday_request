@@ -187,8 +187,48 @@ class ReportController extends Controller
         try {
             $report->delete();
             return redirect()
-                ->route('male_pigs.index')
+                ->route('reports.index')
                 ->with('notice', '届けを取り消しました');
+        } catch (\Throwable $th) {
+            return back()->withErrors($th->getMessage());
+        }
+    }
+
+    public function approvalPending()
+    {
+        $reports = Report::where('approval1', '=', 0)
+                ->where('approval2', '=', 0)
+                ->where('approval3', '=', 0)
+                ->get();
+        // dd($reports);
+        return view('approvals.index')->with(compact('reports'));
+    }
+
+    public function approval1(Report $report)
+    {
+        $report->approval1 = 1;
+
+        try {
+            $report->save();
+            return redirect()
+                ->route('reports.show')
+                ->with(compact('report'))
+                ->with('notice', '承認しました');
+        } catch (\Throwable $th) {
+            return back()->withErrors($th->getMessage());
+        }
+    }
+
+    public function approval2(Report $report)
+    {
+        $report->approval2 = 1;
+
+        try {
+            $report->save();
+            return redirect()
+                ->route('reports.show')
+                ->with(compact('report'))
+                ->with('notice', '承認しました');
         } catch (\Throwable $th) {
             return back()->withErrors($th->getMessage());
         }
