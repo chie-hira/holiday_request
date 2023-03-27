@@ -21,6 +21,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'employee',
+        'company_id',
+        'department_id',
     ];
 
     /**
@@ -53,13 +56,13 @@ class User extends Authenticatable
     }
 
     /**
-     * Get all of the limits for the User
+     * Get all of the remainings for the User
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function limits()
+    public function remainings()
     {
-        return $this->hasMany(Limit::class, 'limit_id', 'id');
+        return $this->hasMany(Remaining::class, 'remaining_id', 'id');
     }
 
     /**
@@ -70,5 +73,25 @@ class User extends Authenticatable
     public function reports()
     {
         return $this->hasMany(Report::class, 'user_id', 'id');
+    }
+
+    /**
+     * Get the company that owns the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function company()
+    {
+        return $this->belongsTo(CompanyCategory::class, 'company_id', 'id');
+    }
+
+    /**
+     * Get the departments that owns the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function departments()
+    {
+        return $this->belongsTo(DepartmentCategory::class, 'department_id', 'id');
     }
 }

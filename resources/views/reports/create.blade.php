@@ -15,7 +15,7 @@
                 <div class="grid gap-6 mb-6 md:grid-cols-2">
                     <div>
                         <label for="report_id" class="block mb-2 text-sm font-medium text-gray-900">
-                            届け出内容
+                            届出内容
                         </label>
                         <select name="report_id" id="report_id" onchange="reportChange();"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
@@ -49,7 +49,7 @@
                     </div>
                     <div>
                         <label for="report_date" class="block mb-2 text-sm font-medium text-gray-900">
-                            届け出日
+                            届出日
                         </label>
                         <input type="date" id="report_date" name="report_date"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
@@ -66,7 +66,6 @@
                     </div>
 
                     <!-- 有給休暇 - start -->
-                    {{-- <div style="display: " id="start_date_form"> --}}
                     <div>
                         <label style="display: " id="start_date_label" for="start_date"
                             class="block mb-2 text-sm font-medium text-gray-900">
@@ -91,14 +90,6 @@
                     <!-- 有給休暇 - end -->
 
                     <!-- 半日有給 - start -->
-                    {{-- <div style="display: none" id="half_date_form">
-                        <label for="half_day" class="block mb-2 text-sm font-medium text-gray-900">
-                            日付
-                        </label>
-                        <input type="date" id="half_date" name="start_date"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            value="{{ old('half_date') }}">
-                    </div> --}}
                     <div style="display: none" id="am_pm_form">
                         <label for="am_pm" class="block mb-2 text-sm font-medium text-gray-900">
                             午前・午後
@@ -116,7 +107,7 @@
                     </div>
                     <div style="display: none" id="start_time_form">
                         <label for="start_time" class="block mb-2 text-sm font-medium text-gray-900">
-                            何時から
+                            何時から<span class="text-xs text-gray-600">&emsp;5分刻み</span>
                         </label>
                         <input type="time" id="start_time" name="start_time" step="300"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
@@ -124,15 +115,14 @@
                     </div>
                     <div style="display: none" id="end_time_form">
                         <label for="end_time" class="block mb-2 text-sm font-medium text-gray-900">
-                            何時まで
+                            何時まで<span class="text-xs text-gray-600">&emsp;5分刻み</span>
                         </label>
                         <input type="time" id="end_time" name="end_time" step="300"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             value="{{ old('end_time') }}">
                     </div>
                     <div style="display: none" id="time_form">
-                        <p class="block mb-2 text-sm font-semibold">
-                        <div class="flex h-8 leading-8 items-center text-center">
+                        <div class="flex h-8 leading-8 items-center text-center mb-6">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                                 class="w-5 h-5 mr-2">
                                 <path fill-rule="evenodd"
@@ -140,12 +130,49 @@
                                     clip-rule="evenodd" fill="#9999ff" />
                             </svg>
                             <div class="items-center text-center">
-                                時間休は1時間単位で取得できます
+                                時間休は
+                                <span class="font-semibold">1時間単位</span>
+                                で取得できます
                             </div>
                         </div>
-                        </p>
                     </div>
                     <!-- 時間休 - end -->
+
+                    <!-- 遅刻・早退 - start -->
+                    <div style="display: none" id="time_form_10m">
+                        <div class="flex h-8 leading-8 items-center text-center mb-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                class="w-5 h-5 mr-2">
+                                <path fill-rule="evenodd"
+                                    d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                                    clip-rule="evenodd" fill="#9999ff" />
+                            </svg>
+                            <div class="items-center text-center">
+                                遅刻・早退は
+                                <span class="font-semibold">10分単位</span>
+                                で取得できます
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 遅刻・早退 - end -->
+
+                    <!-- 外出 - start -->
+                    <div style="display: none" id="time_form_30m">
+                        <div class="flex h-8 leading-8 items-center text-center mb-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                class="w-5 h-5 mr-2">
+                                <path fill-rule="evenodd"
+                                    d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                                    clip-rule="evenodd" fill="#9999ff" />
+                            </svg>
+                            <div class="items-center text-center">
+                                外出は
+                                <span class="font-semibold">30分単位</span>
+                                で取得できます
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 外出 - end -->
                 </div>
                 <div class="grid gap-6 mb-6 md:grid-cols-3">
                     <div>
@@ -161,11 +188,17 @@
                                 value="{{ old('get_days_only') }}" readonly>
                             <p class="ml-2">日</p>
                         </div>
-                        <div class="flex items-center">
+                        <div class="flex items-center mb-1">
                             <input type="number" id="get_hours" name="get_hours"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-20 p-2.5"
                                 value="{{ old('get_hours') }}" readonly>
                             <p class="ml-2">時間</p>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="number" id="get_minites" name="get_minites"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-20 p-2.5"
+                                value="{{ old('get_minites') }}" readonly>
+                            <p class="ml-2">分</p>
                         </div>
                     </div>
                     <div>
@@ -209,6 +242,8 @@
         let endDateForm = document.getElementById('end_date_form');
         let timeEmptyForm = document.getElementById('time_empty_form');
         let timeForm = document.getElementById('time_form');
+        let timeForm30 = document.getElementById('time_form_30m');
+        let timeForm10 = document.getElementById('time_form_10m');
         let startTimeForm = document.getElementById('start_time_form');
         let endTimeForm = document.getElementById('end_time_form');
         let halfDateLabel = document.getElementById('half_date_label');
@@ -229,6 +264,8 @@
             amPmForm.style.display = "none";
             timeEmptyForm.style.display = "none";
             timeForm.style.display = "none";
+            timeForm30.style.display = "none";
+            timeForm10.style.display = "none";
             startTimeForm.style.display = "none";
             endTimeForm.style.display = "none";
             startDateLabel.style.display = "";
@@ -242,20 +279,48 @@
             amPmForm.style.display = "";
             timeEmptyForm.style.display = "none";
             timeForm.style.display = "none";
+            timeForm30.style.display = "none";
+            timeForm10.style.display = "none";
             startTimeForm.style.display = "none";
             endTimeForm.style.display = "none";
             startDateLabel.style.display = "none";
             endDateForm.style.display = "none";
         }
-        if (reportCategory.value == "3" ||
-            reportCategory.value == "12" ||
-            reportCategory.value == "13" ||
-            reportCategory.value == "14") {
+        if (reportCategory.value == "3") {
             halfDateLabel.style.display = "";
             startDateForm.style.display = "";
             amPmForm.style.display = "none";
             timeEmptyForm.style.display = "";
             timeForm.style.display = "";
+            timeForm30.style.display = "none";
+            timeForm10.style.display = "none";
+            startTimeForm.style.display = "";
+            endTimeForm.style.display = "";
+            startDateLabel.style.display = "none";
+            endDateForm.style.display = "none";
+        }
+        if (reportCategory.value == "12" ||
+            reportCategory.value == "13") {
+            halfDateLabel.style.display = "";
+            startDateForm.style.display = "";
+            amPmForm.style.display = "none";
+            timeEmptyForm.style.display = "";
+            timeForm.style.display = "none";
+            timeForm30.style.display = "none";
+            timeForm10.style.display = "";
+            startTimeForm.style.display = "";
+            endTimeForm.style.display = "";
+            startDateLabel.style.display = "none";
+            endDateForm.style.display = "none";
+        }
+        if (reportCategory.value == "14") {
+            halfDateLabel.style.display = "";
+            startDateForm.style.display = "";
+            amPmForm.style.display = "none";
+            timeEmptyForm.style.display = "";
+            timeForm.style.display = "none";
+            timeForm30.style.display = "";
+            timeForm10.style.display = "";
             startTimeForm.style.display = "";
             endTimeForm.style.display = "";
             startDateLabel.style.display = "none";
@@ -266,6 +331,8 @@
             startDateForm.style.display = "";
             timeEmptyForm.style.display = "";
             timeForm.style.display = "none";
+            timeForm30.style.display = "none";
+            timeForm10.style.display = "none";
             startTimeForm.style.display = "none";
             endTimeForm.style.display = "none";
             startDateLabel.style.display = "none";
@@ -294,6 +361,8 @@
                 amPmForm.style.display = "none";
                 timeEmptyForm.style.display = "none";
                 timeForm.style.display = "none";
+                timeForm30.style.display = "none";
+                timeForm10.style.display = "none";
                 startTimeForm.style.display = "none";
                 endTimeForm.style.display = "none";
                 startDateLabel.style.display = "";
@@ -307,18 +376,48 @@
                 amPmForm.style.display = "";
                 timeEmptyForm.style.display = "none";
                 timeForm.style.display = "none";
+                timeForm30.style.display = "none";
+                timeForm10.style.display = "none";
                 startTimeForm.style.display = "none";
                 endTimeForm.style.display = "none";
                 startDateLabel.style.display = "none";
                 endDateForm.style.display = "none";
             }
-            if (reportCategory.value == "3" || reportCategory.value == "12" || reportCategory.value == "13" ||
-                reportCategory.value == "14") {
+            if (reportCategory.value == "3") {
                 halfDateLabel.style.display = "";
                 startDateForm.style.display = "";
                 amPmForm.style.display = "none";
                 timeEmptyForm.style.display = "";
                 timeForm.style.display = "";
+                timeForm30.style.display = "none";
+                timeForm10.style.display = "none";
+                startTimeForm.style.display = "";
+                endTimeForm.style.display = "";
+                startDateLabel.style.display = "none";
+                endDateForm.style.display = "none";
+            }
+            if (reportCategory.value == "12" ||
+                reportCategory.value == "13") {
+                halfDateLabel.style.display = "";
+                startDateForm.style.display = "";
+                amPmForm.style.display = "none";
+                timeEmptyForm.style.display = "";
+                timeForm.style.display = "none";
+                timeForm30.style.display = "none";
+                timeForm10.style.display = "";
+                startTimeForm.style.display = "";
+                endTimeForm.style.display = "";
+                startDateLabel.style.display = "none";
+                endDateForm.style.display = "none";
+            }
+            if (reportCategory.value == "14") {
+                halfDateLabel.style.display = "";
+                startDateForm.style.display = "";
+                amPmForm.style.display = "none";
+                timeEmptyForm.style.display = "";
+                timeForm.style.display = "none";
+                timeForm30.style.display = "";
+                timeForm10.style.display = "";
                 startTimeForm.style.display = "";
                 endTimeForm.style.display = "";
                 startDateLabel.style.display = "none";
@@ -329,6 +428,8 @@
                 startDateForm.style.display = "";
                 timeEmptyForm.style.display = "";
                 timeForm.style.display = "none";
+                timeForm30.style.display = "none";
+                timeForm10.style.display = "none";
                 startTimeForm.style.display = "none";
                 endTimeForm.style.display = "none";
                 startDateLabel.style.display = "none";
@@ -376,15 +477,21 @@
                 }
             }
 
+
             if (reportCategory.value == 1) {
                 getDays = diffDays - dayOffs;
             }
             if (reportCategory.value == 2) {
                 getDays = 0.5;
             }
-            if (reportCategory.value == 3) {
-                getDays = ((endTimeVal - startTimeVal) / 60000) / 60 * 0.125;
-                // 時間休:1時間単位 8時間で1日 1時間=1/8日 0.125
+            if (reportCategory.value == 3 ||
+                reportCategory.value == 12 ||
+                reportCategory.value == 13 ||
+                reportCategory.value == 14) {
+                getDays = ((endTimeVal - startTimeVal) / 60000) / 60 * 1/8;
+                // 時間換算:8時間で1日 1時間=1/8日 0.125日
+                getDays = orgRound(getDays, 100000); // 小数点以下5桁に丸める
+                console.log(getDays);
             }
             if (reportCategory.value == 4) {
                 getDays = 1.0;
@@ -393,16 +500,28 @@
             // get_days書き出し
             document.getElementById('get_days').setAttribute('value', getDays);
 
-            function decimalPart(num, decDigits) {
+            // get時間&get日数作成&書き出し
+            function orgRound(value, base) { // 小数点以下を丸める関数
+                return Math.round(value * base) / base;
+            }
+            function decimalPart(num, decDigits) { // 指定した桁数の小数点以下を取り出す関数
                 var decPart = num - ((num >= 0) ? Math.floor(num) : Math.ceil(num));
                 return decPart.toFixed(decDigits);
             }
 
-            // get時間&get日数書き出し
-            let getHours = decimalPart(getDays, 3) * 8;
-            let getDaysOnly = getDays - decimalPart(getDays, 3);
-            document.getElementById('get_hours').setAttribute('value', getHours);
+            console.log(orgRound(getDays, 100000)); // 小数5桁
+            let getDaysOnly = getDays - decimalPart(getDays, 4);
+            let getHours = decimalPart(getDays, 5) * 8;
+            let getMinites = 0;
+            if (decimalPart(getHours, 5) != 0 && decimalPart(getHours, 4) < 1) {
+                getMinites = getHours * 60;
+                getMinites = orgRound(getMinites, 1);
+                getDaysOnly = 0;
+                getHours = 0;
+            }
             document.getElementById('get_days_only').setAttribute('value', getDaysOnly);
+            document.getElementById('get_hours').setAttribute('value', getHours);
+            document.getElementById('get_minites').setAttribute('value', getMinites);
 
 
             if (reportId == 2 || reportId == 3) {

@@ -33,7 +33,7 @@ class CreateReportsTable extends Migration
             $table->date('end_date')->nullable();
             $table->time('start_time')->nullable();
             $table->time('end_time')->nullable();
-            $table->float('get_days', 8, 3);
+            $table->float('get_days', 8, 5);
             $table->integer('am_pm')->nullable();
             $table->boolean('approval1')->default(0);
             $table->boolean('approval2')->default(0);

@@ -19,6 +19,7 @@ class DepartmentCategorySeeder extends Seeder
             ['department_name' => '総務部長'],
             ['department_name' => '工場長'],
             ['department_name' => 'GL'],
+            ['department_name' => 'その他'],
         ];
         DB::table('department_categories')->insert($param);
     }

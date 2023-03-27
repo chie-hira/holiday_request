@@ -68,10 +68,31 @@ class ReportController extends Controller
         if ($request->report_id == 3) {
             $request->validate(
                 [
+                    // 'get_days' => 'required|multiple_of:0.125',
                     'get_days' => 'required|multiple_of:0.125',
                 ],
                 [
                     'get_days.multiple_of' => '時間休は1時間単位で取得可能です。',
+                ]
+            );
+        }
+        if ($request->report_id == 12 || $request->report_id == 13) {
+            $request->validate(
+                [
+                    'get_days' => 'required|multiple_of:0.02083',
+                ],
+                [
+                    'get_days.multiple_of' => '遅刻・早退は10分単位で取得可能です。',
+                ]
+            );
+        }
+        if ($request->report_id == 14) {
+            $request->validate(
+                [
+                    'get_days' => 'required|multiple_of:0.0625',
+                ],
+                [
+                    'get_days.multiple_of' => '外出は30分単位で取得可能です。',
                 ]
             );
         }
@@ -86,6 +107,7 @@ class ReportController extends Controller
             );
         }
 
+        # reportsレコード作成
         $report = new Report();
         $report->fill($request->all());
 
@@ -93,14 +115,20 @@ class ReportController extends Controller
         if ($report_id == 2 || $report_id ==3) {
             $report_id = 1;
         }
+
+        # remainingsレコード更新
         $remaining = Remaining::where('user_id', '=', $request->user_id)
             ->where('report_id', '=', $report_id)
             ->first();
-        $remaining->remaining = $request->remaining;
+        if (!empty($remaining)) {
+            $remaining->remaining = $request->remaining;
+        }
 
         try {
             $report->save();
-            $remaining->save();
+            if (!empty($remaining)) {
+                $remaining->save();
+            }
             return redirect(route('reports.index'))->with(
                 'notice',
                 '提出しました'

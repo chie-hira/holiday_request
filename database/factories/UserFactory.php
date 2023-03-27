@@ -22,7 +22,7 @@ class UserFactory extends Factory
             'remember_token' => Str::random(10),
             'employee' => $this->faker->unique()->numberBetween(100,200),
             'company_id' => $this->faker->numberBetween(1,4),
-            'department_id' => $this->faker->numberBetween(1,4),
+            'department_id' => $this->faker->numberBetween(1,5),
         ];
     }
 

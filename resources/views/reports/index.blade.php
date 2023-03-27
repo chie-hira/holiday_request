@@ -12,31 +12,27 @@
                     <thead class="">
                         <tr class="border-b-2">
                             <th
-                                class="w-32 px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl rounded-bl">
+                                class="w-32 px-4 py-3 text-center title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl rounded-bl">
                                 届出日
                             </th>
                             <th
-                                class="w-32 px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
-                                届出者
+                                class="w-32 px-4 py-3 text-center title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
+                                氏 名
                             </th>
                             <th
-                                class="w-40 px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
-                                届出内容
+                                class="w-40 px-4 py-3 text-center title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
+                                内 容
                             </th>
                             <th colspan="2"
-                                class="w-32 px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
-                                期間
+                                class="w-32 px-4 py-3 text-center title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
+                                期 間
                             </th>
-                            {{-- <th
-                                class="w-32 px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
-                                終期
-                            </th> --}}
                             <th
-                                class="w-32 px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
-                                届出日数・時間
+                                class="w-32 px-4 py-3 text-center title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
+                                日数・時間
                             </th>
                             <th colspan="3"
-                                class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
+                                class="px-4 py-3 text-center title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
                             </th>
                         </tr>
                     </thead>
@@ -53,7 +49,7 @@
                                         -
                                     @endif
                                     @if ($report->start_time != null)
-                                        &ensp;{{ Str::substr($report->start_time, 0, 5) }}
+                                        &emsp;{{ Str::substr($report->start_time, 0, 5) }}
                                     @endif
                                 </td>
                                 <td class="px-4 py-3">
@@ -64,7 +60,7 @@
                                         ~&emsp;&emsp;{{ Str::substr($report->end_time, 0, 5) }}
                                     @endif
                                     @if ($report->am_pm != null)
-                                        {{ ($report->am_pm == 0)? '午前' : '午後' }}
+                                        {{ ($report->am_pm == 0)? '午 前' : '午 後' }}
                                     @endif
                                 </td>
                                 <td class="px-4 py-3 text-center">
@@ -75,19 +71,19 @@
                                         {{ $report->get_hours }} 時間
                                     @endif
                                 </td>
-                                <td class="px-4 py-3">
+                                <td class="px-1 py-3">
                                     <a href="{{ route('reports.show', $report) }}"
                                         class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
-                                        届け表示
+                                        届表示
                                     </a>
                                 </td>
-                                <td class="px-4 py-3">
+                                <td class="px-1 py-3">
                                     <a href="{{ route('reports.edit', $report) }}"
                                         class="px-3 py-1 text-sm text-blue-500 rounded-full bg-blue-100/60 hover:text-white hover:bg-blue-500">
                                         変更
                                     </a>
                                 </td>
-                                <td class="px-4 py-3 text-lg text-gray-900">
+                                <td class="pl-1 pr-4 py-3 text-lg text-gray-900">
                                     <form
                                         action="{{ route('reports.destroy', $report) }}"
                                         method="POST">
