@@ -34,5 +34,7 @@ Route::get('/approval1/{report}', [ReportController::class, 'approval1'])
     ->name('approval1');
 Route::get('/approval2/{report}', [ReportController::class, 'approval2'])
     ->name('approval2');
+Route::get('/approval3/{report}', [ReportController::class, 'approval3'])
+    ->name('approval3');
 
 require __DIR__.'/auth.php';

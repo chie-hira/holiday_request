@@ -197,8 +197,8 @@ class ReportController extends Controller
     public function approvalPending()
     {
         $reports = Report::where('approval1', '=', 0)
-                ->where('approval2', '=', 0)
-                ->where('approval3', '=', 0)
+                ->orWhere('approval2', '=', 0)
+                ->orWhere('approval3', '=', 0)
                 ->get();
         // dd($reports);
         return view('approvals.index')->with(compact('reports'));
@@ -222,6 +222,21 @@ class ReportController extends Controller
     public function approval2(Report $report)
     {
         $report->approval2 = 1;
+
+        try {
+            $report->save();
+            return redirect()
+                ->route('reports.show')
+                ->with(compact('report'))
+                ->with('notice', '承認しました');
+        } catch (\Throwable $th) {
+            return back()->withErrors($th->getMessage());
+        }
+    }
+
+    public function approval3(Report $report)
+    {
+        $report->approval3 = 1;
 
         try {
             $report->save();
