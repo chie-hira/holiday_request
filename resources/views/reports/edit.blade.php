@@ -62,10 +62,10 @@
                         <label for="user_id" class="block mb-2 text-sm font-medium text-gray-900">
                             氏名
                         </label>
-                        <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
+                        <input type="hidden" name="user_id" value="{{ $report->user_id }}">
                         <input type="text" id="user_id"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            value="{{ Auth::user()->name }}" readonly>
+                            value="{{ $report->user->name }}" readonly>
                     </div>
 
                     <!-- 有給休暇 - start -->

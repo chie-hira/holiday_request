@@ -3,6 +3,7 @@
 use App\Http\Controllers\ApprovalCategoryController;
 use App\Http\Controllers\RemainingController;
 use App\Http\Controllers\ReportController;
+use App\Models\Report;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,8 +26,16 @@ Route::get('/dashboard', function () {
 })->middleware(['auth'])->name('dashboard');
 
 Route::resource('reports', ReportController::class)
-    ->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
+    ->only(['index', 'show']);
+    
+Route::resource('reports', ReportController::class)
+    ->only(['create', 'store', 'edit', 'update', 'destroy'])
+    ->middleware('auth');
 Route::resource('remainings', RemainingController::class);
+
+Route::get('/reports/all_index', [ReportController::class, 'all_index'])
+    ->name('reports.all_index')
+    ->middleware('auth');
 
 Route::get('/approvals', [ReportController::class, 'approvalPending'])
     ->name('approvalPending');

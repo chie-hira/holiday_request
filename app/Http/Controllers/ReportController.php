@@ -19,9 +19,16 @@ class ReportController extends Controller
      */
     public function index()
     {
-        $reports = Report::all();
+        $reports = Report::all()->where('user_id', '=', Auth::user()->id);
 
         return view('reports.index')->with(compact('reports'));
+    }
+
+    public function all_index()
+    {
+        $reports = Report::all();
+
+        return view('reports.all_index')->with(compact('reports'));
     }
 
     /**

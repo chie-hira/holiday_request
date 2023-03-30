@@ -78,17 +78,14 @@
                                     </a>
                                 </td>
                                 <td class="px-1 py-3">
-                                @if ($report->approval1 == 0)
                                 @can('update', $report)
                                     <a href="{{ route('reports.edit', $report) }}"
                                         class="px-3 py-1 text-sm text-blue-500 rounded-full bg-blue-100/60 hover:text-white hover:bg-blue-500">
                                         変更
                                     </a>
                                 @endcan
-                                @endif
                                 </td>
                                 <td class="pl-1 pr-4 py-3 text-lg text-gray-900">
-                                @if ($report->approval1 == 0)
                                 @can('update', $report)
                                     <form
                                         action="{{ route('reports.destroy', $report) }}"
@@ -100,7 +97,6 @@
                                             class="px-3 py-1 text-sm text-pink-500 rounded-full bg-pink-100/60 hover:text-white hover:bg-pink-500">
                                     </form>
                                 @endcan
-                                @endif
                                 </td>
                             </tr>
                         @endforeach
