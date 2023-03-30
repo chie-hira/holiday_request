@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreReportRequest;
 use App\Http\Requests\UpdateReportRequest;
-use App\Models\Limit;
 use App\Models\ReasonCategory;
 use App\Models\Remaining;
 use App\Models\Report;
@@ -35,7 +34,16 @@ class ReportController extends Controller
         $report_categories = ReportCategory::all();
         $reasons = ReasonCategory::all();
         $own_remainings = Remaining::all()->where('user_id', '=', Auth::id());
-        // dd($own_limits);
+
+        if (empty($own_remainings->first())) {
+            $report_ids = [1, 4, 5, 6, 7, 8, 9, 15];
+            // $report_ids = [1, 4, 5, 6, 7, 8, 9, 10, 15, 17];
+            foreach ($report_ids as $report_id) {
+                self::newRemaining($report_id);
+            }
+            $own_remainings = Remaining::all()->where('user_id', '==', Auth::id());
+        }
+        
         return view('reports.create')->with(
             compact('report_categories', 'reasons', 'own_remainings')
         );

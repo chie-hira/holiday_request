@@ -201,27 +201,56 @@
                             <p class="ml-2">分</p>
                         </div>
                     </div>
+
                     <div>
+                        <label for="remaining_days" class="block mb-2 text-sm font-medium text-gray-900">
+                            残日数
+                        </label>
+                        <input type="hidden" id="remaining_days" name="remaining"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            value="{{ old('remaining_days') }}" readonly required>
+                        <div class="flex items-center mb-1">
+                            <input type="number" id="remaining_days_only" name="remaining_days_only"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-20 p-2.5"
+                                value="{{ old('remaining_days_only') }}" readonly>
+                            <p class="ml-2">日</p>
+                        </div>
+                        <div class="flex items-center mb-1">
+                            <input type="number" id="remaining_hours" name="remaining_hours"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-20 p-2.5"
+                                value="{{ old('remaining_hours') }}" readonly>
+                            <p class="ml-2">時間</p>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="number" id="remaining_minites" name="remaining_minites"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-20 p-2.5"
+                                value="{{ old('remaining_minites') }}" readonly>
+                            <p class="ml-2">分</p>
+                        </div>
+                    </div>
+
+                    {{-- <div>
                         <label for="remaining_days" class="block mb-2 text-sm font-medium text-gray-900">
                             残日数
                         </label>
                         <input type="number" id="remaining_days" name="remaining"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             value="{{ old('remaining') }}" readonly required>
-                    </div>
+                    </div> --}}
+
                     <div class="flex items-center text-center">
-                    <button type="button" id="button"
-                        class="w-32 h-10 mx-auto flex justify-center items-center rounded-3xl text-center text-indigo-500 bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
-                        <span class="pt-1">
-                            日数算出
-                        </span>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            class="w-6 h-6">
-                            <path fill-rule="evenodd"
-                                d="M6.32 1.827a49.255 49.255 0 0111.36 0c1.497.174 2.57 1.46 2.57 2.93V19.5a3 3 0 01-3 3H6.75a3 3 0 01-3-3V4.757c0-1.47 1.073-2.756 2.57-2.93zM7.5 11.25a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75H8.25a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H8.25zm-.75 3a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75H8.25a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V18a.75.75 0 00-.75-.75H8.25zm1.748-6a.75.75 0 01.75-.75h.007a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75h-.007a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.335.75.75.75h.007a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75h-.007zm-.75 3a.75.75 0 01.75-.75h.007a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75h-.007a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.335.75.75.75h.007a.75.75 0 00.75-.75V18a.75.75 0 00-.75-.75h-.007zm1.754-6a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75h-.008a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75h-.008zm-.75 3a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75h-.008a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V18a.75.75 0 00-.75-.75h-.008zm1.748-6a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75h-.008a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75h-.008zm-8.25-6A.75.75 0 018.25 6h7.5a.75.75 0 01.75.75v.75a.75.75 0 01-.75.75h-7.5a.75.75 0 01-.75-.75v-.75zm9 9a.75.75 0 00-1.5 0V18a.75.75 0 001.5 0v-2.25z"
-                                clip-rule="evenodd" />
-                        </svg>
-                    </button>
+                        <button type="button" id="button"
+                            class="w-32 h-10 mx-auto flex justify-center items-center rounded-3xl text-center text-indigo-500 bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
+                            <span class="pt-1">
+                                日数算出
+                            </span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                class="w-6 h-6">
+                                <path fill-rule="evenodd"
+                                    d="M6.32 1.827a49.255 49.255 0 0111.36 0c1.497.174 2.57 1.46 2.57 2.93V19.5a3 3 0 01-3 3H6.75a3 3 0 01-3-3V4.757c0-1.47 1.073-2.756 2.57-2.93zM7.5 11.25a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75H8.25a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H8.25zm-.75 3a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75H8.25a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V18a.75.75 0 00-.75-.75H8.25zm1.748-6a.75.75 0 01.75-.75h.007a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75h-.007a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.335.75.75.75h.007a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75h-.007zm-.75 3a.75.75 0 01.75-.75h.007a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75h-.007a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.335.75.75.75h.007a.75.75 0 00.75-.75V18a.75.75 0 00-.75-.75h-.007zm1.754-6a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75h-.008a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75h-.008zm-.75 3a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75h-.008a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V18a.75.75 0 00-.75-.75h-.008zm1.748-6a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75h-.008a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75h-.008zm-8.25-6A.75.75 0 018.25 6h7.5a.75.75 0 01.75.75v.75a.75.75 0 01-.75.75h-7.5a.75.75 0 01-.75-.75v-.75zm9 9a.75.75 0 00-1.5 0V18a.75.75 0 001.5 0v-2.25z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
                 <div class="flex flex-row-reverse">
@@ -231,7 +260,19 @@
                     </button>
                 </div>
             </form>
-
+            <div class="flex pl-4 mt-4 lg:w-2/3 w-full mx-auto">
+                <a href="{{ route('menu') }}"
+                    class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                        <path fill-rule="evenodd"
+                            d="M9.53 2.47a.75.75 0 010 1.06L4.81 8.25H15a6.75 6.75 0 010 13.5h-3a.75.75 0 010-1.5h3a5.25 5.25 0 100-10.5H4.81l4.72 4.72a.75.75 0 11-1.06 1.06l-6-6a.75.75 0 010-1.06l6-6a.75.75 0 011.06 0z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <div class="px-2 mt-1">
+                        menuへ戻る
+                    </div>
+                </a>
+            </div>
         </div>
     </section>
 
@@ -475,11 +516,10 @@
             dayOffs = (diffDays - remainderDays) / 7 * 2;
             var startWeek = startVal.getDay(); //0~6の曜日数値
             for (var i = 0; i < remainderDays; i++) {
-                if (startWeek + i == 0 || startWeek + i == 6) {
-                    dayOffs++; // 土日は休日数に加算
+                if (startWeek + i == 0 || startWeek + i == 6 || startWeek + i == 7) {
+                    dayOffs++; // 土日は休日数に加算:日曜日は0,7
                 }
             }
-
 
             if (reportCategory.value == 1) {
                 getDays = diffDays - dayOffs;
@@ -536,6 +576,8 @@
             const arr = Object.keys(ownRemainings);
             let ownRemainingDays = 0;
             // console.log(arr);
+            console.log(arr);
+            console.log(reportId);
             arr.forEach((el) => {
                 if (ownRemainings[el].report_id == reportId) {
                     ownRemainingDays = ownRemainings[el].remaining;
@@ -545,6 +587,20 @@
             let remainingDays = ownRemainingDays - getDays;
             // 残日数書き出し
             document.getElementById('remaining_days').setAttribute('value', remainingDays);
+
+            console.log(orgRound(remainingDays, 100000)); // 小数5桁
+            let remainingDaysOnly = remainingDays - decimalPart(remainingDays, 4);
+            let remainingHours = decimalPart(remainingDays, 5) * 8;
+            let remainingMinites = 0;
+            if (decimalPart(remainingHours, 5) != 0 && decimalPart(remainingHours, 4) < 1) {
+                remainingMinites = remainingHours * 60;
+                remainingMinites = orgRound(remainingMinites, 1);
+                remainingDaysOnly = 0;
+                remainingHours = 0;
+            }
+            document.getElementById('remaining_days_only').setAttribute('value', remainingDaysOnly);
+            document.getElementById('remaining_hours').setAttribute('value', remainingHours);
+            document.getElementById('remaining_minites').setAttribute('value', remainingMinites);
         });
     </script>
 </x-app-layout>

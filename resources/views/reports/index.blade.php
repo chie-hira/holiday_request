@@ -107,7 +107,7 @@
                             clip-rule="evenodd" />
                     </svg>
                     <div class="px-2 mt-1">
-                    戻る
+                    menuへ戻る
                     </div>
                 </a>
             </div>

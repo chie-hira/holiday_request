@@ -17,7 +17,7 @@
                 <li class="pt-3 pb-0 sm:pt-4">
                     <div class="flex items-center space-x-4">
                         <div class="flex-1 min-w-0">
-                            <p class="px-2 text-xl font-semibold text-gray-800">
+                            <p class="ZenKurenaido px-2 text-xl font-semibold text-gray-800">
                                 {{ $report->report_category->report_name }}
                             </p>
                         </div>
@@ -30,7 +30,7 @@
                                 <p class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
                                     理 由
                                 </p>
-                                <p class="text-gray-700 ml-4">{{ $report->reason->reason }}</p>
+                                <p class="ZenKurenaido font-semibold text-gray-700 ml-4">{{ $report->reason->reason }}</p>
                             </div>
                             @if ($report->reason_detail)
                                 <p class="text-sm text-gray-700 truncate px-4 pt-2">
@@ -47,7 +47,7 @@
                                 <p class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
                                     期 間
                                 </p>
-                                <p class="text-gray-700 ml-4">
+                                <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
                                     @if ($report->start_date != null)
                                         {{ $report->start_date }}
                                     @else
@@ -77,7 +77,7 @@
                                 <p class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
                                     届出日
                                 </p>
-                                <p class="text-gray-700 ml-4">{{ $report->report_date }}</p>
+                                <p class="ZenKurenaido font-semibold text-gray-700 ml-4">{{ $report->report_date }}</p>
                             </div>
                         </div>
                     </div>
@@ -89,7 +89,7 @@
                                 <p class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
                                     コード
                                 </p>
-                                <p class="text-gray-700 ml-4">{{ $report->user->employee }}</p>
+                                <p class="ZenKurenaido font-semibold text-gray-700 ml-4">{{ $report->user->employee }}</p>
                             </div>
                         </div>
                     </div>
@@ -101,7 +101,7 @@
                                 <p class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
                                     氏 名
                                 </p>
-                                <p class="text-gray-700 ml-4">{{ $report->user->name }}</p>
+                                <p class="ZenKurenaido font-semibold text-gray-700 ml-4">{{ $report->user->name }}</p>
                             </div>
                         </div>
                     </div>
@@ -181,18 +181,34 @@
             </ul>
         </div>
     </div>
-    <div class="flex pl-4 mt-4 lg:w-2/3 w-full mx-auto">
-        <a href="{{ route('reports.index') }}"
-            class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-                <path fill-rule="evenodd"
-                    d="M9.53 2.47a.75.75 0 010 1.06L4.81 8.25H15a6.75 6.75 0 010 13.5h-3a.75.75 0 010-1.5h3a5.25 5.25 0 100-10.5H4.81l4.72 4.72a.75.75 0 11-1.06 1.06l-6-6a.75.75 0 010-1.06l6-6a.75.75 0 011.06 0z"
-                    clip-rule="evenodd" />
-            </svg>
-            <div class="px-2 mt-1">
-                戻る
-            </div>
-        </a>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 w-1/2 mx-auto">
+        <div class="flex mt-4 lg:w-2/3 w-full mx-auto">
+            <a href="{{ route('reports.index') }}"
+                class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                    <path fill-rule="evenodd"
+                        d="M9.53 2.47a.75.75 0 010 1.06L4.81 8.25H15a6.75 6.75 0 010 13.5h-3a.75.75 0 010-1.5h3a5.25 5.25 0 100-10.5H4.81l4.72 4.72a.75.75 0 11-1.06 1.06l-6-6a.75.75 0 010-1.06l6-6a.75.75 0 011.06 0z"
+                        clip-rule="evenodd" />
+                </svg>
+                <div class="px-2 mt-1">
+                    一覧へ
+                </div>
+            </a>
+        </div>
+        <div class="flex mt-4 lg:w-2/3 w-full mx-auto">
+            <a href="{{ route('approvalPending') }}"
+                class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                    <path fill-rule="evenodd"
+                        d="M9.53 2.47a.75.75 0 010 1.06L4.81 8.25H15a6.75 6.75 0 010 13.5h-3a.75.75 0 010-1.5h3a5.25 5.25 0 100-10.5H4.81l4.72 4.72a.75.75 0 11-1.06 1.06l-6-6a.75.75 0 010-1.06l6-6a.75.75 0 011.06 0z"
+                        clip-rule="evenodd" />
+                </svg>
+                <div class="px-2 mt-1">
+                    承諾待一覧へ
+                </div>
+            </a>
+        </div>
     </div>
     <div>&emsp;</div>
 

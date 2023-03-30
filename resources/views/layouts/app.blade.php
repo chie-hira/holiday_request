@@ -10,10 +10,10 @@
 
     <!-- Fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
-    {{-- <link rel="preconnect" href="https://fonts.googleapis.com"> --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500&family=M+PLUS+Rounded+1c:wght@300;400;500&family=Zen+Maru+Gothic:wght@300;400;500&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500&family=M+PLUS+Rounded+1c:wght@300;400;500&family=Zen+Kurenaido&family=Zen+Maru+Gothic:wght@300;400;500&display=swap"
         rel="stylesheet">
 
     <!-- Styles -->
@@ -21,6 +21,9 @@
     <style>
         .ZenMaruGothic {
             font-family: 'Zen Maru Gothic', sans-serif;
+        }
+        .ZenKurenaido{
+            font-family: 'Zen Kurenaido', sans-serif;
         }
     </style>
 
