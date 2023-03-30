@@ -30,7 +30,7 @@
                                 <p class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
                                     理 由
                                 </p>
-                                <p class="ZenKurenaido font-semibold text-gray-700 ml-4">{{ $report->reason->reason }}</p>
+                                <p class="ZenKurenaido font-semibold text-gray-700 ml-4">{{ $report->reason_category->reason }}</p>
                             </div>
                             @if ($report->reason_detail)
                                 <p class="text-sm text-gray-700 truncate px-4 pt-2">

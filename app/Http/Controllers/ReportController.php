@@ -119,24 +119,24 @@ class ReportController extends Controller
         $report = new Report();
         $report->fill($request->all());
 
-        $report_id = $report->report_id;
-        if ($report_id == 2 || $report_id ==3) {
-            $report_id = 1;
-        }
+        // $report_id = $report->report_id;
+        // if ($report_id == 2 || $report_id ==3) {
+        //     $report_id = 1;
+        // }
 
-        # remainingsレコード更新
-        $remaining = Remaining::where('user_id', '=', $request->user_id)
-            ->where('report_id', '=', $report_id)
-            ->first();
-        if (!empty($remaining)) {
-            $remaining->remaining = $request->remaining;
-        }
+        // # remainingsレコード更新
+        // $remaining = Remaining::where('user_id', '=', $request->user_id)
+        //     ->where('report_id', '=', $report_id)
+        //     ->first();
+        // if (!empty($remaining)) {
+        //     $remaining->remaining = $request->remaining;
+        // }
 
         try {
             $report->save();
-            if (!empty($remaining)) {
-                $remaining->save();
-            }
+            // if (!empty($remaining)) {
+            //     $remaining->save();
+            // }
             return redirect(route('reports.index'))->with(
                 'notice',
                 '提出しました'
@@ -168,7 +168,11 @@ class ReportController extends Controller
      */
     public function edit(Report $report)
     {
-        //
+        $report_categories = ReportCategory::all();
+        $reasons = ReasonCategory::all();
+        $own_remainings = Remaining::all()->where('user_id', '=', Auth::id());
+
+        return view('reports.edit')->with(compact('report', 'report_categories', 'reasons', 'own_remainings'));
     }
 
     /**
@@ -216,8 +220,25 @@ class ReportController extends Controller
     {
         $report->approval1 = 1;
 
+        // 残日数を更新
+        # remainingsレコード更新
+        $report_id = $report->report_id;
+        if ($report_id == 2 || $report_id ==3) {
+            $report_id = 1;
+        }
+        $remaining = Remaining::where('user_id', '=', $report->user_id)
+            ->where('report_id', '=', $report_id)
+            ->first();
+        if (!empty($remaining)) {
+            $new_remaining = $remaining->remaining - $report->get_days;
+            $remaining->remaining = $new_remaining;
+        }
+
         try {
             $report->save();
+            if (!empty($remaining)) {
+                $remaining->save();
+            }
             return redirect()
                 ->route('reports.show')
                 ->with(compact('report'))

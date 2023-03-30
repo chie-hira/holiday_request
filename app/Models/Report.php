@@ -53,7 +53,7 @@ class Report extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function reason()
+    public function reason_category()
     {
         return $this->belongsTo(ReasonCategory::class, 'reason_id', 'id');
     }
