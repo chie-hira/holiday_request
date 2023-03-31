@@ -197,7 +197,7 @@
             </a>
         </div>
         <div class="flex mt-4 lg:w-2/3 w-full mx-auto">
-            <a href="{{ route('approvalPending') }}"
+            <a href="{{ route('approvals.index') }}"
                 class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                     <path fill-rule="evenodd"

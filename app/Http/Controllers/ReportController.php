@@ -48,9 +48,13 @@ class ReportController extends Controller
             foreach ($report_ids as $report_id) {
                 self::newRemaining($report_id);
             }
-            $own_remainings = Remaining::all()->where('user_id', '==', Auth::id());
+            $own_remainings = Remaining::all()->where(
+                'user_id',
+                '==',
+                Auth::id()
+            );
         }
-        
+
         return view('reports.create')->with(
             compact('report_categories', 'reasons', 'own_remainings')
         );
@@ -66,19 +70,15 @@ class ReportController extends Controller
     {
         // dd($request);
         if ($request->report_id == 1) {
-            $request->validate(
-                [
-                    'start_date' => 'required|date|after_or_equal:report_date',
-                    'end_date' => 'required|date|after:start_date',
-                ],
-            );
+            $request->validate([
+                'start_date' => 'required|date|after_or_equal:report_date',
+                'end_date' => 'required|date|after:start_date',
+            ]);
         }
         if ($request->report_id == 2) {
-            $request->validate(
-                [
-                    'start_date' => 'required|date|after_or_equal:report_date',
-                ],
-            );
+            $request->validate([
+                'start_date' => 'required|date|after_or_equal:report_date',
+            ]);
         }
         if ($request->report_id == 3) {
             $request->validate(
@@ -87,7 +87,8 @@ class ReportController extends Controller
                     'get_days' => 'required|multiple_of:0.125',
                 ],
                 [
-                    'get_days.multiple_of' => '時間休は1時間単位で取得可能です。',
+                    'get_days.multiple_of' =>
+                        '時間休は1時間単位で取得可能です。',
                 ]
             );
         }
@@ -97,7 +98,8 @@ class ReportController extends Controller
                     'get_days' => 'required|multiple_of:0.02083',
                 ],
                 [
-                    'get_days.multiple_of' => '遅刻・早退は10分単位で取得可能です。',
+                    'get_days.multiple_of' =>
+                        '遅刻・早退は10分単位で取得可能です。',
                 ]
             );
         }
@@ -179,7 +181,9 @@ class ReportController extends Controller
         $reasons = ReasonCategory::all();
         $own_remainings = Remaining::all()->where('user_id', '=', Auth::id());
 
-        return view('reports.edit')->with(compact('report', 'report_categories', 'reasons', 'own_remainings'));
+        return view('reports.edit')->with(
+            compact('report', 'report_categories', 'reasons', 'own_remainings')
+        );
     }
 
     /**
@@ -213,12 +217,30 @@ class ReportController extends Controller
         }
     }
 
-    public function approvalPending()
+    public function allApprovalPending()
     {
         $reports = Report::where('approval1', '=', 0)
-                ->orWhere('approval2', '=', 0)
-                ->orWhere('approval3', '=', 0)
-                ->get();
+            ->orWhere('approval2', '=', 0)
+            ->orWhere('approval3', '=', 0)
+            ->get();
+        // dd($reports);
+        return view('approvals.all_index')->with(compact('reports'));
+    }
+
+    public function approvalPending()
+    {
+        $reports = Report::where('user_id', '=', Auth::user()->id)->where(
+            function ($query) {
+                $query
+                    ->where('approval1', '=', 0)
+                    ->orWhere('approval2', '=', 0)
+                    ->orWhere('approval2', '=', 0);
+            }
+        )
+        ->get();
+        // ->Where('approval1', '=', 0)
+        // ->orWhere('approval2', '=', 0)
+        // ->orWhere('approval3', '=', 0);
         // dd($reports);
         return view('approvals.index')->with(compact('reports'));
     }
@@ -230,7 +252,7 @@ class ReportController extends Controller
         // 残日数を更新
         # remainingsレコード更新
         $report_id = $report->report_id;
-        if ($report_id == 2 || $report_id ==3) {
+        if ($report_id == 2 || $report_id == 3) {
             $report_id = 1;
         }
         $remaining = Remaining::where('user_id', '=', $report->user_id)
