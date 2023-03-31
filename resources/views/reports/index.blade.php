@@ -46,7 +46,7 @@
                                 <td class="px-4 py-3">{{ $report->report_date }}</td>
                                 <td class="px-4 py-3">{{ $report->user->name }}</td>
                                 <td class="px-4 py-3">{{ $report->report_category->report_name }}</td>
-                                <td class="px-4 py-3 text-right">
+                                <td class="px-4 py-3">
                                     @if ($report->start_date != null)
                                         {{ $report->start_date }}
                                     @else

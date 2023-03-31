@@ -125,22 +125,27 @@ class ReportController extends Controller
             );
         }
 
+        $report_id = $request->report_id;
+        if ($report_id == 2 || $report_id == 3) {
+            $report_id = 1;
+        }
         $remaining = Remaining::where('user_id', '=', Auth::user()->id)
-                    ->where('report_id', '=', $request->report_id)
+                    ->where('report_id', '=', $report_id)
                     ->first('remaining');
-        $result = $remaining->remaining - $request->get_days;
-        // dd($result);
-
-        if ($result < 0) {
-            throw ValidationException::withMessages([
-                'get_days' => ['取得上限を超えています'],
-            ]);
+        if ($remaining) {
+            $result = $remaining->remaining - $request->get_days;
+            
+            if ($result < 0) {
+                throw ValidationException::withMessages([
+                    'get_days' => ['取得上限を超えています'],
+                ]);
+            }
         }
 
         # reportsレコード作成
         $report = new Report();
         $report->fill($request->all());
-        dd($report);
+        // dd($report);
 
         // $report_id = $report->report_id;
         // if ($report_id == 2 || $report_id ==3) {

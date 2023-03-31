@@ -371,10 +371,12 @@
             startDateLabel.style.display = "none";
             endDateForm.style.display = "none";
         }
-        if (reportCategory.value == "4" || reportCategory.value == "11") {
+        if (reportCategory.value == "4" || // バースデイ
+            reportCategory.value == "11") { // 欠勤
             halfDateLabel.style.display = "";
             startDateForm.style.display = "";
             timeEmptyForm.style.display = "";
+            amPmForm.style.display = "none";
             timeForm.style.display = "none";
             timeForm30.style.display = "none";
             timeForm10.style.display = "none";
@@ -468,10 +470,12 @@
                 startDateLabel.style.display = "none";
                 endDateForm.style.display = "none";
             }
-            if (reportCategory.value == "4" || reportCategory.value == "11") {
+            if (reportCategory.value == "4" ||
+                reportCategory.value == "11") {
                 halfDateLabel.style.display = "";
                 startDateForm.style.display = "";
                 timeEmptyForm.style.display = "";
+                amPmForm.style.display = "none";
                 timeForm.style.display = "none";
                 timeForm30.style.display = "none";
                 timeForm10.style.display = "none";
@@ -535,9 +539,9 @@
                 getDays = ((endTimeVal - startTimeVal) / 60000) / 60 * 1 / 8;
                 // 時間換算:8時間で1日 1時間=1/8日 0.125日
                 getDays = orgRound(getDays, 100000); // 小数点以下5桁に丸める
-                console.log(getDays);
+                // console.log(getDays);
             }
-            if (reportCategory.value == 4) {
+            if (reportCategory.value == 4 || reportCategory.value == 11) {
                 getDays = 1.0;
             }
 
@@ -554,7 +558,7 @@
                 return decPart.toFixed(decDigits);
             }
 
-            console.log(orgRound(getDays, 100000)); // 小数5桁
+            // console.log(orgRound(getDays, 100000)); // 小数5桁
             let getDaysOnly = getDays - decimalPart(getDays, 4);
             let getHours = decimalPart(getDays, 5) * 8;
             let getMinutes = 0;
@@ -577,8 +581,7 @@
             const arr = Object.keys(ownRemainings);
             let ownRemainingDays = 0;
             // console.log(arr);
-            console.log(arr);
-            console.log(reportId);
+            // console.log(reportId);
             arr.forEach((el) => {
                 if (ownRemainings[el].report_id == reportId) {
                     ownRemainingDays = ownRemainings[el].remaining;
