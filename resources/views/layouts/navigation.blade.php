@@ -29,7 +29,7 @@
                         </p>
                     @endif
                     <p class="text-sm text-white">
-                        {{ Auth::user()->company->company_name }}工場・{{ Auth::user()->department->department_name }}&emsp;/&emsp;
+                        {{ Auth::user()->factory->factory_name }}工場・{{ Auth::user()->department->department_name }}&emsp;/&emsp;
                     </p>
                 @endauth
 

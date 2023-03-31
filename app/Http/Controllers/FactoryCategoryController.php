@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreCompanyCategoryRequest;
-use App\Http\Requests\UpdateCompanyCategoryRequest;
-use App\Models\CompanyCategory;
+use App\Http\Requests\StoreFactoryCategoryRequest;
+use App\Http\Requests\UpdateFactoryCategoryRequest;
+use App\Models\FactoryCategory;
 
-class CompanyCategoryController extends Controller
+class FactoryCategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -31,10 +31,10 @@ class CompanyCategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreCompanyCategoryRequest  $request
+     * @param  \App\Http\Requests\StoreFactoryCategoryRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreCompanyCategoryRequest $request)
+    public function store(StoreFactoryCategoryRequest $request)
     {
         //
     }
@@ -42,10 +42,10 @@ class CompanyCategoryController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\CompanyCategory  $companyCategory
+     * @param  \App\Models\FactoryCategory  $factoryCategory
      * @return \Illuminate\Http\Response
      */
-    public function show(CompanyCategory $companyCategory)
+    public function show(FactoryCategory $factoryCategory)
     {
         //
     }
@@ -53,10 +53,10 @@ class CompanyCategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\CompanyCategory  $companyCategory
+     * @param  \App\Models\FactoryCategory  $factoryCategory
      * @return \Illuminate\Http\Response
      */
-    public function edit(CompanyCategory $companyCategory)
+    public function edit(FactoryCategory $factoryCategory)
     {
         //
     }
@@ -64,11 +64,11 @@ class CompanyCategoryController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateCompanyCategoryRequest  $request
-     * @param  \App\Models\CompanyCategory  $companyCategory
+     * @param  \App\Http\Requests\UpdateFactoryCategoryRequest  $request
+     * @param  \App\Models\FactoryCategory  $factoryCategory
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateCompanyCategoryRequest $request, CompanyCategory $companyCategory)
+    public function update(UpdateFactoryCategoryRequest $request, FactoryCategory $factoryCategory)
     {
         //
     }
@@ -76,10 +76,10 @@ class CompanyCategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\CompanyCategory  $companyCategory
+     * @param  \App\Models\FactoryCategory  $factoryCategory
      * @return \Illuminate\Http\Response
      */
-    public function destroy(CompanyCategory $companyCategory)
+    public function destroy(FactoryCategory $factoryCategory)
     {
         //
     }

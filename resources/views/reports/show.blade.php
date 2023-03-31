@@ -8,7 +8,7 @@
             </h5>
             <p
                 class="border-solid border-2 px-4 py-1 border-indigo-500 rounded-md text-md font-medium text-indigo-600 hover:underline">
-                {{ $report->user->company->company_name }}工場
+                {{ $report->user->factory->factory_name }}工場
             </p>
         </div>
         <div class="flow-root">
@@ -137,7 +137,7 @@
                                     @endif
                                 </td>
                                 <td class="w-20 h-12 border border-gray-500 text-center">
-                                    @if (Auth::user()->approval_id == 2 && Auth::user()->company_id == $report->user->company_id && $report->approval2 == 0)
+                                    @if (Auth::user()->approval_id == 2 && Auth::user()->factory_id == $report->user->factory_id && $report->approval2 == 0)
                                         <a href="{{ route('approval2', $report) }}"
                                             onclick="if(!confirm('承認しますか？')){return false};"
                                             class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
@@ -156,7 +156,7 @@
                                     @endif
                                 </td>
                                 <td class="w-20 h-12 border border-gray-500 text-center">
-                                    @if (Auth::user()->approval_id == 3 && Auth::user()->company_id == $report->user->company_id && Auth::user()->department_id == $report->user->department_id && $report->approval3 == 0)
+                                    @if (Auth::user()->approval_id == 3 && Auth::user()->factory_id == $report->user->factory_id && Auth::user()->department_id == $report->user->department_id && $report->approval3 == 0)
                                         <a href="{{ route('approval3', $report) }}"
                                             onclick="if(!confirm('承認しますか？')){return false};"
                                             class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">

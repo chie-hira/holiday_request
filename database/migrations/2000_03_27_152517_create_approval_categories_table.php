@@ -14,7 +14,7 @@ class CreateApprovalCategoriesTable extends Migration
     public function up()
     {
         Schema::create('approval_categories', function (Blueprint $table) {
-            $table->id();
+            $table->id()->index()->comment('承認ID');
             $table->string('approval_name')->unique();
             $table->timestamps();
         });

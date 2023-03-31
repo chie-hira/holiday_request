@@ -14,7 +14,7 @@ class CreateReasonCategoriesTable extends Migration
     public function up()
     {
         Schema::create('reason_categories', function (Blueprint $table) {
-            $table->id();
+            $table->id()->index()->comment('理由ID');
             $table->string('reason')->unique();
             $table->timestamps();
         });

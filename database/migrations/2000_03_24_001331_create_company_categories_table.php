@@ -13,9 +13,10 @@ class CreateCompanyCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('company_categories', function (Blueprint $table) {
-            $table->id();
-            $table->string('company_name')->unique();
+        # companyからfactoryに変更
+        Schema::create('factory_categories', function (Blueprint $table) {
+            $table->id()->index()->comment('工場ID');
+            $table->string('factory_name')->unique();
             $table->timestamps();
         });
     }
@@ -27,6 +28,6 @@ class CreateCompanyCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('company_categories');
+        Schema::dropIfExists('factory_categories');
     }
 }
