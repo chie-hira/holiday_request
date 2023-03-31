@@ -32,12 +32,12 @@ class AuthServiceProvider extends ServiceProvider
 
         // 「総務部長」と「工場長」に適用
         Gate::define('general_and_factory', function ($user) {
-            return ($user->approval_id <= 2);
+            return ($user->approval_id <= 2 && $user->approval_id != null);
         });
 
         // 「総務部長」と「工場長」と「GL」全てに適用
         Gate::define('general_and_factory_gl', function ($user) {
-            return ($user->approval_id <= 3);
+            return ($user->approval_id <= 3 && $user->approval_id != null);
         });
     }
 }

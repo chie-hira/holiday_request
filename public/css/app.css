@@ -1032,9 +1032,6 @@ select {
 .rounded-tl {
   border-top-left-radius: 0.25rem;
 }
-.rounded-tr {
-  border-top-right-radius: 0.25rem;
-}
 .border {
   border-width: 1px;
 }
@@ -1289,6 +1286,9 @@ select {
 .text-center {
   text-align: center;
 }
+.text-right {
+  text-align: right;
+}
 .font-sans {
   font-family: Nunito, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
@@ -1508,10 +1508,6 @@ select {
 }
 .hover\:-translate-x-1:hover {
   --tw-translate-x: -0.25rem;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
-.hover\:-translate-y-1:hover {
-  --tw-translate-y: -0.25rem;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 .hover\:border-gray-300:hover {

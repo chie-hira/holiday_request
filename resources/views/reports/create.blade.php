@@ -121,6 +121,7 @@
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             value="{{ old('end_time') }}">
                     </div>
+                </div>
                     <div style="display: none" id="time_form">
                         <div class="flex h-8 leading-8 items-center text-center mb-6">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
@@ -173,7 +174,7 @@
                         </div>
                     </div>
                     <!-- 外出 - end -->
-                </div>
+
                 <div class="grid gap-6 mb-6 md:grid-cols-3">
                     <div>
                         <label for="get_days" class="block mb-2 text-sm font-medium text-gray-900">
@@ -195,9 +196,9 @@
                             <p class="ml-2">時間</p>
                         </div>
                         <div class="flex items-center">
-                            <input type="number" id="get_minites" name="get_minites"
+                            <input type="number" id="get_minutes" name="get_minutes"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-20 p-2.5"
-                                value="{{ old('get_minites') }}" readonly>
+                                value="{{ old('get_minutes') }}" readonly>
                             <p class="ml-2">分</p>
                         </div>
                     </div>
@@ -222,9 +223,9 @@
                             <p class="ml-2">時間</p>
                         </div>
                         <div class="flex items-center">
-                            <input type="number" id="remaining_minites" name="remaining_minites"
+                            <input type="number" id="remaining_minutes" name="remaining_minutes"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-20 p-2.5"
-                                value="{{ old('remaining_minites') }}" readonly>
+                                value="{{ old('remaining_minutes') }}" readonly>
                             <p class="ml-2">分</p>
                         </div>
                     </div>
@@ -294,9 +295,9 @@
         let amPmForm = document.getElementById('am_pm_form');
 
         // リダイレクト時
-        if (reportCategory.value == "1" ||
-            reportCategory.value == "5" ||
-            reportCategory.value == "6" ||
+        if (reportCategory.value == "1" || // 有給
+            reportCategory.value == "5" || // 特別休暇(慶事)
+            reportCategory.value == "6" || // 特別休暇(弔事)
             reportCategory.value == "7" ||
             reportCategory.value == "8" ||
             reportCategory.value == "9" ||
@@ -316,7 +317,7 @@
             startDateForm.style.display = "";
             endDateForm.style.display = "";
         }
-        if (reportCategory.value == "2") {
+        if (reportCategory.value == "2") { // 半日有給
             halfDateLabel.style.display = "";
             startDateForm.style.display = "";
             startDateForm.style.display = "";
@@ -330,7 +331,7 @@
             startDateLabel.style.display = "none";
             endDateForm.style.display = "none";
         }
-        if (reportCategory.value == "3") {
+        if (reportCategory.value == "3") { // 時間休
             halfDateLabel.style.display = "";
             startDateForm.style.display = "";
             amPmForm.style.display = "none";
@@ -343,8 +344,8 @@
             startDateLabel.style.display = "none";
             endDateForm.style.display = "none";
         }
-        if (reportCategory.value == "12" ||
-            reportCategory.value == "13") {
+        if (reportCategory.value == "12" || // 遅刻
+            reportCategory.value == "13") { // 早退
             halfDateLabel.style.display = "";
             startDateForm.style.display = "";
             amPmForm.style.display = "none";
@@ -357,14 +358,14 @@
             startDateLabel.style.display = "none";
             endDateForm.style.display = "none";
         }
-        if (reportCategory.value == "14") {
+        if (reportCategory.value == "14") { // 外出
             halfDateLabel.style.display = "";
             startDateForm.style.display = "";
             amPmForm.style.display = "none";
             timeEmptyForm.style.display = "";
             timeForm.style.display = "none";
             timeForm30.style.display = "";
-            timeForm10.style.display = "";
+            timeForm10.style.display = "none";
             startTimeForm.style.display = "";
             endTimeForm.style.display = "";
             startDateLabel.style.display = "none";
@@ -461,7 +462,7 @@
                 timeEmptyForm.style.display = "";
                 timeForm.style.display = "none";
                 timeForm30.style.display = "";
-                timeForm10.style.display = "";
+                timeForm10.style.display = "none";
                 startTimeForm.style.display = "";
                 endTimeForm.style.display = "";
                 startDateLabel.style.display = "none";
@@ -556,16 +557,16 @@
             console.log(orgRound(getDays, 100000)); // 小数5桁
             let getDaysOnly = getDays - decimalPart(getDays, 4);
             let getHours = decimalPart(getDays, 5) * 8;
-            let getMinites = 0;
+            let getMinutes = 0;
             if (decimalPart(getHours, 5) != 0 && decimalPart(getHours, 4) < 1) {
-                getMinites = getHours * 60;
-                getMinites = orgRound(getMinites, 1);
+                getMinutes = getHours * 60;
+                getMinutes = orgRound(getMinutes, 1);
                 getDaysOnly = 0;
                 getHours = 0;
             }
             document.getElementById('get_days_only').setAttribute('value', getDaysOnly);
             document.getElementById('get_hours').setAttribute('value', getHours);
-            document.getElementById('get_minites').setAttribute('value', getMinites);
+            document.getElementById('get_minutes').setAttribute('value', getMinutes);
 
 
             if (reportId == 2 || reportId == 3) {
@@ -591,16 +592,16 @@
             console.log(orgRound(remainingDays, 100000)); // 小数5桁
             let remainingDaysOnly = remainingDays - decimalPart(remainingDays, 4);
             let remainingHours = decimalPart(remainingDays, 5) * 8;
-            let remainingMinites = 0;
+            let remainingMinutes = 0;
             if (decimalPart(remainingHours, 5) != 0 && decimalPart(remainingHours, 4) < 1) {
-                remainingMinites = remainingHours * 60;
-                remainingMinites = orgRound(remainingMinites, 1);
+                remainingMinutes = remainingHours * 60;
+                remainingMinutes = orgRound(remainingMinutes, 1);
                 remainingDaysOnly = 0;
                 remainingHours = 0;
             }
             document.getElementById('remaining_days_only').setAttribute('value', remainingDaysOnly);
             document.getElementById('remaining_hours').setAttribute('value', remainingHours);
-            document.getElementById('remaining_minites').setAttribute('value', remainingMinites);
+            document.getElementById('remaining_minutes').setAttribute('value', remainingMinutes);
         });
     </script>
 </x-app-layout>

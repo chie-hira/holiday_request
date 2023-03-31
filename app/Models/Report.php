@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
 use App\Models\Remaining;
 
@@ -76,8 +77,17 @@ class Report extends Model
         } else {
             return 0;
         }
-        // return $remaining->remaining_days;
-        // return floor($remaining->remaining_days);
+    }
+    public function getGetMinutesAttribute()
+    {
+        $exp = explode('.', $this->get_hours);
+        $exp_key1 = array_key_exists(1, $exp);
+        if ($exp_key1) {
+            $decimal_p = '0.'. $exp[1];
+            return round($decimal_p * 60);
+        } else {
+            return 0;
+        }
     }
 
     // // FIXME:休業日考慮

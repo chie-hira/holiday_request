@@ -39,8 +39,8 @@ Route::get('/reports/index/all', [ReportController::class, 'all_index'])
 
 Route::get('/approvals', [ReportController::class, 'approvalPending'])
     ->name('approvals.index');
-Route::get('/approvals/all', [ReportController::class, 'allApprovalPending'])
-    ->name('approvals.all_index');
+// Route::get('/approvals/all', [ReportController::class, 'allApprovalPending'])
+//     ->name('approvals.all_index');
 Route::get('/approval1/{report}', [ReportController::class, 'approval1'])
     ->name('approval1');
 Route::get('/approval2/{report}', [ReportController::class, 'approval2'])

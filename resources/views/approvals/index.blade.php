@@ -31,6 +31,10 @@
                                 class="w-32 px-4 py-3 text-center title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
                                 日数・時間
                             </th>
+                            <th
+                                class="w-32 px-4 py-3 text-center title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
+                                承 認
+                            </th>
                             <th 
                                 class="px-4 py-3 text-center title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
                             </th>
@@ -42,7 +46,7 @@
                                 <td class="px-4 py-3 text-center">{{ $report->report_date }}</td>
                                 <td class="px-4 py-3 text-center">{{ $report->user->name }}</td>
                                 <td class="px-4 py-3 text-center">{{ $report->report_category->report_name }}</td>
-                                <td class="px-4 py-3 text-center">
+                                <td class="px-4 py-3">
                                     @if ($report->start_date != null)
                                         {{ $report->start_date }}
                                     @else
@@ -52,7 +56,7 @@
                                         &emsp;{{ Str::substr($report->start_time, 0, 5) }}
                                     @endif
                                 </td>
-                                <td class="px-4 py-3 text-center">
+                                <td class="px-4 py-3">
                                     @if ($report->end_date != null)
                                         ~&emsp;&emsp;{{ $report->end_date }}
                                     @endif
@@ -67,8 +71,18 @@
                                     @if ($report->get_days_only != 0)
                                         {{ $report->get_days_only }} 日
                                     @endif
-                                    @if ($report->get_hours != 0)
+                                    @if ($report->get_hours >= 1)
                                         {{ $report->get_hours }} 時間
+                                    @endif
+                                    @if ($report->get_minutes != 0)
+                                        {{ $report->get_minutes }} 分
+                                    @endif
+                                </td>
+                                <td class="px-4 py-3 text-center text-sm">
+                                    @if ($report->approval1 == 0)
+                                        <span class="text-pink-500">未承認</span>
+                                    @else
+                                        <span class="text-blue-500">承認済み</span>
                                     @endif
                                 </td>
                                 <td class="px-1 py-3">

@@ -9,6 +9,7 @@ use App\Models\Remaining;
 use App\Models\Report;
 use App\Models\ReportCategory;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class ReportController extends Controller
 {
@@ -124,9 +125,22 @@ class ReportController extends Controller
             );
         }
 
+        $remaining = Remaining::where('user_id', '=', Auth::user()->id)
+                    ->where('report_id', '=', $request->report_id)
+                    ->first('remaining');
+        $result = $remaining->remaining - $request->get_days;
+        // dd($result);
+
+        if ($result < 0) {
+            throw ValidationException::withMessages([
+                'get_days' => ['取得上限を超えています'],
+            ]);
+        }
+
         # reportsレコード作成
         $report = new Report();
         $report->fill($request->all());
+        dd($report);
 
         // $report_id = $report->report_id;
         // if ($report_id == 2 || $report_id ==3) {
@@ -217,33 +231,29 @@ class ReportController extends Controller
         }
     }
 
-    public function allApprovalPending()
+    public function approvalPending()
     {
         $reports = Report::where('approval1', '=', 0)
             ->orWhere('approval2', '=', 0)
             ->orWhere('approval3', '=', 0)
             ->get();
         // dd($reports);
-        return view('approvals.all_index')->with(compact('reports'));
-    }
-
-    public function approvalPending()
-    {
-        $reports = Report::where('user_id', '=', Auth::user()->id)->where(
-            function ($query) {
-                $query
-                    ->where('approval1', '=', 0)
-                    ->orWhere('approval2', '=', 0)
-                    ->orWhere('approval2', '=', 0);
-            }
-        )
-        ->get();
-        // ->Where('approval1', '=', 0)
-        // ->orWhere('approval2', '=', 0)
-        // ->orWhere('approval3', '=', 0);
-        // dd($reports);
         return view('approvals.index')->with(compact('reports'));
     }
+
+    // public function approvalPending()
+    // {
+    //     $reports = Report::where('user_id', '=', Auth::user()->id)->where(
+    //         function ($query) {
+    //             $query
+    //                 ->where('approval1', '=', 0)
+    //                 ->orWhere('approval2', '=', 0)
+    //                 ->orWhere('approval2', '=', 0);
+    //         }
+    //     )
+    //     ->get();
+    //     return view('approvals.index')->with(compact('reports'));
+    // }
 
     public function approval1(Report $report)
     {
