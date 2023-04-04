@@ -3,8 +3,9 @@
         <div class="container w-2/3 px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-12">
                 <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">出退勤届け作成</h1>
-                <p class="lg:w-2/3 mx-auto leading-relaxed text-base">
+                <p class="lg:w-2/3 mx-auto text-left leading-relaxed text-base">
                     すべての項目を入力してください。
+                    取得日数、残日数は自動計算されます。日付算出ボタンを押してください。
                 </p>
             </div>
 
@@ -175,6 +176,20 @@
                     </div>
                     <!-- 外出 - end -->
 
+                <div class="mb-6">
+                        <button type="button" id="button"
+                            class="w-32 h-10 flex justify-center items-center rounded-3xl text-center text-indigo-500 bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
+                            <span class="pt-1">
+                                日数算出
+                            </span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                class="w-6 h-6">
+                                <path fill-rule="evenodd"
+                                    d="M6.32 1.827a49.255 49.255 0 0111.36 0c1.497.174 2.57 1.46 2.57 2.93V19.5a3 3 0 01-3 3H6.75a3 3 0 01-3-3V4.757c0-1.47 1.073-2.756 2.57-2.93zM7.5 11.25a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75H8.25a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H8.25zm-.75 3a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75H8.25a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V18a.75.75 0 00-.75-.75H8.25zm1.748-6a.75.75 0 01.75-.75h.007a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75h-.007a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.335.75.75.75h.007a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75h-.007zm-.75 3a.75.75 0 01.75-.75h.007a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75h-.007a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.335.75.75.75h.007a.75.75 0 00.75-.75V18a.75.75 0 00-.75-.75h-.007zm1.754-6a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75h-.008a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75h-.008zm-.75 3a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75h-.008a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V18a.75.75 0 00-.75-.75h-.008zm1.748-6a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75h-.008a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75h-.008zm-8.25-6A.75.75 0 018.25 6h7.5a.75.75 0 01.75.75v.75a.75.75 0 01-.75.75h-7.5a.75.75 0 01-.75-.75v-.75zm9 9a.75.75 0 00-1.5 0V18a.75.75 0 001.5 0v-2.25z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
                 <div class="grid gap-6 mb-6 md:grid-cols-3">
                     <div>
                         <label for="get_days" class="block mb-2 text-sm font-medium text-gray-900">
@@ -230,16 +245,7 @@
                         </div>
                     </div>
 
-                    {{-- <div>
-                        <label for="remaining_days" class="block mb-2 text-sm font-medium text-gray-900">
-                            残日数
-                        </label>
-                        <input type="number" id="remaining_days" name="remaining"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            value="{{ old('remaining') }}" readonly required>
-                    </div> --}}
-
-                    <div class="flex items-center text-center">
+                    {{-- <div class="flex items-end text-center">
                         <button type="button" id="button"
                             class="w-32 h-10 mx-auto flex justify-center items-center rounded-3xl text-center text-indigo-500 bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
                             <span class="pt-1">
@@ -252,11 +258,11 @@
                                     clip-rule="evenodd" />
                             </svg>
                         </button>
-                    </div>
+                    </div> --}}
                 </div>
                 <div class="flex flex-row-reverse">
                     <button type="submit"
-                        class="text-white bg-pink-300 hover:bg-indigo-400 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">
+                        class="text-white bg-indigo-400 hover:bg-indigo-600 focus:ring-4 focus:outline-none focus:ring-purple-300 hover:font-bold font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">
                         届 出
                     </button>
                 </div>
@@ -269,7 +275,7 @@
                             d="M9.53 2.47a.75.75 0 010 1.06L4.81 8.25H15a6.75 6.75 0 010 13.5h-3a.75.75 0 010-1.5h3a5.25 5.25 0 100-10.5H4.81l4.72 4.72a.75.75 0 11-1.06 1.06l-6-6a.75.75 0 010-1.06l6-6a.75.75 0 011.06 0z"
                             clip-rule="evenodd" />
                     </svg>
-                    <div class="px-2 mt-1">
+                    <div class="px-2">
                         menuへ戻る
                     </div>
                 </a>

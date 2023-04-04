@@ -13,7 +13,7 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-6 sm:flex">
                     <x-nav-link :href="route('menu')" :active="request()->routeIs('dashboard')">
-                        出退勤届け管理
+                        出退勤届け管理アプリ
                     </x-nav-link>
                 </div>
 

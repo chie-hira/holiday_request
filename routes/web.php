@@ -33,19 +33,25 @@ Route::resource('reports', ReportController::class)
     
 Route::resource('remainings', RemainingController::class);
 
-Route::get('/reports/index/all', [ReportController::class, 'all_index'])
-    ->name('reports.all_index')
-    ->middleware('auth', 'can:general_only');
+// Route::get('/reports/index/all', [ReportController::class, 'all_index'])
+//     ->name('reports.all_index')
+//     ->middleware('auth', 'can:general_only');
 
-Route::get('/approvals', [ReportController::class, 'approvalPending'])
-    ->name('approvals.index');
+Route::get('/approvals/pending', [ReportController::class, 'approvalPending'])
+    ->name('approvals.pending')
+    ->middleware('auth', 'can:general_and_factory_gl');
+Route::get('/approvals', [ReportController::class, 'approved'])
+    ->name('approvals.index')
+    ->middleware('auth', 'can:general_and_factory_gl');
 // Route::get('/approvals/all', [ReportController::class, 'allApprovalPending'])
 //     ->name('approvals.all_index');
-Route::get('/approval1/{report}', [ReportController::class, 'approval1'])
-    ->name('approval1');
-Route::get('/approval2/{report}', [ReportController::class, 'approval2'])
-    ->name('approval2');
-Route::get('/approval3/{report}', [ReportController::class, 'approval3'])
-    ->name('approval3');
+Route::get('/approval/{report}', [ReportController::class, 'approval'])
+    ->name('approval');
+// Route::get('/approval1/{report}', [ReportController::class, 'approval1'])
+//     ->name('approval1');
+// Route::get('/approval2/{report}', [ReportController::class, 'approval2'])
+//     ->name('approval2');
+// Route::get('/approval3/{report}', [ReportController::class, 'approval3'])
+//     ->name('approval3');
 
 require __DIR__.'/auth.php';

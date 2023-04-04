@@ -10,7 +10,7 @@
 
             <x-errors :errors="$errors" />
 
-            <form action="{{ route('remainings.update', $report) }}" method="POST">
+            <form action="{{ route('reports.update', $report) }}" method="POST">
                 @csrf
                 @method('PUT')
                 <div class="grid gap-6 mb-6 md:grid-cols-2">
@@ -48,7 +48,7 @@
                         </label>
                         <input type="text" id="" name="reason_detail"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            value="{{ old('reason_detail') }}">
+                            value="{{ old('reason_detail', $report->reason_detail) }}">
                     </div>
                     <div>
                         <label for="report_date" class="block mb-2 text-sm font-medium text-gray-900">
@@ -249,7 +249,7 @@
                 </div>
                 <div class="flex flex-row-reverse">
                     <button type="submit"
-                        class="text-white bg-pink-300 hover:bg-indigo-400 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">
+                        class="text-white bg-indigo-400 hover:bg-pink-400 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">
                         修 正
                     </button>
                 </div>

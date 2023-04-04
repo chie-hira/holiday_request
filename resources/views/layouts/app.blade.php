@@ -15,6 +15,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500&family=M+PLUS+Rounded+1c:wght@300;400;500&family=Zen+Kurenaido&family=Zen+Maru+Gothic:wght@300;400;500&display=swap"
         rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.2.0/css/all.css">
 
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">

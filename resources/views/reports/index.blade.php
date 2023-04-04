@@ -79,7 +79,7 @@
                                     @endif
                                 </td>
                                 <td class="px-4 py-3 text-center text-sm">
-                                    @if ($report->approval1 == 0)
+                                    @if ($report->approval1 == 0 || $report->approval2 == 0 || $report->approval3 == 0)
                                         <span class="text-pink-500">未承認</span>
                                     @else
                                         <span class="text-blue-500">承認済み</span>
@@ -92,7 +92,7 @@
                                     </a>
                                 </td>
                                 <td class="px-1 py-3">
-                                    @if ($report->approval1 == 0)
+                                    @if ($report->approval1 == 0 || $report->approval2 == 0 || $report->approval3 == 0)
                                         @can('update', $report)
                                             <a href="{{ route('reports.edit', $report) }}"
                                                 class="px-3 py-1 text-sm text-blue-500 rounded-full bg-blue-100/60 hover:text-white hover:bg-blue-500">
@@ -102,7 +102,7 @@
                                     @endif
                                 </td>
                                 <td class="pl-1 pr-4 py-3 text-lg text-gray-900">
-                                    @if ($report->approval1 == 0)
+                                    @if ($report->approval1 == 0 || $report->approval2 == 0 || $report->approval3 == 0)
                                         @can('update', $report)
                                             <form action="{{ route('reports.destroy', $report) }}" method="POST">
                                                 @csrf
