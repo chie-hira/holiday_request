@@ -53,7 +53,7 @@ class ReportPolicy
      */
     public function update(User $user, Report $report)
     {
-        //
+        return $user->id === $report->user_id;
     }
 
     /**
@@ -65,7 +65,7 @@ class ReportPolicy
      */
     public function delete(User $user, Report $report)
     {
-        //
+        return $user->id === $report->user_id;
     }
 
     /**

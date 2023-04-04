@@ -20,9 +20,9 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->integer('employee')->nullable()->unique();
-            $table->foreignId('company_id')
+            $table->foreignId('factory_id')
                 ->nullable()
-                ->constrained('company_categories')
+                ->constrained('factory_categories')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
             $table->foreignId('department_id')

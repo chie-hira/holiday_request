@@ -14,7 +14,7 @@ class CreateDepartmentCategoriesTable extends Migration
     public function up()
     {
         Schema::create('department_categories', function (Blueprint $table) {
-            $table->id();
+            $table->id()->index()->comment('所属ID');
             $table->string('department_name')->unique();
             $table->timestamps();
         });

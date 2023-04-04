@@ -4,16 +4,16 @@
         <div class="flex justify-between h-10">
             <div class="flex">
                 <!-- Logo -->
-                <div class="shrink-0 flex items-center text-white hover:-translate-y-1">
+                <div class="shrink-0 flex items-center text-white hover:text-gray-700">
                     <a href="{{ route('menu') }}">
                         <x-application-logo class="block h-10 w-auto fill-current text-gray-600" />
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
+                <div class="hidden space-x-8 sm:-my-px sm:ml-6 sm:flex">
+                    <x-nav-link :href="route('menu')" :active="request()->routeIs('dashboard')">
+                        出退勤届け管理アプリ
                     </x-nav-link>
                 </div>
 
@@ -29,14 +29,14 @@
                         </p>
                     @endif
                     <p class="text-sm text-white">
-                        {{ Auth::user()->company->company_name }}工場・{{ Auth::user()->department->department_name }}&emsp;/&emsp;
+                        {{ Auth::user()->factory->factory_name }}工場・{{ Auth::user()->department->department_name }}&emsp;/&emsp;
                     </p>
                 @endauth
 
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button {{-- class="flex items-center text-sm font-medium text-white hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out"> --}}
-                            class="flex items-center text-sm font-medium text-white transition duration-150 ease-in-out hover:-translate-y-1">
+                            class="flex items-center text-sm font-medium text-white transition duration-150 ease-in-out hover:text-gray-700">
                             @auth
                                 <div>{{ Auth::user()->employee }}&ensp;{{ Auth::user()->name }}</div>
                             @else

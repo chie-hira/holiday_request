@@ -8,7 +8,7 @@
             </h5>
             <p
                 class="border-solid border-2 px-4 py-1 border-indigo-500 rounded-md text-md font-medium text-indigo-600 hover:underline">
-                {{ $report->user->company->company_name }}工場
+                {{ $report->user->factory->factory_name }}工場
             </p>
         </div>
         <div class="flow-root">
@@ -17,7 +17,7 @@
                 <li class="pt-3 pb-0 sm:pt-4">
                     <div class="flex items-center space-x-4">
                         <div class="flex-1 min-w-0">
-                            <p class="px-2 text-xl font-semibold text-gray-800">
+                            <p class="ZenKurenaido px-2 text-xl font-semibold text-gray-800">
                                 {{ $report->report_category->report_name }}
                             </p>
                         </div>
@@ -30,7 +30,8 @@
                                 <p class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
                                     理 由
                                 </p>
-                                <p class="text-gray-700 ml-4">{{ $report->reason->reason }}</p>
+                                <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
+                                    {{ $report->reason_category->reason }}</p>
                             </div>
                             @if ($report->reason_detail)
                                 <p class="text-sm text-gray-700 truncate px-4 pt-2">
@@ -47,7 +48,7 @@
                                 <p class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
                                     期 間
                                 </p>
-                                <p class="text-gray-700 ml-4">
+                                <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
                                     @if ($report->start_date != null)
                                         {{ $report->start_date }}
                                     @else
@@ -77,7 +78,7 @@
                                 <p class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
                                     届出日
                                 </p>
-                                <p class="text-gray-700 ml-4">{{ $report->report_date }}</p>
+                                <p class="ZenKurenaido font-semibold text-gray-700 ml-4">{{ $report->report_date }}</p>
                             </div>
                         </div>
                     </div>
@@ -89,7 +90,8 @@
                                 <p class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
                                     コード
                                 </p>
-                                <p class="text-gray-700 ml-4">{{ $report->user->employee }}</p>
+                                <p class="ZenKurenaido font-semibold text-gray-700 ml-4">{{ $report->user->employee }}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -101,7 +103,7 @@
                                 <p class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
                                     氏 名
                                 </p>
-                                <p class="text-gray-700 ml-4">{{ $report->user->name }}</p>
+                                <p class="ZenKurenaido font-semibold text-gray-700 ml-4">{{ $report->user->name }}</p>
                             </div>
                         </div>
                     </div>
@@ -119,7 +121,7 @@
                             <tr>
                                 <td class="w-20 h-12 border border-gray-500 text-center">
                                     @if (Auth::user()->approval_id == 1 && $report->approval1 == 0)
-                                        <a href="{{ route('approval1', $report) }}"
+                                        <a href="{{ route('approval', $report) }}"
                                             onclick="if(!confirm('承認しますか？')){return false};"
                                             class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
                                             承認
@@ -131,14 +133,14 @@
                                                 fill="currentColor" class="w-8 h-8">
                                                 <path fill-rule="evenodd"
                                                     d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
-                                                    clip-rule="evenodd" fill=""/>
+                                                    clip-rule="evenodd" fill="" />
                                             </svg>
                                         </div>
                                     @endif
                                 </td>
                                 <td class="w-20 h-12 border border-gray-500 text-center">
-                                    @if (Auth::user()->approval_id == 2 && Auth::user()->company_id == $report->user->company_id && $report->approval2 == 0)
-                                        <a href="{{ route('approval2', $report) }}"
+                                    @if (Auth::user()->approval_id == 2 && Auth::user()->factory_id == $report->user->factory_id && $report->approval2 == 0)
+                                        <a href="{{ route('approval', $report) }}"
                                             onclick="if(!confirm('承認しますか？')){return false};"
                                             class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
                                             承認
@@ -150,12 +152,33 @@
                                                 fill="currentColor" class="w-8 h-8">
                                                 <path fill-rule="evenodd"
                                                     d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
-                                                    clip-rule="evenodd" fill=""/>
+                                                    clip-rule="evenodd" fill="" />
                                             </svg>
                                         </div>
                                     @endif
                                 </td>
-                                <td class="w-20 h-12 border border-gray-500 text-center">{{ $report->approval3 }}</td>
+                                <td class="w-20 h-12 border border-gray-500 text-center">
+                                    @if (Auth::user()->approval_id == 3 &&
+                                            Auth::user()->factory_id == $report->user->factory_id &&
+                                            Auth::user()->department_id == $report->user->department_id &&
+                                            $report->approval3 == 0)
+                                        <a href="{{ route('approval', $report) }}"
+                                            onclick="if(!confirm('承認しますか？')){return false};"
+                                            class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
+                                            承認
+                                        </a>
+                                    @endif
+                                    @if ($report->approval3 == 1)
+                                        <div class="py-2 text-purple-300 inline-flex">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                fill="currentColor" class="w-8 h-8">
+                                                <path fill-rule="evenodd"
+                                                    d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
+                                                    clip-rule="evenodd" fill="" />
+                                            </svg>
+                                        </div>
+                                    @endif
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -163,18 +186,53 @@
             </ul>
         </div>
     </div>
-    <div class="flex pl-4 mt-4 lg:w-2/3 w-full mx-auto">
-        <a href="{{ route('reports.index') }}"
-            class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-                <path fill-rule="evenodd"
-                    d="M9.53 2.47a.75.75 0 010 1.06L4.81 8.25H15a6.75 6.75 0 010 13.5h-3a.75.75 0 010-1.5h3a5.25 5.25 0 100-10.5H4.81l4.72 4.72a.75.75 0 11-1.06 1.06l-6-6a.75.75 0 010-1.06l6-6a.75.75 0 011.06 0z"
-                    clip-rule="evenodd" />
-            </svg>
-            <div class="px-2 mt-1">
-                戻る
+
+    <div class="grid grid-cols-1 md:grid-cols-3 w-2/3 mx-auto">
+        <div class="flex mt-4 lg:w-2/3 w-full mx-auto">
+            <a href="{{ route('reports.index') }}"
+                class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                    <path fill-rule="evenodd"
+                        d="M9.53 2.47a.75.75 0 010 1.06L4.81 8.25H15a6.75 6.75 0 010 13.5h-3a.75.75 0 010-1.5h3a5.25 5.25 0 100-10.5H4.81l4.72 4.72a.75.75 0 11-1.06 1.06l-6-6a.75.75 0 010-1.06l6-6a.75.75 0 011.06 0z"
+                        clip-rule="evenodd" />
+                </svg>
+                <div class="px-2 mt-1">
+                    一覧へ
+                </div>
+            </a>
+        </div>
+
+        @can('general_and_factory_gl')
+            <div class="flex m-4 lg:w-2/3 w-full">
+                <a href="{{ route('approvals.pending') }}"
+                    class="text-indigo-500 flex h-7 md:mb-2 lg:mb-0 hover:-translate-x-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                        <path fill-rule="evenodd"
+                            d="M20.25 12a.75.75 0 01-.75.75H6.31l5.47 5.47a.75.75 0 11-1.06 1.06l-6.75-6.75a.75.75 0 010-1.06l6.75-6.75a.75.75 0 111.06 1.06l-5.47 5.47H19.5a.75.75 0 01.75.75z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <div class="px-2 leading-7">
+                        承認待ち一覧へ
+                    </div>
+                </a>
             </div>
-        </a>
+        @endcan
+
+        @can('general_and_factory_gl')
+            <div class="flex m-4 lg:w-2/3 w-full">
+                <a href="{{ route('approvals.index') }}"
+                    class="text-indigo-500 flex h-7 md:mb-2 lg:mb-0 hover:-translate-x-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                        <path fill-rule="evenodd"
+                            d="M20.25 12a.75.75 0 01-.75.75H6.31l5.47 5.47a.75.75 0 11-1.06 1.06l-6.75-6.75a.75.75 0 010-1.06l6.75-6.75a.75.75 0 111.06 1.06l-5.47 5.47H19.5a.75.75 0 01.75.75z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <div class="px-2 leading-7">
+                        承認済み一覧へ
+                    </div>
+                </a>
+            </div>
+        @endcan
     </div>
     <div>&emsp;</div>
 

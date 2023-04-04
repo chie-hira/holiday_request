@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call(DepartmentCategorySeeder::class);
-        $this->call(CompanyCategorySeeder::class);
+        $this->call(FactoryCategorySeeder::class);
         $this->call(ApprovalCategorySeeder::class);
         \App\Models\User::factory(10)->create();
         $this->call(ReportCategorySeeder::class);

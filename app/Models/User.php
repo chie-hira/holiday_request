@@ -22,7 +22,7 @@ class User extends Authenticatable
         'email',
         'password',
         'employee',
-        'company_id',
+        'factory_id',
         'department_id',
     ];
 
@@ -63,13 +63,13 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the company that owns the User
+     * Get the factory that owns the User
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function company()
+    public function factory()
     {
-        return $this->belongsTo(CompanyCategory::class, 'company_id', 'id');
+        return $this->belongsTo(FactoryCategory::class, 'factory_id', 'id');
     }
 
     /**

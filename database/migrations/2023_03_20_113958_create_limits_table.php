@@ -13,8 +13,9 @@ class CreateLimitsTable extends Migration
      */
     public function up()
     {
+        # limitsからremainingsに変更
         Schema::create('remainings', function (Blueprint $table) {
-            $table->id();
+            $table->id()->comment('残日数ID');
             $table->foreignId('user_id')
                 ->constrained('users')
                 ->cascadeOnUpdate()
@@ -38,6 +39,6 @@ class CreateLimitsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('limits');
+        Schema::dropIfExists('remainings');
     }
 }
