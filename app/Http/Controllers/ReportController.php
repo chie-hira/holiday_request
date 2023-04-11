@@ -69,7 +69,6 @@ class ReportController extends Controller
      */
     public function store(StoreReportRequest $request)
     {
-        // dd($request);
         if ($request->report_id == 1) {
             $request->validate([
                 'start_date' => 'required|date|after_or_equal:report_date',
@@ -84,7 +83,8 @@ class ReportController extends Controller
         if ($request->report_id == 3) {
             $request->validate(
                 [
-                    // 'get_days' => 'required|multiple_of:0.125',
+                    'start_time' => 'required|date_format:H:i',
+                    'end_time' => 'required|date_format:H:i|after:start_time',
                     'get_days' => 'required|multiple_of:0.125',
                 ],
                 [
@@ -94,19 +94,36 @@ class ReportController extends Controller
             );
         }
         if ($request->report_id == 12 || $request->report_id == 13) {
-            $request->validate(
-                [
-                    'get_days' => 'required|multiple_of:0.02083',
-                ],
-                [
-                    'get_days.multiple_of' =>
-                        '遅刻・早退は10分単位で取得可能です。',
-                ]
-            );
+            $m = [
+                0.02083, 0.04167, 0.0625, 0.08333, 0.10417
+            ];
+            if (in_array($request->get_days, $m)) {
+                $request->validate(
+                    [
+                        'start_time' => 'required|date_format:H:i',
+                        'end_time' => 'required|date_format:H:i|after:start_time',
+                        'get_days' => 'required',
+                    ],
+                );
+            } else {
+                $request->validate(
+                    [
+                        'start_time' => 'required|date_format:H:i',
+                        'end_time' => 'required|date_format:H:i|after:start_time',
+                        'get_days' => 'required|multiple_of:0.02083',
+                    ],
+                    [
+                        'get_days.multiple_of' =>
+                            '遅刻・早退は10分単位で取得可能です。',
+                    ]
+                );
+            }
         }
         if ($request->report_id == 14) {
             $request->validate(
                 [
+                    'start_time' => 'required|date_format:H:i',
+                    'end_time' => 'required|date_format:H:i|after:start_time',
                     'get_days' => 'required|multiple_of:0.0625',
                 ],
                 [
@@ -196,7 +213,6 @@ class ReportController extends Controller
      */
     public function update(UpdateReportRequest $request, Report $report)
     {
-        // dd($request);
         if ($request->report_id == 1) {
             $request->validate([
                 'start_date' => 'required|date|after_or_equal:report_date',
@@ -211,7 +227,8 @@ class ReportController extends Controller
         if ($request->report_id == 3) {
             $request->validate(
                 [
-                    // 'get_days' => 'required|multiple_of:0.125',
+                    'start_time' => 'required|date_format:H:i',
+                    'end_time' => 'required|date_format:H:i|after:start_time',
                     'get_days' => 'required|multiple_of:0.125',
                 ],
                 [
@@ -223,6 +240,8 @@ class ReportController extends Controller
         if ($request->report_id == 12 || $request->report_id == 13) {
             $request->validate(
                 [
+                    'start_time' => 'required|date_format:H:i',
+                    'end_time' => 'required|date_format:H:i|after:start_time',
                     'get_days' => 'required|multiple_of:0.02083',
                 ],
                 [
@@ -234,6 +253,8 @@ class ReportController extends Controller
         if ($request->report_id == 14) {
             $request->validate(
                 [
+                    'start_time' => 'required|date_format:H:i',
+                    'end_time' => 'required|date_format:H:i|after:start_time',
                     'get_days' => 'required|multiple_of:0.0625',
                 ],
                 [
