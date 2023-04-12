@@ -38,6 +38,8 @@
                                     {{ $reason->reason }}
                                 </option>
                             @endforeach
+                            {{-- <option value="" id="reason_option" selected> --}}
+                            {{-- </option> --}}
                         </select>
                     </div>
                     <div style="display: none" class="col-span-2" id="reason_detail">
@@ -299,8 +301,93 @@
         let endTimeForm = document.getElementById('end_time_form');
         let halfDateLabel = document.getElementById('half_date_label');
         let amPmForm = document.getElementById('am_pm_form');
+        const reasons = @json($reasons);
 
-        // 表示切替関数
+        // optionタグ生成関数
+        function createOption(createId, createReason) {
+            let reasonOption = document.createElement('option');
+            let text = document.createTextNode(createReason);
+            reasonOption.appendChild(text); // optionタグにtexセット
+            reasonOption.setAttribute('value', createId); // optionタグにvalueセット
+            reasonCategory.appendChild(reasonOption); // htmlにoptionを追加
+        }
+
+        // reason切替関数
+        function reportReasonSwitch() {
+            // reasonCategoryのoption要素を削除
+            while (0 < reasonCategory.childNodes.length) {
+                reasonCategory.removeChild(reasonCategory.childNodes[0]);
+            }
+
+            if (reportCategory.value == "1" || // 有給
+                reportCategory.value == "2" || // 半日有給
+                reportCategory.value == "3" || // 時間休
+                reportCategory.value == "11" || // 欠勤
+                reportCategory.value == "12" || // 遅刻
+                reportCategory.value == "13" || // 早退
+                reportCategory.value == "14") { // 外出
+                let reasonId = [1, 2, 3, 4, 5, 6, 7, 8];
+                reasonId.forEach(e => {
+                    let createId = reasons[e - 1].id;
+                    let createReason = reasons[e - 1].reason;
+                    createOption(createId, createReason)
+                });
+            }
+            if (reportCategory.value == "4") { // バースデイ
+                let reasonId = [9];
+                reasonId.forEach(e => {
+                    let createId = reasons[e - 1].id;
+                    let createReason = reasons[e - 1].reason;
+                    createOption(createId, createReason)
+                });
+            }
+            if (reportCategory.value == "5") { // 特別休暇(慶事)
+                let reasonId = [10,8];
+                reasonId.forEach(e => {
+                    let createId = reasons[e - 1].id;
+                    let createReason = reasons[e - 1].reason;
+                    createOption(createId, createReason)
+                });
+            }
+            if (reportCategory.value == "6") { // 特別休暇(弔事)
+                let reasonId = [11,12,13,14,15,16,17,18,19,8];
+                reasonId.forEach(e => {
+                    let createId = reasons[e - 1].id;
+                    let createReason = reasons[e - 1].reason;
+                    createOption(createId, createReason)
+                });
+            }
+            if (reportCategory.value == "7") { // 特別休暇(看護)
+                let reasonId = [20,8];
+                reasonId.forEach(e => {
+                    let createId = reasons[e - 1].id;
+                    let createReason = reasons[e - 1].reason;
+                    createOption(createId, createReason)
+                });
+            }
+            if (reportCategory.value == "8" || // 特別休暇(介護・対象1名)
+                reportCategory.value == "9" || // 特別休暇(介護・対象2名)
+                reportCategory.value == "15") { // 介護休業
+                let reasonId = [21,22,23,24,25,26,27,8];
+                reasonId.forEach(e => {
+                    let createId = reasons[e - 1].id;
+                    let createReason = reasons[e - 1].reason;
+                    createOption(createId, createReason)
+                });
+            }
+            if (reportCategory.value == "10" || // 特別休暇(短期育休)
+                reportCategory.value == "16" || // 育児休業
+                reportCategory.value == "17") { // パパ育休
+                let reasonId = [28,8];
+                reasonId.forEach(e => {
+                    let createId = reasons[e - 1].id;
+                    let createReason = reasons[e - 1].reason;
+                    createOption(createId, createReason)
+                });
+            }
+        }
+
+        // form表示切替関数
         function reportDisplaySwitch() {
             if (reportCategory.value == "1" || // 有給
                 reportCategory.value == "5" || // 特別休暇(慶事)
@@ -394,119 +481,32 @@
             }
         }
 
+        // 理由form切替関数
         function reasonDisplaySwitch() {
-            if (reasonCategory.value == "7") { // 理由その他表示
+            if (reasonCategory.value == "8") { // 理由その他表示
                 reasonDetail.style.display = "";
             }
-            if (reasonCategory.value != "7") { // 理由その他非表示
+            if (reasonCategory.value != "8") { // 理由その他非表示
                 reasonDetail.style.display = "none";
             }
         }
 
         // リダイレクト時
         window.addEventListener('load', function() {
-            reportDisplaySwitch();
-            reasonDisplaySwitch();
+            reportDisplaySwitch(); // reportでform表示切替
+            reportReasonSwitch(); // reportでreason種類切替
+            reasonDisplaySwitch(); // reasonで理由:その他表示切替
         });
 
-        // 届け選択時
+        // 届出内容選択時
         function reportChange() {
-            reportDisplaySwitch();
-            // if (reportCategory.value == "1" ||
-            //     reportCategory.value == "5" ||
-            //     reportCategory.value == "6" ||
-            //     reportCategory.value == "7" ||
-            //     reportCategory.value == "8" ||
-            //     reportCategory.value == "9" ||
-            //     reportCategory.value == "10" ||
-            //     reportCategory.value == "15" ||
-            //     reportCategory.value == "16" ||
-            //     reportCategory.value == "17") {
-            //     halfDateLabel.style.display = "none";
-            //     amPmForm.style.display = "none";
-            //     timeEmptyForm.style.display = "none";
-            //     timeForm.style.display = "none";
-            //     timeForm30.style.display = "none";
-            //     timeForm10.style.display = "none";
-            //     startTimeForm.style.display = "none";
-            //     endTimeForm.style.display = "none";
-            //     startDateLabel.style.display = "";
-            //     startDateForm.style.display = "";
-            //     endDateForm.style.display = "";
-            // }
-            // if (reportCategory.value == "2") {
-            //     halfDateLabel.style.display = "";
-            //     startDateForm.style.display = "";
-            //     startDateForm.style.display = "";
-            //     amPmForm.style.display = "";
-            //     timeEmptyForm.style.display = "none";
-            //     timeForm.style.display = "none";
-            //     timeForm30.style.display = "none";
-            //     timeForm10.style.display = "none";
-            //     startTimeForm.style.display = "none";
-            //     endTimeForm.style.display = "none";
-            //     startDateLabel.style.display = "none";
-            //     endDateForm.style.display = "none";
-            // }
-            // if (reportCategory.value == "3") {
-            //     halfDateLabel.style.display = "";
-            //     startDateForm.style.display = "";
-            //     amPmForm.style.display = "none";
-            //     timeEmptyForm.style.display = "";
-            //     timeForm.style.display = "";
-            //     timeForm30.style.display = "none";
-            //     timeForm10.style.display = "none";
-            //     startTimeForm.style.display = "";
-            //     endTimeForm.style.display = "";
-            //     startDateLabel.style.display = "none";
-            //     endDateForm.style.display = "none";
-            // }
-            // if (reportCategory.value == "12" ||
-            //     reportCategory.value == "13") {
-            //     halfDateLabel.style.display = "";
-            //     startDateForm.style.display = "";
-            //     amPmForm.style.display = "none";
-            //     timeEmptyForm.style.display = "";
-            //     timeForm.style.display = "none";
-            //     timeForm30.style.display = "none";
-            //     timeForm10.style.display = "";
-            //     startTimeForm.style.display = "";
-            //     endTimeForm.style.display = "";
-            //     startDateLabel.style.display = "none";
-            //     endDateForm.style.display = "none";
-            // }
-            // if (reportCategory.value == "14") {
-            //     halfDateLabel.style.display = "";
-            //     startDateForm.style.display = "";
-            //     amPmForm.style.display = "none";
-            //     timeEmptyForm.style.display = "";
-            //     timeForm.style.display = "none";
-            //     timeForm30.style.display = "";
-            //     timeForm10.style.display = "none";
-            //     startTimeForm.style.display = "";
-            //     endTimeForm.style.display = "";
-            //     startDateLabel.style.display = "none";
-            //     endDateForm.style.display = "none";
-            // }
-            // if (reportCategory.value == "4" ||
-            //     reportCategory.value == "11") {
-            //     halfDateLabel.style.display = "";
-            //     startDateForm.style.display = "";
-            //     timeEmptyForm.style.display = "";
-            //     amPmForm.style.display = "none";
-            //     timeForm.style.display = "none";
-            //     timeForm30.style.display = "none";
-            //     timeForm10.style.display = "none";
-            //     startTimeForm.style.display = "none";
-            //     endTimeForm.style.display = "none";
-            //     startDateLabel.style.display = "none";
-            //     endDateForm.style.display = "none";
-            // }
+            reportDisplaySwitch(); // reportでform表示切替
+            reportReasonSwitch(); // reportでreason種類切替
         }
 
-        // その他理由の表示
+        // その他理由選択時
         function reasonChange() {
-            reasonDisplaySwitch();
+            reasonDisplaySwitch(); // reasonで理由:その他表示切替
         }
 
         let button = document.getElementById('button');
