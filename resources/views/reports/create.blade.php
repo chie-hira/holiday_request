@@ -246,21 +246,6 @@
                             <p class="ml-2">分</p>
                         </div>
                     </div>
-
-                    {{-- <div class="flex items-end text-center">
-                        <button type="button" id="button"
-                            class="w-32 h-10 mx-auto flex justify-center items-center rounded-3xl text-center text-indigo-500 bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
-                            <span class="pt-1">
-                                日数算出
-                            </span>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                class="w-6 h-6">
-                                <path fill-rule="evenodd"
-                                    d="M6.32 1.827a49.255 49.255 0 0111.36 0c1.497.174 2.57 1.46 2.57 2.93V19.5a3 3 0 01-3 3H6.75a3 3 0 01-3-3V4.757c0-1.47 1.073-2.756 2.57-2.93zM7.5 11.25a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75H8.25a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H8.25zm-.75 3a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75H8.25a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V18a.75.75 0 00-.75-.75H8.25zm1.748-6a.75.75 0 01.75-.75h.007a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75h-.007a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.335.75.75.75h.007a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75h-.007zm-.75 3a.75.75 0 01.75-.75h.007a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75h-.007a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.335.75.75.75h.007a.75.75 0 00.75-.75V18a.75.75 0 00-.75-.75h-.007zm1.754-6a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75h-.008a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75h-.008zm-.75 3a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75h-.008a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V18a.75.75 0 00-.75-.75h-.008zm1.748-6a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75h-.008a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75h-.008zm-8.25-6A.75.75 0 018.25 6h7.5a.75.75 0 01.75.75v.75a.75.75 0 01-.75.75h-7.5a.75.75 0 01-.75-.75v-.75zm9 9a.75.75 0 00-1.5 0V18a.75.75 0 001.5 0v-2.25z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                        </button>
-                    </div> --}}
                 </div>
                 <div class="flex flex-row-reverse">
                     <button type="submit"
@@ -269,6 +254,7 @@
                     </button>
                 </div>
             </form>
+
             <div class="flex pl-4 mt-4 lg:w-2/3 w-full mx-auto">
                 <a href="{{ route('menu') }}"
                     class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
@@ -287,6 +273,7 @@
 
     <!-- script - start -->
     <script>
+        /* 表示切替start */
         var reportCategory = document.getElementById('report_id');
         let reasonCategory = document.getElementById('reason_id');
         let reasonDetail = document.getElementById('reason_detail');
@@ -302,6 +289,25 @@
         let halfDateLabel = document.getElementById('half_date_label');
         let amPmForm = document.getElementById('am_pm_form');
         const reasons = @json($reasons);
+
+        // リダイレクト時
+        window.addEventListener('load', function() {
+            reportDisplaySwitch(); // reportでform表示切替
+            reportReasonSwitch(); // reportでreason種類切替
+            reasonDisplaySwitch(); // reasonで理由:その他表示切替
+        });
+
+        // 届出内容選択時
+        function reportChange() {
+            reportDisplaySwitch(); // reportでform表示切替
+            reportReasonSwitch(); // reportでreason種類切替
+            reasonDisplaySwitch(); // reasonで理由:その他表示切替
+        }
+
+        // その他理由選択時
+        function reasonChange() {
+            reasonDisplaySwitch(); // reasonで理由:その他表示切替
+        }
 
         // optionタグ生成関数
         function createOption(createId, createReason) {
@@ -490,25 +496,9 @@
                 reasonDetail.style.display = "none";
             }
         }
+        /* 表示切替end */
 
-        // リダイレクト時
-        window.addEventListener('load', function() {
-            reportDisplaySwitch(); // reportでform表示切替
-            reportReasonSwitch(); // reportでreason種類切替
-            reasonDisplaySwitch(); // reasonで理由:その他表示切替
-        });
-
-        // 届出内容選択時
-        function reportChange() {
-            reportDisplaySwitch(); // reportでform表示切替
-            reportReasonSwitch(); // reportでreason種類切替
-        }
-
-        // その他理由選択時
-        function reasonChange() {
-            reasonDisplaySwitch(); // reasonで理由:その他表示切替
-        }
-
+        /* 日数算出start */
         let button = document.getElementById('button');
         let startDate = document.getElementById('start_date');
         let endDate = document.getElementById('end_date');
@@ -660,5 +650,6 @@
             document.getElementById('remaining_hours').setAttribute('value', remainingHours);
             document.getElementById('remaining_minutes').setAttribute('value', remainingMinutes);
         });
+        /* 日数算出end */
     </script>
 </x-app-layout>
