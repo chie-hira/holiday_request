@@ -20,8 +20,7 @@ class RemainingController extends Controller
         $own_remainings= Remaining::all()->where('user_id', '=', Auth::id());
 
         if (empty($own_remainings->first())) {
-            $report_ids = [1, 4, 5, 7, 8, 9, 15];
-            // $report_ids = [1, 4, 5, 6, 7, 8, 9, 10, 15, 17];
+            $report_ids = [1, 4, 5, 7, 8, 9, 10, 16];
             foreach ($report_ids as $report_id) {
                 self::newRemaining($report_id);
             }

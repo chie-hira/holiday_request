@@ -34,9 +34,7 @@ class ReasonCategorySeeder extends Seeder
             ['reason' => '死亡(祖父母)'],
             ['reason' => '死亡(配偶者の同居祖父母)'],
             ['reason' => '死亡(兄弟姉妹)'],
-
             ['reason' => '看護(子)'],
-
             ['reason' => '介護(配偶者)'],
             ['reason' => '介護(父母)'],
             ['reason' => '介護(子)'],
@@ -44,7 +42,6 @@ class ReasonCategorySeeder extends Seeder
             ['reason' => '介護(祖父母)'],
             ['reason' => '介護(兄弟姉妹)'],
             ['reason' => '介護(孫)'],
-
             ['reason' => '育児'],
         ];
         DB::table('reason_categories')->insert($param);
