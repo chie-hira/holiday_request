@@ -22,11 +22,15 @@
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6">
                 @auth
-
-                    @if (Auth::user()->approval)
+                    @if (Auth::user()->approvals->first())
+                        @foreach (Auth::user()->approvals as $approval)
                         <p class="text-sm text-white">
-                            {{ Auth::user()->approval->approval_name }}&emsp;/&emsp;
+                            {{-- {{ Auth::user()->approval->approval_name }}&emsp;/&emsp; --}}
+                            {{ Auth::user()->approvalDepartment($approval->department_id) }}
+                            {{ Auth::user()->appr($approval->approval_id) }}&emsp;/&emsp;
+                            {{-- {{ ApprovalCategory::find($approval->id)->approval_name }}&emsp;/&emsp; --}}
                         </p>
+                        @endforeach
                     @endif
                     <p class="text-sm text-white">
                         {{ Auth::user()->factory->factory_name }}工場・{{ Auth::user()->department->department_name }}&emsp;/&emsp;

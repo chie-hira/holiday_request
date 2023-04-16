@@ -328,10 +328,10 @@
             if (reportCategory.value == "1" || // 有給
                 reportCategory.value == "2" || // 半日有給
                 reportCategory.value == "3" || // 時間休
-                reportCategory.value == "11" || // 欠勤
-                reportCategory.value == "12" || // 遅刻
-                reportCategory.value == "13" || // 早退
-                reportCategory.value == "14") { // 外出
+                reportCategory.value == "12" || // 欠勤
+                reportCategory.value == "13" || // 遅刻
+                reportCategory.value == "14" || // 早退
+                reportCategory.value == "15") { // 外出
                 let reasonId = [1, 2, 3, 4, 5, 6, 7, 8];
                 reasonId.forEach(e => {
                     let createId = reasons[e - 1].id;
@@ -363,7 +363,8 @@
                     createOption(createId, createReason)
                 });
             }
-            if (reportCategory.value == "7") { // 特別休暇(看護)
+            if (reportCategory.value == "7" || // 特別休暇(看護・対象1名)
+                reportCategory.value == "8") { // 特別休暇(看護・対象2名以上)
                 let reasonId = [20,8];
                 reasonId.forEach(e => {
                     let createId = reasons[e - 1].id;
@@ -371,9 +372,9 @@
                     createOption(createId, createReason)
                 });
             }
-            if (reportCategory.value == "8" || // 特別休暇(介護・対象1名)
-                reportCategory.value == "9" || // 特別休暇(介護・対象2名)
-                reportCategory.value == "15") { // 介護休業
+            if (reportCategory.value == "9" || // 特別休暇(介護・対象1名)
+                reportCategory.value == "10" || // 特別休暇(介護・対象2名)
+                reportCategory.value == "16") { // 介護休業
                 let reasonId = [21,22,23,24,25,26,27,8];
                 reasonId.forEach(e => {
                     let createId = reasons[e - 1].id;
@@ -381,9 +382,9 @@
                     createOption(createId, createReason)
                 });
             }
-            if (reportCategory.value == "10" || // 特別休暇(短期育休)
-                reportCategory.value == "16" || // 育児休業
-                reportCategory.value == "17") { // パパ育休
+            if (reportCategory.value == "11" || // 特別休暇(短期育休)
+                reportCategory.value == "17" || // 育児休業
+                reportCategory.value == "18") { // パパ育休
                 let reasonId = [28,8];
                 reasonId.forEach(e => {
                     let createId = reasons[e - 1].id;
@@ -398,13 +399,10 @@
             if (reportCategory.value == "1" || // 有給
                 reportCategory.value == "5" || // 特別休暇(慶事)
                 reportCategory.value == "6" || // 特別休暇(弔事)
-                reportCategory.value == "7" || // 特別休暇(看護)
-                reportCategory.value == "8" || // 特別休暇(介護・対象1名)
-                reportCategory.value == "9" || // 特別休暇(介護・対象2名)
-                reportCategory.value == "10" || // 特別休暇(短期育休)
-                reportCategory.value == "15" || // 介護休業
-                reportCategory.value == "16" || // 育児休業
-                reportCategory.value == "17") { // パパ育休
+                reportCategory.value == "11" || // 特別休暇(短期育休)
+                reportCategory.value == "16" || // 介護休業
+                reportCategory.value == "17" || // 育児休業
+                reportCategory.value == "18") { // パパ育休
                 halfDateLabel.style.display = "none";
                 amPmForm.style.display = "none";
                 timeEmptyForm.style.display = "none";
@@ -431,7 +429,11 @@
                 startDateLabel.style.display = "none";
                 endDateForm.style.display = "none";
             }
-            if (reportCategory.value == "3") { // 時間休
+            if (reportCategory.value == "3" || // 時間休
+                reportCategory.value == "7" || // 特別休暇(看護・対象1名)
+                reportCategory.value == "8" || // 特別休暇(看護・対象2名)
+                reportCategory.value == "9" || // 特別休暇(介護・対象1名)
+                reportCategory.value == "10") { // 特別休暇(介護・対象2名)
                 halfDateLabel.style.display = "";
                 startDateForm.style.display = "";
                 amPmForm.style.display = "none";
@@ -444,8 +446,8 @@
                 startDateLabel.style.display = "none";
                 endDateForm.style.display = "none";
             }
-            if (reportCategory.value == "12" || // 遅刻
-                reportCategory.value == "13") { // 早退
+            if (reportCategory.value == "13" || // 遅刻
+                reportCategory.value == "14") { // 早退
                 halfDateLabel.style.display = "";
                 startDateForm.style.display = "";
                 amPmForm.style.display = "none";
@@ -458,7 +460,7 @@
                 startDateLabel.style.display = "none";
                 endDateForm.style.display = "none";
             }
-            if (reportCategory.value == "14") { // 外出
+            if (reportCategory.value == "15") { // 外出
                 halfDateLabel.style.display = "";
                 startDateForm.style.display = "";
                 amPmForm.style.display = "none";
@@ -472,7 +474,7 @@
                 endDateForm.style.display = "none";
             }
             if (reportCategory.value == "4" || // バースデイ
-                reportCategory.value == "11") { // 欠勤
+                reportCategory.value == "12") { // 欠勤
                 halfDateLabel.style.display = "";
                 startDateForm.style.display = "";
                 timeEmptyForm.style.display = "";
@@ -564,28 +566,28 @@
             if (reportCategory.value == 1 ||
                 reportCategory.value == 5 ||
                 reportCategory.value == 6 ||
-                reportCategory.value == 7 ||
                 reportCategory.value == 8 ||
                 reportCategory.value == 9 ||
                 reportCategory.value == 10 ||
-                reportCategory.value == 15 ||
+                reportCategory.value == 11 ||
                 reportCategory.value == 16 ||
-                reportCategory.value == 17) {
+                reportCategory.value == 17 ||
+                reportCategory.value == 18) {
                 getDays = diffDays - dayOffs;
             }
             if (reportCategory.value == 2) {
                 getDays = 0.5;
             }
             if (reportCategory.value == 3 ||
-                reportCategory.value == 12 ||
                 reportCategory.value == 13 ||
-                reportCategory.value == 14) {
+                reportCategory.value == 14 ||
+                reportCategory.value == 15) {
                 getDays = ((endTimeVal - startTimeVal) / 60000) / 60 * 1 / 8;
                 // 時間換算:8時間で1日 1時間=1/8日 0.125日
                 getDays = orgRound(getDays, 100000); // 小数点以下切り捨て
                 console.log(getDays);
             }
-            if (reportCategory.value == 4 || reportCategory.value == 11) {
+            if (reportCategory.value == 4 || reportCategory.value == 12) {
                 getDays = 1.0;
             }
 
@@ -603,17 +605,19 @@
             }
 
             // console.log(orgRound(getDays, 100000)); // 小数5桁
-            let getDaysOnly = getDays - decimalPart(getDays, 4);
+            let getDaysOnly = getDays - decimalPart(getDays, 5);
             let getHours = decimalPart(getDays, 5) * 8;
             let getMinutes = 0;
-            if (decimalPart(getHours, 5) != 0 && decimalPart(getHours, 4) < 1) {
-                getMinutes = getHours * 60;
+            if (decimalPart(getHours, 5) != 0 && decimalPart(getHours, 5) < 1) {
+                getHoursOnly = getHours - decimalPart(getHours, 5);
+                getHoursOnly = orgRound(getHoursOnly, 1);
+                getMinutes = decimalPart(getHours, 5) * 60;
                 getMinutes = orgRound(getMinutes, 1);
-                getDaysOnly = 0;
-                getHours = 0;
+            } else {
+                getHoursOnly = getHours;
             }
             document.getElementById('get_days_only').setAttribute('value', getDaysOnly);
-            document.getElementById('get_hours').setAttribute('value', getHours);
+            document.getElementById('get_hours').setAttribute('value', getHoursOnly);
             document.getElementById('get_minutes').setAttribute('value', getMinutes);
 
 
@@ -637,17 +641,19 @@
             document.getElementById('remaining_days').setAttribute('value', remainingDays);
 
             // console.log(orgRound(remainingDays, 100000)); // 小数5桁
-            let remainingDaysOnly = remainingDays - decimalPart(remainingDays, 4);
+            let remainingDaysOnly = remainingDays - decimalPart(remainingDays, 5);
             let remainingHours = decimalPart(remainingDays, 5) * 8;
             let remainingMinutes = 0;
-            if (decimalPart(remainingHours, 5) != 0 && decimalPart(remainingHours, 4) < 1) {
-                remainingMinutes = remainingHours * 60;
+            if (decimalPart(remainingHours, 5) != 0 && decimalPart(remainingHours, 5) < 1) {
+                remainingHoursOnly = remainingHours - decimalPart(remainingHours, 5);
+                remainingHoursOnly = orgRound(remainingHoursOnly, 1);
+                remainingMinutes = decimalPart(remainingHours, 5) * 60;
                 remainingMinutes = orgRound(remainingMinutes, 1);
-                remainingDaysOnly = 0;
-                remainingHours = 0;
+            } else {
+                remainingHoursOnly = getHours;
             }
             document.getElementById('remaining_days_only').setAttribute('value', remainingDaysOnly);
-            document.getElementById('remaining_hours').setAttribute('value', remainingHours);
+            document.getElementById('remaining_hours').setAttribute('value', remainingHoursOnly);
             document.getElementById('remaining_minutes').setAttribute('value', remainingMinutes);
         });
         /* 日数算出end */

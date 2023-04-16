@@ -63,6 +63,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Get all of the approvals for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function approvals()
+    {
+        return $this->hasMany(Approval::class, 'user_id', 'id');
+    }
+
+    /**
      * Get the factory that owns the User
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -86,13 +96,17 @@ class User extends Authenticatable
         );
     }
 
-    /**
-     * Get the approval that owns the User
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function approval()
+    // メソッド
+    public function appr($approval_id)
     {
-        return $this->belongsTo(ApprovalCategory::class, 'approval_id', 'id');
+        // dd(1);
+        $approval = ApprovalCategory::find($approval_id);
+        // dd($approval->approval_name);
+        return $approval->approval_name;
+    }
+    public function approvalDepartment($department_id)
+    {
+        $department = DepartmentCategory::find($department_id);
+        return $department->department_name;
     }
 }

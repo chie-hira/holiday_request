@@ -22,4 +22,14 @@ class FactoryCategory extends Model
     {
         return $this->hasMany(User::class, 'factory_id', 'id');
     }
+
+    /**
+     * Get all of the approvals for the FactoryCategory
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function approvals()
+    {
+        return $this->hasMany(Approval::class, 'factory_id', 'id');
+    }
 }

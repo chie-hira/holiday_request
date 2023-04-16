@@ -120,7 +120,7 @@
                         <tbody>
                             <tr>
                                 <td class="w-20 h-12 border border-gray-500 text-center">
-                                    @if (Auth::user()->approval_id == 1 && $report->approval1 == 0)
+                                    @if (!empty(Auth::user()->approvals->where('approval_id', '=', 1)->first()) && $report->approval1 == 0)
                                         <a href="{{ route('approval', $report) }}"
                                             onclick="if(!confirm('承認しますか？')){return false};"
                                             class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
@@ -139,7 +139,9 @@
                                     @endif
                                 </td>
                                 <td class="w-20 h-12 border border-gray-500 text-center">
-                                    @if (Auth::user()->approval_id == 2 && Auth::user()->factory_id == $report->user->factory_id && $report->approval2 == 0)
+                                    @if (!empty(Auth::user()->approvals->where('approval_id', '=', 2)
+                                            ->where('factory_id', '=', $report->user->factory_id)->first()) &&
+                                            $report->approval2 == 0)
                                         <a href="{{ route('approval', $report) }}"
                                             onclick="if(!confirm('承認しますか？')){return false};"
                                             class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
@@ -158,9 +160,9 @@
                                     @endif
                                 </td>
                                 <td class="w-20 h-12 border border-gray-500 text-center">
-                                    @if (Auth::user()->approval_id == 3 &&
-                                            Auth::user()->factory_id == $report->user->factory_id &&
-                                            Auth::user()->department_id == $report->user->department_id &&
+                                    @if (!empty(Auth::user()->approvals->where('approval_id', '=', 3)
+                                            ->where('factory_id', '=', $report->user->factory_id)
+                                            ->where('department_id', '=', $report->user->department_id)->first()) &&
                                             $report->approval3 == 0)
                                         <a href="{{ route('approval', $report) }}"
                                             onclick="if(!confirm('承認しますか？')){return false};"
