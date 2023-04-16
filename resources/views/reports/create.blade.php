@@ -605,17 +605,19 @@
             }
 
             // console.log(orgRound(getDays, 100000)); // 小数5桁
-            let getDaysOnly = getDays - decimalPart(getDays, 4);
+            let getDaysOnly = getDays - decimalPart(getDays, 5);
             let getHours = decimalPart(getDays, 5) * 8;
             let getMinutes = 0;
-            if (decimalPart(getHours, 5) != 0 && decimalPart(getHours, 4) < 1) {
-                getMinutes = getHours * 60;
+            if (decimalPart(getHours, 5) != 0 && decimalPart(getHours, 5) < 1) {
+                getHoursOnly = getHours - decimalPart(getHours, 5);
+                getHoursOnly = orgRound(getHoursOnly, 1);
+                getMinutes = decimalPart(getHours, 5) * 60;
                 getMinutes = orgRound(getMinutes, 1);
-                getDaysOnly = 0;
-                getHours = 0;
+            } else {
+                getHoursOnly = getHours;
             }
             document.getElementById('get_days_only').setAttribute('value', getDaysOnly);
-            document.getElementById('get_hours').setAttribute('value', getHours);
+            document.getElementById('get_hours').setAttribute('value', getHoursOnly);
             document.getElementById('get_minutes').setAttribute('value', getMinutes);
 
 
@@ -639,17 +641,19 @@
             document.getElementById('remaining_days').setAttribute('value', remainingDays);
 
             // console.log(orgRound(remainingDays, 100000)); // 小数5桁
-            let remainingDaysOnly = remainingDays - decimalPart(remainingDays, 4);
+            let remainingDaysOnly = remainingDays - decimalPart(remainingDays, 5);
             let remainingHours = decimalPart(remainingDays, 5) * 8;
             let remainingMinutes = 0;
-            if (decimalPart(remainingHours, 5) != 0 && decimalPart(remainingHours, 4) < 1) {
-                remainingMinutes = remainingHours * 60;
+            if (decimalPart(remainingHours, 5) != 0 && decimalPart(remainingHours, 5) < 1) {
+                remainingHoursOnly = remainingHours - decimalPart(remainingHours, 5);
+                remainingHoursOnly = orgRound(remainingHoursOnly, 1);
+                remainingMinutes = decimalPart(remainingHours, 5) * 60;
                 remainingMinutes = orgRound(remainingMinutes, 1);
-                remainingDaysOnly = 0;
-                remainingHours = 0;
+            } else {
+                remainingHoursOnly = getHours;
             }
             document.getElementById('remaining_days_only').setAttribute('value', remainingDaysOnly);
-            document.getElementById('remaining_hours').setAttribute('value', remainingHours);
+            document.getElementById('remaining_hours').setAttribute('value', remainingHoursOnly);
             document.getElementById('remaining_minutes').setAttribute('value', remainingMinutes);
         });
         /* 日数算出end */
