@@ -8,8 +8,12 @@ use App\Models\ReasonCategory;
 use App\Models\Remaining;
 use App\Models\Report;
 use App\Models\ReportCategory;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rule;
+
+use function PHPUnit\Framework\isNull;
 
 class ReportController extends Controller
 {
@@ -25,12 +29,12 @@ class ReportController extends Controller
         return view('reports.index')->with(compact('reports'));
     }
 
-    public function all_index()
-    {
-        $reports = Report::all();
+    // public function all_index()
+    // {
+    //     $reports = Report::all();
 
-        return view('reports.all_index')->with(compact('reports'));
-    }
+    //     return view('reports.all_index')->with(compact('reports'));
+    // }
 
     /**
      * Show the form for creating a new resource.
@@ -92,33 +96,35 @@ class ReportController extends Controller
                 ]
             );
         }
-        if ($request->report_id == 12 || $request->report_id == 13) {
-            $m = [
-                0.02083, 0.04167, 0.0625, 0.08333, 0.10417
-            ];
-            if (in_array($request->get_days, $m)) {
+        if ($request->report_id == 13 || $request->report_id == 14) {
+            // $m = [
+            //     0.02083, 0.04167, 0.0625, 0.08333, 0.10417
+            // ];
+            // if (in_array($request->get_days, $m)) {
+            //     $request->validate(
+            //         [
+            //             'start_time' => 'required|date_format:H:i',
+            //             'end_time' => 'required|date_format:H:i|after:start_time',
+            //             'get_days' => 'required',
+            //         ],
+            //     );
+            // } else {
                 $request->validate(
                     [
                         'start_time' => 'required|date_format:H:i',
                         'end_time' => 'required|date_format:H:i|after:start_time',
-                        'get_days' => 'required',
-                    ],
-                );
-            } else {
-                $request->validate(
-                    [
-                        'start_time' => 'required|date_format:H:i',
-                        'end_time' => 'required|date_format:H:i|after:start_time',
-                        'get_days' => 'required|multiple_of:0.02083',
+                        // 'get_days' => 'required|multiple_of:0.02083',
+                        // FIXME:
+                        'get_days' => ['required', Rule::in([0.02083, 0.04167, 0.0625, 0.08333, 0.10417, 0.125, 0.14583, 0.16667, 0.1875])],
                     ],
                     [
                         'get_days.multiple_of' =>
                             '遅刻・早退は10分単位で取得可能です。',
                     ]
                 );
-            }
+            // }
         }
-        if ($request->report_id == 14) {
+        if ($request->report_id == 15) {
             $request->validate(
                 [
                     'start_time' => 'required|date_format:H:i',
@@ -130,7 +136,7 @@ class ReportController extends Controller
                 ]
             );
         }
-        if ($request->reason_id == 7) {
+        if ($request->reason_id == 8) {
             $request->validate(
                 [
                     'reason_detail' => 'required|max:200',
@@ -148,7 +154,7 @@ class ReportController extends Controller
         $remaining = Remaining::where('user_id', '=', Auth::user()->id)
             ->where('report_id', '=', $report_id)
             ->first('remaining');
-        if ($remaining) {
+        if (!empty($remaining->remaining)) {
             $result = $remaining->remaining - $request->get_days;
 
             if ($result < 0) {
@@ -183,6 +189,7 @@ class ReportController extends Controller
      */
     public function show(Report $report)
     {
+        // dd(empty(Auth::user()->approvals->where('approval_id', '=', 1)->first()));
         return view('reports.show')->with(compact('report'));
     }
 
@@ -327,170 +334,160 @@ class ReportController extends Controller
     public function approvalPending()
     {
         $user = Auth::user();
-        // dd($user);
-        if (Auth::user()->approval_id == 1) {
+        if (!empty(Auth::user()->approvals->where('approval_id', '=', 1)->first())) {
             $reports = Report::where('approval1', '=', 0)
                 ->orWhere('approval2', '=', 0)
                 ->orWhere('approval3', '=', 0)
                 ->get();
         } 
 
-        if (Auth::user()->approval_id == 2) {
-            $reports = Report::whereHas('user', function ($query) use ($user) {
-                $query->where('factory_id', $user->factory_id);
-            })
-            ->where(function ($query)
-            {
-                $query->where('approval1', '=', 0)
-                ->orWhere('approval2', '=', 0)
-                ->orWhere('approval3', '=', 0);
-            })
-            ->get();
+        if (!empty(Auth::user()->approvals->where('approval_id', '=', 2)->first())) {
+            $reports = new Collection();
+            foreach ($user->approvals as $approval) {
+                $extractions = Report::whereHas('user', function ($query) use ($approval) {
+                    $query->where('factory_id', $approval->factory_id);
+                })
+                ->where(function ($query)
+                {
+                    $query->where('approval1', '=', 0)
+                    ->orWhere('approval2', '=', 0)
+                    ->orWhere('approval3', '=', 0);
+                })
+                ->get();
+
+                $extractions->each(function ($extraction) use ($reports)
+                {
+                    $reports->add($extraction);
+                });
+            }
         }
 
-        if (Auth::user()->approval_id == 3) {
-            $reports = Report::whereHas('user', function ($query) use ($user) {
-                $query->where('factory_id', $user->factory_id)
-                    ->where('department_id', $user->department_id);
-            })
-            ->where(function ($query)
-            {
-                $query->where('approval1', '=', 0)
-                ->orWhere('approval2', '=', 0)
-                ->orWhere('approval3', '=', 0);
-            })
-            ->get();
+        if (!empty(Auth::user()->approvals->where('approval_id', '=', 3)->first())) {
+            $reports = new Collection();
+            foreach ($user->approvals as $approval) {
+                $extractions = Report::whereHas('user', function ($query) use ($approval) {
+                    $query->where('factory_id', $approval->factory_id)
+                        ->where('department_id', $approval->department_id);
+                })
+                ->where(function ($query)
+                {
+                    $query->where('approval1', '=', 0)
+                    ->orWhere('approval2', '=', 0)
+                    ->orWhere('approval3', '=', 0);
+                })
+                ->get();
+
+                $extractions->each(function ($extraction) use ($reports)
+                {
+                    $reports->add($extraction);
+                });
+            }
         }
         return view('approvals.pending')->with(compact('reports'));
     }
 
     public function approved()
     {
+        // $user = Auth::user();
+        // // dd($user);
+        // if (!empty(Auth::user()->approvals->where('approval_id', '=', 1)->first())) {
+        //     $reports = Report::where('approval1', '=', 1)
+        //         ->where('approval2', '=', 1)
+        //         ->where('approval3', '=', 1)
+        //         ->get();
+        // } 
+
+        // if (Auth::user()->approval_id == 2) {
+        //     $reports = Report::whereHas('user', function ($query) use ($user) {
+        //         $query->where('factory_id', $user->factory_id);
+        //     })
+        //     ->where(function ($query)
+        //     {
+        //         $query->where('approval1', '=', 1)
+        //         ->where('approval2', '=', 1)
+        //         ->where('approval3', '=', 1);
+        //     })
+        //     ->get();
+        // }
+
+        // if (Auth::user()->approval_id == 3) {
+        //     $reports = Report::whereHas('user', function ($query) use ($user) {
+        //         $query->where('factory_id', $user->factory_id)
+        //             ->where('department_id', $user->department_id);
+        //     })
+        //     ->where(function ($query)
+        //     {
+        //         $query->where('approval1', '=', 1)
+        //         ->where('approval2', '=', 1)
+        //         ->where('approval3', '=', 1);
+        //     })
+        //     ->get();
+        // }
+
         $user = Auth::user();
-        // dd($user);
-        if (Auth::user()->approval_id == 1) {
+        if (!empty(Auth::user()->approvals->where('approval_id', '=', 1)->first())) {
             $reports = Report::where('approval1', '=', 1)
                 ->where('approval2', '=', 1)
                 ->where('approval3', '=', 1)
                 ->get();
         } 
 
-        if (Auth::user()->approval_id == 2) {
-            $reports = Report::whereHas('user', function ($query) use ($user) {
-                $query->where('factory_id', $user->factory_id);
-            })
-            ->where(function ($query)
-            {
-                $query->where('approval1', '=', 1)
-                ->where('approval2', '=', 1)
-                ->where('approval3', '=', 1);
-            })
-            ->get();
+        if (!empty(Auth::user()->approvals->where('approval_id', '=', 2)->first())) {
+            $reports = new Collection();
+            foreach ($user->approvals as $approval) {
+                $extractions = Report::whereHas('user', function ($query) use ($approval) {
+                    $query->where('factory_id', $approval->factory_id);
+                })
+                ->where(function ($query)
+                {
+                    $query->where('approval1', '=', 1)
+                    ->where('approval2', '=', 1)
+                    ->where('approval3', '=', 1);
+                })
+                ->get();
+
+                $extractions->each(function ($extraction) use ($reports)
+                {
+                    $reports->add($extraction);
+                });
+            }
         }
 
-        if (Auth::user()->approval_id == 3) {
-            $reports = Report::whereHas('user', function ($query) use ($user) {
-                $query->where('factory_id', $user->factory_id)
-                    ->where('department_id', $user->department_id);
-            })
-            ->where(function ($query)
-            {
-                $query->where('approval1', '=', 1)
-                ->where('approval2', '=', 1)
-                ->where('approval3', '=', 1);
-            })
-            ->get();
+        if (!empty(Auth::user()->approvals->where('approval_id', '=', 3)->first())) {
+            $reports = new Collection();
+            foreach ($user->approvals as $approval) {
+                $extractions = Report::whereHas('user', function ($query) use ($approval) {
+                    $query->where('factory_id', $approval->factory_id)
+                        ->where('department_id', $approval->department_id);
+                })
+                ->where(function ($query)
+                {
+                    $query->where('approval1', '=', 1)
+                    ->where('approval2', '=', 1)
+                    ->where('approval3', '=', 1);
+                })
+                ->get();
+
+                $extractions->each(function ($extraction) use ($reports)
+                {
+                    $reports->add($extraction);
+                });
+            }
         }
         return view('approvals.index')->with(compact('reports'));
     }
 
-    // public function approvalPending()
-    // {
-    //     $reports = Report::where('user_id', '=', Auth::user()->id)->where(
-    //         function ($query) {
-    //             $query
-    //                 ->where('approval1', '=', 0)
-    //                 ->orWhere('approval2', '=', 0)
-    //                 ->orWhere('approval2', '=', 0);
-    //         }
-    //     )
-    //     ->get();
-    //     return view('approvals.index')->with(compact('reports'));
-    // }
-
-    // public function approval1(Report $report)
-    // {
-    //     $report->approval1 = 1;
-
-    //     // 残日数を更新
-    //     # remainingsレコード更新
-    //     $report_id = $report->report_id;
-    //     if ($report_id == 2 || $report_id == 3) {
-    //         $report_id = 1;
-    //     }
-    //     $remaining = Remaining::where('user_id', '=', $report->user_id)
-    //         ->where('report_id', '=', $report_id)
-    //         ->first();
-    //     if (!empty($remaining)) {
-    //         $new_remaining = $remaining->remaining - $report->get_days;
-    //         $remaining->remaining = $new_remaining;
-    //     }
-
-    //     try {
-    //         $report->save();
-    //         if (!empty($remaining)) {
-    //             $remaining->save();
-    //         }
-    //         return redirect()
-    //             ->route('reports.show')
-    //             ->with(compact('report'))
-    //             ->with('notice', '承認しました');
-    //     } catch (\Throwable $th) {
-    //         return back()->withErrors($th->getMessage());
-    //     }
-    // }
-
-    // public function approval2(Report $report)
-    // {
-    //     $report->approval2 = 1;
-
-    //     try {
-    //         $report->save();
-    //         return redirect()
-    //             ->route('reports.show')
-    //             ->with(compact('report'))
-    //             ->with('notice', '承認しました');
-    //     } catch (\Throwable $th) {
-    //         return back()->withErrors($th->getMessage());
-    //     }
-    // }
-
-    // public function approval3(Report $report)
-    // {
-    //     $report->approval3 = 1;
-
-    //     try {
-    //         $report->save();
-    //         return redirect()
-    //             ->route('reports.show')
-    //             ->with(compact('report'))
-    //             ->with('notice', '承認しました');
-    //     } catch (\Throwable $th) {
-    //         return back()->withErrors($th->getMessage());
-    //     }
-    // }
-
     public function approval(Report $report)
     {
-        if (Auth::user()->approval_id == 1) {
+        if (!empty(Auth::user()->approvals->where('approval_id', '=', 1)->first())) {
             $report->approval1 = 1;
         }
-
-        if (Auth::user()->approval_id == 2) {
+        // FIXME:2権限、3権限を持つuserがいたら誤作動
+        if (!empty(Auth::user()->approvals->where('approval_id', '=', 2)->first())) {
             $report->approval2 = 1;
         }
 
-        if (Auth::user()->approval_id == 3) {
+        if (!empty(Auth::user()->approvals->where('approval_id', '=', 3)->first())) {
             $report->approval3 = 1;
         }
 

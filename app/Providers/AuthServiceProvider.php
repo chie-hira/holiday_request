@@ -27,17 +27,20 @@ class AuthServiceProvider extends ServiceProvider
 
         // 「総務部長」だけに適用
         Gate::define('general_only', function ($user) {
-            return ($user->approval_id == 1);
+            return (!empty($user->approvals->where('approval_id', '=', 1)->first()));
         });
 
         // 「総務部長」と「工場長」に適用
         Gate::define('general_and_factory', function ($user) {
-            return ($user->approval_id <= 2 && $user->approval_id != null);
+            return (!empty($user->approvals->where('approval_id', '=', 1)->first()) ||
+                    !empty($user->approvals->where('approval_id', '=', 2)->first()));
         });
 
         // 「総務部長」と「工場長」と「GL」全てに適用
         Gate::define('general_and_factory_gl', function ($user) {
-            return ($user->approval_id <= 3 && $user->approval_id != null);
+            return (!empty($user->approvals->where('approval_id', '=', 1)->first()) ||
+                    !empty($user->approvals->where('approval_id', '=', 2)->first()) ||
+                    !empty($user->approvals->where('approval_id', '=', 3)->first()));
         });
     }
 }

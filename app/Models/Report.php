@@ -64,51 +64,30 @@ class Report extends Model
     {
         $exp = explode('.', $this->get_days);
         return $exp[0];
-        // return $remaining->remaining_days;
-        // return floor($remaining->remaining_days);
     }
     public function getGetHoursAttribute()
     {
         $exp = explode('.', $this->get_days);
-        $exp_key1 = array_key_exists(1, $exp);
-        if ($exp_key1) {
+        if (array_key_exists(1, $exp)) { # 小数点以下あり(1日未満)
             $decimal_p = '0.'. $exp[1];
-            return $decimal_p * 8; # 8時間で1日
+            $exp_hour = explode('.', $decimal_p * 8); # 8時間で1日
+            return $exp_hour[0];
         } else {
             return 0;
         }
     }
     public function getGetMinutesAttribute()
     {
-        $exp = explode('.', $this->get_hours);
-        $exp_key1 = array_key_exists(1, $exp);
-        if ($exp_key1) {
+        $exp = explode('.', $this->get_days);
+        if (array_key_exists(1, $exp)) { # 小数点以下あり(1日未満)
             $decimal_p = '0.'. $exp[1];
-            return round($decimal_p * 60);
+            $exp_hour = explode('.', $decimal_p * 8);
+            if (array_key_exists(1, $exp_hour)) { # 小数点以下あり(1時間未満)
+                $decimal_p = '0.'. $exp_hour[1];
+                return round($decimal_p * 60);
+            }
         } else {
             return 0;
         }
     }
-
-    // // FIXME:休業日考慮
-    // public function getGetDaysAttribute()
-    // {
-    //     $start_date = Carbon::create($this->start_date);
-    //     $end_date = Carbon::create($this->end_date);
-    //     // return $start_date->diffInDays($end_date);
-    //     $diff_days = $start_date->diffInDays($end_date);
-
-    //     $remainder_days = $diff_days % 7;
-    //     $day_offs = ($diff_days - $remainder_days) / 7 * 2;
-    //     $start_day = date('w', strtotime($start_date)); //0~6の曜日数値
-    //     // dd($start_day);
-    //     for ($i = 0; $i < $remainder_days; $i++) {
-    //         if ($start_day + $i == 0 || $start_day + $i == 6) {
-    //             //定休日の配列に含まれる場合、休日数に加算する
-    //             $day_offs++;
-    //         }
-    //     }
-
-    //     return $diff_days - $day_offs;
-    // }
 }

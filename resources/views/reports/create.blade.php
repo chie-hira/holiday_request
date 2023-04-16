@@ -566,28 +566,28 @@
             if (reportCategory.value == 1 ||
                 reportCategory.value == 5 ||
                 reportCategory.value == 6 ||
-                reportCategory.value == 7 ||
                 reportCategory.value == 8 ||
                 reportCategory.value == 9 ||
                 reportCategory.value == 10 ||
-                reportCategory.value == 15 ||
+                reportCategory.value == 11 ||
                 reportCategory.value == 16 ||
-                reportCategory.value == 17) {
+                reportCategory.value == 17 ||
+                reportCategory.value == 18) {
                 getDays = diffDays - dayOffs;
             }
             if (reportCategory.value == 2) {
                 getDays = 0.5;
             }
             if (reportCategory.value == 3 ||
-                reportCategory.value == 12 ||
                 reportCategory.value == 13 ||
-                reportCategory.value == 14) {
+                reportCategory.value == 14 ||
+                reportCategory.value == 15) {
                 getDays = ((endTimeVal - startTimeVal) / 60000) / 60 * 1 / 8;
                 // 時間換算:8時間で1日 1時間=1/8日 0.125日
                 getDays = orgRound(getDays, 100000); // 小数点以下切り捨て
                 console.log(getDays);
             }
-            if (reportCategory.value == 4 || reportCategory.value == 11) {
+            if (reportCategory.value == 4 || reportCategory.value == 12) {
                 getDays = 1.0;
             }
 

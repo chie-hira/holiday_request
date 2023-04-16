@@ -22,4 +22,14 @@ class DepartmentCategory extends Model
     {
         return $this->hasMany(User::class, 'department_id', 'id');
     }
+
+    /**
+     * Get all of the approvals for the DepartmentCategory
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function approvals()
+    {
+        return $this->hasMany(Approval::class, 'department_id', 'id');
+    }
 }

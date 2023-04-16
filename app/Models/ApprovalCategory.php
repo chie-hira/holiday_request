@@ -14,12 +14,13 @@ class ApprovalCategory extends Model
     ];
 
     /**
-     * Get all of the users for the ApprovalCategory
+     * Get all of the approvals for the ApprovalCategory
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function users()
+    public function approvals()
     {
-        return $this->hasMany(User::class, 'approval_id', 'id');
+        return $this->hasMany(Approval::class, 'approval_id', 'id');
     }
+
 }
