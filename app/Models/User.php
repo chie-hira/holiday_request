@@ -49,7 +49,7 @@ class User extends Authenticatable
      */
     public function remainings()
     {
-        return $this->hasMany(Remaining::class, 'remaining_id', 'id');
+        return $this->hasMany(Remaining::class, 'user_id', 'id');
     }
 
     /**
@@ -97,16 +97,31 @@ class User extends Authenticatable
     }
 
     // メソッド
-    public function appr($approval_id)
+    public function getApprovalName($approval_id)
     {
         // dd(1);
         $approval = ApprovalCategory::find($approval_id);
         // dd($approval->approval_name);
         return $approval->approval_name;
     }
-    public function approvalDepartment($department_id)
+    public function getApprovalDepartment($department_id)
     {
         $department = DepartmentCategory::find($department_id);
         return $department->department_name;
+    }
+
+    // アクセサ
+    public function getSumGetDaysAttribute()
+    {
+    $sum_get_days = $this->reports
+            ->where('approval1', '=', 1)
+            ->where('approval2', '=', 1)
+            ->where('approval3', '=', 1)
+            ->groupBy('report_id')
+            ->map(function($report_id)
+            {
+                return $report_id->sum('get_days');
+            });
+            return $sum_get_days;
     }
 }

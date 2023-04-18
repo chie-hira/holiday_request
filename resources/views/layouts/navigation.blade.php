@@ -26,8 +26,8 @@
                         @foreach (Auth::user()->approvals as $approval)
                         <p class="text-sm text-white">
                             {{-- {{ Auth::user()->approval->approval_name }}&emsp;/&emsp; --}}
-                            {{ Auth::user()->approvalDepartment($approval->department_id) }}
-                            {{ Auth::user()->appr($approval->approval_id) }}&emsp;/&emsp;
+                            {{ Auth::user()->getApprovalDepartment($approval->department_id) }}
+                            {{ Auth::user()->getApprovalName($approval->approval_id) }}&emsp;/&emsp;
                             {{-- {{ ApprovalCategory::find($approval->id)->approval_name }}&emsp;/&emsp; --}}
                         </p>
                         @endforeach

@@ -8,10 +8,12 @@ use App\Models\ReasonCategory;
 use App\Models\Remaining;
 use App\Models\Report;
 use App\Models\ReportCategory;
+use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 
 use function PHPUnit\Framework\isNull;
 
@@ -29,13 +31,6 @@ class ReportController extends Controller
         return view('reports.index')->with(compact('reports'));
     }
 
-    // public function all_index()
-    // {
-    //     $reports = Report::all();
-
-    //     return view('reports.all_index')->with(compact('reports'));
-    // }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -48,13 +43,13 @@ class ReportController extends Controller
         $own_remainings = Remaining::all()->where('user_id', '=', Auth::id());
 
         if (empty($own_remainings->first())) {
-            $report_ids = [1, 4, 5, 6, 7, 8, 9, 15];
+            $report_ids = [1, 4, 5, 7, 8, 9, 10, 16];
             foreach ($report_ids as $report_id) {
                 self::newRemaining($report_id);
             }
             $own_remainings = Remaining::all()->where(
                 'user_id',
-                '==',
+                '=',
                 Auth::id()
             );
         }
@@ -396,42 +391,6 @@ class ReportController extends Controller
 
     public function approved()
     {
-        // $user = Auth::user();
-        // // dd($user);
-        // if (!empty(Auth::user()->approvals->where('approval_id', '=', 1)->first())) {
-        //     $reports = Report::where('approval1', '=', 1)
-        //         ->where('approval2', '=', 1)
-        //         ->where('approval3', '=', 1)
-        //         ->get();
-        // } 
-
-        // if (Auth::user()->approval_id == 2) {
-        //     $reports = Report::whereHas('user', function ($query) use ($user) {
-        //         $query->where('factory_id', $user->factory_id);
-        //     })
-        //     ->where(function ($query)
-        //     {
-        //         $query->where('approval1', '=', 1)
-        //         ->where('approval2', '=', 1)
-        //         ->where('approval3', '=', 1);
-        //     })
-        //     ->get();
-        // }
-
-        // if (Auth::user()->approval_id == 3) {
-        //     $reports = Report::whereHas('user', function ($query) use ($user) {
-        //         $query->where('factory_id', $user->factory_id)
-        //             ->where('department_id', $user->department_id);
-        //     })
-        //     ->where(function ($query)
-        //     {
-        //         $query->where('approval1', '=', 1)
-        //         ->where('approval2', '=', 1)
-        //         ->where('approval3', '=', 1);
-        //     })
-        //     ->get();
-        // }
-
         $user = Auth::user();
         if (!empty(Auth::user()->approvals->where('approval_id', '=', 1)->first())) {
             $reports = Report::where('approval1', '=', 1)
@@ -483,6 +442,27 @@ class ReportController extends Controller
             }
         }
         return view('approvals.index')->with(compact('reports'));
+    }
+
+    public function approvalList()
+    {
+        // $users = User::with(['reports', 'remainings'])
+        //     ->withCount([
+        //         'reports AS sum_get_days' => function ($query){
+        //             $query->where([
+        //                 ['report_id', '=', 2],
+        //                 ['approval1', '=', 1],
+        //                 ['approval2', '=', 1],
+        //                 ['approval3', '=', 1],
+        //             ])
+        //             ->select(DB::raw('SUM(get_days) as sum_get_days'));
+        //         },
+        //     ])
+        //     ->get();
+
+        $users = User::with(['reports', 'remainings'])->get();
+        $report_categories = ReportCategory::all();
+        return view('approvals.list')->with(compact('users', 'report_categories'));
     }
 
     public function approval(Report $report)
