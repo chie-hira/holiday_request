@@ -2,8 +2,10 @@
     <section class="text-gray-600 body-font">
         <div class="container px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-10">
-                <h1 class="sm:text-4xl text-3xl font-medium title-font text-gray-900">有給取得状況一覧</h1>
+                <h1 class="sm:text-4xl text-3xl font-medium title-font text-gray-900">取得状況一覧</h1>
             </div>
+
+            {{-- <x-notice :message="session('notice')" /> --}}
 
             <div class="w-full mx-auto overflow-x-auto">
                 <table class="table-auto w-full text-left whitespace-nowrap">
@@ -20,6 +22,10 @@
                             <th
                                 class="px-4 py-3 text-center title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
                                 氏 名
+                            </th>
+                            <th
+                                class="px-4 py-3 text-center title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
+                                内 容
                             </th>
                             <th 
                                 class="px-4 py-3 text-center title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
@@ -38,6 +44,11 @@
                                 <td class="px-4 py-3 text-center">{{ $user->employee }}</td>
                                 <td class="px-4 py-3 text-center">{{ $user->name }}</td>
                                 <td class="px-4 py-3 text-center">
+                                        @foreach ($report_categories as $category)
+                                            <p>{{ $category->report_name }}</p>
+                                        @endforeach
+                                </td>
+                                <td class="px-4 py-3 text-center">
                                     @if ($user->sum_get_days->first())
                                         @foreach ($user->sum_get_days as $key => $sum_get_day)
                                             <p>{{ $report_categories[$key-1]->report_name }}</p>
@@ -53,7 +64,9 @@
                                 </td>
                                 <td class="px-4 py-3 text-center">
                                     @if ($user->remainings->first())
-                                        {{ $user->remainings[0]->remaining }}
+                                        @foreach ($user->remainings as $remaining)
+                                            <p>{{ $remaining->report_category->report_name }}&ensp;{{ $remaining->remaining }}</p>
+                                        @endforeach
                                     @endif
                                 </td>
                             </tr>

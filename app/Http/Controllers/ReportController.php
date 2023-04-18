@@ -446,6 +446,14 @@ class ReportController extends Controller
 
     public function approvalList()
     {
+        $users = User::with(['reports', 'remainings'])->get();
+        dd($users[0]->sum_get_days);
+        $report_categories = ReportCategory::all();
+        return view('approvals.list')->with(compact('users', 'report_categories'));
+    }
+
+    public function approvalList2()
+    {
         // $users = User::with(['reports', 'remainings'])
         //     ->withCount([
         //         'reports AS sum_get_days' => function ($query){
