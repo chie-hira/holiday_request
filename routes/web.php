@@ -43,8 +43,10 @@ Route::get('/approvals/pending', [ReportController::class, 'approvalPending'])
 Route::get('/approvals', [ReportController::class, 'approved'])
     ->name('approvals.index')
     ->middleware('auth', 'can:general_and_factory_gl');
-// Route::get('/approvals/all', [ReportController::class, 'allApprovalPending'])
-//     ->name('approvals.all_index');
+Route::get('/approvals/list', [ReportController::class, 'approvalList'])
+    ->name('approvals.list');
+Route::get('/approvals/list2', [ReportController::class, 'approvalList2'])
+    ->name('approvals.list2');
 Route::get('/approval/{report}', [ReportController::class, 'approval'])
     ->name('approval');
 // Route::get('/approval1/{report}', [ReportController::class, 'approval1'])
