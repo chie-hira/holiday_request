@@ -15,15 +15,8 @@ class CreateSubReportCategoriesTable extends Migration
     {
         Schema::create('sub_report_categories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('report_id')
-                ->constrained('report_categories')
-                ->cascadeOnUpdate()
-                ->cascadeOnDelete();
-            $table->string('sub_report_name');
+            $table->string('sub_report_name')->unique();
             $table->timestamps();
-
-            // 複合ユニーク成約
-            $table->unique(['report_id', 'sub_report_name']);
         });
     }
 

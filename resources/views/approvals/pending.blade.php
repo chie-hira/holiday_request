@@ -71,10 +71,10 @@
                                                 </td>
                                                 <td
                                                     class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                                    {{ $report->report_category->report_name }}
+                                                    <x-report-name :report="$report" />
                                                 </td>
                                                 <td
-                                                    class="pl-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
                                                     @if ($report->start_date != null)
                                                         {{ $report->start_date }}
                                                     @else
@@ -85,7 +85,7 @@
                                                     @endif
                                                 </td>
                                                 <td
-                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                    class="pr-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
                                                     @if ($report->end_date != null)
                                                         ~&emsp;&emsp;{{ $report->end_date }}
                                                     @endif
@@ -97,11 +97,11 @@
                                                     @endif
                                                 </td>
                                                 <td
-                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                    class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-800 dark:text-gray-200">
                                                     @if ($report->get_days_only != 0)
-                                                        {{ $report->get_days_only }} 日
+                                                        {{ $report->get_days_only }} 日&emsp;
                                                     @endif
-                                                    @if ($report->get_hours >= 1)
+                                                    @if ($report->get_hours != 0)
                                                         {{ $report->get_hours }} 時間
                                                     @endif
                                                     @if ($report->get_minutes != 0)

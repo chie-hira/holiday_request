@@ -33,10 +33,6 @@ Route::resource('reports', ReportController::class)
     
 Route::resource('remainings', RemainingController::class);
 
-// Route::get('/reports/index/all', [ReportController::class, 'all_index'])
-//     ->name('reports.all_index')
-//     ->middleware('auth', 'can:general_only');
-
 Route::get('/approvals/pending', [ReportController::class, 'approvalPending'])
     ->name('approvals.pending')
     ->middleware('auth', 'can:general_and_factory_gl');

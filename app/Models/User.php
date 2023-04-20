@@ -113,15 +113,88 @@ class User extends Authenticatable
     // アクセサ
     public function getSumGetDaysAttribute()
     {
-    $sum_get_days = $this->reports
+        $sum_get_days = $this->reports
             ->where('approval1', '=', 1)
             ->where('approval2', '=', 1)
             ->where('approval3', '=', 1)
             ->groupBy('report_id')
-            ->map(function($report_id)
-            {
+            ->map(function ($report_id) {
                 return $report_id->sum('get_days');
             });
-            return $sum_get_days;
+        return $sum_get_days;
+    }
+
+    # 関数
+    public function sumGetDaysOnly($key)
+    {
+        $sum_get_day = $this->sum_get_days[$key];
+        $exp = explode('.', $sum_get_day);
+        return $exp[0];
+    }
+    public function sumGetHours($key)
+    {
+        $sum_get_day = $this->sum_get_days[$key];
+        $exp = explode('.', $sum_get_day);
+        if (array_key_exists(1, $exp)) {
+            # 小数点以下あり(1日未満)
+            $decimal_p = '0.' . $exp[1];
+            $exp_hour = explode('.', $decimal_p * 8); # 8時間で1日
+            return $exp_hour[0];
+        } else {
+            return 0;
+        }
+    }
+    public function sumGetMinutes($key)
+    {
+        $sum_get_day = $this->sum_get_days[$key];
+        $exp = explode('.', $sum_get_day);
+        if (array_key_exists(1, $exp)) {
+            # 小数点以下あり(1日未満)
+            $decimal_p = '0.' . $exp[1];
+            $exp_hour = explode('.', $decimal_p * 8);
+            if (array_key_exists(1, $exp_hour)) {
+                # 小数点以下あり(1時間未満)
+                $decimal_p = '0.' . $exp_hour[1];
+                return round($decimal_p * 60);
+            }
+        } else {
+            return 0;
+        }
+    }
+    public function remainingDaysOnly($key)
+    {
+        $remaining = $this->remainings[$key]->remaining;
+        $exp = explode('.', $remaining);
+        return $exp[0];
+    }
+    public function remainingHours($key)
+    {
+        $remaining = $this->remainings[$key]->remaining;
+        $exp = explode('.', $remaining);
+        if (array_key_exists(1, $exp)) {
+            # 小数点以下あり(1日未満)
+            $decimal_p = '0.' . $exp[1];
+            $exp_hour = explode('.', $decimal_p * 8); # 8時間で1日
+            return $exp_hour[0];
+        } else {
+            return 0;
+        }
+    }
+    public function remainingMinutes($key)
+    {
+        $remaining = $this->remainings[$key]->remaining;
+        $exp = explode('.', $remaining);
+        if (array_key_exists(1, $exp)) {
+            # 小数点以下あり(1日未満)
+            $decimal_p = '0.' . $exp[1];
+            $exp_hour = explode('.', $decimal_p * 8);
+            if (array_key_exists(1, $exp_hour)) {
+                # 小数点以下あり(1時間未満)
+                $decimal_p = '0.' . $exp_hour[1];
+                return round($decimal_p * 60);
+            }
+        } else {
+            return 0;
+        }
     }
 }

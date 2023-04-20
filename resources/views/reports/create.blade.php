@@ -27,6 +27,25 @@
                             @endforeach
                         </select>
                     </div>
+                    <div style="display: " id="empty_field_form"></div>
+                    <div style="display: none" id="sub_category_form">
+                        <label for="sub_report_category" class="block mb-2 text-sm font-medium text-gray-900">
+                            取得形態
+                        </label>
+                        <div class="flex gap-x-6">
+                            @foreach ($sub_report_categories as $sub_category)
+                            <div class="flex mt-2">
+                                <input type="radio" name="sub_report_id" id="sub_report_id"
+                                    value="{{ $sub_category->id }}" @if ($sub_category->id === (int) old('sub_report_id')) checked @endif onclick="subReportCategorySwitch()"
+                                    class="shrink-0 mt-0.5 border-gray-200 rounded-full text-blue-600 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800">
+                                <label for="sub_report_id" name="sub_report_name"
+                                    class="text-sm text-gray-500 ml-2 dark:text-gray-400">
+                                    {{ $sub_category->sub_report_name }}
+                                </label>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
                     <div>
                         <label for="reason_id" class="block mb-2 text-sm font-medium text-gray-900">
                             理由
@@ -38,10 +57,9 @@
                                     {{ $reason->reason }}
                                 </option>
                             @endforeach
-                            {{-- <option value="" id="reason_option" selected> --}}
-                            {{-- </option> --}}
                         </select>
                     </div>
+                    <div></div>
                     <div style="display: none" class="col-span-2" id="reason_detail">
                         <label for="reason_detail" class="block mb-2 text-sm font-medium text-gray-900">
                             理由を記入してください
@@ -275,7 +293,10 @@
     <script>
         /* 表示切替start */
         var reportCategory = document.getElementById('report_id');
+        let subReportCategories = document.getElementsByName('sub_report_id');
         let reasonCategory = document.getElementById('reason_id');
+        let subCategoryForm = document.getElementById('sub_category_form');
+        let emptyFieldForm = document.getElementById('empty_field_form');
         let reasonDetail = document.getElementById('reason_detail');
         let startDateLabel = document.getElementById('start_date_label');
         let startDateForm = document.getElementById('start_date');
@@ -290,9 +311,11 @@
         let amPmForm = document.getElementById('am_pm_form');
         const reasons = @json($reasons);
 
+        // FIXME:reportを切り替えたら、end_date,start_time,end_timeをリセット
         // リダイレクト時
         window.addEventListener('load', function() {
             reportDisplaySwitch(); // reportでform表示切替
+            subReportCategorySwitch(); // sub_reportでform表示切替
             reportReasonSwitch(); // reportでreason種類切替
             reasonDisplaySwitch(); // reasonで理由:その他表示切替
         });
@@ -300,8 +323,17 @@
         // 届出内容選択時
         function reportChange() {
             reportDisplaySwitch(); // reportでform表示切替
+            subReportCategorySwitch(); // sub_reportでform表示切替
             reportReasonSwitch(); // reportでreason種類切替
             reasonDisplaySwitch(); // reasonで理由:その他表示切替
+            timeReset(); // end_date,start_time,end_timeリセット
+        }
+
+        // end_date,start_time,end_timeリセット関数
+        function timeReset() {
+            endDate.value = '';
+            startTime.value = '';
+            endTime.value = '';
         }
 
         // その他理由選択時
@@ -318,91 +350,11 @@
             reasonCategory.appendChild(reasonOption); // htmlにoptionを追加
         }
 
-        // reason切替関数
-        function reportReasonSwitch() {
-            // reasonCategoryのoption要素を削除
-            while (0 < reasonCategory.childNodes.length) {
-                reasonCategory.removeChild(reasonCategory.childNodes[0]);
-            }
-
-            if (reportCategory.value == "1" || // 有給
-                reportCategory.value == "2" || // 半日有給
-                reportCategory.value == "3" || // 時間休
-                reportCategory.value == "12" || // 欠勤
-                reportCategory.value == "13" || // 遅刻
-                reportCategory.value == "14" || // 早退
-                reportCategory.value == "15") { // 外出
-                let reasonId = [1, 2, 3, 4, 5, 6, 7, 8];
-                reasonId.forEach(e => {
-                    let createId = reasons[e - 1].id;
-                    let createReason = reasons[e - 1].reason;
-                    createOption(createId, createReason)
-                });
-            }
-            if (reportCategory.value == "4") { // バースデイ
-                let reasonId = [9];
-                reasonId.forEach(e => {
-                    let createId = reasons[e - 1].id;
-                    let createReason = reasons[e - 1].reason;
-                    createOption(createId, createReason)
-                });
-            }
-            if (reportCategory.value == "5") { // 特別休暇(慶事)
-                let reasonId = [10,8];
-                reasonId.forEach(e => {
-                    let createId = reasons[e - 1].id;
-                    let createReason = reasons[e - 1].reason;
-                    createOption(createId, createReason)
-                });
-            }
-            if (reportCategory.value == "6") { // 特別休暇(弔事)
-                let reasonId = [11,12,13,14,15,16,17,18,19,8];
-                reasonId.forEach(e => {
-                    let createId = reasons[e - 1].id;
-                    let createReason = reasons[e - 1].reason;
-                    createOption(createId, createReason)
-                });
-            }
-            if (reportCategory.value == "7" || // 特別休暇(看護・対象1名)
-                reportCategory.value == "8") { // 特別休暇(看護・対象2名以上)
-                let reasonId = [20,8];
-                reasonId.forEach(e => {
-                    let createId = reasons[e - 1].id;
-                    let createReason = reasons[e - 1].reason;
-                    createOption(createId, createReason)
-                });
-            }
-            if (reportCategory.value == "9" || // 特別休暇(介護・対象1名)
-                reportCategory.value == "10" || // 特別休暇(介護・対象2名)
-                reportCategory.value == "16") { // 介護休業
-                let reasonId = [21,22,23,24,25,26,27,8];
-                reasonId.forEach(e => {
-                    let createId = reasons[e - 1].id;
-                    let createReason = reasons[e - 1].reason;
-                    createOption(createId, createReason)
-                });
-            }
-            if (reportCategory.value == "11" || // 特別休暇(短期育休)
-                reportCategory.value == "17" || // 育児休業
-                reportCategory.value == "18") { // パパ育休
-                let reasonId = [28,8];
-                reasonId.forEach(e => {
-                    let createId = reasons[e - 1].id;
-                    let createReason = reasons[e - 1].reason;
-                    createOption(createId, createReason)
-                });
-            }
-        }
-
-        // form表示切替関数
-        function reportDisplaySwitch() {
-            if (reportCategory.value == "1" || // 有給
-                reportCategory.value == "5" || // 特別休暇(慶事)
-                reportCategory.value == "6" || // 特別休暇(弔事)
-                reportCategory.value == "11" || // 特別休暇(短期育休)
-                reportCategory.value == "16" || // 介護休業
-                reportCategory.value == "17" || // 育児休業
-                reportCategory.value == "18") { // パパ育休
+        // subカテゴリーによるフォーム切替関数
+        function subReportCategorySwitch() {
+            if (subReportCategories[0].checked) { // 終日休
+                // emptyFieldForm.style.display = "none";
+                // subCategoryForm.style.display = "";
                 halfDateLabel.style.display = "none";
                 amPmForm.style.display = "none";
                 timeEmptyForm.style.display = "none";
@@ -415,7 +367,9 @@
                 startDateForm.style.display = "";
                 endDateForm.style.display = "";
             }
-            if (reportCategory.value == "2") { // 半日有給
+            if (subReportCategories[1].checked) { // 半日休
+                // emptyFieldForm.style.display = "none";
+                // subCategoryForm.style.display = "";
                 halfDateLabel.style.display = "";
                 startDateForm.style.display = "";
                 startDateForm.style.display = "";
@@ -429,11 +383,9 @@
                 startDateLabel.style.display = "none";
                 endDateForm.style.display = "none";
             }
-            if (reportCategory.value == "3" || // 時間休
-                reportCategory.value == "7" || // 特別休暇(看護・対象1名)
-                reportCategory.value == "8" || // 特別休暇(看護・対象2名)
-                reportCategory.value == "9" || // 特別休暇(介護・対象1名)
-                reportCategory.value == "10") { // 特別休暇(介護・対象2名)
+            if (subReportCategories[2].checked) { // 時間休
+                // emptyFieldForm.style.display = "none";
+                // subCategoryForm.style.display = "";
                 halfDateLabel.style.display = "";
                 startDateForm.style.display = "";
                 amPmForm.style.display = "none";
@@ -446,8 +398,162 @@
                 startDateLabel.style.display = "none";
                 endDateForm.style.display = "none";
             }
-            if (reportCategory.value == "13" || // 遅刻
-                reportCategory.value == "14") { // 早退
+            timeReset();
+        }
+
+        // reason切替関数
+        function reportReasonSwitch() {
+            let oldReasonId = reasonCategory.value;
+            // reasonCategoryのoption要素を削除
+            while (0 < reasonCategory.childNodes.length) {
+                reasonCategory.removeChild(reasonCategory.childNodes[0]);
+            }
+
+            if (reportCategory.value == "1" || // 有給
+                reportCategory.value == "10" || // 欠勤
+                reportCategory.value == "11" || // 遅刻
+                reportCategory.value == "12" || // 早退
+                reportCategory.value == "13") { // 外出
+                let reasonId = [1, 2, 3, 4, 5, 6, 7, 8];
+                reasonId.forEach(e => {
+                    let createId = reasons[e - 1].id;
+                    let createReason = reasons[e - 1].reason;
+                    createOption(createId, createReason)
+                });
+            }
+            if (reportCategory.value == "2") { // バースデイ
+                let reasonId = [9];
+                reasonId.forEach(e => {
+                    let createId = reasons[e - 1].id;
+                    let createReason = reasons[e - 1].reason;
+                    createOption(createId, createReason)
+                });
+            }
+            if (reportCategory.value == "3") { // 特別休暇(慶事)
+                let reasonId = [10, 8];
+                reasonId.forEach(e => {
+                    let createId = reasons[e - 1].id;
+                    let createReason = reasons[e - 1].reason;
+                    createOption(createId, createReason)
+                });
+            }
+            if (reportCategory.value == "4") { // 特別休暇(弔事)
+                let reasonId = [11, 12, 13, 14, 15, 16, 17, 18, 19, 8];
+                reasonId.forEach(e => {
+                    let createId = reasons[e - 1].id;
+                    let createReason = reasons[e - 1].reason;
+                    createOption(createId, createReason)
+                });
+            }
+            if (reportCategory.value == "5" || // 特別休暇(看護・対象1名)
+                reportCategory.value == "6") { // 特別休暇(看護・対象2名以上)
+                let reasonId = [20, 8];
+                reasonId.forEach(e => {
+                    let createId = reasons[e - 1].id;
+                    let createReason = reasons[e - 1].reason;
+                    createOption(createId, createReason)
+                });
+            }
+            if (reportCategory.value == "7" || // 特別休暇(介護・対象1名)
+                reportCategory.value == "8" || // 特別休暇(介護・対象2名)
+                reportCategory.value == "14") { // 介護休業
+                let reasonId = [21, 22, 23, 24, 25, 26, 27, 8];
+                reasonId.forEach(e => {
+                    let createId = reasons[e - 1].id;
+                    let createReason = reasons[e - 1].reason;
+                    createOption(createId, createReason)
+                });
+            }
+            if (reportCategory.value == "9" || // 特別休暇(短期育休)
+                reportCategory.value == "15" || // 育児休業
+                reportCategory.value == "16") { // パパ育休
+                let reasonId = [28, 8];
+                reasonId.forEach(e => {
+                    let createId = reasons[e - 1].id;
+                    let createReason = reasons[e - 1].reason;
+                    createOption(createId, createReason)
+                });
+            }
+            reasonCategory.childNodes[oldReasonId-1].selected = true;
+        }
+
+        // form表示切替関数
+        function reportDisplaySwitch() {
+            if (reportCategory.value == "1" || // 有給
+                reportCategory.value == "5" || // 特別休暇(看護・対象1名)
+                reportCategory.value == "6" || // 特別休暇(看護・対象2名)
+                reportCategory.value == "7" || // 特別休暇(介護・対象1名)
+                reportCategory.value == "8") { // 特別休暇(介護・対象2名)
+                emptyFieldForm.style.display = "none";
+                subCategoryForm.style.display = "";
+                halfDateLabel.style.display = "none";
+                amPmForm.style.display = "none";
+                timeEmptyForm.style.display = "none";
+                timeForm.style.display = "none";
+                timeForm30.style.display = "none";
+                timeForm10.style.display = "none";
+                startTimeForm.style.display = "none";
+                endTimeForm.style.display = "none";
+                startDateLabel.style.display = "";
+                startDateForm.style.display = "";
+                endDateForm.style.display = "";
+            }
+            // if (reportCategory.value == "1" || // 有給
+            if (reportCategory.value == "3" || // 特別休暇(慶事)
+                reportCategory.value == "4" || // 特別休暇(弔事)
+                reportCategory.value == "9" || // 特別休暇(短期育休)
+                reportCategory.value == "14" || // 介護休業
+                reportCategory.value == "15" || // 育児休業
+                reportCategory.value == "16") { // パパ育休
+                emptyFieldForm.style.display = "";
+                subCategoryForm.style.display = "none";
+                halfDateLabel.style.display = "none";
+                amPmForm.style.display = "none";
+                timeEmptyForm.style.display = "none";
+                timeForm.style.display = "none";
+                timeForm30.style.display = "none";
+                timeForm10.style.display = "none";
+                startTimeForm.style.display = "none";
+                endTimeForm.style.display = "none";
+                startDateLabel.style.display = "";
+                startDateForm.style.display = "";
+                endDateForm.style.display = "";
+            }
+            // if (reportCategory.value == "2") { // 半日有給
+            //     halfDateLabel.style.display = "";
+            //     startDateForm.style.display = "";
+            //     startDateForm.style.display = "";
+            //     amPmForm.style.display = "";
+            //     timeEmptyForm.style.display = "none";
+            //     timeForm.style.display = "none";
+            //     timeForm30.style.display = "none";
+            //     timeForm10.style.display = "none";
+            //     startTimeForm.style.display = "none";
+            //     endTimeForm.style.display = "none";
+            //     startDateLabel.style.display = "none";
+            //     endDateForm.style.display = "none";
+            // }
+            // if (reportCategory.value == "3" || // 時間休
+            //     reportCategory.value == "5" || // 特別休暇(看護・対象1名)
+            //     reportCategory.value == "6" || // 特別休暇(看護・対象2名)
+            //     reportCategory.value == "7" || // 特別休暇(介護・対象1名)
+            //     reportCategory.value == "8") { // 特別休暇(介護・対象2名)
+            //     halfDateLabel.style.display = "";
+            //     startDateForm.style.display = "";
+            //     amPmForm.style.display = "none";
+            //     timeEmptyForm.style.display = "";
+            //     timeForm.style.display = "";
+            //     timeForm30.style.display = "none";
+            //     timeForm10.style.display = "none";
+            //     startTimeForm.style.display = "";
+            //     endTimeForm.style.display = "";
+            //     startDateLabel.style.display = "none";
+            //     endDateForm.style.display = "none";
+            // }
+            if (reportCategory.value == "11" || // 遅刻
+                reportCategory.value == "12") { // 早退
+                emptyFieldForm.style.display = "";
+                subCategoryForm.style.display = "none";
                 halfDateLabel.style.display = "";
                 startDateForm.style.display = "";
                 amPmForm.style.display = "none";
@@ -460,7 +566,9 @@
                 startDateLabel.style.display = "none";
                 endDateForm.style.display = "none";
             }
-            if (reportCategory.value == "15") { // 外出
+            if (reportCategory.value == "13") { // 外出
+                emptyFieldForm.style.display = "";
+                subCategoryForm.style.display = "none";
                 halfDateLabel.style.display = "";
                 startDateForm.style.display = "";
                 amPmForm.style.display = "none";
@@ -473,8 +581,10 @@
                 startDateLabel.style.display = "none";
                 endDateForm.style.display = "none";
             }
-            if (reportCategory.value == "4" || // バースデイ
-                reportCategory.value == "12") { // 欠勤
+            if (reportCategory.value == "2" || // バースデイ
+                reportCategory.value == "10") { // 欠勤
+                emptyFieldForm.style.display = "";
+                subCategoryForm.style.display = "none";
                 halfDateLabel.style.display = "";
                 startDateForm.style.display = "";
                 timeEmptyForm.style.display = "";
@@ -508,6 +618,9 @@
         let endTime = document.getElementById('end_time');
 
         button.addEventListener("click", function() {
+        console.log(endDate.value);
+        endDate.value = '';
+        console.log(endDate.value);
             // 取得日数
             const startVal = new Date(startDate.value);
             const endVal = new Date(endDate.value);
@@ -563,31 +676,32 @@
                 }
             }
 
-            if (reportCategory.value == 1 ||
-                reportCategory.value == 5 ||
-                reportCategory.value == 6 ||
-                reportCategory.value == 8 ||
-                reportCategory.value == 9 ||
-                reportCategory.value == 10 ||
-                reportCategory.value == 11 ||
-                reportCategory.value == 16 ||
-                reportCategory.value == 17 ||
-                reportCategory.value == 18) {
+            if (reportCategory.value == 1 || // 有給
+                reportCategory.value == 3 || // 特別休暇(慶事)
+                reportCategory.value == 4 || // 特別休暇(弔事)
+                reportCategory.value == 5 || // 特別休暇(看護・対象1人)
+                reportCategory.value == 6 || // 特別休暇(看護・対象2人以上)
+                reportCategory.value == 7 || // 特別休暇(介護・対象1人)
+                reportCategory.value == 8 || // 特別休暇(介護・対象2人以上)
+                reportCategory.value == 9 || // 特別休暇(短期育休)
+                reportCategory.value == 14 || // 介護休業
+                reportCategory.value == 15 || // 育児休業
+                reportCategory.value == 16) { // パパ育休
                 getDays = diffDays - dayOffs;
             }
-            if (reportCategory.value == 2) {
+            if (subReportCategories[1].checked) { // 半日休
                 getDays = 0.5;
             }
-            if (reportCategory.value == 3 ||
-                reportCategory.value == 13 ||
-                reportCategory.value == 14 ||
-                reportCategory.value == 15) {
+            if (subReportCategories[2].checked ||
+                reportCategory.value == 11 || // 遅刻
+                reportCategory.value == 12 || // 早退
+                reportCategory.value == 13) { // 外出
                 getDays = ((endTimeVal - startTimeVal) / 60000) / 60 * 1 / 8;
                 // 時間換算:8時間で1日 1時間=1/8日 0.125日
                 getDays = orgRound(getDays, 100000); // 小数点以下切り捨て
                 console.log(getDays);
             }
-            if (reportCategory.value == 4 || reportCategory.value == 12) {
+            if (reportCategory.value == 2 || reportCategory.value == 10) {
                 getDays = 1.0;
             }
 
@@ -621,9 +735,9 @@
             document.getElementById('get_minutes').setAttribute('value', getMinutes);
 
 
-            if (reportId == 2 || reportId == 3) {
-                reportId = 1; // 半日有給、時間給は有給休暇のreport_id
-            }
+            // if (reportId == 2 || reportId == 3) {
+            //     reportId = 1; // 半日有給、時間給は有給休暇のreport_id
+            // }
 
             let ownRemainings = @json($own_remainings);
             const arr = Object.keys(ownRemainings);

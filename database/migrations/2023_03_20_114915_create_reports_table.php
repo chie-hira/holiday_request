@@ -24,6 +24,11 @@ class CreateReportsTable extends Migration
                 ->constrained('report_categories')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
+            $table->foreignId('sub_report_id')
+                ->nullable()
+                ->constrained('sub_report_categories')
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
             $table->foreignId('reason_id')
                 ->constrained('reason_categories')
                 ->cascadeOnUpdate()

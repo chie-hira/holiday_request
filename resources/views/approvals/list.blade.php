@@ -6,28 +6,28 @@
             </div>
 
             <div class="w-full mx-auto overflow-x-auto">
-                <table class="table-auto w-full text-left whitespace-nowrap">
+                <table class="table-auto mx-auto text-left whitespace-nowrap">
                     <thead class="">
                         <tr class="border-b-2">
                             <th
-                                class="px-4 py-3 text-center title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl rounded-bl">
+                                class="w-40 px-4 py-3 text-center title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl">
                                 所 属
                             </th>
                             <th
-                                class="px-4 py-3 text-center title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
+                                class="w-24 px-4 py-3 text-center title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
                                 社員番号
                             </th>
                             <th
-                                class="px-4 py-3 text-center title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
+                                class="w-24 px-4 py-3 text-center title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
                                 氏 名
                             </th>
                             <th 
-                                class="px-4 py-3 text-center title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
-                                取得日数・時間
+                                class="w-24 px-4 py-3 text-center title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
+                                取得日数
                             </th>
                             <th 
-                                class="px-4 py-3 text-center title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">
-                                残日数・時間
+                                class="w-24 px-4 py-3 text-center title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tr">
+                                残日数
                             </th>
                         </tr>
                     </thead>
@@ -39,21 +39,23 @@
                                 <td class="px-4 py-3 text-center">{{ $user->name }}</td>
                                 <td class="px-4 py-3 text-center">
                                     @if ($user->sum_get_days->first())
-                                        @foreach ($user->sum_get_days as $key => $sum_get_day)
-                                            <p>{{ $report_categories[$key-1]->report_name }}</p>
-                                        @endforeach
-                                    @endif
-                                </td>
-                                <td class="px-4 py-3 text-center">
-                                    @if ($user->sum_get_days->first())
-                                        @foreach ($user->sum_get_days as $key => $sum_get_day)
-                                            <p>{{ $sum_get_day }}</p>
-                                        @endforeach
+                                        @if ($user->sumGetDaysOnly(1) != 0)
+                                            {{ $user->sumGetDaysOnly(1) }} 日
+                                        @endif
+                                        @if ($user->sumGetHours(1) != 0)
+                                            {{ $user->sumGetHours(1) }} 時間
+                                        @endif
                                     @endif
                                 </td>
                                 <td class="px-4 py-3 text-center">
                                     @if ($user->remainings->first())
-                                        {{ $user->remainings[0]->remaining }}
+                                        {{-- {{ $user->remainings[0]->remaining }} --}}
+                                        @if ($user->remainingDaysOnly(0) != 0)
+                                            {{ $user->remainingDaysOnly(0) }} 日
+                                        @endif
+                                        @if ($user->remainingHours(0) != 0)
+                                            {{ $user->remainingHours(0) }} 時間
+                                        @endif
                                     @endif
                                 </td>
                             </tr>
