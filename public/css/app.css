@@ -729,6 +729,10 @@ select {
   margin-top: -0.375rem;
   margin-bottom: -0.375rem;
 }
+.mx-2 {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
@@ -1059,9 +1063,6 @@ select {
 }
 .rounded-tl {
   border-top-left-radius: 0.25rem;
-}
-.rounded-tr {
-  border-top-right-radius: 0.25rem;
 }
 .border {
   border-width: 1px;
@@ -1508,6 +1509,14 @@ select {
   --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.shadow-pink-500\/50 {
+  --tw-shadow-color: rgb(236 72 153 / 0.5);
+  --tw-shadow: var(--tw-shadow-colored);
+}
+.shadow-purple-500\/50 {
+  --tw-shadow-color: rgb(168 85 247 / 0.5);
+  --tw-shadow: var(--tw-shadow-colored);
 }
 .ring-1 {
   --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);

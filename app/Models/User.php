@@ -96,22 +96,8 @@ class User extends Authenticatable
         );
     }
 
-    // メソッド
-    public function getApprovalName($approval_id)
-    {
-        // dd(1);
-        $approval = ApprovalCategory::find($approval_id);
-        // dd($approval->approval_name);
-        return $approval->approval_name;
-    }
-    public function getApprovalDepartment($department_id)
-    {
-        $department = DepartmentCategory::find($department_id);
-        return $department->department_name;
-    }
-
     // アクセサ
-    public function getSumGetDaysAttribute()
+    public function getSumGetDaysAttribute() # 取得日数集計
     {
         $sum_get_days = $this->reports
             ->where('approval1', '=', 1)
@@ -124,17 +110,37 @@ class User extends Authenticatable
         return $sum_get_days;
     }
 
-    # 関数
-    public function sumGetDaysOnly($key)
+    // メソッド(関数)
+    public function getApprovalName($approval_id)
     {
-        $sum_get_day = $this->sum_get_days[$key];
-        $exp = explode('.', $sum_get_day);
-        return $exp[0];
+        $approval = ApprovalCategory::find($approval_id);
+        return $approval->approval_name;
     }
-    public function sumGetHours($key)
+    public function getApprovalDepartment($department_id)
     {
-        $sum_get_day = $this->sum_get_days[$key];
-        $exp = explode('.', $sum_get_day);
+        $department = DepartmentCategory::find($department_id);
+        return $department->department_name;
+    }
+
+    public function sumGetDaysOnly($key) # 取得日数だけ
+    {
+        $sum_get_days = $this->sum_get_days;
+        if ($sum_get_days->has($key)) { # keyの存在確認
+            $exp = explode('.', $sum_get_days[$key]);
+            return $exp[0];
+        } else {
+            return 0;
+        }
+    }
+    public function sumGetHours($key) # 取得時間だけ
+    {
+        $sum_get_days = $this->sum_get_days;
+        if ($sum_get_days->has($key)) { # keyの存在確認
+            $exp = explode('.', $sum_get_days[$key]);
+        } else {
+            return 0;
+        }
+
         if (array_key_exists(1, $exp)) {
             # 小数点以下あり(1日未満)
             $decimal_p = '0.' . $exp[1];
@@ -144,10 +150,15 @@ class User extends Authenticatable
             return 0;
         }
     }
-    public function sumGetMinutes($key)
+    public function sumGetMinutes($key) # 取得分だけ
     {
-        $sum_get_day = $this->sum_get_days[$key];
-        $exp = explode('.', $sum_get_day);
+        $sum_get_days = $this->sum_get_days;
+        if ($sum_get_days->has($key)) { # keyの存在確認
+            $exp = explode('.', $sum_get_days[$key]);
+        } else {
+            return 0;
+        }
+
         if (array_key_exists(1, $exp)) {
             # 小数点以下あり(1日未満)
             $decimal_p = '0.' . $exp[1];
@@ -161,13 +172,14 @@ class User extends Authenticatable
             return 0;
         }
     }
-    public function remainingDaysOnly($key)
+
+    public function remainingDaysOnly($key) # 残日数だけ
     {
         $remaining = $this->remainings[$key]->remaining;
         $exp = explode('.', $remaining);
         return $exp[0];
     }
-    public function remainingHours($key)
+    public function remainingHours($key) # 残時間だけ
     {
         $remaining = $this->remainings[$key]->remaining;
         $exp = explode('.', $remaining);
@@ -180,7 +192,7 @@ class User extends Authenticatable
             return 0;
         }
     }
-    public function remainingMinutes($key)
+    public function remainingMinutes($key) # 残分だけ
     {
         $remaining = $this->remainings[$key]->remaining;
         $exp = explode('.', $remaining);

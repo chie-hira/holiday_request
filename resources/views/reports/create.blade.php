@@ -618,9 +618,6 @@
         let endTime = document.getElementById('end_time');
 
         button.addEventListener("click", function() {
-        console.log(endDate.value);
-        endDate.value = '';
-        console.log(endDate.value);
             // 取得日数
             const startVal = new Date(startDate.value);
             const endVal = new Date(endDate.value);

@@ -550,32 +550,9 @@ class ReportController extends Controller
     public function approvalList()
     {
         $users = User::with(['reports', 'remainings'])->get();
-        $box = new Collection([
-            1 => ['取得' => 0, '残' => 0],
-            2 => ['取得' => 0, '残' => 0],
-            3 => ['取得' => 0, '残' => 0],
-            4 => ['取得' => 0, '残' => 0],
-            5 => ['取得' => 0, '残' => 0],
-            6 => ['取得' => 0, '残' => 0],
-            7 => ['取得' => 0, '残' => 0],
-            8 => ['取得' => 0, '残' => 0],
-            9 => ['取得' => 0, '残' => 0],
-            10 => ['取得' => 0, '残' => 0],
-            11 => ['取得' => 0, '残' => 0],
-            12 => ['取得' => 0, '残' => 0],
-            13 => ['取得' => 0, '残' => 0],
-            14 => ['取得' => 0, '残' => 0],
-            15 => ['取得' => 0, '残' => 0],
-            16 => ['取得' => 0, '残' => 0],
-        ]);
-
-        // $users[0]->box = $box;
-        // dd($users[0]->box[1]['取得']);
-        // $users[0]->box[1]['取得'] = $users[0]->sum_get_days[1];
-        // dd($users[0]);
-
-        // dd($users[0]->sum_get_days[1]);
         $report_categories = ReportCategory::all();
+        // dd($report_categories);
+
         return view('approvals.list')->with(
             compact('users', 'report_categories')
         );
@@ -599,7 +576,7 @@ class ReportController extends Controller
 
         $users = User::with(['reports', 'remainings'])->get();
         $report_categories = ReportCategory::all();
-        return view('approvals.list')->with(
+        return view('approvals.list2')->with(
             compact('users', 'report_categories')
         );
     }
