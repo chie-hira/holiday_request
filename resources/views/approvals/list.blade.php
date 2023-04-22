@@ -1,9 +1,13 @@
 <x-app-layout>
     <!-- Page Heading -->
-    <header class="text-sm bg-pink-50 shadow-md shadow-purple-500/50">
+    <header class="text-sm bg-purple-50 shadow-md shadow-purple-500/50">
         <div class="flex max-w-7xl mx-auto py-1 px-4 sm:px-6 lg:px-8">
             <button class="mx-2" onclick="reportChange1()">有給休暇</button>
             <button class="mx-2" onclick="reportChange2()">バースデイ休暇</button>
+            <button class="mx-2" onclick="reportChange10()">欠 勤</button>
+            <button class="mx-2" onclick="reportChange11()">遅 刻</button>
+            <button class="mx-2" onclick="reportChange12()">早 退</button>
+            <button class="mx-2" onclick="reportChange13()">外 出</button>
         </div>
     </header>
     <section class="text-gray-600 body-font">
@@ -17,6 +21,22 @@
                 <p id="report_name-2" style="display: none"
                     class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
                     バースデイ休暇
+                </p>
+                <p id="report_name-10" style="display: none"
+                    class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
+                    欠 勤
+                </p>
+                <p id="report_name-11" style="display: none"
+                    class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
+                    遅 刻
+                </p>
+                <p id="report_name-12" style="display: none"
+                    class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
+                    早 退
+                </p>
+                <p id="report_name-13" style="display: none"
+                    class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
+                    外 出
                 </p>
             </div>
 
@@ -44,7 +64,7 @@
                                                 class="w-24 px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 取得日数
                                             </th>
-                                            <th
+                                            <th id="remaining_title" style="display: "
                                                 class="w-24 px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 残日数
                                             </th>
@@ -65,41 +85,31 @@
                                                     {{ $user->name }}</td>
                                                 <td 
                                                     class="px-4 py-4 whitespace-nowrap text-sm text-right text-gray-800 dark:text-gray-200">
-                                                    {{-- @if ($user->sum_get_days->first())
-                                                        @if ($user->sumGetDaysOnly(1) != 0)
-                                                            {{ $user->sumGetDaysOnly(1) }} 日&emsp;
-                                                        @endif
-                                                        @if ($user->sumGetHours(1) != 0)
-                                                            {{ $user->sumGetHours(1) }} 時間
-                                                        @endif
-                                                        @if ($user->sumGetHours(1) == 0)
-                                                            &emsp;&emsp;&emsp;
-                                                        @endif
-                                                    @endif --}}
-                                                    <div id="get-1-{{ $user->id }}" style="display: ">
+                                                    <div id="get-1_{{ $user->id }}" style="display: ">
                                                         <x-sum-get-days :user="$user" key=1 /> {{-- 有給 --}}
                                                     </div>
-                                                    <div id="get-2-{{ $user->id }}" style="display: none">
+                                                    <div id="get-2_{{ $user->id }}" style="display: none">
                                                         <x-sum-get-days :user="$user" key=2 /> {{-- バースデイ --}}
                                                     </div>
+                                                    <div id="get-10_{{ $user->id }}" style="display: none">
+                                                        <x-sum-get-days :user="$user" key=10 /> {{-- 欠勤 --}}
+                                                    </div>
+                                                    <div id="get-11_{{ $user->id }}" style="display: none">
+                                                        <x-sum-get-days :user="$user" key=11 /> {{-- 遅刻 --}}
+                                                    </div>
+                                                    <div id="get-12_{{ $user->id }}" style="display: none">
+                                                        <x-sum-get-days :user="$user" key=12 /> {{-- 早退 --}}
+                                                    </div>
+                                                    <div id="get-13_{{ $user->id }}" style="display: none">
+                                                        <x-sum-get-days :user="$user" key=13 /> {{-- 外出 --}}
+                                                    </div>
                                                 </td>
-                                                <td
+                                                <td id="remaining_data" style="display: "
                                                     class="px-4 py-4 whitespace-nowrap text-sm text-right text-gray-800 dark:text-gray-200">
-                                                    {{-- @if ($user->remainings->first())
-                                                        @if ($user->remainingDaysOnly(0) != 0)
-                                                            {{ $user->remainingDaysOnly(0) }} 日&emsp;
-                                                        @endif
-                                                        @if ($user->remainingHours(0) != 0)
-                                                            {{ $user->remainingHours(0) }} 時間
-                                                        @endif
-                                                        @if ($user->remainingHours(0) == 0)
-                                                            &emsp;&emsp;&emsp;
-                                                        @endif
-                                                    @endif --}}
-                                                    <div id="remaining-1-{{ $user->id }}" style="display: ">
+                                                    <div id="remaining-1_{{ $user->id }}" style="display: ">
                                                         <x-remaining-days :user="$user" key=0 /> {{-- 有給 --}}
                                                     </div>
-                                                    <div id="remaining-2-{{ $user->id }}" style="display: none">
+                                                    <div id="remaining-2_{{ $user->id }}" style="display: none">
                                                         <x-remaining-days :user="$user" key=1 /> {{-- バースデイ --}}
                                                     </div>
                                                 </td>
@@ -131,38 +141,124 @@
 
     <script>
         let reportName1 = document.getElementById('report_name-1');
-        // let report1 = document.getElementById('report-1');
         let reportName2 = document.getElementById('report_name-2');
-        // let report2 = document.getElementById('report-2');
+        let reportName10 = document.getElementById('report_name-10');
+        let reportName11 = document.getElementById('report_name-11');
+        let reportName12 = document.getElementById('report_name-12');
+        let reportName13 = document.getElementById('report_name-13');
+        let remainingTitle = document.getElementById('remaining_title');
+        let remainingData = document.getElementById('remaining_data');
         const users = @json($users);
 
         function reportChange1() {
-            reportName1.style.display = '';
-            reportName2.style.display = 'none';
+            reportNameRemainingOn(reportName1);
+            reportDataRemainingOn(1);
+        }
+        function reportChange2() {
+            reportNameRemainingOn(reportName2);
+            reportDataRemainingOn(2);
+        }
+        function reportChange10() {
+            reportNameRemainingOff(reportName10);
+            reportDataRemainingOff(10) ;
+        }
+        function reportChange11() {
+            reportNameRemainingOff(reportName11);
+            reportDataRemainingOff(11) ;
+        }
+        function reportChange12() {
+            reportNameRemainingOff(reportName12);
+            reportDataRemainingOff(12) ;
+        }
+        function reportChange13() {
+            reportNameRemainingOff(reportName13);
+            reportDataRemainingOff(13) ;
+        }
+
+        function reportDataRemainingOn(repoortCategoryId) {
+            let getId = 'get-'+repoortCategoryId;
+            let remainingId = 'remaining-'+repoortCategoryId;
+
             users.forEach(e => {
-                let getId1 = document.getElementById('get-1-'+e.id);
-                let getId2 = document.getElementById('get-2-'+e.id);
-                let remainingId1 = document.getElementById('remaining-1-'+e.id);
-                let remainingId2 = document.getElementById('remaining-2-'+e.id);
-                getId1.style.display = '';
-                getId2.style.display = 'none';
-                remainingId1.style.display = '';
+                let getId1 = document.getElementById('get-1_'+e.id);
+                let getId2 = document.getElementById('get-2_'+e.id);
+                let getId10 = document.getElementById('get-10_'+e.id);
+                let getId11 = document.getElementById('get-11_'+e.id);
+                let getId12 = document.getElementById('get-12_'+e.id);
+                let getId13 = document.getElementById('get-13_'+e.id);
+                let remainingId1 = document.getElementById('remaining-1_'+e.id);
+                let remainingId2 = document.getElementById('remaining-2_'+e.id);
+                const getIds = [getId1, getId2, getId10, getId11, getId12, getId13];
+                const remainingIds = [remainingId1, remainingId2];
+                
+                getIds.forEach(id => {
+                    idSplit = id.id.split('_');
+                    if (getId == idSplit[0]) {
+                        id.style.display = '';
+                    } else {
+                        id.style.display = 'none';
+                    }
+                });
+                remainingIds.forEach(id => {
+                    idSplit = id.id.split('_');
+                    if (remainingId == idSplit[0]) {
+                        id.style.display = '';
+                    } else {
+                        id.style.display = 'none';
+                    }
+                });
+            });
+        }
+        function reportDataRemainingOff(repoortCategoryId) {
+            let getId = 'get-'+repoortCategoryId;
+
+            users.forEach(e => {
+                let getId1 = document.getElementById('get-1_'+e.id);
+                let getId2 = document.getElementById('get-2_'+e.id);
+                let getId10 = document.getElementById('get-10_'+e.id);
+                let getId11 = document.getElementById('get-11_'+e.id);
+                let getId12 = document.getElementById('get-12_'+e.id);
+                let getId13 = document.getElementById('get-13_'+e.id);
+                let remainingId1 = document.getElementById('remaining-1_'+e.id);
+                let remainingId2 = document.getElementById('remaining-2_'+e.id);
+                const getIds = [getId1, getId2, getId10, getId11, getId12, getId13];
+                
+                getIds.forEach(id => {
+                    idSplit = id.id.split('_');
+                    if (getId == idSplit[0]) {
+                        id.style.display = '';
+                    } else {
+                        id.style.display = 'none';
+                    }
+                });
+                remainingId1.style.display = 'none';
                 remainingId2.style.display = 'none';
             });
         }
-        function reportChange2() {
-            reportName1.style.display = 'none';
-            reportName2.style.display = '';
-            users.forEach(e => {
-                let getId1 = document.getElementById('get-1-'+e.id);
-                let getId2 = document.getElementById('get-2-'+e.id);
-                let remainingId1 = document.getElementById('remaining-1-'+e.id);
-                let remainingId2 = document.getElementById('remaining-2-'+e.id);
-                getId1.style.display = 'none';
-                getId2.style.display = '';
-                remainingId1.style.display = 'none';
-                remainingId2.style.display = '';
+
+        function reportNameRemainingOn(reportName) {
+            const reportNames = [reportName1, reportName2, reportName10, reportName11, reportName12, reportName13];
+            reportNames.forEach(name => {
+                if (reportName == name) {
+                    reportName.style.display = '';
+                } else {
+                    name.style.display = 'none';
+                }
             });
+            remainingTitle.style.display = '';
+            remainingData.style.display = '';
+        }
+        function reportNameRemainingOff(reportName) {
+            const reportNames = [reportName1, reportName2, reportName10, reportName11, reportName12, reportName13];
+            reportNames.forEach(name => {
+                if (reportName == name) {
+                    reportName.style.display = '';
+                } else {
+                    name.style.display = 'none';
+                }
+            });
+            remainingTitle.style.display = 'none';
+            remainingData.style.display = 'none';
         }
     </script>
 </x-app-layout>

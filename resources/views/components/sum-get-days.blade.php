@@ -7,7 +7,10 @@
     @if ($user->sumGetHours($key) != 0)
         {{ $user->sumGetHours($key) }} 時間
     @endif
-    @if ($user->sumGetHours($key) == 0)
+    @if ($user->sumGetMinutes($key) != 0)
+        {{ $user->sumGetMinutes($key) }} 分
+    @endif
+    @if ($user->sumGetMinutes($key) == 0)
         &emsp;&emsp;&emsp;
     @endif
 @endif
