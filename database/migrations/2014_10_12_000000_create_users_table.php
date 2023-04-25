@@ -30,11 +30,7 @@ class CreateUsersTable extends Migration
                 ->constrained('department_categories')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
-            // $table->foreignId('approval_id')
-            //     ->nullable()
-            //     ->constrained('approval_categories')
-            //     ->cascadeOnUpdate()
-            //     ->cascadeOnDelete();
+            $table->date('adoption_date');
             $table->rememberToken();
             $table->timestamps();
         });

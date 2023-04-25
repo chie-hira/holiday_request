@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Faker\Factory;
 
 class UsersTableSeeder extends Seeder
 {
@@ -14,6 +15,7 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
+        $faker = Factory::create('ja_JP');
         $param = [
             [
             'name' => '佐藤昭彦',
@@ -22,6 +24,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 392,
             'factory_id' => 1,
             'department_id' => 2,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '千葉　伸',
@@ -30,6 +33,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 618,
             'factory_id' => 1,
             'department_id' => 2,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '今野 祐香',
@@ -38,6 +42,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 506,
             'factory_id' => 1,
             'department_id' => 2,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '菅原　麻由子',
@@ -46,6 +51,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 616,
             'factory_id' => 1,
             'department_id' => 2,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '佐藤 友南',
@@ -54,6 +60,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 682,
             'factory_id' => 1,
             'department_id' => 2,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '岩淵 信之',
@@ -62,6 +69,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 475,
             'factory_id' => 1,
             'department_id' => 3,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '千葉 新治',
@@ -70,6 +78,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 176,
             'factory_id' => 1,
             'department_id' => 3,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '沼倉　淳',
@@ -78,6 +87,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 75,
             'factory_id' => 1,
             'department_id' => 3,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '木村 勝枝',
@@ -86,6 +96,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 144,
             'factory_id' => 1,
             'department_id' => 3,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '那須野 定',
@@ -94,6 +105,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 490,
             'factory_id' => 1,
             'department_id' => 3,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '齋藤 北斗',
@@ -102,6 +114,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 574,
             'factory_id' => 1,
             'department_id' => 3,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '岩渕　昭一',
@@ -110,6 +123,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 614,
             'factory_id' => 1,
             'department_id' => 3,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '佐藤　健治',
@@ -118,6 +132,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 706,
             'factory_id' => 1,
             'department_id' => 3,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '千葉　茂',
@@ -126,6 +141,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 16,
             'factory_id' => 1,
             'department_id' => 3,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '菅原 綾',
@@ -134,6 +150,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 577,
             'factory_id' => 1,
             'department_id' => 3,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '岩渕　宏',
@@ -142,6 +159,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 34,
             'factory_id' => 1,
             'department_id' => 3,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '阿部　敏久',
@@ -150,6 +168,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 416,
             'factory_id' => 1,
             'department_id' => 3,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '岩淵 信之',
@@ -158,6 +177,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 28,
             'factory_id' => 1,
             'department_id' => 4,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '佐藤 欣也',
@@ -166,6 +186,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 69,
             'factory_id' => 1,
             'department_id' => 4,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '鈴木 良樹',
@@ -174,6 +195,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 546,
             'factory_id' => 1,
             'department_id' => 4,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '猪岡 英宣',
@@ -182,6 +204,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 552,
             'factory_id' => 1,
             'department_id' => 4,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '佐藤　憲一',
@@ -190,6 +213,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 570,
             'factory_id' => 1,
             'department_id' => 4,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '小松 勇児',
@@ -198,6 +222,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 613,
             'factory_id' => 1,
             'department_id' => 4,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '小田中 秀樹',
@@ -206,6 +231,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 635,
             'factory_id' => 1,
             'department_id' => 4,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '氏家　達也',
@@ -214,6 +240,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 665,
             'factory_id' => 1,
             'department_id' => 4,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '佐藤　誠',
@@ -222,6 +249,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 411,
             'factory_id' => 1,
             'department_id' => 5,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '金田 政樹',
@@ -230,6 +258,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 302,
             'factory_id' => 1,
             'department_id' => 5,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '吉家 勝之',
@@ -238,6 +267,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 17,
             'factory_id' => 1,
             'department_id' => 5,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '菅原 富男',
@@ -246,6 +276,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 177,
             'factory_id' => 1,
             'department_id' => 5,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '遠藤 悦子',
@@ -254,6 +285,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 575,
             'factory_id' => 1,
             'department_id' => 5,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '渡辺　剛',
@@ -262,6 +294,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 42,
             'factory_id' => 1,
             'department_id' => 6,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '菅原 勝明',
@@ -270,6 +303,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 68,
             'factory_id' => 1,
             'department_id' => 6,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '鈴木 立萍',
@@ -278,6 +312,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 370,
             'factory_id' => 1,
             'department_id' => 6,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '田村 和之',
@@ -286,6 +321,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 397,
             'factory_id' => 1,
             'department_id' => 6,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '菊地 嵩斗',
@@ -294,6 +330,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 565,
             'factory_id' => 1,
             'department_id' => 6,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '松田　伸一',
@@ -302,6 +339,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 610,
             'factory_id' => 1,
             'department_id' => 6,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '千葉　花那',
@@ -310,6 +348,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 698,
             'factory_id' => 1,
             'department_id' => 6,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '小野寺 純',
@@ -318,6 +357,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 259,
             'factory_id' => 1,
             'department_id' => 6,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '山本　恵子',
@@ -326,6 +366,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 63,
             'factory_id' => 1,
             'department_id' => 7,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '渡辺　久美',
@@ -334,6 +375,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 94,
             'factory_id' => 1,
             'department_id' => 7,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '米倉　美月',
@@ -342,6 +384,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 631,
             'factory_id' => 1,
             'department_id' => 7,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '岩渕 てい子',
@@ -350,6 +393,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 90,
             'factory_id' => 1,
             'department_id' => 8,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '千葉　優二',
@@ -358,6 +402,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 249,
             'factory_id' => 1,
             'department_id' => 8,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '千葉　博',
@@ -366,6 +411,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 334,
             'factory_id' => 1,
             'department_id' => 8,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '千葉　梢',
@@ -374,6 +420,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 449,
             'factory_id' => 1,
             'department_id' => 8,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '千葉 和俊',
@@ -382,6 +429,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 488,
             'factory_id' => 1,
             'department_id' => 9,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '小野 裕一',
@@ -390,6 +438,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 51,
             'factory_id' => 1,
             'department_id' => 9,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '須藤三樹夫',
@@ -398,6 +447,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 366,
             'factory_id' => 1,
             'department_id' => 10,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '浅利　摩実',
@@ -406,6 +456,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 201,
             'factory_id' => 1,
             'department_id' => 10,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '千葉　寛子',
@@ -414,6 +465,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 214,
             'factory_id' => 1,
             'department_id' => 10,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '松井　むつみ',
@@ -422,6 +474,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 640,
             'factory_id' => 1,
             'department_id' => 10,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '蜂谷　昭子',
@@ -430,6 +483,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 499,
             'factory_id' => 1,
             'department_id' => 10,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '熊谷琴美',
@@ -438,6 +492,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 724,
             'factory_id' => 1,
             'department_id' => 11,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '八重樫美菜',
@@ -446,6 +501,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 733,
             'factory_id' => 1,
             'department_id' => 11,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
             'name' => '松本英之',
@@ -454,6 +510,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 734,
             'factory_id' => 1,
             'department_id' => 11,
+            'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
         ];
         
