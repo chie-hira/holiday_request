@@ -14,9 +14,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\DB;
-
-use function PHPUnit\Framework\isNull;
 
 class ReportController extends Controller
 {
@@ -28,7 +25,6 @@ class ReportController extends Controller
     public function index()
     {
         $reports = Report::all()->where('user_id', '=', Auth::user()->id);
-
         return view('reports.index')->with(compact('reports'));
     }
 
@@ -56,14 +52,7 @@ class ReportController extends Controller
             );
         }
 
-        return view('reports.create')->with(
-            compact(
-                'report_categories',
-                'sub_report_categories',
-                'reasons',
-                'own_remainings'
-            )
-        );
+        return view('reports.create')->with(compact('report_categories', 'sub_report_categories', 'reasons', 'own_remainings'));
     }
 
     /**
@@ -74,61 +63,93 @@ class ReportController extends Controller
      */
     public function store(StoreReportRequest $request)
     {
-        // dd($request);
-        if ($request->report_id == 1) {
+        // バリデーション
+        if ($request->report_id == 1 || # 有給
+            $request->report_id == 5 || # 特別休暇(看護・対象1名)
+            $request->report_id == 6 || # 特別休暇(看護・対象2名)
+            $request->report_id == 7 || # 特別休暇(介護・対象1名)
+            $request->report_id == 8) { # 特別休暇(介護・対象2名)
             $request->validate([
                 'sub_report_id' => 'required|integer',
             ]);
-            if ($request->sub_report_id == 1) {
+            if ($request->sub_report_id == 1) { # 終日休暇
                 $request->validate([
-                    'start_date' => 'required|date|after_or_equal:report_date',
-                    'end_date' => 'required|date|after_or_equal:start_date',
-                ]);
-            }
-            if ($request->sub_report_id == 2) {
-                $request->validate([
-                    'start_date' => 'required|date|after_or_equal:report_date',
-                ]);
-            }
-            if ($request->sub_report_id == 3) {
-                $request->validate(
+                        'start_date' => 'required|date|after_or_equal:report_date',
+                        'end_date' => 'required|date|after_or_equal:start_date',
+                        'get_days' => 'required|integer|min:1',
+                    ],
                     [
+                        'get_days.min' =>
+                            '取得日数は1日以上で取得可能です。日数算出ボタンを押してください。',
+                    ]
+                );
+            }
+            if ($request->sub_report_id == 2) { # 半日休暇
+                $request->validate([
+                        'start_date' => 'required|date|after_or_equal:report_date',
+                        'am_pm' => 'required|integer',
+                        'get_days' => ['required', Rule::in(0.5),],
+                    ],
+                    [
+                        'get_days.in' =>
+                            '日付算出ボタンを押してください。',
+                        'am_pm.required' =>
+                            '午前・午後を選択してください。',
+                        'am_pm.integer' =>
+                            '午前・午後を選択してください。',
+                    ]
+                );
+            }
+            if ($request->sub_report_id == 3) { # 時間休 
+                $request->validate([
                         'start_time' => 'required|date_format:H:i',
                         'end_time' =>
                             'required|date_format:H:i|after:start_time',
-                        'get_days' => 'required|multiple_of:0.125',
+                        'get_days' => ['required', Rule::in([
+                                0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.825,
+                            ]),
+                        ],
                     ],
                     [
-                        'get_days.multiple_of' =>
-                            '時間休は1時間単位で取得可能です。',
+                        'get_days.in' =>
+                            '時間休は1時間単位で取得可能です。日数算出ボタンを押してください。',
                     ]
                 );
             }
         }
-        // if ($request->report_id == 2) {
-        //     $request->validate([
-        //         'start_date' => 'required|date|after_or_equal:report_date',
-        //     ]);
-        // }
-        // if ($request->report_id == 3) {
-        //     $request->validate(
-        //         [
-        //             'start_time' => 'required|date_format:H:i',
-        //             'end_time' => 'required|date_format:H:i|after:start_time',
-        //             'get_days' => 'required|multiple_of:0.125',
-        //         ],
-        //         [
-        //             'get_days.multiple_of' =>
-        //                 '時間休は1時間単位で取得可能です。',
-        //         ]
-        //     );
-        // }
-        if ($request->report_id == 11 || $request->report_id == 12) {
-            $request->validate(
-                [
+        if ($request->report_id == 2 || # バースデイ
+            $request->report_id == 10){ # 欠勤
+            $request->validate([
+                'start_date' => 'required|date|after_or_equal:report_date',
+                'get_days' => ['required', Rule::in(1.0),],
+            ],
+            [
+                'get_days.in' =>
+                    '日付算出ボタンを押してください。',
+            ]);
+        }
+        if ($request->report_id == 3 || # 特別休暇(慶事)
+            $request->report_id == 4 || # 特別休暇(弔事)
+            $request->report_id == 9 || # 特別休暇(短期育休)
+            $request->report_id == 14 || # 介護休業
+            $request->report_id == 15 || # 育児休業
+            $request->report_id == 16) { # パパ育休
+            $request->validate([
+                        'start_date' => 'required|date|after_or_equal:report_date',
+                        'end_date' => 'required|date|after_or_equal:start_date',
+                        'get_days' => 'required|integer|min:1',
+                    ],
+                    [
+                        'get_days.min' =>
+                            '取得日数は1日以上で取得可能です。日数算出ボタンを押してください。',
+                    ]
+            );
+        }
+        if ($request->report_id == 11 || # 遅刻
+            $request->report_id == 12) { # 早退
+            $request->validate([
                     'start_time' => 'required|date_format:H:i',
                     'end_time' => 'required|date_format:H:i|after:start_time',
-                    // FIXME:'get_days' => 'required|multiple_of:0.02083',
                     'get_days' => [
                         'required',
                         Rule::in([
@@ -183,24 +204,43 @@ class ReportController extends Controller
                     ],
                 ],
                 [
-                    'get_days.multiple_of' =>
-                        '遅刻・早退は10分単位で取得可能です。',
-                ]
+                    'get_days.in' =>
+                        '遅刻・早退は10分単位で取得可能です。日付算出ボタンを押してください。',
+                ],
             );
         }
-        if ($request->report_id == 13) {
-            $request->validate(
-                [
+        if ($request->report_id == 13) { # 外出
+            $request->validate([
                     'start_time' => 'required|date_format:H:i',
                     'end_time' => 'required|date_format:H:i|after:start_time',
-                    'get_days' => 'required|multiple_of:0.0625',
+                    'get_days' => [
+                        'required',
+                        Rule::in([
+                            0.0625,
+                            0.125,
+                            0.1875,
+                            0.25,
+                            0.3125,
+                            0.375,
+                            0.4375,
+                            0.5,
+                            0.5625,
+                            0.625,
+                            0.6875,
+                            0.75,
+                            0.8125,
+                            0.825,
+                            0.9375,
+                        ]),
+                    ],
                 ],
                 [
-                    'get_days.multiple_of' => '外出は30分単位で取得可能です。',
-                ]
+                    'get_days.in' =>
+                        '外出は30分単位で取得可能です。日付算出ボタンを押してください。',
+                ],
             );
         }
-        if ($request->reason_id == 8) {
+        if ($request->reason_id == 8) { # 理由:その他
             $request->validate(
                 [
                     'reason_detail' => 'required|max:200',
@@ -211,15 +251,12 @@ class ReportController extends Controller
             );
         }
 
-        $report_id = $request->report_id;
-        // if ($report_id == 2 || $report_id == 3) {
-        //     $report_id = 1;
-        // }
+        $report_id = $request->report_id; // 説明変数
         $remaining = Remaining::where('user_id', '=', Auth::user()->id)
             ->where('report_id', '=', $report_id)
             ->first('remaining');
         if (!empty($remaining->remaining)) {
-            $result = $remaining->remaining - $request->get_days;
+            $result = $remaining->remaining - $request->get_days; // 説明変数
 
             if ($result < 0) {
                 throw ValidationException::withMessages([
@@ -253,7 +290,6 @@ class ReportController extends Controller
      */
     public function show(Report $report)
     {
-        // dd(empty(Auth::user()->approvals->where('approval_id', '=', 1)->first()));
         return view('reports.show')->with(compact('report'));
     }
 
@@ -266,11 +302,12 @@ class ReportController extends Controller
     public function edit(Report $report)
     {
         $report_categories = ReportCategory::all();
+        $sub_report_categories = SubReportCategory::all();
         $reasons = ReasonCategory::all();
         $own_remainings = Remaining::all()->where('user_id', '=', Auth::id());
 
         return view('reports.edit')->with(
-            compact('report', 'report_categories', 'reasons', 'own_remainings')
+            compact('report', 'report_categories', 'sub_report_categories', 'reasons', 'own_remainings')
         );
     }
 
@@ -283,56 +320,189 @@ class ReportController extends Controller
      */
     public function update(UpdateReportRequest $request, Report $report)
     {
-        if ($request->report_id == 1) {
+        if ($request->report_id == 1 || # 有給
+            $request->report_id == 5 || # 特別休暇(看護・対象1名)
+            $request->report_id == 6 || # 特別休暇(看護・対象2名)
+            $request->report_id == 7 || # 特別休暇(介護・対象1名)
+            $request->report_id == 8) { # 特別休暇(介護・対象2名)
+            $request->validate([
+                'sub_report_id' => 'required|integer',
+            ]);
+            if ($request->sub_report_id == 1) { # 終日休暇
+            // dd($request);
+                $request->validate([
+                    'start_date' => 'required|date|after_or_equal:report_date',
+                    'end_date' => 'required|date|after_or_equal:start_date',
+                    'get_days' => 'required|integer|min:1',
+                    ],
+                    [
+                        'get_days.min' =>
+                            '取得日数は1日以上で取得可能です。日数算出ボタンを押してください。',
+                    ]
+                );
+            }
+            if ($request->sub_report_id == 2) { # 半日休暇
+                $request->validate([
+                        'start_date' => 'required|date|after_or_equal:report_date',
+                        'am_pm' => 'required|integer',
+                        'get_days' => ['required', Rule::in(0.5),],
+                    ],
+                    [
+                        'get_days.in' =>
+                            '日付算出ボタンを押してください。',
+                        'am_pm.required' =>
+                            '午前・午後を選択してください。',
+                        'am_pm.integer' =>
+                            '午前・午後を選択してください。',
+                    ]
+                );
+            }
+            if ($request->sub_report_id == 3) { # 時間休 
+                $request->validate([
+                        'start_time' => 'required|date_format:H:i',
+                        'end_time' =>
+                            'required|date_format:H:i|after:start_time',
+                        'get_days' => ['required', Rule::in([
+                                0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.825,
+                            ]),
+                        ],
+                    ],
+                    [
+                        'get_days.in' =>
+                            '時間休は1時間単位で取得可能です。日数算出ボタンを押してください。',
+                    ]
+                );
+            }
+        }
+        if ($request->report_id == 2 || # バースデイ
+            $request->report_id == 10){ # 欠勤
             $request->validate([
                 'start_date' => 'required|date|after_or_equal:report_date',
-                'end_date' => 'required|date|after:start_date',
+                'get_days' => ['required', Rule::in(1.0),],
+            ],
+            [
+                'get_days.in' =>
+                    '日付算出ボタンを押してください。',
             ]);
+            $report->sub_report_id = null;
         }
-        if ($request->report_id == 2) {
+        if ($request->report_id == 3 || # 特別休暇(慶事)
+            $request->report_id == 4 || # 特別休暇(弔事)
+            $request->report_id == 9 || # 特別休暇(短期育休)
+            $request->report_id == 14 || # 介護休業
+            $request->report_id == 15 || # 育児休業
+            $request->report_id == 16) { # パパ育休
             $request->validate([
-                'start_date' => 'required|date|after_or_equal:report_date',
-            ]);
+                        'start_date' => 'required|date|after_or_equal:report_date',
+                        'end_date' => 'required|date|after_or_equal:start_date',
+                        'get_days' => 'required|integer|min:1',
+                    ],
+                    [
+                        'get_days.min' =>
+                            '取得日数は1日以上で取得可能です。日数算出ボタンを押してください。',
+                    ]
+            );
+            $report->sub_report_id = null;
         }
-        if ($request->report_id == 3) {
-            $request->validate(
-                [
+        if ($request->report_id == 11 || # 遅刻
+            $request->report_id == 12) { # 早退
+            $request->validate([
                     'start_time' => 'required|date_format:H:i',
                     'end_time' => 'required|date_format:H:i|after:start_time',
-                    'get_days' => 'required|multiple_of:0.125',
+                    'get_days' => [
+                        'required',
+                        Rule::in([
+                            0.02083,
+                            0.04167,
+                            0.0625,
+                            0.08333,
+                            0.10417,
+                            0.125,
+                            0.14583,
+                            0.16667,
+                            0.1875,
+                            0.20833,
+                            0.22917,
+                            0.25,
+                            0.27083,
+                            0.29167,
+                            0.3125,
+                            0.33333,
+                            0.35417,
+                            0.375,
+                            0.39583,
+                            0.41667,
+                            0.4375,
+                            0.45833,
+                            0.47917,
+                            0.5,
+                            0.52083,
+                            0.54167,
+                            0.5625,
+                            0.58333,
+                            0.60417,
+                            0.625,
+                            0.64583,
+                            0.66667,
+                            0.6875,
+                            0.70833,
+                            0.72917,
+                            0.75,
+                            0.77083,
+                            0.79167,
+                            0.8125,
+                            0.83333,
+                            0.85417,
+                            0.825,
+                            0.89583,
+                            0.91667,
+                            0.9375,
+                            0.95833,
+                            0.97917,
+                        ]),
+                    ],
                 ],
                 [
-                    'get_days.multiple_of' =>
-                        '時間休は1時間単位で取得可能です。',
-                ]
+                    'get_days.in' =>
+                        '遅刻・早退は10分単位で取得可能です。日付算出ボタンを押してください。',
+                ],
             );
+            $report->sub_report_id = null;
         }
-        if ($request->report_id == 12 || $request->report_id == 13) {
-            $request->validate(
-                [
+        if ($request->report_id == 13) { # 外出
+        // dd($request);
+            $request->validate([
                     'start_time' => 'required|date_format:H:i',
                     'end_time' => 'required|date_format:H:i|after:start_time',
-                    'get_days' => 'required|multiple_of:0.02083',
+                    'get_days' => [
+                        'required',
+                        Rule::in([
+                            0.0625,
+                            0.125,
+                            0.1875,
+                            0.25,
+                            0.3125,
+                            0.375,
+                            0.4375,
+                            0.5,
+                            0.5625,
+                            0.625,
+                            0.6875,
+                            0.75,
+                            0.8125,
+                            0.825,
+                            0.9375,
+                        ]),
+                    ],
                 ],
                 [
-                    'get_days.multiple_of' =>
-                        '遅刻・早退は10分単位で取得可能です。',
-                ]
-            );
-        }
-        if ($request->report_id == 14) {
-            $request->validate(
-                [
-                    'start_time' => 'required|date_format:H:i',
-                    'end_time' => 'required|date_format:H:i|after:start_time',
-                    'get_days' => 'required|multiple_of:0.0625',
+                    'get_days.in' =>
+                        '外出は30分単位で取得可能です。日付算出ボタンを押してください。',
                 ],
-                [
-                    'get_days.multiple_of' => '外出は30分単位で取得可能です。',
-                ]
             );
+            $report->sub_report_id = null;
         }
-        if ($request->reason_id == 7) {
+        if ($request->reason_id == 8) { # 理由:その他
             $request->validate(
                 [
                     'reason_detail' => 'required|max:200',
@@ -343,15 +513,12 @@ class ReportController extends Controller
             );
         }
 
-        $report_id = $request->report_id;
-        if ($report_id == 2 || $report_id == 3) {
-            $report_id = 1;
-        }
+        $report_id = $request->report_id; // 説明変数
         $remaining = Remaining::where('user_id', '=', Auth::user()->id)
             ->where('report_id', '=', $report_id)
             ->first('remaining');
-        if ($remaining) {
-            $result = $remaining->remaining - $request->get_days;
+        if (!empty($remaining->remaining)) {
+            $result = $remaining->remaining - $request->get_days; // 説明変数
 
             if ($result < 0) {
                 throw ValidationException::withMessages([

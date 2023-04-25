@@ -1,6 +1,6 @@
 <x-app-layout>
     <section class="text-gray-600 body-font">
-        <div class="container w-2/3 px-5 py-24 mx-auto">
+        <div class="container w-full md:w-2/3 px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-12">
                 <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">出退勤届け作成</h1>
                 <p class="mx-auto text-left leading-relaxed text-sm">
@@ -33,17 +33,17 @@
                             取得形態
                         </label>
                         <div class="flex gap-x-6">
-                            @foreach ($sub_report_categories as $sub_category)
                             <div class="flex mt-2">
-                                <input type="radio" name="sub_report_id" id="sub_report_id"
-                                    value="{{ $sub_category->id }}" @if ($sub_category->id === (int) old('sub_report_id')) checked @endif onclick="subReportCategorySwitch()"
+                            @foreach ($sub_report_categories as $sub_category)
+                                <input type="radio" name="sub_report_id" id="sub_report_id" onclick="subReportChange()"
+                                    value="{{ $sub_category->id }}" @if ($sub_category->id === (int) old('sub_report_id')) checked @endif
                                     class="shrink-0 mt-0.5 border-gray-200 rounded-full text-blue-600 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800">
                                 <label for="sub_report_id" name="sub_report_name"
-                                    class="text-sm text-gray-500 ml-2 dark:text-gray-400">
+                                    class="mr-2 text-sm text-gray-500 ml-2 dark:text-gray-400">
                                     {{ $sub_category->sub_report_name }}
                                 </label>
-                            </div>
                             @endforeach
+                            </div>
                         </div>
                     </div>
                     <div>
@@ -96,7 +96,7 @@
                             class="block mb-2 text-sm font-medium text-gray-900">
                             日付
                         </label>
-                        <input style="display: " type="date" id="start_date" name="start_date"
+                        <input style="display: " type="date" id="start_date" name="start_date" onchange="dateChange();"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             value="{{ old('start_date') }}">
                     </div>
@@ -104,7 +104,7 @@
                         <label for="end_date" class="block mb-2 text-sm font-medium text-gray-900">
                             期間：何日まで
                         </label>
-                        <input type="date" id="end_date" name="end_date"
+                        <input type="date" id="end_date" name="end_date" onchange="dateChange();"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             value="{{ old('end_date') }}">
                     </div>
@@ -117,8 +117,9 @@
                         </label>
                         <select name="am_pm" id="am_pm"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                            <option value="0" @if (0 === (int) old('am_pm')) selected @endif>午前</option>
-                            <option value="1" @if (1 === (int) old('am_pm')) selected @endif>午後</option>
+                            <option value="">選択してください</option>
+                            <option value="1" @if (1 === (int) old('am_pm')) selected @endif>午前</option>
+                            <option value="2" @if (2 === (int) old('am_pm')) selected @endif>午後</option>
                         </select>
                     </div>
                     <!-- 半日有給 - end -->
@@ -130,7 +131,7 @@
                         <label for="start_time" class="block mb-2 text-sm font-medium text-gray-900">
                             期間：何時から<span class="text-xs text-gray-600">&emsp;5分刻み</span>
                         </label>
-                        <input type="time" id="start_time" name="start_time" step="300"
+                        <input type="time" id="start_time" name="start_time" step="300" onchange="dateChange();"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             value="{{ old('start_time') }}">
                     </div>
@@ -138,7 +139,7 @@
                         <label for="end_time" class="block mb-2 text-sm font-medium text-gray-900">
                             期間：何時まで<span class="text-xs text-gray-600">&emsp;5分刻み</span>
                         </label>
-                        <input type="time" id="end_time" name="end_time" step="300"
+                        <input type="time" id="end_time" name="end_time" step="300" onchange="dateChange();"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             value="{{ old('end_time') }}">
                     </div>
@@ -294,6 +295,7 @@
         /* 表示切替start */
         var reportCategory = document.getElementById('report_id');
         let subReportCategories = document.getElementsByName('sub_report_id');
+        let subReport = document.getElementById('sub_report_id');
         let reasonCategory = document.getElementById('reason_id');
         let subCategoryForm = document.getElementById('sub_category_form');
         let emptyFieldForm = document.getElementById('empty_field_form');
@@ -309,52 +311,95 @@
         let endTimeForm = document.getElementById('end_time_form');
         let halfDateLabel = document.getElementById('half_date_label');
         let amPmForm = document.getElementById('am_pm_form');
+        let amPm = document.getElementById('am_pm');
         const reasons = @json($reasons);
 
-        // FIXME:reportを切り替えたら、end_date,start_time,end_timeをリセット
-        // リダイレクト時
+        // リダイレクト時の表示切替
         window.addEventListener('load', function() {
             reportDisplaySwitch(); // reportでform表示切替
-            subReportCategorySwitch(); // sub_reportでform表示切替
+            subReportDisplaySwitch(); // sub_reportでform表示切替
             reportReasonSwitch(); // reportでreason種類切替
             reasonDisplaySwitch(); // reasonで理由:その他表示切替
         });
 
-        // 届出内容選択時
+        // 届出内容変更時の表示切替
         function reportChange() {
             reportDisplaySwitch(); // reportでform表示切替
-            subReportCategorySwitch(); // sub_reportでform表示切替
             reportReasonSwitch(); // reportでreason種類切替
             reasonDisplaySwitch(); // reasonで理由:その他表示切替
+            subReportCategories[0].checked = false;
+            subReportCategories[1].checked = false;
+            subReportCategories[2].checked = false;
             timeReset(); // end_date,start_time,end_timeリセット
+            dateChange(); // get_daysリセット
         }
 
-        // end_date,start_time,end_timeリセット関数
-        function timeReset() {
-            endDate.value = '';
-            startTime.value = '';
-            endTime.value = '';
+        // get_daysリセット関数
+        function dateChange() {
+            document.getElementById('get_days').setAttribute('value', 0);
+            document.getElementById('get_days_only').setAttribute('value', 0);
+            document.getElementById('get_hours').setAttribute('value', 0);
+            document.getElementById('get_minutes').setAttribute('value', 0);
+            document.getElementById('remaining_days_only').setAttribute('value', 0);
+            document.getElementById('remaining_hours').setAttribute('value', 0);
+            document.getElementById('remaining_minutes').setAttribute('value', 0);
         }
 
-        // その他理由選択時
+        // その他理由選択時の表示切替
         function reasonChange() {
             reasonDisplaySwitch(); // reasonで理由:その他表示切替
         }
 
-        // optionタグ生成関数
-        function createOption(createId, createReason) {
-            let reasonOption = document.createElement('option');
-            let text = document.createTextNode(createReason);
-            reasonOption.appendChild(text); // optionタグにtexセット
-            reasonOption.setAttribute('value', createId); // optionタグにvalueセット
-            reasonCategory.appendChild(reasonOption); // htmlにoptionを追加
+        // subカテゴリーによるフォーム切替関数
+        function subReportChange() {
+            dateChange();
+            subReportDisplaySwitch();
+            // if (subReportCategories[0].checked) { // 終日休
+            //     halfDateLabel.style.display = "none";
+            //     amPmForm.style.display = "none";
+            //     timeEmptyForm.style.display = "none";
+            //     timeForm.style.display = "none";
+            //     timeForm30.style.display = "none";
+            //     timeForm10.style.display = "none";
+            //     startTimeForm.style.display = "none";
+            //     endTimeForm.style.display = "none";
+            //     startDateLabel.style.display = "";
+            //     startDateForm.style.display = "";
+            //     endDateForm.style.display = "";
+            // }
+            // if (subReportCategories[1].checked) { // 半日休
+            //     halfDateLabel.style.display = "";
+            //     startDateForm.style.display = "";
+            //     startDateForm.style.display = "";
+            //     amPmForm.style.display = "";
+            //     timeEmptyForm.style.display = "none";
+            //     timeForm.style.display = "none";
+            //     timeForm30.style.display = "none";
+            //     timeForm10.style.display = "none";
+            //     startTimeForm.style.display = "none";
+            //     endTimeForm.style.display = "none";
+            //     startDateLabel.style.display = "none";
+            //     endDateForm.style.display = "none";
+            // }
+            // if (subReportCategories[2].checked) { // 時間休
+            //     halfDateLabel.style.display = "";
+            //     startDateForm.style.display = "";
+            //     amPmForm.style.display = "none";
+            //     timeEmptyForm.style.display = "";
+            //     timeForm.style.display = "";
+            //     timeForm30.style.display = "none";
+            //     timeForm10.style.display = "none";
+            //     startTimeForm.style.display = "";
+            //     endTimeForm.style.display = "";
+            //     startDateLabel.style.display = "none";
+            //     endDateForm.style.display = "none";
+            // }
+            timeReset();
         }
 
-        // subカテゴリーによるフォーム切替関数
-        function subReportCategorySwitch() {
+        function subReportDisplaySwitch() {
+            console.log(document.getElementById('get_days').value);
             if (subReportCategories[0].checked) { // 終日休
-                // emptyFieldForm.style.display = "none";
-                // subCategoryForm.style.display = "";
                 halfDateLabel.style.display = "none";
                 amPmForm.style.display = "none";
                 timeEmptyForm.style.display = "none";
@@ -368,8 +413,6 @@
                 endDateForm.style.display = "";
             }
             if (subReportCategories[1].checked) { // 半日休
-                // emptyFieldForm.style.display = "none";
-                // subCategoryForm.style.display = "";
                 halfDateLabel.style.display = "";
                 startDateForm.style.display = "";
                 startDateForm.style.display = "";
@@ -384,8 +427,6 @@
                 endDateForm.style.display = "none";
             }
             if (subReportCategories[2].checked) { // 時間休
-                // emptyFieldForm.style.display = "none";
-                // subCategoryForm.style.display = "";
                 halfDateLabel.style.display = "";
                 startDateForm.style.display = "";
                 amPmForm.style.display = "none";
@@ -398,17 +439,34 @@
                 startDateLabel.style.display = "none";
                 endDateForm.style.display = "none";
             }
-            timeReset();
+        }
+
+        // end_date,start_time,end_timeリセット関数
+        function timeReset() {
+            endDate.value = '';
+            startTime.value = '';
+            endTime.value = '';
+            amPm.value = '';
+        }
+
+        // optionタグ生成関数
+        function createOption(createId, createReason) {
+            let reasonOption = document.createElement('option');
+            let text = document.createTextNode(createReason);
+            reasonOption.appendChild(text); // optionタグにtexセット
+            reasonOption.setAttribute('value', createId); // optionタグにvalueセット
+            reasonCategory.appendChild(reasonOption); // htmlにoptionを追加
         }
 
         // reason切替関数
         function reportReasonSwitch() {
             let oldReasonId = reasonCategory.value;
-            // reasonCategoryのoption要素を削除
+            // reasonCategoryのリセット=option要素を削除
             while (0 < reasonCategory.childNodes.length) {
                 reasonCategory.removeChild(reasonCategory.childNodes[0]);
             }
 
+            // 選択したreport_categoryでreasonのoptionを作成&追加
             if (reportCategory.value == "1" || // 有給
                 reportCategory.value == "10" || // 欠勤
                 reportCategory.value == "11" || // 遅刻
@@ -474,7 +532,13 @@
                     createOption(createId, createReason)
                 });
             }
-            reasonCategory.childNodes[oldReasonId-1].selected = true;
+
+            for (let i = 0; i < reasonCategory.childNodes.length; i++) {
+                if (oldReasonId == reasonCategory.childNodes[i].value) {
+                    reasonCategory.childNodes[i].selected = true;
+                }
+                
+            }
         }
 
         // form表示切替関数
@@ -519,37 +583,6 @@
                 startDateForm.style.display = "";
                 endDateForm.style.display = "";
             }
-            // if (reportCategory.value == "2") { // 半日有給
-            //     halfDateLabel.style.display = "";
-            //     startDateForm.style.display = "";
-            //     startDateForm.style.display = "";
-            //     amPmForm.style.display = "";
-            //     timeEmptyForm.style.display = "none";
-            //     timeForm.style.display = "none";
-            //     timeForm30.style.display = "none";
-            //     timeForm10.style.display = "none";
-            //     startTimeForm.style.display = "none";
-            //     endTimeForm.style.display = "none";
-            //     startDateLabel.style.display = "none";
-            //     endDateForm.style.display = "none";
-            // }
-            // if (reportCategory.value == "3" || // 時間休
-            //     reportCategory.value == "5" || // 特別休暇(看護・対象1名)
-            //     reportCategory.value == "6" || // 特別休暇(看護・対象2名)
-            //     reportCategory.value == "7" || // 特別休暇(介護・対象1名)
-            //     reportCategory.value == "8") { // 特別休暇(介護・対象2名)
-            //     halfDateLabel.style.display = "";
-            //     startDateForm.style.display = "";
-            //     amPmForm.style.display = "none";
-            //     timeEmptyForm.style.display = "";
-            //     timeForm.style.display = "";
-            //     timeForm30.style.display = "none";
-            //     timeForm10.style.display = "none";
-            //     startTimeForm.style.display = "";
-            //     endTimeForm.style.display = "";
-            //     startDateLabel.style.display = "none";
-            //     endDateForm.style.display = "none";
-            // }
             if (reportCategory.value == "11" || // 遅刻
                 reportCategory.value == "12") { // 早退
                 emptyFieldForm.style.display = "";
@@ -669,7 +702,7 @@
                     .getDate()).slice(-2);
                 if (holiday.indexOf(startYMD) != -1) {
                     dayOffs++; // 土曜日の営業日は休日数から減算
-                    console.log(startYMD);
+                    // console.log(startYMD);
                 }
             }
 
@@ -696,7 +729,6 @@
                 getDays = ((endTimeVal - startTimeVal) / 60000) / 60 * 1 / 8;
                 // 時間換算:8時間で1日 1時間=1/8日 0.125日
                 getDays = orgRound(getDays, 100000); // 小数点以下切り捨て
-                console.log(getDays);
             }
             if (reportCategory.value == 2 || reportCategory.value == 10) {
                 getDays = 1.0;
@@ -731,16 +763,10 @@
             document.getElementById('get_hours').setAttribute('value', getHoursOnly);
             document.getElementById('get_minutes').setAttribute('value', getMinutes);
 
-
-            // if (reportId == 2 || reportId == 3) {
-            //     reportId = 1; // 半日有給、時間給は有給休暇のreport_id
-            // }
-
             let ownRemainings = @json($own_remainings);
             const arr = Object.keys(ownRemainings);
             let ownRemainingDays = 0;
             // console.log(arr);
-            // console.log(reportId);
             arr.forEach((el) => {
                 if (ownRemainings[el].report_id == reportId) {
                     ownRemainingDays = ownRemainings[el].remaining;

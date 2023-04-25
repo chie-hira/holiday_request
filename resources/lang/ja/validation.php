@@ -133,4 +133,13 @@ return [
             'rule-name' => 'custom-message',
         ],
     ],
+
+    'attributes' => [
+        'report_date' => '届出日',
+        'start_date' => '開始日付',
+        'end_date' => '終了日付',
+        'sub_report_id' => '取得形態',
+        'start_time' => '開始時間',
+        'end_time' => '終了時間',
+    ],
 ];
