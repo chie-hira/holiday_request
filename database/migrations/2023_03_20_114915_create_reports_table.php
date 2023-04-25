@@ -24,6 +24,11 @@ class CreateReportsTable extends Migration
                 ->constrained('report_categories')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
+            $table->foreignId('sub_report_id')
+                ->nullable()
+                ->constrained('sub_report_categories')
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
             $table->foreignId('reason_id')
                 ->constrained('reason_categories')
                 ->cascadeOnUpdate()
@@ -34,7 +39,7 @@ class CreateReportsTable extends Migration
             $table->time('start_time')->nullable();
             $table->time('end_time')->nullable();
             $table->float('get_days', 8, 5);
-            $table->integer('am_pm')->nullable();
+            $table->integer('am_pm')->nullable()->default(null);
             $table->boolean('approval1')->default(0);
             $table->boolean('approval2')->default(0);
             $table->boolean('approval3')->default(0);

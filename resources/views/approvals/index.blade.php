@@ -70,7 +70,7 @@
                                                 </td>
                                                 <td
                                                     class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                                    {{ $report->report_category->report_name }}
+                                                    <x-report-name :report="$report" />
                                                 </td>
                                                 <td
                                                     class="pl-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
@@ -100,21 +100,13 @@
                                                     @if ($report->get_days_only != 0)
                                                         {{ $report->get_days_only }} 日
                                                     @endif
-                                                    @if ($report->get_hours >= 1)
+                                                    @if ($report->get_hours != 0)
                                                         {{ $report->get_hours }} 時間
                                                     @endif
                                                     @if ($report->get_minutes != 0)
                                                         {{ $report->get_minutes }} 分
                                                     @endif
                                                 </td>
-                                                {{-- <td
-                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                                    @if ($report->approval1 == 0 || $report->approval2 == 0 || $report->approval3 == 0)
-                                                        <span class="text-pink-500">未承認</span>
-                                                    @else
-                                                        <span class="text-blue-500">承認済み</span>
-                                                    @endif
-                                                </td> --}}
                                                 <td
                                                     class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
                                                     @if ($report->approval1 == 1)

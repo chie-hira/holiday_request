@@ -16,13 +16,13 @@ class ReportCategory extends Model
     ];
 
     /**
-     * Get all of the limits for the ReportCategory
+     * Get all of the remainings for the ReportCategory
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function limits()
+    public function remainings()
     {
-        return $this->hasMany(Limit::class, 'report_id', 'id');
+        return $this->hasMany(Remaining::class, 'report_id', 'id');
     }
 
     /**

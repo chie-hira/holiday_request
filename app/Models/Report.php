@@ -16,6 +16,7 @@ class Report extends Model
         'report_date',
         'user_id',
         'report_id',
+        'sub_report_id',
         'reason_id',
         'reason_detail',
         'start_date',
@@ -47,6 +48,16 @@ class Report extends Model
     public function report_category()
     {
         return $this->belongsTo(ReportCategory::class, 'report_id', 'id');
+    }
+
+    /**
+     * Get the sub_report_category that owns the Report
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function sub_report_category()
+    {
+        return $this->belongsTo(SubReportCategory::class, 'sub_report_id', 'id');
     }
 
     /**

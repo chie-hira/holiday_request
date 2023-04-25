@@ -18,7 +18,7 @@
                     <div class="flex items-center space-x-4">
                         <div class="flex-1 min-w-0">
                             <p class="ZenKurenaido px-2 text-xl font-semibold text-gray-800">
-                                {{ $report->report_category->report_name }}
+                                <x-report-name :report="$report" />
                             </p>
                         </div>
                     </div>

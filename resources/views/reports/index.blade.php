@@ -58,7 +58,7 @@
                                             </td>
                                             <td
                                                 class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                                {{ $report->report_category->report_name }}
+                                                <x-report-name :report="$report" />
                                             </td>
                                             <td
                                                 class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
@@ -72,7 +72,7 @@
                                                 @endif
                                             </td>
                                             <td
-                                                class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                class="pr-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
                                                 @if ($report->end_date != null)
                                                     ~&emsp;&emsp;{{ $report->end_date }}
                                                 @endif
@@ -84,11 +84,11 @@
                                                 @endif
                                             </td>
                                             <td
-                                                class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-800 dark:text-gray-200">
                                                 @if ($report->get_days_only != 0)
-                                                    {{ $report->get_days_only }} 日
+                                                    {{ $report->get_days_only }} 日&emsp;
                                                 @endif
-                                                @if ($report->get_hours >= 1)
+                                                @if ($report->get_hours != 0)
                                                     {{ $report->get_hours }} 時間
                                                 @endif
                                                 @if ($report->get_minutes != 0)
@@ -96,7 +96,7 @@
                                                 @endif
                                             </td>
                                             <td
-                                                class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-800 dark:text-gray-200">
                                                 @if ($report->approval1 == 0 || $report->approval2 == 0 || $report->approval3 == 0)
                                                     <span class="text-pink-500">未承認</span>
                                                 @else
@@ -104,30 +104,30 @@
                                                 @endif
                                             </td>
                                             <td
-                                                class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
                                                 <a href="{{ route('reports.show', $report) }}"
                                                     class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
                                                     届表示
                                                 </a>
                                             </td>
                                             <td
-                                                class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
                                                 @if ($report->approval1 == 0 || $report->approval2 == 0 || $report->approval3 == 0)
                                                     @can('update', $report)
                                                         <a href="{{ route('reports.edit', $report) }}"
                                                             class="px-3 py-1 text-sm text-blue-500 rounded-full bg-blue-100/60 hover:text-white hover:bg-blue-500">
-                                                            変更
+                                                            変 更
                                                         </a>
                                                     @endcan
                                                 @endif
                                             </td>
-                                            <td class="px-2 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <td class="px-1 py-4 whitespace-nowrap text-sm font-medium">
                                                 @if ($report->approval1 == 0 || $report->approval2 == 0 || $report->approval3 == 0)
                                                     @can('update', $report)
                                                         <form action="{{ route('reports.destroy', $report) }}" method="POST">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <input type="submit" value="取消"
+                                                            <input type="submit" value="取 消"
                                                                 onclick="if(!confirm('届けを取消しますか？')){return false};"
                                                                 {{-- class="text-sm bg-red-400 hover:bg-red-600 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline w-20"> --}}
                                                                 class="px-3 py-1 text-sm text-pink-500 rounded-full bg-pink-100/60 hover:text-white hover:bg-pink-500">

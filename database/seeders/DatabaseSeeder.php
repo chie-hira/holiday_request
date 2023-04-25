@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ApprovalCategorySeeder::class);
         $this->call(ApprovalSeeder::class);
         $this->call(ReportCategorySeeder::class);
+        $this->call(SubReportCategorySeeder::class);
         $this->call(ReasonCategorySeeder::class);
     }
 }

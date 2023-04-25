@@ -31,4 +31,17 @@ class StoreReportRequest extends FormRequest
             'get_days' => 'required',
         ];
     }
+
+    /**
+     * 定義済みバリデーションルールのエラーメッセージ取得
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'get_days.required' =>
+                '日付を入力して、日付算出ボタンを押してください。',
+        ];
+    }
 }
