@@ -3,6 +3,7 @@
 use App\Http\Controllers\ApprovalCategoryController;
 use App\Http\Controllers\RemainingController;
 use App\Http\Controllers\ReportController;
+use App\Models\Remaining;
 use App\Models\Report;
 use Illuminate\Support\Facades\Route;
 
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+# メニュー画面
 Route::get('/', function () {
     return view('menu.index');
 })->name('menu');
@@ -25,14 +27,17 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
+# reportルーティング
 Route::resource('reports', ReportController::class)
     ->only(['create', 'store', 'edit', 'update', 'destroy'])
     ->middleware('auth');
 Route::resource('reports', ReportController::class)
     ->only(['index', 'show']);
-    
+
+# remainingルーティング
 Route::resource('remainings', RemainingController::class);
 
+# 承認ルーティング
 Route::get('/approvals/pending', [ReportController::class, 'approvalPending'])
     ->name('approvals.pending')
     ->middleware('auth', 'can:general_and_factory_gl');
@@ -43,8 +48,11 @@ Route::get('/approvals/list', [ReportController::class, 'approvalList'])
     ->name('approvals.list');
 Route::get('/approval/{report}', [ReportController::class, 'approval'])
     ->name('approval');
-// Route::get('/approval1/{report}', [ReportController::class, 'approval1'])
-//     ->name('approval1');
+
+# remaining加算ルーティング
+Route::get('/add_remainings', [RemainingController::class, 'addRemainings'])
+    ->name('addRemainings');
+
 // Route::get('/approval2/{report}', [ReportController::class, 'approval2'])
 //     ->name('approval2');
 // Route::get('/approval3/{report}', [ReportController::class, 'approval3'])
