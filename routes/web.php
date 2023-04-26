@@ -50,11 +50,13 @@ Route::get('/approval/{report}', [ReportController::class, 'approval'])
     ->name('approval');
 
 # remaining加算ルーティング
-Route::get('/add_remainings', [RemainingController::class, 'addRemainings'])
-    ->name('addRemainings');
+Route::get('/update_remainings', function () {
+    return view('remainings.update_form');
+})->name('remainings.update_form');
+Route::post('/add_remainings', [RemainingController::class, 'addRemainings'])
+    ->name('remainings.add_remainings');
 
-// Route::get('/approval2/{report}', [ReportController::class, 'approval2'])
-//     ->name('approval2');
+
 // Route::get('/approval3/{report}', [ReportController::class, 'approval3'])
 //     ->name('approval3');
 
