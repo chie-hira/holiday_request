@@ -19,6 +19,7 @@ class RemainingController extends Controller
     {
         $own_remainings= Remaining::all()->where('user_id', '=', Auth::id());
 
+        // 新採用・中途採用の場合
         if (empty($own_remainings->first())) {
             $report_ids = [1, 2, 3, 5, 6, 7, 8, 14];
             foreach ($report_ids as $report_id) {
