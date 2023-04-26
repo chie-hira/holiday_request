@@ -71,9 +71,9 @@
                                 </x-dropdown-link>
                             </form>
                         @else
-                            <x-dropdown-link :href="route('register')">
+                            {{-- <x-dropdown-link :href="route('register')">
                                 {{ __('Sign Up') }}
-                            </x-dropdown-link>
+                            </x-dropdown-link> --}}
                             <x-dropdown-link :href="route('login')">
                                 {{ __('Log In') }}
                             </x-dropdown-link>

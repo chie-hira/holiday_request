@@ -1,4 +1,7 @@
 {
+    "Employee": "社員番号",
+    "Factory": "所属工場",
+    "Department": "所属部署",
     "30 Days": "30日",
     "60 Days": "60日",
     "90 Days": "90日",
