@@ -120,7 +120,9 @@
                         <tbody>
                             <tr>
                                 <td class="w-20 h-12 border border-gray-500 text-center">
-                                    @if (!empty(Auth::user()->approvals->where('approval_id', '=', 1)->first()) && $report->approval1 == 0)
+                                    @if (
+                                        !empty(Auth::user()->approvals->where('approval_id', '=', 1)->first()
+                                        ) && $report->approval1 == 0)
                                         <a href="{{ route('approval', $report) }}"
                                             onclick="if(!confirm('承認しますか？')){return false};"
                                             class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
@@ -139,9 +141,9 @@
                                     @endif
                                 </td>
                                 <td class="w-20 h-12 border border-gray-500 text-center">
-                                    @if (!empty(Auth::user()->approvals->where('approval_id', '=', 2)
-                                            ->where('factory_id', '=', $report->user->factory_id)->first()) &&
-                                            $report->approval2 == 0)
+                                    @if (
+                                        !empty(Auth::user()->approvals->where('approval_id', '=', 2)->where('factory_id', '=', $report->user->factory_id)->first()
+                                        ) && $report->approval2 == 0)
                                         <a href="{{ route('approval', $report) }}"
                                             onclick="if(!confirm('承認しますか？')){return false};"
                                             class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
@@ -160,10 +162,9 @@
                                     @endif
                                 </td>
                                 <td class="w-20 h-12 border border-gray-500 text-center">
-                                    @if (!empty(Auth::user()->approvals->where('approval_id', '=', 3)
-                                            ->where('factory_id', '=', $report->user->factory_id)
-                                            ->where('department_id', '=', $report->user->department_id)->first()) &&
-                                            $report->approval3 == 0)
+                                    @if (
+                                        !empty(Auth::user()->approvals->where('approval_id', '=', 3)->where('factory_id', '=', $report->user->factory_id)->where('department_id', '=', $report->user->department_id)->first()
+                                        ) && $report->approval3 == 0)
                                         <a href="{{ route('approval', $report) }}"
                                             onclick="if(!confirm('承認しますか？')){return false};"
                                             class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
@@ -222,7 +223,7 @@
 
         @can('general_and_factory_gl')
             <div class="flex m-4 lg:w-2/3 w-full">
-                <a href="{{ route('approvals.index') }}"
+                <a href="{{ route('approvals.approved') }}"
                     class="text-indigo-500 flex h-7 md:mb-2 lg:mb-0 hover:-translate-x-1">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                         <path fill-rule="evenodd"
