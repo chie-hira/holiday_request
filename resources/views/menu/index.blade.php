@@ -2,7 +2,7 @@
     <section class="text-gray-600 body-font">
         <div class="container w-2/3 px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-12">
-                <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">menu</h1>
+                {{-- <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">menu</h1> --}}
                 @guest
                     <p class="lg:w-2/3 mx-auto leading-relaxed text-base">
                         ログインして出退勤届けを作成してください。
@@ -99,12 +99,12 @@
                                     d="M1.5 5.625c0-1.036.84-1.875 1.875-1.875h17.25c1.035 0 1.875.84 1.875 1.875v12.75c0 1.035-.84 1.875-1.875 1.875H3.375A1.875 1.875 0 011.5 18.375V5.625zM21 9.375A.375.375 0 0020.625 9h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zm0 3.75a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zm0 3.75a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zM10.875 18.75a.375.375 0 00.375-.375v-1.5a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5zM3.375 15h7.5a.375.375 0 00.375-.375v-1.5a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375zm0-3.75h7.5a.375.375 0 00.375-.375v-1.5A.375.375 0 0010.875 9h-7.5A.375.375 0 003 9.375v1.5c0 .207.168.375.375.375z"
                                     clip-rule="evenodd" fill="#cc66ff" />
                             </svg>
-                            <span class="w-full">有給休暇残日数一覧</span>
+                            <span class="w-full">残日数一覧</span>
                         </a>
                     @endcan
 
                     @can('general_only')
-                        <a href={{ route('remainings.index') }}
+                        <a href={{ route('users.index') }}
                             class="inline-flex items-center justify-center p-5 text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 mr-3">
                                 <path fill-rule="evenodd"

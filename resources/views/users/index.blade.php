@@ -1,12 +1,9 @@
 <x-app-layout>
     <!-- Page Heading -->
     <section class="text-gray-600 body-font">
-        <div class="container md:w-2/3 px-5 py-24 mx-auto">
+        <div class="container lg:w-2/3 px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-6">
-                <h1 class="sm:text-4xl text-3xl font-medium title-font mb-4 text-gray-900">有給休暇残日数一覧</h1>
-                <p id="report_name-1" style="display: " class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
-                    有給休暇
-                </p>
+                <h1 class="sm:text-4xl text-3xl font-medium title-font mb-4 text-gray-900">従業員一覧</h1>
             </div>
 
             <x-notice :notice="session('notice')" />
@@ -20,49 +17,41 @@
                                     <thead>
                                         <tr>
                                             <th
-                                                class="w-40 px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                所 属
-                                            </th>
-                                            <th
-                                                class="w-24 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                class="px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 社員番号
                                             </th>
                                             <th
-                                                class="w-24 px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                                                class="w-24 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 氏 名
                                             </th>
-                                            <th id="remaining_title" style="display: "
-                                                class="w-24 px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                残日数
+                                            <th
+                                                class="w-24 px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                                                所 属
                                             </th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                                         @foreach ($users as $user)
                                             <tr>
                                                 <td
-                                                    class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
-                                                    {{ $user->factory->factory_name }}工場&ensp;/&ensp;{{ $user->department->department_name }}
+                                                    class="px-8 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
+                                                    {{ $user->employee }}
                                                 </td>
                                                 <td
                                                     class="px-4 py-4 whitespace-nowrap text-sm text-center text-gray-800 dark:text-gray-200">
-                                                    {{ $user->employee }}</td>
+                                                    {{ $user->name }}
+                                                </td>
                                                 <td
                                                     class="px-4 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                                    {{ $user->name }}</td>
-                                                <td id="remaining_data" style="display: "
-                                                    class="px-4 py-4 whitespace-nowrap text-sm text-right text-gray-800 dark:text-gray-200">
-                                                    <div id="remaining-1_{{ $user->id }}" style="display: ">
-                                                        <x-remaining-days :user="$user" key=0 />
-                                                        {{-- 有給 --}}
-                                                    </div>
+                                                    {{ $user->factory->factory_name }}工場&ensp;/&ensp;{{ $user->department->department_name }}
                                                 </td>
                                                 <td
                                                     class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                                            <a href="{{ route('remainings.edit', $user->remaining(1)->id) }}"
-                                                                class="px-3 py-1 text-sm text-blue-500 rounded-full bg-blue-100/60 hover:text-white hover:bg-blue-500">
-                                                                変 更
-                                                            </a>
+                                                    <a href="{{ route('users.edit', $user) }}"
+                                                        class="px-3 py-1 text-sm text-blue-500 rounded-full bg-blue-100/60 hover:text-white hover:bg-blue-500">
+                                                        設 定
+                                                    </a>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -83,7 +72,7 @@
                             clip-rule="evenodd" />
                     </svg>
                     <div class="px-2 mt-1">
-                        menuへ戻る
+                        戻る
                     </div>
                 </a>
             </div>

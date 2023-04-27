@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\RemainingController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,6 +36,8 @@ Route::resource('reports', ReportController::class)
 
 # remainingルーティング
 Route::resource('remainings', RemainingController::class);
+
+Route::resource('users', UserController::class);
 
 # 承認ルーティング
 Route::get('/approvals/pending', [ReportController::class, 'approvalPending'])

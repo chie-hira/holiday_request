@@ -1,9 +1,9 @@
 <x-app-layout>
     <!-- Page Heading -->
     <section class="text-gray-600 body-font">
-        <div class="container md:w-2/3 px-5 py-24 mx-auto">
+        <div class="container lg:w-2/3 px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-6">
-                <h1 class="sm:text-4xl text-3xl font-medium title-font mb-4 text-gray-900">有給休暇残日数一覧</h1>
+                <h1 class="sm:text-4xl text-3xl font-medium title-font mb-4 text-gray-900">残日数一覧</h1>
                 <p id="report_name-1" style="display: " class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
                     有給休暇
                 </p>
@@ -83,7 +83,7 @@
                             clip-rule="evenodd" />
                     </svg>
                     <div class="px-2 mt-1">
-                        menuへ戻る
+                        戻る
                     </div>
                 </a>
             </div>

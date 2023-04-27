@@ -2,12 +2,12 @@
     <section class="text-gray-600 body-font">
         <div class="container px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-10">
-                <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">有給休暇残日数の修正</h1>
+                <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">残日数の修正</h1>
                 <p class="lg:w-2/3 mx-auto mb-2 leading-relaxed text-base">
                     <span class="font-semibold">
-                        {{ Auth::user()->name }}さん
+                        有給休暇
                     </span>
-                    は以下の休暇を取得できます。
+                    の取得可能日数を変更できます。
                 </p>
             </div>
 
@@ -48,7 +48,6 @@
                                                 @method('PUT')
                                                 <td class="px-6 py-3 whitespace-nowrap text-center text-sm font-medium">
                                                     <input name="remaining_days" type="number" max="40" min="0"
-                                                    {{-- class="w-24" --}}
                                                     class="w-24 h-8 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
                                                         value="{{ old('remaining_days', $remaining->remaining_days) }}">日
                                                     <input name="remaining_hours" type="number" max="7" min="0"
@@ -72,7 +71,7 @@
             </div>
 
             <div class="flex mt-4 lg:w-2/3 w-full mx-auto">
-                <a href="{{ route('menu') }}"
+                <a href="{{ route('remainings.index') }}"
                     class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                         <path fill-rule="evenodd"

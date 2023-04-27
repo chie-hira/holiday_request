@@ -287,7 +287,7 @@
                             clip-rule="evenodd" />
                     </svg>
                     <div class="px-2">
-                        menuへ戻る
+                        戻る
                     </div>
                 </a>
             </div>
