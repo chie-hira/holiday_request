@@ -119,8 +119,6 @@ class RemainingController extends Controller
             ]
         );
 
-        // dd($request->update_date);
-
         /** remainingsアーカイブ作成 */
         DB::beginTransaction(); # トランザクション開始
         try {

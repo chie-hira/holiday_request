@@ -51,7 +51,7 @@
                                                 class="px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 G L
                                             </th>
-                                            <th scope="col"
+                                            <th scope="col" colspan="2"
                                                 class="px-6 py-3 text-right text-xs font-medium text-gray-500 tracking-wider">
                                             </th>
                                         </tr>
@@ -112,7 +112,7 @@
                                                     @if ($report->approval1 == 1)
                                                         <span class="text-blue-500">
                                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                                fill="currentColor" class="w-4 h-4">
+                                                                fill="currentColor" class="w-4 h-4 mx-auto">
                                                                 <path fill-rule="evenodd"
                                                                     d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
                                                                     clip-rule="evenodd" />
@@ -138,7 +138,7 @@
                                                     @if ($report->approval3 == 1)
                                                         <span class="text-blue-500">
                                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                                fill="currentColor" class="w-4 h-4">
+                                                                fill="currentColor" class="w-4 h-4 mx-auto">
                                                                 <path fill-rule="evenodd"
                                                                     d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
                                                                     clip-rule="evenodd" />
@@ -151,6 +151,19 @@
                                                         class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
                                                         届表示
                                                     </a>
+                                                </td>
+                                                <td class="px-1 py-4 whitespace-nowrap text-sm font-medium">
+                                                {{-- @if ($report->approval1 == 0 || $report->approval2 == 0 || $report->approval3 == 0) --}}
+                                                    {{-- @can('delete', $report) --}}
+                                                        <form action="{{ route('reports.approved_delete', $report) }}" method="POST">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <input type="submit" value="取 消"
+                                                                onclick="if(!confirm('承認済みの届けを取消しますか？')){return false};"
+                                                                class="px-3 py-1 text-sm text-pink-500 rounded-full bg-pink-100/60 hover:text-white hover:bg-pink-500">
+                                                        </form>
+                                                    {{-- @endcan --}}
+                                                {{-- @endif --}}
                                                 </td>
                                             </tr>
                                         @endforeach

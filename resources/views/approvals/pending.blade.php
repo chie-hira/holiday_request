@@ -108,20 +108,12 @@
                                                         {{ $report->get_minutes }} 分
                                                     @endif
                                                 </td>
-                                                {{-- <td
-                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                                    @if ($report->approval1 == 0 || $report->approval2 == 0 || $report->approval3 == 0)
-                                                        <span class="text-pink-500">未承認</span>
-                                                    @else
-                                                        <span class="text-blue-500">承認済み</span>
-                                                    @endif
-                                                </td> --}}
                                                 <td
                                                     class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
                                                     @if ($report->approval1 == 1)
                                                         <span class="text-blue-500">
                                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                                fill="currentColor" class="w-4 h-4">
+                                                                fill="currentColor" class="w-4 h-4 mx-auto">
                                                                 <path fill-rule="evenodd"
                                                                     d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
                                                                     clip-rule="evenodd" />
@@ -147,7 +139,7 @@
                                                     @if ($report->approval3 == 1)
                                                         <span class="text-blue-500">
                                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                                fill="currentColor" class="w-4 h-4">
+                                                                fill="currentColor" class="w-4 h-4 mx-auto">
                                                                 <path fill-rule="evenodd"
                                                                     d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
                                                                     clip-rule="evenodd" />

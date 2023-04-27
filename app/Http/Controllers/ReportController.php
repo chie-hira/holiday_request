@@ -14,6 +14,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
@@ -559,6 +560,30 @@ class ReportController extends Controller
                 ->route('reports.index')
                 ->with('notice', '届けを取り消しました');
         } catch (\Throwable $th) {
+            return back()->withErrors($th->getMessage());
+        }
+    }
+
+    public function approvedDelete(Report $report)
+    {
+        $remaining = Remaining::all()
+                ->where('report_id', '=', $report->report_id)
+                ->where('user_id', '=', $report->user_id)
+                ->first();
+        $remaining->remaining += $report->get_days;
+
+        /** 残日数加算&届け取消 */
+        DB::beginTransaction(); # トランザクション開始
+        try {
+            $remaining->save();
+            $report->delete();
+
+            DB::commit(); # トランザクション成功終了
+            return redirect()
+                ->route('reports.index')
+                ->with('notice', '届けを取り消しました');
+        } catch (\Throwable $th) {
+            DB::rollBack(); # トランザクション失敗終了
             return back()->withErrors($th->getMessage());
         }
     }

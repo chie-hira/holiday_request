@@ -41,7 +41,7 @@
                                             </th>
                                             <th scope="col" colspan="3"
                                                 class="px-6 py-3 text-right text-xs font-medium text-gray-500 tracking-wider">
-                                                </th>
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -123,7 +123,7 @@
                                             </td>
                                             <td class="px-1 py-4 whitespace-nowrap text-sm font-medium">
                                                 @if ($report->approval1 == 0 || $report->approval2 == 0 || $report->approval3 == 0)
-                                                    @can('update', $report)
+                                                    @can('delete', $report)
                                                         <form action="{{ route('reports.destroy', $report) }}" method="POST">
                                                             @csrf
                                                             @method('DELETE')

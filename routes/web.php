@@ -53,8 +53,8 @@ Route::get('/update_remainings', function () {
 Route::post('/add_remainings', [RemainingController::class, 'addRemainings'])
     ->name('remainings.add_remainings');
 
-
-// Route::get('/approval3/{report}', [ReportController::class, 'approval3'])
-//     ->name('approval3');
+# 承認後のreport削除
+Route::delete('/reports/approved/{report}', [ReportController::class, 'approvedDelete'])
+    ->name('reports.approved_delete');
 
 require __DIR__.'/auth.php';
