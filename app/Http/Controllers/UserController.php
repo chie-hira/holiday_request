@@ -42,7 +42,16 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $user->fill($request->all());
+        dd($user);
+        try {
+            $user->save();
+            return redirect()
+                ->route('reports.index')
+                ->with('notice', '社員情報を更新しました');
+        } catch (\Throwable $th) {
+            return back()->withErrors($th->getMessage());
+        }
     }
 
     /**
@@ -53,6 +62,13 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        try {
+            $user->delete();
+            return redirect()
+                ->route('users.index')
+                ->with('notice', '社員情報を削除しました。');
+        } catch (\Throwable $th) {
+            return back()->withErrors($th->getMessage());
+        }
     }
 }

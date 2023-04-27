@@ -63,7 +63,7 @@
                                                 <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
                                                     <select name="department_id"
                                                         class="w-32 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5">
-                                                        <option value="{{ $user->department->department_id }}">{{ $user->department->department_name }}</option>
+                                                        <option value="{{ $user->department->id }}">{{ $user->department->department_name }}</option>
                                                         @foreach ($department_categories as $department_category)
                                                             <option value="{{ $department_category->id }}"
                                                                 @if ($department_category->id === (int) old('department_id')) selected @endif>
