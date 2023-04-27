@@ -209,4 +209,10 @@ class User extends Authenticatable
             return 0;
         }
     }
+
+    public function remaining($report_category_id)
+    {
+        $remainings = $this->remainings;
+        return $remainings->where('report_id', '=', $report_category_id)->first();
+    }
 }

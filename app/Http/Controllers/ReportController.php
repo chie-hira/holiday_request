@@ -39,15 +39,15 @@ class ReportController extends Controller
         $report_categories = ReportCategory::all();
         $sub_report_categories = SubReportCategory::all();
         $reasons = ReasonCategory::all();
-        $own_remainings = Remaining::all()->where('user_id', '=', Auth::id());
+        $my_remainings = Remaining::all()->where('user_id', '=', Auth::id());
 
         // 新採用・中途採用
-        if (empty($own_remainings->first())) {
+        if (empty($my_remainings->first())) {
             $report_ids = [1, 2, 3, 5, 6, 7, 8, 14];
             foreach ($report_ids as $report_id) {
                 self::newRemaining($report_id);
             }
-            $own_remainings = Remaining::all()->where(
+            $my_remainings = Remaining::all()->where(
                 'user_id',
                 '=',
                 Auth::id()
@@ -59,7 +59,7 @@ class ReportController extends Controller
                 'report_categories',
                 'sub_report_categories',
                 'reasons',
-                'own_remainings'
+                'my_remainings'
             )
         );
     }
@@ -344,7 +344,7 @@ class ReportController extends Controller
         $report_categories = ReportCategory::all();
         $sub_report_categories = SubReportCategory::all();
         $reasons = ReasonCategory::all();
-        $own_remainings = Remaining::all()->where('user_id', '=', Auth::id());
+        $my_remainings = Remaining::all()->where('user_id', '=', Auth::id());
 
         return view('reports.edit')->with(
             compact(
@@ -352,7 +352,7 @@ class ReportController extends Controller
                 'report_categories',
                 'sub_report_categories',
                 'reasons',
-                'own_remainings'
+                'my_remainings'
             )
         );
     }
@@ -822,29 +822,6 @@ class ReportController extends Controller
         // dd($report_categories);
 
         return view('approvals.list')->with(
-            compact('users', 'report_categories')
-        );
-    }
-
-    public function approvalList2()
-    {
-        // $users = User::with(['reports', 'remainings'])
-        //     ->withCount([
-        //         'reports AS sum_get_days' => function ($query){
-        //             $query->where([
-        //                 ['report_id', '=', 2],
-        //                 ['approval1', '=', 1],
-        //                 ['approval2', '=', 1],
-        //                 ['approval3', '=', 1],
-        //             ])
-        //             ->select(DB::raw('SUM(get_days) as sum_get_days'));
-        //         },
-        //     ])
-        //     ->get();
-
-        $users = User::with(['reports', 'remainings'])->get();
-        $report_categories = ReportCategory::all();
-        return view('approvals.list2')->with(
             compact('users', 'report_categories')
         );
     }

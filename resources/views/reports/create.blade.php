@@ -34,15 +34,16 @@
                         </label>
                         <div class="flex gap-x-6">
                             <div class="flex mt-2">
-                            @foreach ($sub_report_categories as $sub_category)
-                                <input type="radio" name="sub_report_id" id="sub_report_id" onclick="subReportChange()"
-                                    value="{{ $sub_category->id }}" @if ($sub_category->id === (int) old('sub_report_id')) checked @endif
-                                    class="shrink-0 mt-0.5 border-gray-200 rounded-full text-blue-600 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800">
-                                <label for="sub_report_id" name="sub_report_name"
-                                    class="mr-2 text-sm text-gray-500 ml-2 dark:text-gray-400">
-                                    {{ $sub_category->sub_report_name }}
-                                </label>
-                            @endforeach
+                                @foreach ($sub_report_categories as $sub_category)
+                                    <input type="radio" name="sub_report_id" id="sub_report_id"
+                                        onclick="subReportChange()" value="{{ $sub_category->id }}"
+                                        @if ($sub_category->id === (int) old('sub_report_id')) checked @endif
+                                        class="shrink-0 mt-0.5 border-gray-200 rounded-full text-blue-600 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800">
+                                    <label for="sub_report_id" name="sub_report_name"
+                                        class="mr-2 text-sm text-gray-500 ml-2 dark:text-gray-400">
+                                        {{ $sub_category->sub_report_name }}
+                                    </label>
+                                @endforeach
                             </div>
                         </div>
                     </div>
@@ -96,7 +97,8 @@
                             class="block mb-2 text-sm font-medium text-gray-900">
                             日付
                         </label>
-                        <input style="display: " type="date" id="start_date" name="start_date" onchange="dateChange();"
+                        <input style="display: " type="date" id="start_date" name="start_date"
+                            onchange="dateChange();"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             value="{{ old('start_date') }}">
                     </div>
@@ -131,7 +133,8 @@
                         <label for="start_time" class="block mb-2 text-sm font-medium text-gray-900">
                             期間：何時から<span class="text-xs text-gray-600">&emsp;5分刻み</span>
                         </label>
-                        <input type="time" id="start_time" name="start_time" step="300" onchange="dateChange();"
+                        <input type="time" id="start_time" name="start_time" step="300"
+                            onchange="dateChange();"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             value="{{ old('start_time') }}">
                     </div>
@@ -139,7 +142,8 @@
                         <label for="end_time" class="block mb-2 text-sm font-medium text-gray-900">
                             期間：何時まで<span class="text-xs text-gray-600">&emsp;5分刻み</span>
                         </label>
-                        <input type="time" id="end_time" name="end_time" step="300" onchange="dateChange();"
+                        <input type="time" id="end_time" name="end_time" step="300"
+                            onchange="dateChange();"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             value="{{ old('end_time') }}">
                     </div>
@@ -537,7 +541,7 @@
                 if (oldReasonId == reasonCategory.childNodes[i].value) {
                     reasonCategory.childNodes[i].selected = true;
                 }
-                
+
             }
         }
 
@@ -763,7 +767,7 @@
             document.getElementById('get_hours').setAttribute('value', getHoursOnly);
             document.getElementById('get_minutes').setAttribute('value', getMinutes);
 
-            let ownRemainings = @json($own_remainings);
+            let ownRemainings = @json($my_remainings);
             const arr = Object.keys(ownRemainings);
             let ownRemainingDays = 0;
             // console.log(arr);

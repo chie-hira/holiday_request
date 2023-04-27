@@ -22,23 +22,10 @@ class RemainingController extends Controller
      */
     public function index()
     {
-        // $own_remainings= Remaining::all()->where('user_id', '=', Auth::id());
-        $own_remainings = Auth::user()->remainings;
+        $users = User::with(['reports', 'remainings'])->get();
+        $report_categories = ReportCategory::all();
 
-        // 新採用・中途採用
-        if (empty($own_remainings->first())) {
-            $report_ids = [1, 2, 3, 5, 6, 7, 8, 14];
-            foreach ($report_ids as $report_id) {
-                self::newRemaining($report_id);
-            }
-            $own_remainings = Remaining::all()->where(
-                'user_id',
-                '==',
-                Auth::id()
-            );
-        }
-
-        return view('remainings.index')->with(compact('own_remainings'));
+        return view('remainings.index')->with(compact('users', 'report_categories'));
     }
 
     /**
@@ -81,7 +68,7 @@ class RemainingController extends Controller
      */
     public function edit(Remaining $remaining)
     {
-        //
+        return view('remainings.edit')->with(compact('remaining'));
     }
 
     /**
@@ -91,11 +78,23 @@ class RemainingController extends Controller
      * @param  \App\Models\Limit  $limit
      * @return \Illuminate\Http\Response
      */
-    public function update(
-        UpdateRemainingRequest $request,
-        Remaining $remaining
-    ) {
-        //
+    public function update(UpdateRemainingRequest $request, Remaining $remaining)
+    {
+        $remaining_days = $request->remaining_days;
+        $remaining_hours = $request->remaining_hours;
+
+        $remaining->remaining = $remaining_days*1 + $remaining_hours*0.125 ;
+        
+        try {
+            $remaining->save();
+            return redirect()
+                ->route('remainings.index')
+                ->with('notice', '有給休暇の残日数を更新しました');
+        } catch (\Throwable $th) {
+            return back()
+                ->withInput()
+                ->withErrors($th->getMessage());
+        }
     }
 
     /**
@@ -108,16 +107,34 @@ class RemainingController extends Controller
     {
         //
     }
-    
+
+    public function myIndex()
+    {
+        $my_remainings = Auth::user()->remainings;
+
+        // 新採用・中途採用
+        if (empty($my_remainings->first())) {
+            $report_ids = [1, 2, 3, 5, 6, 7, 8, 14];
+            foreach ($report_ids as $report_id) {
+                self::newRemaining($report_id);
+            }
+            $my_remainings = Remaining::all()->where(
+                'user_id',
+                '==',
+                Auth::id()
+            );
+        }
+
+        return view('remainings.my_index')->with(compact('my_remainings'));
+    }
+
     public function addRemainings(Request $request)
     {
         // 更新前にエクセルファイル出力
         // 更新権限は部長
-        $request->validate(
-            [
-                'update_date' => 'required',
-            ]
-        );
+        $request->validate([
+            'update_date' => 'required',
+        ]);
 
         /** remainingsアーカイブ作成 */
         DB::beginTransaction(); # トランザクション開始
@@ -129,18 +146,20 @@ class RemainingController extends Controller
             $data = [];
             foreach ($remainings as $remaining) {
                 $data[] = [
-                            'user_id' => $remaining->user_id,
-                            'report_id' => $remaining->report_id,
-                            'remaining' => $remaining->remaining,
-                            'created_at' => $remaining->created_at,
-                            'updated_at' => $remaining->updated_at,
-                        ];
+                    'user_id' => $remaining->user_id,
+                    'report_id' => $remaining->report_id,
+                    'remaining' => $remaining->remaining,
+                    'created_at' => $remaining->created_at,
+                    'updated_at' => $remaining->updated_at,
+                ];
             }
             ArchiveRemaining::insert($data); # インサート
             DB::commit(); # トランザクション成功終了
         } catch (\Exception $e) {
             DB::rollBack(); # トランザクション失敗終了
-            return back()->withInput()->withErrors($e->getMessage());
+            return back()
+                ->withInput()
+                ->withErrors($e->getMessage());
         }
 
         /** remainings更新 */
@@ -148,13 +167,11 @@ class RemainingController extends Controller
 
         try {
             foreach ($users as $user) {
-                // $user_id = $user->id;
-                $own_remainings = $user->remainings;
-                $remaining_report1 = $own_remainings
+                $my_remainings = $user->remainings;
+                $remaining_report1 = $my_remainings
                     ->where('report_id', '=', 1)
                     ->first(); # 有給休暇
                 $adoption_date_carbon = new Carbon($user->adoption_date); # 採用年月日
-                // $carbon = Carbon::now(); // ここに更新年月日を入れる
                 $carbon = new Carbon($request->update_date); # 更新年月日
                 $diff = $adoption_date_carbon->diff($carbon);
                 $length_of_service = floatval($diff->y . '.' . $diff->m); # 勤続年数
@@ -219,7 +236,7 @@ class RemainingController extends Controller
 
                 $report_ids = [2, 3, 5, 6, 7, 8, 14];
                 foreach ($report_ids as $report_id) {
-                    $remaining_report = $own_remainings
+                    $remaining_report = $my_remainings
                         ->where('report_id', '=', $report_id)
                         ->first();
                     $remaining_report->remaining = ReportCategory::find(
@@ -237,7 +254,5 @@ class RemainingController extends Controller
                 ->withInput()
                 ->withErrors($th->getMessage());
         }
-        dd($own_remainings);
-        // return view('remainings.index')->with(compact('own_remainings'));
     }
 }

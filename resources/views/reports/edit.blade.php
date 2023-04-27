@@ -21,7 +21,8 @@
                         </label>
                         <select name="report_id" id="report_id" onchange="reportChange();"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                            <option value="{{ $report->report_id }}">{{ $report->report_category->report_name }}</option>
+                            <option value="{{ $report->report_id }}">{{ $report->report_category->report_name }}
+                            </option>
                             @foreach ($report_categories as $report_category)
                                 <option value="{{ $report_category->id }}"
                                     @if ($report_category->id === (int) old('report_id')) selected @endif>
@@ -36,15 +37,15 @@
                         </label>
                         <div class="flex gap-x-6">
                             <div class="flex mt-2" id="sub_report_id" onchange="subReportChange();">
-                            @foreach ($sub_report_categories as $sub_category)
-                                <input type="radio" name="sub_report_id"
-                                    value="{{ $sub_category->id }}" @if ($sub_category->id === (int) old('sub_report_id', $report->sub_report_id)) checked @endif
-                                    class="shrink-0 mt-0.5 border-gray-200 rounded-full text-blue-600 focus:ring-blue-500">
-                                <label for="sub_report_id" name="sub_report_name"
-                                    class="mr-2 text-sm text-gray-500 ml-2 dark:text-gray-400">
-                                    {{ old('sub_report_name', $sub_category->sub_report_name) }}
-                                </label>
-                            @endforeach
+                                @foreach ($sub_report_categories as $sub_category)
+                                    <input type="radio" name="sub_report_id" value="{{ $sub_category->id }}"
+                                        @if ($sub_category->id === (int) old('sub_report_id', $report->sub_report_id)) checked @endif
+                                        class="shrink-0 mt-0.5 border-gray-200 rounded-full text-blue-600 focus:ring-blue-500">
+                                    <label for="sub_report_id" name="sub_report_name"
+                                        class="mr-2 text-sm text-gray-500 ml-2 dark:text-gray-400">
+                                        {{ old('sub_report_name', $sub_category->sub_report_name) }}
+                                    </label>
+                                @endforeach
                             </div>
                         </div>
                     </div>
@@ -99,7 +100,8 @@
                             class="block mb-2 text-sm font-medium text-gray-900">
                             日付
                         </label>
-                        <input style="display: " type="date" id="start_date" name="start_date" onchange="dateChange();"
+                        <input style="display: " type="date" id="start_date" name="start_date"
+                            onchange="dateChange();"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             value="{{ old('start_date', $report->start_date) }}">
                     </div>
@@ -134,17 +136,19 @@
                         <label for="start_time" class="block mb-2 text-sm font-medium text-gray-900">
                             期間：何時から<span class="text-xs text-gray-600">&emsp;5分刻み</span>
                         </label>
-                        <input type="time" id="start_time" name="start_time" step="300" onchange="dateChange();"
+                        <input type="time" id="start_time" name="start_time" step="300"
+                            onchange="dateChange();"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            value="{{ old('start_time', substr($report->start_time,0,5)) }}">
+                            value="{{ old('start_time', substr($report->start_time, 0, 5)) }}">
                     </div>
                     <div style="display: none" id="end_time_form">
                         <label for="end_time" class="block mb-2 text-sm font-medium text-gray-900">
                             期間：何時まで<span class="text-xs text-gray-600">&emsp;5分刻み</span>
                         </label>
-                        <input type="time" id="end_time" name="end_time" step="300" onchange="dateChange();"
+                        <input type="time" id="end_time" name="end_time" step="300"
+                            onchange="dateChange();"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            value="{{ old('end_time', substr($report->end_time,0,5)) }}">
+                            value="{{ old('end_time', substr($report->end_time, 0, 5)) }}">
                     </div>
                 </div>
                 <div style="display: none" id="time_form">
@@ -541,7 +545,7 @@
                 if (oldReasonId == reasonCategory.childNodes[i].value) {
                     reasonCategory.childNodes[i].selected = true;
                 }
-                
+
             }
         }
 
@@ -766,7 +770,7 @@
             document.getElementById('get_hours').setAttribute('value', getHoursOnly);
             document.getElementById('get_minutes').setAttribute('value', getMinutes);
 
-            let ownRemainings = @json($own_remainings);
+            let ownRemainings = @json($my_remainings);
             const arr = Object.keys(ownRemainings);
             let ownRemainingDays = 0;
             // console.log(arr);

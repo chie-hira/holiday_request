@@ -13,7 +13,7 @@ class UpdateRemainingRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,8 @@ class UpdateRemainingRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'remaining_days' => 'required|integer',
+            'remaining_hours' => 'integer',
         ];
     }
 }

@@ -30,7 +30,8 @@ Route::get('/dashboard', function () {
 Route::resource('reports', ReportController::class)
     ->only(['create', 'store', 'edit', 'update', 'destroy'])
     ->middleware('auth');
-Route::resource('reports', ReportController::class)->only(['index', 'show']);
+Route::resource('reports', ReportController::class)
+    ->only(['index', 'show']);
 
 # remainingルーティング
 Route::resource('remainings', RemainingController::class);
@@ -42,26 +43,23 @@ Route::get('/approvals/pending', [ReportController::class, 'approvalPending'])
 Route::get('/approvals/approved', [ReportController::class, 'approved'])
     ->name('approvals.approved')
     ->middleware('auth', 'can:general_and_factory_gl');
-Route::get('/approvals/list', [ReportController::class, 'approvalList'])->name(
-    'approvals.list'
-);
-Route::get('/approval/{report}', [ReportController::class, 'approval'])->name(
-    'approval'
-);
+Route::get('/approvals/list', [ReportController::class, 'approvalList'])
+    ->name('approvals.list');
+Route::get('/approval/{report}', [ReportController::class, 'approval'])
+    ->name('approval');
 
 # remaining加算ルーティング
-Route::get('/update_remainings', function () {
-    return view('remainings.update_form');
-})->name('remainings.update_form');
-Route::post('/add_remainings', [
-    RemainingController::class,
-    'addRemainings',
-])->name('remainings.add_remainings');
+Route::get('/update_remainings', function () {return view('remainings.update_form');})
+    ->name('remainings.update_form');
+Route::post('/add_remainings', [RemainingController::class, 'addRemainings',])
+    ->name('remainings.add_remainings');
+
+# my_indexルーティング
+Route::get('/my_remainings', [RemainingController::class, 'myIndex',])
+    ->name('remainings.my_index');
 
 # 承認後のreport削除
-Route::delete('/reports/approved/{report}', [
-    ReportController::class,
-    'approvedDelete',
-])->name('reports.approved_delete');
+Route::delete('/reports/approved/{report}', [ReportController::class, 'approvedDelete',])
+    ->name('reports.approved_delete');
 
 require __DIR__ . '/auth.php';

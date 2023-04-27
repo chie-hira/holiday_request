@@ -11,31 +11,25 @@
         </div>
     </header>
     <section class="text-gray-600 body-font">
-        <div class="container px-5 py-24 mx-auto">
+        <div class="container md:w-2/3 px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-6">
                 <h1 class="sm:text-4xl text-3xl font-medium title-font mb-4 text-gray-900">休暇取得状況</h1>
-                <p id="report_name-1" style="display: "
-                    class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
+                <p id="report_name-1" style="display: " class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
                     有給休暇
                 </p>
-                <p id="report_name-2" style="display: none"
-                    class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
+                <p id="report_name-2" style="display: none" class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
                     バースデイ休暇
                 </p>
-                <p id="report_name-10" style="display: none"
-                    class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
+                <p id="report_name-10" style="display: none" class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
                     欠 勤
                 </p>
-                <p id="report_name-11" style="display: none"
-                    class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
+                <p id="report_name-11" style="display: none" class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
                     遅 刻
                 </p>
-                <p id="report_name-12" style="display: none"
-                    class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
+                <p id="report_name-12" style="display: none" class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
                     早 退
                 </p>
-                <p id="report_name-13" style="display: none"
-                    class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
+                <p id="report_name-13" style="display: none" class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
                     外 出
                 </p>
             </div>
@@ -64,6 +58,7 @@
                                                 class="w-24 px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 取得日数
                                             </th>
+                                            <th></th>
                                             <th id="remaining_title" style="display: "
                                                 class="w-24 px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 残日数
@@ -83,8 +78,8 @@
                                                 <td
                                                     class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
                                                     {{ $user->name }}</td>
-                                                <td 
-                                                    class="px-4 py-4 whitespace-nowrap text-sm text-right text-gray-800 dark:text-gray-200">
+                                                <td
+                                                    class="px-2 py-4 whitespace-nowrap text-sm text-right text-gray-800 dark:text-gray-200">
                                                     <div id="get-1_{{ $user->id }}" style="display: ">
                                                         <x-sum-get-days :user="$user" key=1 /> {{-- 有給 --}}
                                                     </div>
@@ -92,25 +87,39 @@
                                                         <x-sum-get-days :user="$user" key=2 /> {{-- バースデイ --}}
                                                     </div>
                                                     <div id="get-10_{{ $user->id }}" style="display: none">
-                                                        <x-sum-get-days :user="$user" key=10 /> {{-- 欠勤 --}}
+                                                        <x-sum-get-days :user="$user" key=10 />
+                                                        {{-- 欠勤 --}}
                                                     </div>
                                                     <div id="get-11_{{ $user->id }}" style="display: none">
-                                                        <x-sum-get-days :user="$user" key=11 /> {{-- 遅刻 --}}
+                                                        <x-sum-get-days :user="$user" key=11 />
+                                                        {{-- 遅刻 --}}
                                                     </div>
                                                     <div id="get-12_{{ $user->id }}" style="display: none">
-                                                        <x-sum-get-days :user="$user" key=12 /> {{-- 早退 --}}
+                                                        <x-sum-get-days :user="$user" key=12 />
+                                                        {{-- 早退 --}}
                                                     </div>
                                                     <div id="get-13_{{ $user->id }}" style="display: none">
-                                                        <x-sum-get-days :user="$user" key=13 /> {{-- 外出 --}}
+                                                        <x-sum-get-days :user="$user" key=13 />
+                                                        {{-- 外出 --}}
                                                     </div>
                                                 </td>
+                                                <th>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                        fill="currentColor" class="w-5 h-6">
+                                                        <path fill-rule="evenodd"
+                                                            d="M10.5 6a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm0 6a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm0 6a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                </th>
                                                 <td id="remaining_data" style="display: "
-                                                    class="px-4 py-4 whitespace-nowrap text-sm text-right text-gray-800 dark:text-gray-200">
+                                                    class="px-2 py-4 whitespace-nowrap text-sm text-right text-gray-800 dark:text-gray-200">
                                                     <div id="remaining-1_{{ $user->id }}" style="display: ">
-                                                        <x-remaining-days :user="$user" key=0 /> {{-- 有給 --}}
+                                                        <x-remaining-days :user="$user" key=0 />
+                                                        {{-- 有給 --}}
                                                     </div>
                                                     <div id="remaining-2_{{ $user->id }}" style="display: none">
-                                                        <x-remaining-days :user="$user" key=1 /> {{-- バースデイ --}}
+                                                        <x-remaining-days :user="$user" key=1 />
+                                                        {{-- バースデイ --}}
                                                     </div>
                                                 </td>
                                             </tr>
@@ -154,43 +163,48 @@
             reportNameRemainingOn(reportName1);
             reportDataRemainingOn(1);
         }
+
         function reportChange2() {
             reportNameRemainingOn(reportName2);
             reportDataRemainingOn(2);
         }
+
         function reportChange10() {
             reportNameRemainingOff(reportName10);
-            reportDataRemainingOff(10) ;
+            reportDataRemainingOff(10);
         }
+
         function reportChange11() {
             reportNameRemainingOff(reportName11);
-            reportDataRemainingOff(11) ;
+            reportDataRemainingOff(11);
         }
+
         function reportChange12() {
             reportNameRemainingOff(reportName12);
-            reportDataRemainingOff(12) ;
+            reportDataRemainingOff(12);
         }
+
         function reportChange13() {
             reportNameRemainingOff(reportName13);
-            reportDataRemainingOff(13) ;
+            reportDataRemainingOff(13);
         }
 
         function reportDataRemainingOn(repoortCategoryId) {
-            let getId = 'get-'+repoortCategoryId;
-            let remainingId = 'remaining-'+repoortCategoryId;
+            let getId = 'get-' + repoortCategoryId;
+            let remainingId = 'remaining-' + repoortCategoryId;
 
             users.forEach(e => {
-                let getId1 = document.getElementById('get-1_'+e.id);
-                let getId2 = document.getElementById('get-2_'+e.id);
-                let getId10 = document.getElementById('get-10_'+e.id);
-                let getId11 = document.getElementById('get-11_'+e.id);
-                let getId12 = document.getElementById('get-12_'+e.id);
-                let getId13 = document.getElementById('get-13_'+e.id);
-                let remainingId1 = document.getElementById('remaining-1_'+e.id);
-                let remainingId2 = document.getElementById('remaining-2_'+e.id);
+                let getId1 = document.getElementById('get-1_' + e.id);
+                let getId2 = document.getElementById('get-2_' + e.id);
+                let getId10 = document.getElementById('get-10_' + e.id);
+                let getId11 = document.getElementById('get-11_' + e.id);
+                let getId12 = document.getElementById('get-12_' + e.id);
+                let getId13 = document.getElementById('get-13_' + e.id);
+                let remainingId1 = document.getElementById('remaining-1_' + e.id);
+                let remainingId2 = document.getElementById('remaining-2_' + e.id);
                 const getIds = [getId1, getId2, getId10, getId11, getId12, getId13];
                 const remainingIds = [remainingId1, remainingId2];
-                
+
                 getIds.forEach(id => {
                     idSplit = id.id.split('_');
                     if (getId == idSplit[0]) {
@@ -209,20 +223,21 @@
                 });
             });
         }
+
         function reportDataRemainingOff(repoortCategoryId) {
-            let getId = 'get-'+repoortCategoryId;
+            let getId = 'get-' + repoortCategoryId;
 
             users.forEach(e => {
-                let getId1 = document.getElementById('get-1_'+e.id);
-                let getId2 = document.getElementById('get-2_'+e.id);
-                let getId10 = document.getElementById('get-10_'+e.id);
-                let getId11 = document.getElementById('get-11_'+e.id);
-                let getId12 = document.getElementById('get-12_'+e.id);
-                let getId13 = document.getElementById('get-13_'+e.id);
-                let remainingId1 = document.getElementById('remaining-1_'+e.id);
-                let remainingId2 = document.getElementById('remaining-2_'+e.id);
+                let getId1 = document.getElementById('get-1_' + e.id);
+                let getId2 = document.getElementById('get-2_' + e.id);
+                let getId10 = document.getElementById('get-10_' + e.id);
+                let getId11 = document.getElementById('get-11_' + e.id);
+                let getId12 = document.getElementById('get-12_' + e.id);
+                let getId13 = document.getElementById('get-13_' + e.id);
+                let remainingId1 = document.getElementById('remaining-1_' + e.id);
+                let remainingId2 = document.getElementById('remaining-2_' + e.id);
                 const getIds = [getId1, getId2, getId10, getId11, getId12, getId13];
-                
+
                 getIds.forEach(id => {
                     idSplit = id.id.split('_');
                     if (getId == idSplit[0]) {
@@ -248,6 +263,7 @@
             remainingTitle.style.display = '';
             remainingData.style.display = '';
         }
+
         function reportNameRemainingOff(reportName) {
             const reportNames = [reportName1, reportName2, reportName10, reportName11, reportName12, reportName13];
             reportNames.forEach(name => {
