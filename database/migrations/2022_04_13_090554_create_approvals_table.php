@@ -29,6 +29,11 @@ class CreateApprovalsTable extends Migration
                 ->constrained('department_categories')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
+            $table->foreignId('group_id')
+                ->nullable()
+                ->constrained('group_categories')
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
             $table->foreignId('approval_id')
                 ->nullable()
                 ->constrained('approval_categories')

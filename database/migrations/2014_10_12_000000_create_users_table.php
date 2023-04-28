@@ -30,6 +30,11 @@ class CreateUsersTable extends Migration
                 ->constrained('department_categories')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
+            $table->foreignId('group_id')
+                ->nullable()
+                ->constrained('group_categories')
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
             $table->date('adoption_date');
             $table->rememberToken();
             $table->timestamps();

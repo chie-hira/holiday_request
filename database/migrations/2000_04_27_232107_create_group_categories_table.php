@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDepartmentCategoriesTable extends Migration
+class CreateGroupCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class CreateDepartmentCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('department_categories', function (Blueprint $table) {
-            $table->id()->index()->comment('所属課ID');
-            $table->string('department_name')->unique();
+        Schema::create('group_categories', function (Blueprint $table) {
+            $table->id()->index()->comment('所属グループID');
+            $table->string('group_name')->unique();
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ class CreateDepartmentCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('department_categories');
+        Schema::dropIfExists('group_categories');
     }
 }
