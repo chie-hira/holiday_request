@@ -146,13 +146,13 @@
                                                         </span>
                                                     @endif
                                                 </td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                <td class="pl-2 pr-1 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                     <a href="{{ route('reports.show', $report) }}"
                                                         class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
                                                         届表示
                                                     </a>
                                                 </td>
-                                                <td class="px-1 py-4 whitespace-nowrap text-sm font-medium">
+                                                <td class="pl-1 pr-2 py-4 whitespace-nowrap text-sm font-medium">
                                                 {{-- @if ($report->approval1 == 0 || $report->approval2 == 0 || $report->approval3 == 0) --}}
                                                     {{-- @can('delete', $report) --}}
                                                         <form action="{{ route('reports.approved_delete', $report) }}" method="POST">

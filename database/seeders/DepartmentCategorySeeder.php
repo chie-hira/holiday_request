@@ -15,7 +15,7 @@ class DepartmentCategorySeeder extends Seeder
     public function run()
     {
         $param = [
-            ['department_name' => '無所属'],
+            ['department_name' => '無所属'], # 複数の課に所属している場合は無所属
             ['department_name' => '営業課'],
             ['department_name' => 'プレス製造課'],
             ['department_name' => '板金製造課'],

@@ -1,5 +1,7 @@
 <x-app-layout>
 
+    <x-notice :notice="session('notice')" />
+
     <div class="w-full max-w-md mx-auto mt-10 mb-8 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
         <div class="flex items-center justify-between mb-4">
             <h5
@@ -63,8 +65,8 @@
                                     @if ($report->end_time != null)
                                         &emsp;~&emsp;{{ Str::substr($report->end_time, 0, 5) }}
                                     @endif
-                                    @if ($report->am_pm != null)
-                                        &emsp;{{ $report->am_pm == 0 ? '午 前' : '午 後' }}
+                                    @if ($report->am_pm != null )
+                                        &emsp;{{ $report->am_pm == 1 ? '午 前' : '午 後' }}
                                     @endif
                                 </p>
                             </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\DepartmentCategory;
 use App\Models\FactoryCategory;
+use App\Models\GroupCategory;
 use Illuminate\Http\Request;
 use App\Models\User;
 
@@ -30,7 +31,8 @@ class UserController extends Controller
     {
         $factory_categories = FactoryCategory::all();
         $department_categories = DepartmentCategory::all();
-        return view('users.edit')->with(compact('user', 'factory_categories', 'department_categories'));
+        $group_categories = GroupCategory::all();
+        return view('users.edit')->with(compact('user', 'factory_categories', 'department_categories', 'group_categories'));
     }
 
     /**

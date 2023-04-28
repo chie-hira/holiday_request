@@ -22,19 +22,35 @@
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6">
                 @auth
-                    @if (Auth::user()->approvals->first())
-                        @foreach (Auth::user()->approvals as $approval)
-                        <p class="text-sm text-white">
-                            {{-- {{ Auth::user()->approval->approval_name }}&emsp;/&emsp; --}}
-                            {{ Auth::user()->getApprovalDepartment($approval->department_id) }}
-                            {{ Auth::user()->getApprovalName($approval->approval_id) }}&emsp;/&emsp;
-                            {{-- {{ ApprovalCategory::find($approval->id)->approval_name }}&emsp;/&emsp; --}}
-                        </p>
-                        @endforeach
-                    @endif
                     <p class="text-sm text-white">
-                        {{ Auth::user()->factory->factory_name }}工場・{{ Auth::user()->department->department_name }}&emsp;/&emsp;
+                        {{ Auth::user()->factory->factory_name }}工場
+                        @if (Auth::user()->department->id != 1)
+                            ・{{ Auth::user()->department->department_name }}
+                        @endif
+                        @if (Auth::user()->group->id != 1)
+                            ・{{ Auth::user()->group->group_name }}
+                        @endif
+                        &emsp;/&emsp;
                     </p>
+                    @if (Auth::user()->approvals->first())
+                        {{-- @if ($approvals->contains == 'apploval_id', 2)
+                        @endif --}}
+                        <p class="text-sm text-white mr-1">
+                        @foreach (Auth::user()->approvals as $approval)
+                            @if ($approval->approval_id == 1 || $approval->approval_id == 2)
+                                {{ Auth::user()->getApprovalName($approval->approval_id) }}&emsp;/&emsp;
+                            @else
+                                @if ($approval->department_id != 1)
+                                    {{ Auth::user()->getApprovalDepartment($approval->department_id) }}
+                                @endif
+                                @if ($approval->group_id != 1)
+                                    ・{{ Auth::user()->getApprovalGroup($approval->group_id) }}
+                                @endif
+                                ・{{ Auth::user()->getApprovalName($approval->approval_id) }}&emsp;/&emsp;
+                            @endif
+                        @endforeach
+                        </p>
+                    @endif
                 @endauth
 
                 <x-dropdown align="right" width="48">

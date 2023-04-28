@@ -31,7 +31,7 @@
                                                 class="w-24 px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                                                 氏 名
                                             </th>
-                                            <th id="remaining_title" style="display: "
+                                            <th
                                                 class="w-24 px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 残日数
                                             </th>

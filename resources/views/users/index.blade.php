@@ -1,9 +1,27 @@
 <x-app-layout>
     <!-- Page Heading -->
     <section class="text-gray-600 body-font">
-        <div class="container lg:w-2/3 px-5 py-24 mx-auto">
+        <div class="container lg:w-2/3 lx:w-1/2 px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-6">
-                <h1 class="sm:text-4xl text-3xl font-medium title-font mb-4 text-gray-900">従業員一覧</h1>
+                <h1 class="sm:text-4xl text-3xl font-medium title-font text-gray-900">従業員一覧</h1>
+                {{-- <h2 class=" text-right">ppp</h2> --}}
+                <h2 class=" text-right">
+                    @can('general_only')
+                        <a href={{ route('register') }}
+                            class="inline-flex items-center justify-center text-base mr-2 font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                class="w-6 h-6">
+                                <path
+                                    d="M6.25 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM3.25 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM19.75 7.5a.75.75 0 00-1.5 0v2.25H16a.75.75 0 000 1.5h2.25v2.25a.75.75 0 001.5 0v-2.25H22a.75.75 0 000-1.5h-2.25V7.5z"
+                                    fill="#6666ff" />
+                            </svg>
+                            {{-- <span class="w-full">メンバー登録</span> --}}
+                        </a>
+                    @endcan
+                </h2>
+                <p class="mx-auto text-left leading-relaxed text-sm">
+                    設定から<span class="font-bold">所属の変更</span>と<span class="font-bold">社員情報の削除</span>ができます。
+                </p>
             </div>
 
             <x-notice :notice="session('notice')" />
@@ -44,7 +62,13 @@
                                                 </td>
                                                 <td
                                                     class="px-4 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                                    {{ $user->factory->factory_name }}工場&ensp;/&ensp;{{ $user->department->department_name }}
+                                                    {{ $user->factory->factory_name }}工場
+                                                    @if ($user->department->id != 1)
+                                                        ・{{ $user->department->department_name }}
+                                                    @endif
+                                                    @if ($user->group->id != 1)
+                                                        ・{{ $user->group->group_name }}
+                                                    @endif
                                                 </td>
                                                 <td
                                                     class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">

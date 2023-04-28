@@ -23,7 +23,7 @@ class UsersTableSeeder extends Seeder
             'password' => bcrypt('392'), // 社員番号+ランダム数字3桁
             'employee' => 392,
             'factory_id' => 1,
-            'department_id' => 2,
+            'department_id' => 5,
             'group_id' => 1,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
@@ -273,8 +273,8 @@ class UsersTableSeeder extends Seeder
             'password' => bcrypt('411'), // 社員番号+ランダム数字3桁
             'employee' => 411,
             'factory_id' => 1,
-            'department_id' => 4,
-            'group_id' => 4,
+            'department_id' => 1,
+            'group_id' => 1,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
@@ -494,7 +494,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 366,
             'factory_id' => 1,
             'department_id' => 7,
-            'group_id' => null,
+            'group_id' => 1,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
@@ -504,7 +504,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 201,
             'factory_id' => 1,
             'department_id' => 7,
-            'group_id' => null,
+            'group_id' => 1,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
@@ -514,7 +514,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 214,
             'factory_id' => 1,
             'department_id' => 7,
-            'group_id' => null,
+            'group_id' => 1,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
@@ -524,7 +524,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 640,
             'factory_id' => 1,
             'department_id' => 7,
-            'group_id' => null,
+            'group_id' => 1,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
@@ -534,7 +534,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 499,
             'factory_id' => 1,
             'department_id' => 7,
-            'group_id' => null,
+            'group_id' => 1,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
@@ -544,7 +544,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 724,
             'factory_id' => 1,
             'department_id' => 8,
-            'group_id' => null,
+            'group_id' => 1,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
@@ -554,7 +554,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 733,
             'factory_id' => 1,
             'department_id' => 8,
-            'group_id' => null,
+            'group_id' => 1,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
             [
@@ -564,7 +564,7 @@ class UsersTableSeeder extends Seeder
             'employee' => 734,
             'factory_id' => 1,
             'department_id' => 8,
-            'group_id' => null,
+            'group_id' => 1,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
             ],
         ];

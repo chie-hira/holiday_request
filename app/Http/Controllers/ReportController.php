@@ -313,7 +313,7 @@ class ReportController extends Controller
             $report->save();
             return redirect(route('reports.index'))->with(
                 'notice',
-                '提出しました'
+                '出退勤届けを提出しました'
             );
         } catch (\Throwable $th) {
             return back()
@@ -606,12 +606,16 @@ class ReportController extends Controller
 
         # reportsレコード更新
         $report->fill($request->all());
+        $report->approval1 = 0;
+        $report->approval2 = 0;
+        $report->approval3 = 0;
+        // dd($report);
 
         try {
             $report->save();
             return redirect(route('reports.index'))->with(
                 'notice',
-                '更新しました'
+                '出退勤届けを更新しました。'
             );
         } catch (\Throwable $th) {
             return back()
@@ -639,15 +643,27 @@ class ReportController extends Controller
         }
     }
 
+    /** 承認済み届出の取消 */
     public function approvedDelete(Report $report)
     {
         $remaining = Remaining::all()
             ->where('report_id', '=', $report->report_id)
             ->where('user_id', '=', $report->user_id)
             ->first();
-        $remaining->remaining += $report->get_days;
+
+        if (empty($remaining)) {
+            try {
+                $report->delete();
+                return redirect()
+                    ->route('reports.index')
+                    ->with('notice', '出退勤届けを取り消しました');
+            } catch (\Throwable $th) {
+                return back()->withErrors($th->getMessage());
+            }
+        }
 
         /** 残日数加算&届け取消 */
+        $remaining->remaining += $report->get_days;
         DB::beginTransaction(); # トランザクション開始
         try {
             $remaining->save();
@@ -656,7 +672,7 @@ class ReportController extends Controller
             DB::commit(); # トランザクション成功終了
             return redirect()
                 ->route('reports.index')
-                ->with('notice', '届けを取り消しました');
+                ->with('notice', '出退勤届けを取り消しました');
         } catch (\Throwable $th) {
             DB::rollBack(); # トランザクション失敗終了
             return back()->withErrors($th->getMessage());
@@ -826,74 +842,115 @@ class ReportController extends Controller
         );
     }
 
+    # 承認
     public function approval(Report $report)
     {
-        if (
-            !empty(
-                Auth::user()
-                    ->approvals->where('approval_id', '=', 1)
-                    ->first()
-            )
-        ) {
-            $report->approval1 = 1;
-        }
-        // FIXME:2権限、3権限を持つuserがいたら誤作動
-        if (
-            !empty(
-                Auth::user()
-                    ->approvals->where('approval_id', '=', 2)
-                    ->first()
-            )
-        ) {
-            $report->approval2 = 1;
+        // dd($report->user->department_id);
+        // dd($report->user->factory_id);
+
+        /** departmentが無所属または自身の届けの場合 */
+        if ($report->user->department_id == 1 || $report->user->id == Auth::user()->id) {
+            /** 権限ごとに承認 */
+            if (
+                !empty(
+                    Auth::user()
+                        ->approvals->where('approval_id', '=', 1)
+                        ->first()
+                )
+            ) {
+                $report->approval1 = 1;
+                $report->approval2 = 1;
+                $report->approval3 = 1;
+            }
+            if (
+                !empty(
+                    Auth::user()
+                        ->approvals->where('approval_id', '=', 2)
+                        ->first()
+                )
+            ) {
+                $report->approval2 = 1;
+                $report->approval3 = 1;
+            }
+            if (
+                !empty(
+                    Auth::user()
+                        ->approvals->where('approval_id', '=', 3)
+                        ->first()
+                )
+            ) {
+                $report->approval3 = 1;
+            }
+        /** 通常の承認 */
+        } else {
+            /** 権限ごとに承認 */
+            if (
+                !empty(
+                    Auth::user()
+                        ->approvals->where('approval_id', '=', 1)
+                        ->first()
+                )
+            ) {
+                $report->approval1 = 1;
+            }
+            // FIXME:2権限、3権限を持つuserがいたら誤作動
+            if (
+                !empty(
+                    Auth::user()
+                        ->approvals
+                        ->where('factory_id', '=', $report->user->factory_id)
+                        ->where('approval_id', '=', 2)
+                        ->first()
+                )
+            ) {
+                $report->approval2 = 1;
+            }
+
+            if (
+                !empty(
+                    Auth::user()
+                        ->approvals
+                        ->where('factory_id', '=', $report->user->factory_id)
+                        ->where('department_id', '=', $report->user->department_id)
+                        ->where('approval_id', '=', 3)
+                        ->first()
+                )
+            ) {
+                $report->approval3 = 1;
+            }
         }
 
-        if (
-            !empty(
-                Auth::user()
-                    ->approvals->where('approval_id', '=', 3)
-                    ->first()
-            )
-        ) {
-            $report->approval3 = 1;
-        }
-
+        /** すべて承認された場合、remainingを更新 */
+        DB::beginTransaction(); # トランザクション開始
         try {
-            $report->save();
-        } catch (\Throwable $th) {
-            return back()->withErrors($th->getMessage());
-        }
+            $report->save(); # 承認を保存
 
-        if (
-            $report->approval1 == 1 &&
-            $report->approval2 == 1 &&
-            $report->approval3 == 1
-        ) {
-            // 残日数を更新
-            # remainingsレコード更新
-            $report_id = $report->report_id;
-            // if ($report_id == 2 || $report_id == 3) {
-            //     $report_id = 1;
-            // }
-            $remaining = Remaining::where('user_id', '=', $report->user_id)
-                ->where('report_id', '=', $report_id)
-                ->first();
-            if (!empty($remaining)) {
-                $new_remaining = $remaining->remaining - $report->get_days;
-                $remaining->remaining = $new_remaining;
-            }
-
-            try {
+            # すべて承認されたらremainingsを更新
+            if (
+                $report->approval1 == 1 &&
+                $report->approval2 == 1 &&
+                $report->approval3 == 1
+            ) {
+                $report_id = $report->report_id;
+                $remaining = Remaining::where('user_id', '=', $report->user_id)
+                    ->where('report_id', '=', $report_id)
+                    ->first();
                 if (!empty($remaining)) {
-                    $remaining->save();
+                    $new_remaining = $remaining->remaining - $report->get_days;
+                    $remaining->remaining = $new_remaining;
+                    $remaining->save(); # 残日数を保存
                 }
-            } catch (\Throwable $th) {
-                return back()->withErrors($th->getMessage());
             }
+            DB::commit(); # トランザクション成功終了
+            return view('reports.show')
+                ->with(compact('report'))
+                ->with('notice', '承認しました');
+        } catch (\Exception $e) {
+            DB::rollBack(); # トランザクション失敗終了
+            return back()
+                ->withInput()
+                ->withErrors($e->getMessage());
         }
 
-        return view('reports.show')
-            ->with(compact('report'))
-            ->with('notice', '承認しました');
     }
 }

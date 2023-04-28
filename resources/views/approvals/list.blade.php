@@ -11,7 +11,7 @@
         </div>
     </header>
     <section class="text-gray-600 body-font">
-        <div class="container md:w-2/3 px-5 py-24 mx-auto">
+        <div class="container md:w-3/4 px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-6">
                 <h1 class="sm:text-4xl text-3xl font-medium title-font mb-4 text-gray-900">休暇取得状況</h1>
                 <p id="report_name-1" style="display: " class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
@@ -58,7 +58,7 @@
                                                 class="w-24 px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 取得日数
                                             </th>
-                                            <th></th>
+                                            <th id="bar_title" style="display: "></th>
                                             <th id="remaining_title" style="display: "
                                                 class="w-24 px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 残日数
@@ -70,7 +70,13 @@
                                             <tr>
                                                 <td
                                                     class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
-                                                    {{ $user->factory->factory_name }}工場&ensp;/&ensp;{{ $user->department->department_name }}
+                                                    {{ $user->factory->factory_name }}工場
+                                                    @if ($user->department->id != 1)
+                                                        ・{{ $user->department->department_name }}
+                                                    @endif
+                                                    @if ($user->group->id != 1)
+                                                        ・{{ $user->group->group_name }}
+                                                    @endif
                                                 </td>
                                                 <td
                                                     class="px-4 py-4 whitespace-nowrap text-sm text-center text-gray-800 dark:text-gray-200">
@@ -103,14 +109,14 @@
                                                         {{-- 外出 --}}
                                                     </div>
                                                 </td>
-                                                <th>
+                                                <td id="bar_{{ $user->id }}" style="display: ">
                                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                                                         fill="currentColor" class="w-5 h-6">
                                                         <path fill-rule="evenodd"
                                                             d="M10.5 6a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm0 6a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm0 6a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z"
                                                             clip-rule="evenodd" />
                                                     </svg>
-                                                </th>
+                                                </td>
                                                 <td id="remaining_data" style="display: "
                                                     class="px-2 py-4 whitespace-nowrap text-sm text-right text-gray-800 dark:text-gray-200">
                                                     <div id="remaining-1_{{ $user->id }}" style="display: ">
@@ -157,6 +163,7 @@
         let reportName13 = document.getElementById('report_name-13');
         let remainingTitle = document.getElementById('remaining_title');
         let remainingData = document.getElementById('remaining_data');
+        let barTitle = document.getElementById('bar_title');
         const users = @json($users);
 
         function reportChange1() {
@@ -202,6 +209,7 @@
                 let getId13 = document.getElementById('get-13_' + e.id);
                 let remainingId1 = document.getElementById('remaining-1_' + e.id);
                 let remainingId2 = document.getElementById('remaining-2_' + e.id);
+                let barId = document.getElementById('bar_' + e.id);
                 const getIds = [getId1, getId2, getId10, getId11, getId12, getId13];
                 const remainingIds = [remainingId1, remainingId2];
 
@@ -221,6 +229,8 @@
                         id.style.display = 'none';
                     }
                 });
+                barTitle.style.display = '';
+                barId.style.display = '';
             });
         }
 
@@ -236,6 +246,7 @@
                 let getId13 = document.getElementById('get-13_' + e.id);
                 let remainingId1 = document.getElementById('remaining-1_' + e.id);
                 let remainingId2 = document.getElementById('remaining-2_' + e.id);
+                let barId = document.getElementById('bar_' + e.id);
                 const getIds = [getId1, getId2, getId10, getId11, getId12, getId13];
 
                 getIds.forEach(id => {
@@ -248,6 +259,8 @@
                 });
                 remainingId1.style.display = 'none';
                 remainingId2.style.display = 'none';
+                barTitle.style.display = 'none';
+                barId.style.display = 'none';
             });
         }
 

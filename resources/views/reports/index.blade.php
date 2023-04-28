@@ -5,7 +5,7 @@
                 <h1 class="sm:text-4xl text-3xl font-medium title-font text-gray-900">出退勤届け一覧</h1>
             </div>
 
-            {{-- <x-notice :message="session('notice')" /> --}}
+            <x-notice :notice="session('notice')" />
 
             <div class="container bg-white w-full mx-auto border-2 rounded-lg">
                 <div class="flex flex-col p-6">
@@ -80,7 +80,7 @@
                                                     ~&emsp;&emsp;{{ Str::substr($report->end_time, 0, 5) }}
                                                 @endif
                                                 @if ($report->am_pm != null)
-                                                    {{ $report->am_pm == 0 ? '午 前' : '午 後' }}
+                                                    {{ $report->am_pm == 1 ? '午 前' : '午 後' }}
                                                 @endif
                                             </td>
                                             <td

@@ -109,7 +109,7 @@
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 mr-3">
                                 <path fill-rule="evenodd"
                                     d="M4.5 3.75a3 3 0 00-3 3v10.5a3 3 0 003 3h15a3 3 0 003-3V6.75a3 3 0 00-3-3h-15zm4.125 3a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5zm-3.873 8.703a4.126 4.126 0 017.746 0 .75.75 0 01-.351.92 7.47 7.47 0 01-3.522.877 7.47 7.47 0 01-3.522-.877.75.75 0 01-.351-.92zM15 8.25a.75.75 0 000 1.5h3.75a.75.75 0 000-1.5H15zM14.25 12a.75.75 0 01.75-.75h3.75a.75.75 0 010 1.5H15a.75.75 0 01-.75-.75zm.75 2.25a.75.75 0 000 1.5h3.75a.75.75 0 000-1.5H15z"
-                                    clip-rule="evenodd" />
+                                    clip-rule="evenodd" fill="#6666ff"/>
                             </svg>
                             <span class="w-full">メンバー情報</span>
                         </a>
@@ -128,7 +128,7 @@
                         </a>
                     @endcan
 
-                    @can('general_only')
+                    {{-- @can('general_only')
                         <a href={{ route('register') }}
                             class="inline-flex items-center justify-center p-5 text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
@@ -139,7 +139,7 @@
                             </svg>
                             <span class="w-full">メンバー登録</span>
                         </a>
-                    @endcan
+                    @endcan --}}
                 </div>
             @endauth
         </div>
