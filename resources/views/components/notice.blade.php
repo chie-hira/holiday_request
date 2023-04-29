@@ -1,7 +1,6 @@
 @props(['notice'])
 
 @if ($notice)
-
     <div id="alert-border-1" class="p-4 mb-4 text-xs sm:text-base text-indigo-400 border-t-4 border-indigo-300 bg-purple-100/40" role="alert">
         <p class="flex">
             <span class="font-medium mr-2">
@@ -10,7 +9,8 @@
             <b class="text-xs sm:text-base font-medium">
                 {{ $notice }}
             </b>
-            <button type="button" onclick="#"
+            {{-- <button type="button" onclick="window.location.href='{{route('dashboard')}}'" --}}
+            <button type="button" onclick="window.location.reload();"
                 class="ml-auto -mx-1.5 -my-1.5 text-indigo-400 p-1.5 hover:text-indigo-500 inline-flex h-8 w-8"
                 data-dismiss-target="#alert-border-1" aria-label="Close">
                 <span class="sr-only">Dismiss</span>

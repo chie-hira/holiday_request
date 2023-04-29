@@ -77,7 +77,7 @@
                         </a>
                     @endcan
 
-                    @can('general_and_factory_gl')
+                    @can('general_and_factory_only')
                         <a href={{ route('approvals.list') }}
                             class="inline-flex items-center justify-center p-5 text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
@@ -90,6 +90,8 @@
                         </a>
                     @endcan
 
+                    <div></div>
+
                     @can('general_only')
                         <a href={{ route('remainings.index') }}
                             class="inline-flex items-center justify-center p-5 text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
@@ -97,7 +99,7 @@
                                 class="w-6 h-6 mr-3">
                                 <path fill-rule="evenodd"
                                     d="M1.5 5.625c0-1.036.84-1.875 1.875-1.875h17.25c1.035 0 1.875.84 1.875 1.875v12.75c0 1.035-.84 1.875-1.875 1.875H3.375A1.875 1.875 0 011.5 18.375V5.625zM21 9.375A.375.375 0 0020.625 9h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zm0 3.75a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zm0 3.75a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zM10.875 18.75a.375.375 0 00.375-.375v-1.5a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5zM3.375 15h7.5a.375.375 0 00.375-.375v-1.5a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375zm0-3.75h7.5a.375.375 0 00.375-.375v-1.5A.375.375 0 0010.875 9h-7.5A.375.375 0 003 9.375v1.5c0 .207.168.375.375.375z"
-                                    clip-rule="evenodd" fill="#cc66ff" />
+                                    clip-rule="evenodd" fill="#6666ff" />
                             </svg>
                             <span class="w-full">残日数一覧</span>
                         </a>
@@ -115,7 +117,7 @@
                         </a>
                     @endcan
 
-                    @can('general_only')
+                    {{-- @can('general_only')
                         <a href={{ route('remainings.update_form') }}
                             class="inline-flex items-center justify-center p-5 text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
@@ -126,7 +128,7 @@
                             </svg>
                             <span class="w-full">休暇日数更新</span>
                         </a>
-                    @endcan
+                    @endcan --}}
 
                     {{-- @can('general_only')
                         <a href={{ route('register') }}

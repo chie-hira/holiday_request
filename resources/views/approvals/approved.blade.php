@@ -153,8 +153,7 @@
                                                     </a>
                                                 </td>
                                                 <td class="pl-1 pr-2 py-4 whitespace-nowrap text-sm font-medium">
-                                                {{-- @if ($report->approval1 == 0 || $report->approval2 == 0 || $report->approval3 == 0) --}}
-                                                    {{-- @can('delete', $report) --}}
+                                                    @can('general_only')
                                                         <form action="{{ route('reports.approved_delete', $report) }}" method="POST">
                                                             @csrf
                                                             @method('DELETE')
@@ -162,8 +161,7 @@
                                                                 onclick="if(!confirm('承認済みの届けを取消しますか？')){return false};"
                                                                 class="px-3 py-1 text-sm text-pink-500 rounded-full bg-pink-100/60 hover:text-white hover:bg-pink-500">
                                                         </form>
-                                                    {{-- @endcan --}}
-                                                {{-- @endif --}}
+                                                    @endcan
                                                 </td>
                                             </tr>
                                         @endforeach

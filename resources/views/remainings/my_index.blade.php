@@ -28,16 +28,16 @@
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                                        @foreach ($my_remainings as $own_remaining)
+                                        @foreach ($my_remainings as $my_remaining)
                                             <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
                                                 <td
                                                     class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
-                                                    {{ $own_remaining->report_category->report_name }}
+                                                    {{ $my_remaining->report_category->report_name }}
                                                 </td>
                                                 <td class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium">
-                                                    {{ $own_remaining->remaining_days }} 日
-                                                    @if (!empty($own_remaining->remaining_hours))
-                                                        &ensp;{{ $own_remaining->remaining_hours }} 時間
+                                                    {{ $my_remaining->remaining_days }} 日
+                                                    @if (!empty($my_remaining->remaining_hours))
+                                                        &ensp;{{ $my_remaining->remaining_hours }} 時間
                                                     @else
                                                     @endif
                                                 </td>

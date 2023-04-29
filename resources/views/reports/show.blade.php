@@ -1,6 +1,8 @@
 <x-app-layout>
 
-    <x-notice :notice="session('notice')" />
+    <div class="w-full max-w-md mx-auto mt-10">
+        <x-notice :notice="session('notice')"/>
+    </div>
 
     <div class="w-full max-w-md mx-auto mt-10 mb-8 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
         <div class="flex items-center justify-between mb-4">
@@ -193,24 +195,27 @@
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 w-2/3 mx-auto">
-        <div class="flex mt-4 lg:w-2/3 w-full mx-auto">
+        @can('no_approvals')
+            <div></div>
+        @endcan
+        <div class="flex mt-4 lg:w-2/3 w-full">
             <a href="{{ route('reports.index') }}"
                 class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                     <path fill-rule="evenodd"
-                        d="M9.53 2.47a.75.75 0 010 1.06L4.81 8.25H15a6.75 6.75 0 010 13.5h-3a.75.75 0 010-1.5h3a5.25 5.25 0 100-10.5H4.81l4.72 4.72a.75.75 0 11-1.06 1.06l-6-6a.75.75 0 010-1.06l6-6a.75.75 0 011.06 0z"
+                        d="M20.25 12a.75.75 0 01-.75.75H6.31l5.47 5.47a.75.75 0 11-1.06 1.06l-6.75-6.75a.75.75 0 010-1.06l6.75-6.75a.75.75 0 111.06 1.06l-5.47 5.47H19.5a.75.75 0 01.75.75z"
                         clip-rule="evenodd" />
                 </svg>
                 <div class="px-2 mt-1">
-                    一覧へ
+                    my届出一覧へ
                 </div>
             </a>
         </div>
 
         @can('general_and_factory_gl')
-            <div class="flex m-4 lg:w-2/3 w-full">
+            <div class="flex mt-4 lg:w-2/3 w-full">
                 <a href="{{ route('approvals.pending') }}"
-                    class="text-indigo-500 flex h-7 md:mb-2 lg:mb-0 hover:-translate-x-1">
+                    class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                         <path fill-rule="evenodd"
                             d="M20.25 12a.75.75 0 01-.75.75H6.31l5.47 5.47a.75.75 0 11-1.06 1.06l-6.75-6.75a.75.75 0 010-1.06l6.75-6.75a.75.75 0 111.06 1.06l-5.47 5.47H19.5a.75.75 0 01.75.75z"
@@ -224,9 +229,9 @@
         @endcan
 
         @can('general_and_factory_gl')
-            <div class="flex m-4 lg:w-2/3 w-full">
+            <div class="flex mt-4 lg:w-2/3 w-full mx-auto">
                 <a href="{{ route('approvals.approved') }}"
-                    class="text-indigo-500 flex h-7 md:mb-2 lg:mb-0 hover:-translate-x-1">
+                    class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                         <path fill-rule="evenodd"
                             d="M20.25 12a.75.75 0 01-.75.75H6.31l5.47 5.47a.75.75 0 11-1.06 1.06l-6.75-6.75a.75.75 0 010-1.06l6.75-6.75a.75.75 0 111.06 1.06l-5.47 5.47H19.5a.75.75 0 01.75.75z"

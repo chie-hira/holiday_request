@@ -28,7 +28,7 @@
                 </div>
 
                 <div class="flex flex-row-reverse">
-                    <button type="submit"
+                    <button type="submit" onclick="if(!confirm('有給休暇日数を更新します。この操作は取り消せません。更新してよろしいですか？')){return false};"
                         class="text-white bg-indigo-400 hover:bg-indigo-600 focus:ring-4 focus:outline-none focus:ring-purple-300 hover:font-bold font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">
                         更 新
                     </button>
@@ -37,7 +37,7 @@
             <!-- 更新日form - end -->
 
             <div class="flex pl-4 mt-4 lg:w-2/3 w-full mx-auto">
-                <a href="{{ route('menu') }}"
+                <a href="{{ route('remainings.index') }}"
                     class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                         <path fill-rule="evenodd"

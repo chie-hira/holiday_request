@@ -232,7 +232,6 @@ class RemainingController extends Controller
                         break;
                 }
                 $remaining_report1->save(); # 有給休暇更新
-                // dd($remaining_report1);
 
                 $report_ids = [2, 3, 5, 6, 7, 8, 14];
                 foreach ($report_ids as $report_id) {
@@ -247,7 +246,7 @@ class RemainingController extends Controller
             }
 
             return redirect()
-                ->route('remainings.update_form')
+                ->route('remainings.index')
                 ->with('notice', '取得可能日数を更新しました');
         } catch (\Throwable $th) {
             return back()

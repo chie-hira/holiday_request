@@ -22,7 +22,7 @@
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6">
                 @auth
-                    <p class="text-sm text-white">
+                    <p class="text-xs text-white">
                         {{ Auth::user()->factory->factory_name }}工場
                         @if (Auth::user()->department->id != 1)
                             ・{{ Auth::user()->department->department_name }}
@@ -35,7 +35,7 @@
                     @if (Auth::user()->approvals->first())
                         {{-- @if ($approvals->contains == 'apploval_id', 2)
                         @endif --}}
-                        <p class="text-sm text-white mr-1">
+                        <p class="text-xs text-white mr-1">
                         @foreach (Auth::user()->approvals as $approval)
                             @if ($approval->approval_id == 1 || $approval->approval_id == 2)
                                 {{ Auth::user()->getApprovalName($approval->approval_id) }}&emsp;/&emsp;

@@ -679,9 +679,11 @@ class ReportController extends Controller
         }
     }
 
+    # 承認待ちのreports
     public function approvalPending()
     {
         $user = Auth::user();
+        # 総務部長権限
         if (
             !empty(
                 Auth::user()
@@ -695,6 +697,7 @@ class ReportController extends Controller
                 ->get();
         }
 
+        # 工場長権限
         if (
             !empty(
                 Auth::user()
@@ -723,6 +726,7 @@ class ReportController extends Controller
             }
         }
 
+        # GL権限
         if (
             !empty(
                 Auth::user()
@@ -737,7 +741,8 @@ class ReportController extends Controller
                 ) {
                     $query
                         ->where('factory_id', $approval->factory_id)
-                        ->where('department_id', $approval->department_id);
+                        ->where('department_id', $approval->department_id)
+                        ->where('group_id', $approval->group_id);
                 })
                     ->where(function ($query) {
                         $query
@@ -755,9 +760,11 @@ class ReportController extends Controller
         return view('approvals.pending')->with(compact('reports'));
     }
 
+    # 承認済みのreports
     public function approved()
     {
         $user = Auth::user();
+        # 総務部長権限
         if (
             !empty(
                 Auth::user()
@@ -771,6 +778,7 @@ class ReportController extends Controller
                 ->get();
         }
 
+        # 工場長権限
         if (
             !empty(
                 Auth::user()
@@ -799,6 +807,7 @@ class ReportController extends Controller
             }
         }
 
+        # GL権限
         if (
             !empty(
                 Auth::user()
@@ -813,7 +822,8 @@ class ReportController extends Controller
                 ) {
                     $query
                         ->where('factory_id', $approval->factory_id)
-                        ->where('department_id', $approval->department_id);
+                        ->where('department_id', $approval->department_id)
+                        ->where('group_id', $approval->group_id);
                 })
                     ->where(function ($query) {
                         $query
@@ -845,9 +855,6 @@ class ReportController extends Controller
     # 承認
     public function approval(Report $report)
     {
-        // dd($report->user->department_id);
-        // dd($report->user->factory_id);
-
         /** departmentが無所属または自身の届けの場合 */
         if ($report->user->department_id == 1 || $report->user->id == Auth::user()->id) {
             /** 権限ごとに承認 */
@@ -893,7 +900,6 @@ class ReportController extends Controller
             ) {
                 $report->approval1 = 1;
             }
-            // FIXME:2権限、3権限を持つuserがいたら誤作動
             if (
                 !empty(
                     Auth::user()
@@ -942,8 +948,8 @@ class ReportController extends Controller
                 }
             }
             DB::commit(); # トランザクション成功終了
-            return view('reports.show')
-                ->with(compact('report'))
+            return redirect()
+                ->route('reports.show', $report)
                 ->with('notice', '承認しました');
         } catch (\Exception $e) {
             DB::rollBack(); # トランザクション失敗終了
@@ -951,6 +957,5 @@ class ReportController extends Controller
                 ->withInput()
                 ->withErrors($e->getMessage());
         }
-
     }
 }
