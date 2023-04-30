@@ -643,7 +643,7 @@ class ReportController extends Controller
         }
     }
 
-    /** 承認済み届出の取消 */
+    /** 承諾済み届出の取消 */
     public function approvedDelete(Report $report)
     {
         $remaining = Remaining::all()
@@ -679,7 +679,7 @@ class ReportController extends Controller
         }
     }
 
-    # 承認待ちのreports
+    # 承諾待ちのreports
     public function approvalPending()
     {
         $user = Auth::user();
@@ -760,7 +760,7 @@ class ReportController extends Controller
         return view('approvals.pending')->with(compact('reports'));
     }
 
-    # 承認済みのreports
+    # 承諾済みのreports
     public function approved()
     {
         $user = Auth::user();
@@ -852,12 +852,15 @@ class ReportController extends Controller
         );
     }
 
-    # 承認
+    # 承諾
     public function approval(Report $report)
     {
         /** departmentが無所属または自身の届けの場合 */
-        if ($report->user->department_id == 1 || $report->user->id == Auth::user()->id) {
-            /** 権限ごとに承認 */
+        if (
+            $report->user->department_id == 1 ||
+            $report->user->id == Auth::user()->id
+        ) {
+            /** 権限ごとに承諾 */
             if (
                 !empty(
                     Auth::user()
@@ -888,9 +891,9 @@ class ReportController extends Controller
             ) {
                 $report->approval3 = 1;
             }
-        /** 通常の承認 */
+            /** 通常の承諾 */
         } else {
-            /** 権限ごとに承認 */
+            /** 権限ごとに承諾 */
             if (
                 !empty(
                     Auth::user()
@@ -903,8 +906,11 @@ class ReportController extends Controller
             if (
                 !empty(
                     Auth::user()
-                        ->approvals
-                        ->where('factory_id', '=', $report->user->factory_id)
+                        ->approvals->where(
+                            'factory_id',
+                            '=',
+                            $report->user->factory_id
+                        )
                         ->where('approval_id', '=', 2)
                         ->first()
                 )
@@ -915,9 +921,16 @@ class ReportController extends Controller
             if (
                 !empty(
                     Auth::user()
-                        ->approvals
-                        ->where('factory_id', '=', $report->user->factory_id)
-                        ->where('department_id', '=', $report->user->department_id)
+                        ->approvals->where(
+                            'factory_id',
+                            '=',
+                            $report->user->factory_id
+                        )
+                        ->where(
+                            'department_id',
+                            '=',
+                            $report->user->department_id
+                        )
                         ->where('approval_id', '=', 3)
                         ->first()
                 )
@@ -926,12 +939,11 @@ class ReportController extends Controller
             }
         }
 
-        /** すべて承認された場合、remainingを更新 */
+        /** すべて承諾された場合、remainingを更新 */
         DB::beginTransaction(); # トランザクション開始
         try {
-            $report->save(); # 承認を保存
-
-            # すべて承認されたらremainingsを更新
+            $report->save(); # 承諾を保存
+            # すべて承諾されたらremainingsを更新
             if (
                 $report->approval1 == 1 &&
                 $report->approval2 == 1 &&
@@ -950,7 +962,7 @@ class ReportController extends Controller
             DB::commit(); # トランザクション成功終了
             return redirect()
                 ->route('reports.show', $report)
-                ->with('notice', '承認しました');
+                ->with('notice', '承諾しました');
         } catch (\Exception $e) {
             DB::rollBack(); # トランザクション失敗終了
             return back()

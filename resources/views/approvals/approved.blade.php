@@ -2,7 +2,7 @@
     <section class="text-gray-600 body-font">
         <div class="container px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-10">
-                <h1 class="sm:text-4xl text-3xl font-medium title-font text-gray-900">承認済 届け一覧</h1>
+                <h1 class="sm:text-4xl text-3xl font-medium title-font text-gray-900">承諾済 届け一覧</h1>
             </div>
 
             {{-- <x-notice :message="session('notice')" /> --}}
@@ -146,7 +146,8 @@
                                                         </span>
                                                     @endif
                                                 </td>
-                                                <td class="pl-2 pr-1 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                <td
+                                                    class="pl-2 pr-1 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                     <a href="{{ route('reports.show', $report) }}"
                                                         class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
                                                         届表示
@@ -154,11 +155,12 @@
                                                 </td>
                                                 <td class="pl-1 pr-2 py-4 whitespace-nowrap text-sm font-medium">
                                                     @can('general_only')
-                                                        <form action="{{ route('reports.approved_delete', $report) }}" method="POST">
+                                                        <form action="{{ route('reports.approved_delete', $report) }}"
+                                                            method="POST">
                                                             @csrf
                                                             @method('DELETE')
                                                             <input type="submit" value="取 消"
-                                                                onclick="if(!confirm('承認済みの届けを取消しますか？')){return false};"
+                                                                onclick="if(!confirm('承諾済みの届けを取消しますか？')){return false};"
                                                                 class="px-3 py-1 text-sm text-pink-500 rounded-full bg-pink-100/60 hover:text-white hover:bg-pink-500">
                                                         </form>
                                                     @endcan

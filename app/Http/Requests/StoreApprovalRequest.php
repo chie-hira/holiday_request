@@ -13,7 +13,7 @@ class StoreApprovalRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,11 @@ class StoreApprovalRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'user_id' => 'required|integer',
+            'factory_id' => 'required|integer',
+            'department_id' => 'required|integer',
+            'group_id' => 'required|integer',
+            'approval_id' => 'required|integer',
         ];
     }
 }

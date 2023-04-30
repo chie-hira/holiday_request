@@ -47,95 +47,96 @@
                                     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
 
                                         @foreach ($reports as $report)
-                                        <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
-                                            <td
-                                                class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
-                                                {{ $report->report_date }}
-                                            </td>
-                                            <td
-                                                class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                                {{ $report->user->name }}
-                                            </td>
-                                            <td
-                                                class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                                <x-report-name :report="$report" />
-                                            </td>
-                                            <td
-                                                class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                                @if ($report->start_date != null)
-                                                    {{ $report->start_date }}
-                                                @else
-                                                    -
-                                                @endif
-                                                @if ($report->start_time != null)
-                                                    &emsp;{{ Str::substr($report->start_time, 0, 5) }}
-                                                @endif
-                                            </td>
-                                            <td
-                                                class="pr-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                                @if ($report->end_date != null)
-                                                    ~&emsp;&emsp;{{ $report->end_date }}
-                                                @endif
-                                                @if ($report->end_time != null)
-                                                    ~&emsp;&emsp;{{ Str::substr($report->end_time, 0, 5) }}
-                                                @endif
-                                                @if ($report->am_pm != null)
-                                                    {{ $report->am_pm == 1 ? '午 前' : '午 後' }}
-                                                @endif
-                                            </td>
-                                            <td
-                                                class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-800 dark:text-gray-200">
-                                                @if ($report->get_days_only != 0)
-                                                    {{ $report->get_days_only }} 日&emsp;
-                                                @endif
-                                                @if ($report->get_hours != 0)
-                                                    {{ $report->get_hours }} 時間
-                                                @endif
-                                                @if ($report->get_minutes != 0)
-                                                    {{ $report->get_minutes }} 分
-                                                @endif
-                                            </td>
-                                            <td
-                                                class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-800 dark:text-gray-200">
-                                                @if ($report->approval1 == 0 || $report->approval2 == 0 || $report->approval3 == 0)
-                                                    <span class="text-pink-500">未承認</span>
-                                                @else
-                                                    <span class="text-blue-500">承認済み</span>
-                                                @endif
-                                            </td>
-                                            <td
-                                                class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                                <a href="{{ route('reports.show', $report) }}"
-                                                    class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
-                                                    届表示
-                                                </a>
-                                            </td>
-                                            <td
-                                                class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                                @if ($report->approval1 == 0 || $report->approval2 == 0 || $report->approval3 == 0)
-                                                    @can('update', $report)
-                                                        <a href="{{ route('reports.edit', $report) }}"
-                                                            class="px-3 py-1 text-sm text-blue-500 rounded-full bg-blue-100/60 hover:text-white hover:bg-blue-500">
-                                                            変 更
-                                                        </a>
-                                                    @endcan
-                                                @endif
-                                            </td>
-                                            <td class="px-1 py-4 whitespace-nowrap text-sm font-medium">
-                                                @if ($report->approval1 == 0 || $report->approval2 == 0 || $report->approval3 == 0)
-                                                    @can('delete', $report)
-                                                        <form action="{{ route('reports.destroy', $report) }}" method="POST">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <input type="submit" value="取 消"
-                                                                onclick="if(!confirm('届けを取消しますか？')){return false};"
-                                                                {{-- class="text-sm bg-red-400 hover:bg-red-600 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline w-20"> --}}
-                                                                class="px-3 py-1 text-sm text-pink-500 rounded-full bg-pink-100/60 hover:text-white hover:bg-pink-500">
-                                                        </form>
-                                                    @endcan
-                                                @endif
-                                            </td>
-                                        </tr>
+                                            <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                <td
+                                                    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
+                                                    {{ $report->report_date }}
+                                                </td>
+                                                <td
+                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                    {{ $report->user->name }}
+                                                </td>
+                                                <td
+                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                    <x-report-name :report="$report" />
+                                                </td>
+                                                <td
+                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                    @if ($report->start_date != null)
+                                                        {{ $report->start_date }}
+                                                    @else
+                                                        -
+                                                    @endif
+                                                    @if ($report->start_time != null)
+                                                        &emsp;{{ Str::substr($report->start_time, 0, 5) }}
+                                                    @endif
+                                                </td>
+                                                <td
+                                                    class="pr-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                    @if ($report->end_date != null)
+                                                        ~&emsp;&emsp;{{ $report->end_date }}
+                                                    @endif
+                                                    @if ($report->end_time != null)
+                                                        ~&emsp;&emsp;{{ Str::substr($report->end_time, 0, 5) }}
+                                                    @endif
+                                                    @if ($report->am_pm != null)
+                                                        {{ $report->am_pm == 1 ? '午 前' : '午 後' }}
+                                                    @endif
+                                                </td>
+                                                <td
+                                                    class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-800 dark:text-gray-200">
+                                                    @if ($report->get_days_only != 0)
+                                                        {{ $report->get_days_only }} 日&emsp;
+                                                    @endif
+                                                    @if ($report->get_hours != 0)
+                                                        {{ $report->get_hours }} 時間
+                                                    @endif
+                                                    @if ($report->get_minutes != 0)
+                                                        {{ $report->get_minutes }} 分
+                                                    @endif
+                                                </td>
+                                                <td
+                                                    class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-800 dark:text-gray-200">
+                                                    @if ($report->approval1 == 0 || $report->approval2 == 0 || $report->approval3 == 0)
+                                                        <span class="text-pink-500">未承諾</span>
+                                                    @else
+                                                        <span class="text-blue-500">承諾済み</span>
+                                                    @endif
+                                                </td>
+                                                <td
+                                                    class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                    <a href="{{ route('reports.show', $report) }}"
+                                                        class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
+                                                        届表示
+                                                    </a>
+                                                </td>
+                                                <td
+                                                    class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                    @if ($report->approval1 == 0 || $report->approval2 == 0 || $report->approval3 == 0)
+                                                        @can('update', $report)
+                                                            <a href="{{ route('reports.edit', $report) }}"
+                                                                class="px-3 py-1 text-sm text-blue-500 rounded-full bg-blue-100/60 hover:text-white hover:bg-blue-500">
+                                                                変 更
+                                                            </a>
+                                                        @endcan
+                                                    @endif
+                                                </td>
+                                                <td class="px-1 py-4 whitespace-nowrap text-sm font-medium">
+                                                    @if ($report->approval1 == 0 || $report->approval2 == 0 || $report->approval3 == 0)
+                                                        @can('delete', $report)
+                                                            <form action="{{ route('reports.destroy', $report) }}"
+                                                                method="POST">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <input type="submit" value="取 消"
+                                                                    onclick="if(!confirm('届けを取消しますか？')){return false};"
+                                                                    {{-- class="text-sm bg-red-400 hover:bg-red-600 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline w-20"> --}}
+                                                                    class="px-3 py-1 text-sm text-pink-500 rounded-full bg-pink-100/60 hover:text-white hover:bg-pink-500">
+                                                            </form>
+                                                        @endcan
+                                                    @endif
+                                                </td>
+                                            </tr>
                                         @endforeach
                                     </tbody>
                                 </table>

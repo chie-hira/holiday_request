@@ -2,7 +2,7 @@
     <section class="text-gray-600 body-font">
         <div class="container px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-10">
-                <h1 class="sm:text-4xl text-3xl font-medium title-font text-gray-900">承認待 届け一覧</h1>
+                <h1 class="sm:text-4xl text-3xl font-medium title-font text-gray-900">承諾待 届け一覧</h1>
             </div>
 
             {{-- <x-notice :message="session('notice')" /> --}}

@@ -1,7 +1,7 @@
 <x-app-layout>
 
     <div class="w-full max-w-md mx-auto mt-10">
-        <x-notice :notice="session('notice')"/>
+        <x-notice :notice="session('notice')" />
     </div>
 
     <div class="w-full max-w-md mx-auto mt-10 mb-8 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
@@ -67,7 +67,7 @@
                                     @if ($report->end_time != null)
                                         &emsp;~&emsp;{{ Str::substr($report->end_time, 0, 5) }}
                                     @endif
-                                    @if ($report->am_pm != null )
+                                    @if ($report->am_pm != null)
                                         &emsp;{{ $report->am_pm == 1 ? '午 前' : '午 後' }}
                                     @endif
                                 </p>
@@ -128,9 +128,9 @@
                                         !empty(Auth::user()->approvals->where('approval_id', '=', 1)->first()
                                         ) && $report->approval1 == 0)
                                         <a href="{{ route('approval', $report) }}"
-                                            onclick="if(!confirm('承認しますか？')){return false};"
+                                            onclick="if(!confirm('承諾しますか？')){return false};"
                                             class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
-                                            承認
+                                            承諾
                                         </a>
                                     @endif
                                     @if ($report->approval1 == 1)
@@ -149,9 +149,9 @@
                                         !empty(Auth::user()->approvals->where('approval_id', '=', 2)->where('factory_id', '=', $report->user->factory_id)->first()
                                         ) && $report->approval2 == 0)
                                         <a href="{{ route('approval', $report) }}"
-                                            onclick="if(!confirm('承認しますか？')){return false};"
+                                            onclick="if(!confirm('承諾しますか？')){return false};"
                                             class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
-                                            承認
+                                            承諾
                                         </a>
                                     @endif
                                     @if ($report->approval2 == 1)
@@ -170,9 +170,9 @@
                                         !empty(Auth::user()->approvals->where('approval_id', '=', 3)->where('factory_id', '=', $report->user->factory_id)->where('department_id', '=', $report->user->department_id)->first()
                                         ) && $report->approval3 == 0)
                                         <a href="{{ route('approval', $report) }}"
-                                            onclick="if(!confirm('承認しますか？')){return false};"
+                                            onclick="if(!confirm('承諾しますか？')){return false};"
                                             class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
-                                            承認
+                                            承諾
                                         </a>
                                     @endif
                                     @if ($report->approval3 == 1)
@@ -222,7 +222,7 @@
                             clip-rule="evenodd" />
                     </svg>
                     <div class="px-2 leading-7">
-                        承認待ち一覧へ
+                        承諾待ち一覧へ
                     </div>
                 </a>
             </div>
@@ -238,7 +238,7 @@
                             clip-rule="evenodd" />
                     </svg>
                     <div class="px-2 leading-7">
-                        承認済み一覧へ
+                        承諾済み一覧へ
                     </div>
                 </a>
             </div>

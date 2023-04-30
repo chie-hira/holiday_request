@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DepartmentCategory;
 use App\Models\FactoryCategory;
 use App\Models\GroupCategory;
-use Illuminate\Http\Request;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 
 class UserController extends Controller
@@ -42,14 +42,13 @@ class UserController extends Controller
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
         $user->fill($request->all());
-        dd($user);
         try {
             $user->save();
             return redirect()
-                ->route('reports.index')
+                ->route('users.index')
                 ->with('notice', '社員情報を更新しました');
         } catch (\Throwable $th) {
             return back()->withErrors($th->getMessage());
