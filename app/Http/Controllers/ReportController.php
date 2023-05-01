@@ -849,9 +849,28 @@ class ReportController extends Controller
 
     public function getAndRemaining()
     {
-        $users = User::with(['reports', 'remainings'])->get();
+        $approvals = Auth::user()->approvals;
+        $approval_factories = $approvals->pluck('factory_id'); # 管轄のfactory_idをすべて取得
+
+        switch ($approvals) {
+            case $approvals->contains('approval_id', 1):
+                $users = User::with(['reports', 'remainings'])
+                    ->get();
+                break;
+
+            case $approvals->contains('approval_id', 2):
+                $users = User::with(['reports', 'remainings'])
+                    ->where(function ($query) use ($approval_factories) {
+                        for ($i=0; $i < count($approval_factories); $i++) { 
+                            $query
+                                ->orWhere('factory_id', '=', $approval_factories[$i]);
+                        }
+                    })
+                    ->get();
+                break;
+        }
+
         $report_categories = ReportCategory::all();
-        // dd($report_categories);
 
         return view('reports.get_and_remaining')->with(
             compact('users', 'report_categories')
