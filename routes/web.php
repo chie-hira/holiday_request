@@ -58,6 +58,9 @@ Route::get('/get_and_remaining', [ReportController::class, 'getAndRemaining'])->
 Route::get('/approval/{report}', [ReportController::class, 'approval'])->name(
     'approval'
 );
+Route::get('/approval/{report}/cancel', [ReportController::class, 'approvalCancel'])->name(
+    'reports.approval_cancel'
+);
 
 # remaining加算ルーティング
 Route::get('/update_remainings', function () {

@@ -116,57 +116,113 @@
                     <table>
                         <thead class="">
                             <tr>
-                                <th class="w-20 border border-gray-500 text-center">総務部長</th>
-                                <th class="w-20 border border-gray-500 text-center">工場長</th>
-                                <th class="w-20 border border-gray-500 text-center">GL</th>
+                                <th class="w-20 border border-gray-500 text-gray-900 text-center">総務部長</th>
+                                <th class="w-20 border border-gray-500 text-gray-900 text-center">工場長</th>
+                                <th class="w-20 border border-gray-500 text-gray-900 text-center">GL</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td class="w-20 h-12 border border-gray-500 text-center">
-                                    @if (
-                                        !empty(Auth::user()->approvals->where('approval_id', '=', 1)->first()
-                                        ) && $report->approval1 == 0)
-                                        <a href="{{ route('approval', $report) }}"
-                                            onclick="if(!confirm('承諾しますか？')){return false};"
-                                            class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
-                                            承諾
-                                        </a>
-                                    @endif
-                                    @if ($report->approval1 == 1)
-                                        <div class="py-2 text-purple-300 inline-flex">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                fill="currentColor" class="w-8 h-8">
-                                                <path fill-rule="evenodd"
-                                                    d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
-                                                    clip-rule="evenodd" fill="" />
-                                            </svg>
-                                        </div>
+                                    @if (!empty(Auth::user()->approvals->where('approval_id', '=', 1)->where('factory_id', '=', $report->user->factory_id)->first()))
+                                        @if ($report->cancel == 1 && $report->approval1 == 1)
+                                            <a href="{{ route('reports.approval_cancel', $report) }}"
+                                                onclick="if(!confirm('取消を確認しました')){return false};"
+                                                class="px-3 py-1 text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
+                                                <i class="fa-solid fa-eraser"></i>
+                                            </a>
+                                        @endif
+                                        @if ($report->cancel == 1 && $report->approval1 == 0)
+                                            <div class="text-gray-800">
+                                                <i class="fa-solid fa-eraser"></i>
+                                            </div>
+                                        @endif
+                                        @if ($report->cancel == 0 && $report->approval1 == 0)
+                                            <a href="{{ route('approval', $report) }}"
+                                                onclick="if(!confirm('承諾しますか？')){return false};"
+                                                class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
+                                                承諾
+                                            </a>
+                                        @endif
+                                        @if ($report->cancel == 0 && $report->approval1 == 1)
+                                            <div class="py-2 text-purple-300 inline-flex">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                    fill="currentColor" class="w-8 h-8">
+                                                    <path fill-rule="evenodd"
+                                                        d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
+                                                        clip-rule="evenodd" fill="" />
+                                                </svg>
+                                            </div>
+                                        @endif
+                                    @else
+                                        @if ($report->cancel == 1 && $report->approval1 == 0)
+                                            <div class="text-gray-800">
+                                                <i class="fa-solid fa-eraser"></i>
+                                            </div>
+                                        @endif
+                                        @if ($report->cancel == 0 && $report->approval1 == 1)
+                                            <div class="py-2 text-purple-300 inline-flex">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                    fill="currentColor" class="w-8 h-8">
+                                                    <path fill-rule="evenodd"
+                                                        d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
+                                                        clip-rule="evenodd" fill="" />
+                                                </svg>
+                                            </div>
+                                        @endif
                                     @endif
                                 </td>
                                 <td class="w-20 h-12 border border-gray-500 text-center">
-                                    @if (
-                                        !empty(Auth::user()->approvals->where('approval_id', '=', 2)->where('factory_id', '=', $report->user->factory_id)->first()
-                                        ) && $report->approval2 == 0)
-                                        <a href="{{ route('approval', $report) }}"
-                                            onclick="if(!confirm('承諾しますか？')){return false};"
-                                            class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
-                                            承諾
-                                        </a>
-                                    @endif
-                                    @if ($report->approval2 == 1)
-                                        <div class="py-2 text-purple-300 inline-flex">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                fill="currentColor" class="w-8 h-8">
-                                                <path fill-rule="evenodd"
-                                                    d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
-                                                    clip-rule="evenodd" fill="" />
-                                            </svg>
-                                        </div>
+                                    @if (!empty(Auth::user()->approvals->where('approval_id', '=', 2)->where('factory_id', '=', $report->user->factory_id)->first()))
+                                        @if ($report->cancel == 1 && $report->approval2 == 1)
+                                            <a href="{{ route('reports.approval_cancel', $report) }}"
+                                                onclick="if(!confirm('取消を確認しました')){return false};"
+                                                class="px-3 py-1 text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
+                                                <i class="fa-solid fa-eraser"></i>
+                                            </a>
+                                        @endif
+                                        @if ($report->cancel == 1 && $report->approval2 == 0)
+                                            <div class="text-gray-800">
+                                                <i class="fa-solid fa-eraser"></i>
+                                            </div>
+                                        @endif
+                                        @if ($report->cancel == 0 && $report->approval2 == 0)
+                                            <a href="{{ route('approval', $report) }}"
+                                                onclick="if(!confirm('承諾しますか？')){return false};"
+                                                class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
+                                                承諾
+                                            </a>
+                                        @endif
+                                        @if ($report->cancel == 0 && $report->approval2 == 1)
+                                            <div class="py-2 text-purple-300 inline-flex">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                    fill="currentColor" class="w-8 h-8">
+                                                    <path fill-rule="evenodd"
+                                                        d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
+                                                        clip-rule="evenodd" fill="" />
+                                                </svg>
+                                            </div>
+                                        @endif
+                                    @else
+                                        @if ($report->cancel == 1 && $report->approval2 == 0)
+                                            <div class="text-gray-800">
+                                                <i class="fa-solid fa-eraser"></i>
+                                            </div>
+                                        @endif
+                                        @if ($report->cancel == 0 && $report->approval2 == 1)
+                                            <div class="py-2 text-purple-300 inline-flex">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                    fill="currentColor" class="w-8 h-8">
+                                                    <path fill-rule="evenodd"
+                                                        d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
+                                                        clip-rule="evenodd" fill="" />
+                                                </svg>
+                                            </div>
+                                        @endif
                                     @endif
                                 </td>
                                 <td class="w-20 h-12 border border-gray-500 text-center">
-                                    @if (
+                                    {{-- @if (
                                         !empty(Auth::user()->approvals->where('approval_id', '=', 3)->where('factory_id', '=', $report->user->factory_id)->where('department_id', '=', $report->user->department_id)->first()
                                         ) && $report->approval3 == 0)
                                         <a href="{{ route('approval', $report) }}"
@@ -184,6 +240,53 @@
                                                     clip-rule="evenodd" fill="" />
                                             </svg>
                                         </div>
+                                    @endif --}}
+                                    @if (!empty(Auth::user()->approvals->where('approval_id', '=', 3)->where('factory_id', '=', $report->user->factory_id)->first()))
+                                        @if ($report->cancel == 1 && $report->approval3 == 1)
+                                            <a href="{{ route('reports.approval_cancel', $report) }}"
+                                                onclick="if(!confirm('取消を確認しました')){return false};"
+                                                class="px-3 py-1 text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
+                                                <i class="fa-solid fa-eraser"></i>
+                                            </a>
+                                        @endif
+                                        @if ($report->cancel == 1 && $report->approval3 == 0)
+                                            <div class="text-gray-800">
+                                                <i class="fa-solid fa-eraser"></i>
+                                            </div>
+                                        @endif
+                                        @if ($report->cancel == 0 && $report->approval3 == 0)
+                                            <a href="{{ route('approval', $report) }}"
+                                                onclick="if(!confirm('承諾しますか？')){return false};"
+                                                class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
+                                                承諾
+                                            </a>
+                                        @endif
+                                        @if ($report->cancel == 0 && $report->approval3 == 1)
+                                            <div class="py-2 text-purple-300 inline-flex">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                    fill="currentColor" class="w-8 h-8">
+                                                    <path fill-rule="evenodd"
+                                                        d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
+                                                        clip-rule="evenodd" fill="" />
+                                                </svg>
+                                            </div>
+                                        @endif
+                                    @else
+                                        @if ($report->cancel == 1 && $report->approval3 == 0)
+                                            <div class="text-gray-800">
+                                                <i class="fa-solid fa-eraser"></i>
+                                            </div>
+                                        @endif
+                                        @if ($report->cancel == 0 && $report->approval3 == 1)
+                                            <div class="py-2 text-purple-300 inline-flex">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                    fill="currentColor" class="w-8 h-8">
+                                                    <path fill-rule="evenodd"
+                                                        d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
+                                                        clip-rule="evenodd" fill="" />
+                                                </svg>
+                                            </div>
+                                        @endif
                                     @endif
                                 </td>
                             </tr>
@@ -214,7 +317,7 @@
 
         @can('general_and_factory_gl')
             <div class="flex mt-4 lg:w-2/3 w-full">
-                <a href="{{ route('approvals.pending') }}"
+                <a href="{{ route('reports.pending_approval') }}"
                     class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                         <path fill-rule="evenodd"
@@ -230,7 +333,7 @@
 
         @can('general_and_factory_gl')
             <div class="flex mt-4 lg:w-2/3 w-full mx-auto">
-                <a href="{{ route('approvals.approved') }}"
+                <a href="{{ route('reports.approved') }}"
                     class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                         <path fill-rule="evenodd"

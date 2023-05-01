@@ -104,6 +104,7 @@
                                                         {{ $report->get_minutes }} 分
                                                     @endif
                                                 </td>
+                                                @if ($report->cancel == 0)
                                                 <td
                                                     class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
                                                     @if ($report->approval1 == 1)
@@ -143,6 +144,13 @@
                                                         </span>
                                                     @endif
                                                 </td>
+                                                @else
+                                                <td colspan="3"
+                                                    class="px-2 py-4 text-center text-indigo-500 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                    取消確認中
+                                                </td>
+
+                                                @endif
                                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                     <a href="{{ route('reports.show', $report) }}"
                                                         class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">

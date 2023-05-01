@@ -37,7 +37,7 @@
                                             </th>
                                             <th scope="col"
                                                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                承 認
+                                                承 諾
                                             </th>
                                             <th scope="col" colspan="3"
                                                 class="px-6 py-3 text-right text-xs font-medium text-gray-500 tracking-wider">
@@ -97,10 +97,14 @@
                                                 </td>
                                                 <td
                                                     class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-800 dark:text-gray-200">
-                                                    @if ($report->approval1 == 0 || $report->approval2 == 0 || $report->approval3 == 0)
-                                                        <span class="text-pink-500">未承諾</span>
+                                                    @if ($report->cancel == 1)
+                                                        <span class="text-indigo-500">取消確認中</span>
                                                     @else
-                                                        <span class="text-blue-500">承諾済み</span>
+                                                        @if ($report->approval1 == 0 || $report->approval2 == 0 || $report->approval3 == 0)
+                                                            <span class="text-pink-500">未承諾</span>
+                                                        @else
+                                                            <span class="text-blue-500">承諾済み</span>
+                                                        @endif
                                                     @endif
                                                 </td>
                                                 <td
@@ -112,7 +116,7 @@
                                                 </td>
                                                 <td
                                                     class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                                    @if ($report->approval1 == 0 || $report->approval2 == 0 || $report->approval3 == 0)
+                                                    @if ($report->cancel == 0)
                                                         @can('update', $report)
                                                             <a href="{{ route('reports.edit', $report) }}"
                                                                 class="px-3 py-1 text-sm text-blue-500 rounded-full bg-blue-100/60 hover:text-white hover:bg-blue-500">
@@ -122,7 +126,7 @@
                                                     @endif
                                                 </td>
                                                 <td class="px-1 py-4 whitespace-nowrap text-sm font-medium">
-                                                    @if ($report->approval1 == 0 || $report->approval2 == 0 || $report->approval3 == 0)
+                                                    @if ($report->cancel == 0)
                                                         @can('delete', $report)
                                                             <form action="{{ route('reports.destroy', $report) }}"
                                                                 method="POST">
@@ -130,7 +134,6 @@
                                                                 @method('DELETE')
                                                                 <input type="submit" value="取 消"
                                                                     onclick="if(!confirm('届けを取消しますか？')){return false};"
-                                                                    {{-- class="text-sm bg-red-400 hover:bg-red-600 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline w-20"> --}}
                                                                     class="px-3 py-1 text-sm text-pink-500 rounded-full bg-pink-100/60 hover:text-white hover:bg-pink-500">
                                                             </form>
                                                         @endcan

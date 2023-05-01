@@ -637,15 +637,25 @@ class ReportController extends Controller
         // part1:通知 reportsテーブルcancelカラムが1
         // part2:キャンセルの確認 reportsテーブルapprovalカラムがすべて0
         // part3:削除 reportsテーブルcancelカラムが1、approvalカラムがすべて0で発動
+        $report->cancel = 1;
+        $report->save();
 
-
-        try {
-            $report->delete();
+        if ($report->cancel == 1 &&
+            $report->approval1 == 0 &&
+            $report->approval2 == 0 &&
+            $report->approval3 == 0 ) {
+            try {
+                $report->delete();
+                return redirect()
+                    ->route('reports.index')
+                    ->with('notice', '届けを取り消しました');
+            } catch (\Throwable $th) {
+                return back()->withErrors($th->getMessage());
+            }
+        } else {
             return redirect()
-                ->route('reports.index')
-                ->with('notice', '届けを取り消しました');
-        } catch (\Throwable $th) {
-            return back()->withErrors($th->getMessage());
+                    ->route('reports.index')
+                    ->with('notice', '届けの取消を申請しました');
         }
     }
 
@@ -965,6 +975,7 @@ class ReportController extends Controller
         }
 
         /** すべて承諾された場合、remainingを更新 */
+        
         DB::beginTransaction(); # トランザクション開始
         try {
             $report->save(); # 承諾を保存
@@ -993,6 +1004,119 @@ class ReportController extends Controller
             return back()
                 ->withInput()
                 ->withErrors($e->getMessage());
+        }
+    }
+
+    # 承諾取消
+    public function approvalCancel(Report $report)
+    {
+        /** departmentが無所属または自身の届けの場合 */
+        if (
+            $report->user->department_id == 1 ||
+            $report->user->id == Auth::user()->id
+        ) {
+            /** 権限ごとに承諾取消 */
+            if (
+                !empty(
+                    Auth::user()
+                        ->approvals->where('approval_id', '=', 1)
+                        ->first()
+                )
+            ) {
+                $report->approval1 = 0;
+                $report->approval2 = 0;
+                $report->approval3 = 0;
+            }
+            if (
+                !empty(
+                    Auth::user()
+                        ->approvals->where('approval_id', '=', 2)
+                        ->first()
+                )
+            ) {
+                $report->approval2 = 0;
+                $report->approval3 = 0;
+            }
+            if (
+                !empty(
+                    Auth::user()
+                        ->approvals->where('approval_id', '=', 3)
+                        ->first()
+                )
+            ) {
+                $report->approval3 = 0;
+            }
+            /** 通常の承諾 */
+        } else {
+            /** 権限ごとに承諾 */
+            if (
+                !empty(
+                    Auth::user()
+                        ->approvals->where('approval_id', '=', 1)
+                        ->first()
+                )
+            ) {
+                $report->approval1 = 0;
+            }
+            if (
+                !empty(
+                    Auth::user()
+                        ->approvals->where(
+                            'factory_id',
+                            '=',
+                            $report->user->factory_id
+                        )
+                        ->where('approval_id', '=', 2)
+                        ->first()
+                )
+            ) {
+                $report->approval2 = 0;
+            }
+
+            if (
+                !empty(
+                    Auth::user()
+                        ->approvals->where(
+                            'factory_id',
+                            '=',
+                            $report->user->factory_id
+                        )
+                        ->where(
+                            'department_id',
+                            '=',
+                            $report->user->department_id
+                        )
+                        ->where('approval_id', '=', 3)
+                        ->first()
+                )
+            ) {
+                $report->approval3 = 0;
+            }
+        }
+
+        try {
+            $report->save();
+        } catch (\Throwable $th) {
+            return back()->withErrors($th->getMessage());
+        }
+
+        /** すべて確認された場合、届け削除 */
+        if ($report->cancel == 1 &&
+            $report->approval1 == 0 &&
+            $report->approval2 == 0 &&
+            $report->approval3 == 0 ) {
+            try {
+                $report->delete();
+                return redirect()
+                    ->route('reports.index')
+                    ->with('notice', '届けを取り消しました');
+            } catch (\Throwable $th) {
+                return back()->withErrors($th->getMessage());
+            }
+        } else {
+            return redirect()
+                    ->route('reports.show', $report)
+                    ->with('notice', '届けの取消を確認しました');
         }
     }
 }

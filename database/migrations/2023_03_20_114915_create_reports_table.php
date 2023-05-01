@@ -43,6 +43,7 @@ class CreateReportsTable extends Migration
             $table->boolean('approval1')->default(0);
             $table->boolean('approval2')->default(0);
             $table->boolean('approval3')->default(0);
+            $table->boolean('cancel')->default(0);
             $table->timestamps();
         });
     }

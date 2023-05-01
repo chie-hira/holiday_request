@@ -35,10 +35,6 @@
                                                 class="w-32 px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 日数・時間
                                             </th>
-                                            {{-- <th scope="col"
-                                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                承 認
-                                            </th> --}}
                                             <th scope="col"
                                                 class="px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 部 長
