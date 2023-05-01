@@ -77,9 +77,9 @@ Route::get('/my_remainings', [RemainingController::class, 'myIndex'])->name(
 );
 
 # 承諾後のreport削除
-Route::delete('/reports/approved/{report}', [
+Route::delete('/reports/approved/{report}/cancel', [
     ReportController::class,
-    'approvedDelete',
-])->name('reports.approved_delete');
+    'approvedCancel',
+])->name('reports.approved_cancel');
 
 require __DIR__ . '/auth.php';

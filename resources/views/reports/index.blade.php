@@ -116,7 +116,7 @@
                                                 </td>
                                                 <td
                                                     class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                                    @if ($report->cancel == 0)
+                                                    @if ($report->cancel == 0 && $report->approved == 0)
                                                         @can('update', $report)
                                                             <a href="{{ route('reports.edit', $report) }}"
                                                                 class="px-3 py-1 text-sm text-blue-500 rounded-full bg-blue-100/60 hover:text-white hover:bg-blue-500">
@@ -126,7 +126,7 @@
                                                     @endif
                                                 </td>
                                                 <td class="px-1 py-4 whitespace-nowrap text-sm font-medium">
-                                                    @if ($report->cancel == 0)
+                                                    @if ($report->cancel == 0 && $report->approved == 0)
                                                         @can('delete', $report)
                                                             <form action="{{ route('reports.destroy', $report) }}"
                                                                 method="POST">

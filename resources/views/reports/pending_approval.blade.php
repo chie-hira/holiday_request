@@ -146,7 +146,7 @@
                                                 </td>
                                                 @else
                                                 <td colspan="3"
-                                                    class="px-2 py-4 text-center text-indigo-500 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                    class="px-2 py-4 text-center text-indigo-500 whitespace-nowrap text-sm">
                                                     取消確認中
                                                 </td>
 
