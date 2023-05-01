@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateRemainingRequest extends FormRequest
+class UpdateUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +24,9 @@ class UpdateRemainingRequest extends FormRequest
     public function rules()
     {
         return [
-            'remaining_days' => 'required|integer',
-            'remaining_hours' => 'integer',
+            'factory_id' => 'required|integer',
+            'department_id' => 'required|integer',
+            'group_id' => 'required|integer',
         ];
     }
 }

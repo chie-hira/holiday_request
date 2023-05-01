@@ -14,6 +14,7 @@ class Approval extends Model
         'factory_id',
         'department_id',
         'approval_id',
+        'group_id',
     ];
 
     /**
@@ -44,6 +45,16 @@ class Approval extends Model
     public function department()
     {
         return $this->belongsTo(DepartmentCategory::class, 'department_id', 'id');
+    }
+
+    /**
+     * Get the group that owns the Approval
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function group()
+    {
+        return $this->belongsTo(GroupCategory::class, 'group_id', 'id');
     }
 
     /**

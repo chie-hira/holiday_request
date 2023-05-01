@@ -18,6 +18,7 @@ class ApprovalCategorySeeder extends Seeder
             ['approval_name' => '総務部長'],
             ['approval_name' => '工場長'],
             ['approval_name' => 'GL'],
+            ['approval_name' => '閲覧'],
         ];
         DB::table('approval_categories')->insert($param);
     }

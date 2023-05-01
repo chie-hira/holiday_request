@@ -14,6 +14,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
@@ -38,21 +39,29 @@ class ReportController extends Controller
         $report_categories = ReportCategory::all();
         $sub_report_categories = SubReportCategory::all();
         $reasons = ReasonCategory::all();
-        $own_remainings = Remaining::all()->where('user_id', '=', Auth::id());
+        $my_remainings = Remaining::all()->where('user_id', '=', Auth::id());
 
-        if (empty($own_remainings->first())) {
+        // 新採用・中途採用
+        if (empty($my_remainings->first())) {
             $report_ids = [1, 2, 3, 5, 6, 7, 8, 14];
             foreach ($report_ids as $report_id) {
                 self::newRemaining($report_id);
             }
-            $own_remainings = Remaining::all()->where(
+            $my_remainings = Remaining::all()->where(
                 'user_id',
                 '=',
                 Auth::id()
             );
         }
 
-        return view('reports.create')->with(compact('report_categories', 'sub_report_categories', 'reasons', 'own_remainings'));
+        return view('reports.create')->with(
+            compact(
+                'report_categories',
+                'sub_report_categories',
+                'reasons',
+                'my_remainings'
+            )
+        );
     }
 
     /**
@@ -64,17 +73,23 @@ class ReportController extends Controller
     public function store(StoreReportRequest $request)
     {
         // バリデーション
-        if ($request->report_id == 1 || # 有給
+        if (
+            $request->report_id == 1 || # 有給
             $request->report_id == 5 || # 特別休暇(看護・対象1名)
             $request->report_id == 6 || # 特別休暇(看護・対象2名)
             $request->report_id == 7 || # 特別休暇(介護・対象1名)
-            $request->report_id == 8) { # 特別休暇(介護・対象2名)
+            $request->report_id == 8
+        ) {
+            # 特別休暇(介護・対象2名)
             $request->validate([
                 'sub_report_id' => 'required|integer',
             ]);
-            if ($request->sub_report_id == 1) { # 終日休暇
-                $request->validate([
-                        'start_date' => 'required|date|after_or_equal:report_date',
+            if ($request->sub_report_id == 1) {
+                # 終日休暇
+                $request->validate(
+                    [
+                        'start_date' =>
+                            'required|date|after_or_equal:report_date',
                         'end_date' => 'required|date|after_or_equal:start_date',
                         'get_days' => 'required|integer|min:1',
                     ],
@@ -84,29 +99,39 @@ class ReportController extends Controller
                     ]
                 );
             }
-            if ($request->sub_report_id == 2) { # 半日休暇
-                $request->validate([
-                        'start_date' => 'required|date|after_or_equal:report_date',
+            if ($request->sub_report_id == 2) {
+                # 半日休暇
+                $request->validate(
+                    [
+                        'start_date' =>
+                            'required|date|after_or_equal:report_date',
                         'am_pm' => 'required|integer',
-                        'get_days' => ['required', Rule::in(0.5),],
+                        'get_days' => ['required', Rule::in(0.5)],
                     ],
                     [
-                        'get_days.in' =>
-                            '日付算出ボタンを押してください。',
-                        'am_pm.required' =>
-                            '午前・午後を選択してください。',
-                        'am_pm.integer' =>
-                            '午前・午後を選択してください。',
+                        'get_days.in' => '日付算出ボタンを押してください。',
+                        'am_pm.required' => '午前・午後を選択してください。',
+                        'am_pm.integer' => '午前・午後を選択してください。',
                     ]
                 );
             }
-            if ($request->sub_report_id == 3) { # 時間休 
-                $request->validate([
+            if ($request->sub_report_id == 3) {
+                # 時間休
+                $request->validate(
+                    [
                         'start_time' => 'required|date_format:H:i',
                         'end_time' =>
                             'required|date_format:H:i|after:start_time',
-                        'get_days' => ['required', Rule::in([
-                                0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.825,
+                        'get_days' => [
+                            'required',
+                            Rule::in([
+                                0.125,
+                                0.25,
+                                0.375,
+                                0.5,
+                                0.625,
+                                0.75,
+                                0.825,
                             ]),
                         ],
                     ],
@@ -117,37 +142,49 @@ class ReportController extends Controller
                 );
             }
         }
-        if ($request->report_id == 2 || # バースデイ
-            $request->report_id == 10){ # 欠勤
-            $request->validate([
-                'start_date' => 'required|date|after_or_equal:report_date',
-                'get_days' => ['required', Rule::in(1.0),],
-            ],
-            [
-                'get_days.in' =>
-                    '日付算出ボタンを押してください。',
-            ]);
+        if (
+            $request->report_id == 2 || # バースデイ
+            $request->report_id == 10
+        ) {
+            # 欠勤
+            $request->validate(
+                [
+                    'start_date' => 'required|date|after_or_equal:report_date',
+                    'get_days' => ['required', Rule::in(1.0)],
+                ],
+                [
+                    'get_days.in' => '日付算出ボタンを押してください。',
+                ]
+            );
         }
-        if ($request->report_id == 3 || # 特別休暇(慶事)
+        if (
+            $request->report_id == 3 || # 特別休暇(慶事)
             $request->report_id == 4 || # 特別休暇(弔事)
             $request->report_id == 9 || # 特別休暇(短期育休)
             $request->report_id == 14 || # 介護休業
             $request->report_id == 15 || # 育児休業
-            $request->report_id == 16) { # パパ育休
-            $request->validate([
-                        'start_date' => 'required|date|after_or_equal:report_date',
-                        'end_date' => 'required|date|after_or_equal:start_date',
-                        'get_days' => 'required|integer|min:1',
-                    ],
-                    [
-                        'get_days.min' =>
-                            '取得日数は1日以上で取得可能です。日数算出ボタンを押してください。',
-                    ]
+            $request->report_id == 16
+        ) {
+            # パパ育休
+            $request->validate(
+                [
+                    'start_date' => 'required|date|after_or_equal:report_date',
+                    'end_date' => 'required|date|after_or_equal:start_date',
+                    'get_days' => 'required|integer|min:1',
+                ],
+                [
+                    'get_days.min' =>
+                        '取得日数は1日以上で取得可能です。日数算出ボタンを押してください。',
+                ]
             );
         }
-        if ($request->report_id == 11 || # 遅刻
-            $request->report_id == 12) { # 早退
-            $request->validate([
+        if (
+            $request->report_id == 11 || # 遅刻
+            $request->report_id == 12
+        ) {
+            # 早退
+            $request->validate(
+                [
                     'start_time' => 'required|date_format:H:i',
                     'end_time' => 'required|date_format:H:i|after:start_time',
                     'get_days' => [
@@ -206,11 +243,13 @@ class ReportController extends Controller
                 [
                     'get_days.in' =>
                         '遅刻・早退は10分単位で取得可能です。日付算出ボタンを押してください。',
-                ],
+                ]
             );
         }
-        if ($request->report_id == 13) { # 外出
-            $request->validate([
+        if ($request->report_id == 13) {
+            # 外出
+            $request->validate(
+                [
                     'start_time' => 'required|date_format:H:i',
                     'end_time' => 'required|date_format:H:i|after:start_time',
                     'get_days' => [
@@ -237,10 +276,11 @@ class ReportController extends Controller
                 [
                     'get_days.in' =>
                         '外出は30分単位で取得可能です。日付算出ボタンを押してください。',
-                ],
+                ]
             );
         }
-        if ($request->reason_id == 8) { # 理由:その他
+        if ($request->reason_id == 8) {
+            # 理由:その他
             $request->validate(
                 [
                     'reason_detail' => 'required|max:200',
@@ -273,7 +313,7 @@ class ReportController extends Controller
             $report->save();
             return redirect(route('reports.index'))->with(
                 'notice',
-                '提出しました'
+                '出退勤届けを提出しました'
             );
         } catch (\Throwable $th) {
             return back()
@@ -304,10 +344,16 @@ class ReportController extends Controller
         $report_categories = ReportCategory::all();
         $sub_report_categories = SubReportCategory::all();
         $reasons = ReasonCategory::all();
-        $own_remainings = Remaining::all()->where('user_id', '=', Auth::id());
+        $my_remainings = Remaining::all()->where('user_id', '=', Auth::id());
 
         return view('reports.edit')->with(
-            compact('report', 'report_categories', 'sub_report_categories', 'reasons', 'own_remainings')
+            compact(
+                'report',
+                'report_categories',
+                'sub_report_categories',
+                'reasons',
+                'my_remainings'
+            )
         );
     }
 
@@ -320,20 +366,26 @@ class ReportController extends Controller
      */
     public function update(UpdateReportRequest $request, Report $report)
     {
-        if ($request->report_id == 1 || # 有給
+        if (
+            $request->report_id == 1 || # 有給
             $request->report_id == 5 || # 特別休暇(看護・対象1名)
             $request->report_id == 6 || # 特別休暇(看護・対象2名)
             $request->report_id == 7 || # 特別休暇(介護・対象1名)
-            $request->report_id == 8) { # 特別休暇(介護・対象2名)
+            $request->report_id == 8
+        ) {
+            # 特別休暇(介護・対象2名)
             $request->validate([
                 'sub_report_id' => 'required|integer',
             ]);
-            if ($request->sub_report_id == 1) { # 終日休暇
-            // dd($request);
-                $request->validate([
-                    'start_date' => 'required|date|after_or_equal:report_date',
-                    'end_date' => 'required|date|after_or_equal:start_date',
-                    'get_days' => 'required|integer|min:1',
+            if ($request->sub_report_id == 1) {
+                # 終日休暇
+                // dd($request);
+                $request->validate(
+                    [
+                        'start_date' =>
+                            'required|date|after_or_equal:report_date',
+                        'end_date' => 'required|date|after_or_equal:start_date',
+                        'get_days' => 'required|integer|min:1',
                     ],
                     [
                         'get_days.min' =>
@@ -341,29 +393,39 @@ class ReportController extends Controller
                     ]
                 );
             }
-            if ($request->sub_report_id == 2) { # 半日休暇
-                $request->validate([
-                        'start_date' => 'required|date|after_or_equal:report_date',
+            if ($request->sub_report_id == 2) {
+                # 半日休暇
+                $request->validate(
+                    [
+                        'start_date' =>
+                            'required|date|after_or_equal:report_date',
                         'am_pm' => 'required|integer',
-                        'get_days' => ['required', Rule::in(0.5),],
+                        'get_days' => ['required', Rule::in(0.5)],
                     ],
                     [
-                        'get_days.in' =>
-                            '日付算出ボタンを押してください。',
-                        'am_pm.required' =>
-                            '午前・午後を選択してください。',
-                        'am_pm.integer' =>
-                            '午前・午後を選択してください。',
+                        'get_days.in' => '日付算出ボタンを押してください。',
+                        'am_pm.required' => '午前・午後を選択してください。',
+                        'am_pm.integer' => '午前・午後を選択してください。',
                     ]
                 );
             }
-            if ($request->sub_report_id == 3) { # 時間休 
-                $request->validate([
+            if ($request->sub_report_id == 3) {
+                # 時間休
+                $request->validate(
+                    [
                         'start_time' => 'required|date_format:H:i',
                         'end_time' =>
                             'required|date_format:H:i|after:start_time',
-                        'get_days' => ['required', Rule::in([
-                                0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.825,
+                        'get_days' => [
+                            'required',
+                            Rule::in([
+                                0.125,
+                                0.25,
+                                0.375,
+                                0.5,
+                                0.625,
+                                0.75,
+                                0.825,
                             ]),
                         ],
                     ],
@@ -374,39 +436,51 @@ class ReportController extends Controller
                 );
             }
         }
-        if ($request->report_id == 2 || # バースデイ
-            $request->report_id == 10){ # 欠勤
-            $request->validate([
-                'start_date' => 'required|date|after_or_equal:report_date',
-                'get_days' => ['required', Rule::in(1.0),],
-            ],
-            [
-                'get_days.in' =>
-                    '日付算出ボタンを押してください。',
-            ]);
+        if (
+            $request->report_id == 2 || # バースデイ
+            $request->report_id == 10
+        ) {
+            # 欠勤
+            $request->validate(
+                [
+                    'start_date' => 'required|date|after_or_equal:report_date',
+                    'get_days' => ['required', Rule::in(1.0)],
+                ],
+                [
+                    'get_days.in' => '日付算出ボタンを押してください。',
+                ]
+            );
             $report->sub_report_id = null;
         }
-        if ($request->report_id == 3 || # 特別休暇(慶事)
+        if (
+            $request->report_id == 3 || # 特別休暇(慶事)
             $request->report_id == 4 || # 特別休暇(弔事)
             $request->report_id == 9 || # 特別休暇(短期育休)
             $request->report_id == 14 || # 介護休業
             $request->report_id == 15 || # 育児休業
-            $request->report_id == 16) { # パパ育休
-            $request->validate([
-                        'start_date' => 'required|date|after_or_equal:report_date',
-                        'end_date' => 'required|date|after_or_equal:start_date',
-                        'get_days' => 'required|integer|min:1',
-                    ],
-                    [
-                        'get_days.min' =>
-                            '取得日数は1日以上で取得可能です。日数算出ボタンを押してください。',
-                    ]
+            $request->report_id == 16
+        ) {
+            # パパ育休
+            $request->validate(
+                [
+                    'start_date' => 'required|date|after_or_equal:report_date',
+                    'end_date' => 'required|date|after_or_equal:start_date',
+                    'get_days' => 'required|integer|min:1',
+                ],
+                [
+                    'get_days.min' =>
+                        '取得日数は1日以上で取得可能です。日数算出ボタンを押してください。',
+                ]
             );
             $report->sub_report_id = null;
         }
-        if ($request->report_id == 11 || # 遅刻
-            $request->report_id == 12) { # 早退
-            $request->validate([
+        if (
+            $request->report_id == 11 || # 遅刻
+            $request->report_id == 12
+        ) {
+            # 早退
+            $request->validate(
+                [
                     'start_time' => 'required|date_format:H:i',
                     'end_time' => 'required|date_format:H:i|after:start_time',
                     'get_days' => [
@@ -465,13 +539,15 @@ class ReportController extends Controller
                 [
                     'get_days.in' =>
                         '遅刻・早退は10分単位で取得可能です。日付算出ボタンを押してください。',
-                ],
+                ]
             );
             $report->sub_report_id = null;
         }
-        if ($request->report_id == 13) { # 外出
-        // dd($request);
-            $request->validate([
+        if ($request->report_id == 13) {
+            # 外出
+            // dd($request);
+            $request->validate(
+                [
                     'start_time' => 'required|date_format:H:i',
                     'end_time' => 'required|date_format:H:i|after:start_time',
                     'get_days' => [
@@ -498,11 +574,12 @@ class ReportController extends Controller
                 [
                     'get_days.in' =>
                         '外出は30分単位で取得可能です。日付算出ボタンを押してください。',
-                ],
+                ]
             );
             $report->sub_report_id = null;
         }
-        if ($request->reason_id == 8) { # 理由:その他
+        if ($request->reason_id == 8) {
+            # 理由:その他
             $request->validate(
                 [
                     'reason_detail' => 'required|max:200',
@@ -529,12 +606,16 @@ class ReportController extends Controller
 
         # reportsレコード更新
         $report->fill($request->all());
+        $report->approval1 = 0;
+        $report->approval2 = 0;
+        $report->approval3 = 0;
+        // dd($report);
 
         try {
             $report->save();
             return redirect(route('reports.index'))->with(
                 'notice',
-                '更新しました'
+                '出退勤届けを更新しました。'
             );
         } catch (\Throwable $th) {
             return back()
@@ -551,7 +632,13 @@ class ReportController extends Controller
      */
     public function destroy(Report $report)
     {
-        // FIXME:残日数を復活&認証が1つでもついたら取り消しできない
+        // FIXME:通知機能、承諾途中で取り消されたら承諾した人に通知、承諾者が確認したらdelete
+        
+        // part1:通知 reportsテーブルcancelカラムが1
+        // part2:キャンセルの確認 reportsテーブルapprovalカラムがすべて0
+        // part3:削除 reportsテーブルcancelカラムが1、approvalカラムがすべて0で発動
+
+
         try {
             $report->delete();
             return redirect()
@@ -562,9 +649,47 @@ class ReportController extends Controller
         }
     }
 
-    public function approvalPending()
+    /** 承諾済み届出の取消 */
+    public function approvedDelete(Report $report)
+    {
+        $remaining = Remaining::all()
+            ->where('report_id', '=', $report->report_id)
+            ->where('user_id', '=', $report->user_id)
+            ->first();
+
+        if (empty($remaining)) {
+            try {
+                $report->delete();
+                return redirect()
+                    ->route('reports.index')
+                    ->with('notice', '出退勤届けを取り消しました');
+            } catch (\Throwable $th) {
+                return back()->withErrors($th->getMessage());
+            }
+        }
+
+        /** 残日数加算&届け取消 */
+        $remaining->remaining += $report->get_days;
+        DB::beginTransaction(); # トランザクション開始
+        try {
+            $remaining->save();
+            $report->delete();
+
+            DB::commit(); # トランザクション成功終了
+            return redirect()
+                ->route('reports.index')
+                ->with('notice', '出退勤届けを取り消しました');
+        } catch (\Throwable $th) {
+            DB::rollBack(); # トランザクション失敗終了
+            return back()->withErrors($th->getMessage());
+        }
+    }
+
+    # 承諾待ちのreports
+    public function pendingApproval()
     {
         $user = Auth::user();
+        # 総務部長権限
         if (
             !empty(
                 Auth::user()
@@ -578,6 +703,7 @@ class ReportController extends Controller
                 ->get();
         }
 
+        # 工場長権限
         if (
             !empty(
                 Auth::user()
@@ -606,6 +732,7 @@ class ReportController extends Controller
             }
         }
 
+        # GL権限
         if (
             !empty(
                 Auth::user()
@@ -620,7 +747,8 @@ class ReportController extends Controller
                 ) {
                     $query
                         ->where('factory_id', $approval->factory_id)
-                        ->where('department_id', $approval->department_id);
+                        ->where('department_id', $approval->department_id)
+                        ->where('group_id', $approval->group_id);
                 })
                     ->where(function ($query) {
                         $query
@@ -635,12 +763,14 @@ class ReportController extends Controller
                 });
             }
         }
-        return view('approvals.pending')->with(compact('reports'));
+        return view('reports.pending_approval')->with(compact('reports'));
     }
 
+    # 承諾済みのreports
     public function approved()
     {
         $user = Auth::user();
+        # 総務部長権限
         if (
             !empty(
                 Auth::user()
@@ -654,6 +784,7 @@ class ReportController extends Controller
                 ->get();
         }
 
+        # 工場長権限
         if (
             !empty(
                 Auth::user()
@@ -682,6 +813,7 @@ class ReportController extends Controller
             }
         }
 
+        # GL権限
         if (
             !empty(
                 Auth::user()
@@ -696,7 +828,8 @@ class ReportController extends Controller
                 ) {
                     $query
                         ->where('factory_id', $approval->factory_id)
-                        ->where('department_id', $approval->department_id);
+                        ->where('department_id', $approval->department_id)
+                        ->where('group_id', $approval->group_id);
                 })
                     ->where(function ($query) {
                         $query
@@ -711,111 +844,155 @@ class ReportController extends Controller
                 });
             }
         }
-        return view('approvals.index')->with(compact('reports'));
+        return view('reports.approved')->with(compact('reports'));
     }
 
-    public function approvalList()
+    public function getAndRemaining()
     {
-        $users = User::with(['reports', 'remainings'])->get();
-        $report_categories = ReportCategory::all();
-        // dd($report_categories);
+        $approvals = Auth::user()->approvals;
+        $approval_factories = $approvals->pluck('factory_id'); # 管轄のfactory_idをすべて取得
 
-        return view('approvals.list')->with(
+        switch ($approvals) {
+            case $approvals->contains('approval_id', 1):
+                $users = User::with(['reports', 'remainings'])
+                    ->get();
+                break;
+
+            case $approvals->contains('approval_id', 2):
+                $users = User::with(['reports', 'remainings'])
+                    ->where(function ($query) use ($approval_factories) {
+                        for ($i=0; $i < count($approval_factories); $i++) { 
+                            $query
+                                ->orWhere('factory_id', '=', $approval_factories[$i]);
+                        }
+                    })
+                    ->get();
+                break;
+        }
+
+        $report_categories = ReportCategory::all();
+
+        return view('reports.get_and_remaining')->with(
             compact('users', 'report_categories')
         );
     }
 
-    public function approvalList2()
-    {
-        // $users = User::with(['reports', 'remainings'])
-        //     ->withCount([
-        //         'reports AS sum_get_days' => function ($query){
-        //             $query->where([
-        //                 ['report_id', '=', 2],
-        //                 ['approval1', '=', 1],
-        //                 ['approval2', '=', 1],
-        //                 ['approval3', '=', 1],
-        //             ])
-        //             ->select(DB::raw('SUM(get_days) as sum_get_days'));
-        //         },
-        //     ])
-        //     ->get();
-
-        $users = User::with(['reports', 'remainings'])->get();
-        $report_categories = ReportCategory::all();
-        return view('approvals.list2')->with(
-            compact('users', 'report_categories')
-        );
-    }
-
+    # 承諾
     public function approval(Report $report)
     {
+        /** departmentが無所属または自身の届けの場合 */
         if (
-            !empty(
-                Auth::user()
-                    ->approvals->where('approval_id', '=', 1)
-                    ->first()
-            )
+            $report->user->department_id == 1 ||
+            $report->user->id == Auth::user()->id
         ) {
-            $report->approval1 = 1;
-        }
-        // FIXME:2権限、3権限を持つuserがいたら誤作動
-        if (
-            !empty(
-                Auth::user()
-                    ->approvals->where('approval_id', '=', 2)
-                    ->first()
-            )
-        ) {
-            $report->approval2 = 1;
+            /** 権限ごとに承諾 */
+            if (
+                !empty(
+                    Auth::user()
+                        ->approvals->where('approval_id', '=', 1)
+                        ->first()
+                )
+            ) {
+                $report->approval1 = 1;
+                $report->approval2 = 1;
+                $report->approval3 = 1;
+            }
+            if (
+                !empty(
+                    Auth::user()
+                        ->approvals->where('approval_id', '=', 2)
+                        ->first()
+                )
+            ) {
+                $report->approval2 = 1;
+                $report->approval3 = 1;
+            }
+            if (
+                !empty(
+                    Auth::user()
+                        ->approvals->where('approval_id', '=', 3)
+                        ->first()
+                )
+            ) {
+                $report->approval3 = 1;
+            }
+            /** 通常の承諾 */
+        } else {
+            /** 権限ごとに承諾 */
+            if (
+                !empty(
+                    Auth::user()
+                        ->approvals->where('approval_id', '=', 1)
+                        ->first()
+                )
+            ) {
+                $report->approval1 = 1;
+            }
+            if (
+                !empty(
+                    Auth::user()
+                        ->approvals->where(
+                            'factory_id',
+                            '=',
+                            $report->user->factory_id
+                        )
+                        ->where('approval_id', '=', 2)
+                        ->first()
+                )
+            ) {
+                $report->approval2 = 1;
+            }
+
+            if (
+                !empty(
+                    Auth::user()
+                        ->approvals->where(
+                            'factory_id',
+                            '=',
+                            $report->user->factory_id
+                        )
+                        ->where(
+                            'department_id',
+                            '=',
+                            $report->user->department_id
+                        )
+                        ->where('approval_id', '=', 3)
+                        ->first()
+                )
+            ) {
+                $report->approval3 = 1;
+            }
         }
 
-        if (
-            !empty(
-                Auth::user()
-                    ->approvals->where('approval_id', '=', 3)
-                    ->first()
-            )
-        ) {
-            $report->approval3 = 1;
-        }
-
+        /** すべて承諾された場合、remainingを更新 */
+        DB::beginTransaction(); # トランザクション開始
         try {
-            $report->save();
-        } catch (\Throwable $th) {
-            return back()->withErrors($th->getMessage());
-        }
-
-        if (
-            $report->approval1 == 1 &&
-            $report->approval2 == 1 &&
-            $report->approval3 == 1
-        ) {
-            // 残日数を更新
-            # remainingsレコード更新
-            $report_id = $report->report_id;
-            // if ($report_id == 2 || $report_id == 3) {
-            //     $report_id = 1;
-            // }
-            $remaining = Remaining::where('user_id', '=', $report->user_id)
-                ->where('report_id', '=', $report_id)
-                ->first();
-            if (!empty($remaining)) {
-                $new_remaining = $remaining->remaining - $report->get_days;
-                $remaining->remaining = $new_remaining;
-            }
-
-            try {
+            $report->save(); # 承諾を保存
+            # すべて承諾されたらremainingsを更新
+            if (
+                $report->approval1 == 1 &&
+                $report->approval2 == 1 &&
+                $report->approval3 == 1
+            ) {
+                $report_id = $report->report_id;
+                $remaining = Remaining::where('user_id', '=', $report->user_id)
+                    ->where('report_id', '=', $report_id)
+                    ->first();
                 if (!empty($remaining)) {
-                    $remaining->save();
+                    $new_remaining = $remaining->remaining - $report->get_days;
+                    $remaining->remaining = $new_remaining;
+                    $remaining->save(); # 残日数を保存
                 }
-            } catch (\Throwable $th) {
-                return back()->withErrors($th->getMessage());
             }
+            DB::commit(); # トランザクション成功終了
+            return redirect()
+                ->route('reports.show', $report)
+                ->with('notice', '承諾しました');
+        } catch (\Exception $e) {
+            DB::rollBack(); # トランザクション失敗終了
+            return back()
+                ->withInput()
+                ->withErrors($e->getMessage());
         }
-
-        return view('reports.show')
-            ->with(compact('report'))
-            ->with('notice', '承認しました');
     }
 }

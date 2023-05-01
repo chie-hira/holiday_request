@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
+use App\Models\FactoryCategory;
+use App\Models\DepartmentCategory;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +22,9 @@ class RegisteredUserController extends Controller
      */
     public function create()
     {
-        return view('auth.register');
+        $factory_categories = FactoryCategory::all();
+        $department_categories = DepartmentCategory::all();
+        return view('auth.register')->with(compact('factory_categories', 'department_categories'));
     }
 
     /**
@@ -35,14 +39,20 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            // 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'employee' => ['required', 'integer', 'min:0', 'unique:users'],
+            'factory_id' => ['required', 'integer'],
+            'department_id' => ['required', 'integer'],
         ]);
 
         $user = User::create([
             'name' => $request->name,
-            'email' => $request->email,
+            // 'email' => $request->email,
             'password' => Hash::make($request->password),
+            'employee' => $request->employee,
+            'factory_id' => $request->factory_id,
+            'department_id' => $request->department_id,
         ]);
 
         event(new Registered($user));

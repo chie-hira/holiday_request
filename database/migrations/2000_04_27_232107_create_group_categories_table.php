@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateApprovalCategoriesTable extends Migration
+class CreateGroupCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,9 @@ class CreateApprovalCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('approval_categories', function (Blueprint $table) {
-            $table
-                ->id()
-                ->index()
-                ->comment('承諾ID');
-            $table->string('approval_name')->unique();
+        Schema::create('group_categories', function (Blueprint $table) {
+            $table->id()->index()->comment('所属グループID');
+            $table->string('group_name')->unique();
             $table->timestamps();
         });
     }
@@ -30,6 +27,6 @@ class CreateApprovalCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('approval_categories');
+        Schema::dropIfExists('group_categories');
     }
 }

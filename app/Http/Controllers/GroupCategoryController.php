@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreApprovalCategoryRequest;
-use App\Http\Requests\UpdateApprovalCategoryRequest;
-use App\Models\ApprovalCategory;
+use App\Http\Requests\StoreGroupCategoryRequest;
+use App\Http\Requests\UpdateGroupCategoryRequest;
+use App\Models\GroupCategory;
 
-class ApprovalCategoryController extends Controller
+class GroupCategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -31,10 +31,10 @@ class ApprovalCategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreApprovalCategoryRequest  $request
+     * @param  \App\Http\Requests\StoreGroupCategoryRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreApprovalCategoryRequest $request)
+    public function store(StoreGroupCategoryRequest $request)
     {
         //
     }
@@ -42,10 +42,10 @@ class ApprovalCategoryController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\ApprovalCategory  $approvalCategory
+     * @param  \App\Models\GroupCategory  $groupCategory
      * @return \Illuminate\Http\Response
      */
-    public function show(ApprovalCategory $approvalCategory)
+    public function show(GroupCategory $groupCategory)
     {
         //
     }
@@ -53,10 +53,10 @@ class ApprovalCategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\ApprovalCategory  $approvalCategory
+     * @param  \App\Models\GroupCategory  $groupCategory
      * @return \Illuminate\Http\Response
      */
-    public function edit(ApprovalCategory $approvalCategory)
+    public function edit(GroupCategory $groupCategory)
     {
         //
     }
@@ -64,11 +64,11 @@ class ApprovalCategoryController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateApprovalCategoryRequest  $request
-     * @param  \App\Models\ApprovalCategory  $approvalCategory
+     * @param  \App\Http\Requests\UpdateGroupCategoryRequest  $request
+     * @param  \App\Models\GroupCategory  $groupCategory
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateApprovalCategoryRequest $request, ApprovalCategory $approvalCategory)
+    public function update(UpdateGroupCategoryRequest $request, GroupCategory $groupCategory)
     {
         //
     }
@@ -76,10 +76,10 @@ class ApprovalCategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\ApprovalCategory  $approvalCategory
+     * @param  \App\Models\GroupCategory  $groupCategory
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ApprovalCategory $approvalCategory)
+    public function destroy(GroupCategory $groupCategory)
     {
         //
     }

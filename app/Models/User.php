@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use PHPUnit\TextUI\XmlConfiguration\Group;
 
 class User extends Authenticatable
 {
@@ -96,6 +97,16 @@ class User extends Authenticatable
         );
     }
 
+    /**
+     * Get the group that owns the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function group()
+    {
+        return $this->belongsTo(GroupCategory::class, 'group_id', 'id');
+    }
+
     // アクセサ
     public function getSumGetDaysAttribute() # 取得日数集計
     {
@@ -120,6 +131,11 @@ class User extends Authenticatable
     {
         $department = DepartmentCategory::find($department_id);
         return $department->department_name;
+    }
+    public function getApprovalGroup($group_id)
+    {
+        $group = GroupCategory::find($group_id);
+        return $group->group_name;
     }
 
     public function sumGetDaysOnly($key) # 取得日数だけ
@@ -208,5 +224,11 @@ class User extends Authenticatable
         } else {
             return 0;
         }
+    }
+
+    public function remaining($report_category_id)
+    {
+        $remainings = $this->remainings;
+        return $remainings->where('report_id', '=', $report_category_id)->first();
     }
 }

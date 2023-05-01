@@ -3,10 +3,26 @@
         <div class="container w-full md:w-2/3 px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-12">
                 <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">出退勤届け作成</h1>
-                <p class="mx-auto text-left leading-relaxed text-sm">
-                    項目を入力して、<span class="font-bold">日付算出ボタン</span>を押してください。
-                    取得日数、残日数は<span class="font-bold">自動計算</span>されます。
-                </p>
+                <div class="mx-auto">
+                    <p class="flex text-left leading-relaxed text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="w-5 h-5 mr-3">
+                            <path fill-rule="evenodd"
+                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                                clip-rule="evenodd" fill="#9999ff" />
+                        </svg>
+                        項目を入力して、<span class="font-bold">日付算出ボタン</span>を押してください。
+                    </p>
+                    <p class="flex text-left leading-relaxed text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="w-5 h-5 mr-3">
+                            <path fill-rule="evenodd"
+                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                                clip-rule="evenodd" fill="#9999ff" />
+                        </svg>
+                        取得日数、残日数は<span class="font-bold">自動計算</span>されます。
+                    </p>
+                </div>
             </div>
 
             <x-errors :errors="$errors" />
@@ -34,15 +50,16 @@
                         </label>
                         <div class="flex gap-x-6">
                             <div class="flex mt-2">
-                            @foreach ($sub_report_categories as $sub_category)
-                                <input type="radio" name="sub_report_id" id="sub_report_id" onclick="subReportChange()"
-                                    value="{{ $sub_category->id }}" @if ($sub_category->id === (int) old('sub_report_id')) checked @endif
-                                    class="shrink-0 mt-0.5 border-gray-200 rounded-full text-blue-600 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800">
-                                <label for="sub_report_id" name="sub_report_name"
-                                    class="mr-2 text-sm text-gray-500 ml-2 dark:text-gray-400">
-                                    {{ $sub_category->sub_report_name }}
-                                </label>
-                            @endforeach
+                                @foreach ($sub_report_categories as $sub_category)
+                                    <input type="radio" name="sub_report_id" id="sub_report_id"
+                                        onclick="subReportChange()" value="{{ $sub_category->id }}"
+                                        @if ($sub_category->id === (int) old('sub_report_id')) checked @endif
+                                        class="shrink-0 mt-0.5 border-gray-200 rounded-full text-blue-600 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800">
+                                    <label for="sub_report_id" name="sub_report_name"
+                                        class="mr-2 text-sm text-gray-500 ml-2 dark:text-gray-400">
+                                        {{ $sub_category->sub_report_name }}
+                                    </label>
+                                @endforeach
                             </div>
                         </div>
                     </div>
@@ -96,7 +113,8 @@
                             class="block mb-2 text-sm font-medium text-gray-900">
                             日付
                         </label>
-                        <input style="display: " type="date" id="start_date" name="start_date" onchange="dateChange();"
+                        <input style="display: " type="date" id="start_date" name="start_date"
+                            onchange="dateChange();"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             value="{{ old('start_date') }}">
                     </div>
@@ -131,7 +149,8 @@
                         <label for="start_time" class="block mb-2 text-sm font-medium text-gray-900">
                             期間：何時から<span class="text-xs text-gray-600">&emsp;5分刻み</span>
                         </label>
-                        <input type="time" id="start_time" name="start_time" step="300" onchange="dateChange();"
+                        <input type="time" id="start_time" name="start_time" step="300"
+                            onchange="dateChange();"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             value="{{ old('start_time') }}">
                     </div>
@@ -139,7 +158,8 @@
                         <label for="end_time" class="block mb-2 text-sm font-medium text-gray-900">
                             期間：何時まで<span class="text-xs text-gray-600">&emsp;5分刻み</span>
                         </label>
-                        <input type="time" id="end_time" name="end_time" step="300" onchange="dateChange();"
+                        <input type="time" id="end_time" name="end_time" step="300"
+                            onchange="dateChange();"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             value="{{ old('end_time') }}">
                     </div>
@@ -283,7 +303,7 @@
                             clip-rule="evenodd" />
                     </svg>
                     <div class="px-2">
-                        menuへ戻る
+                        戻る
                     </div>
                 </a>
             </div>
@@ -537,7 +557,7 @@
                 if (oldReasonId == reasonCategory.childNodes[i].value) {
                     reasonCategory.childNodes[i].selected = true;
                 }
-                
+
             }
         }
 
@@ -763,7 +783,7 @@
             document.getElementById('get_hours').setAttribute('value', getHoursOnly);
             document.getElementById('get_minutes').setAttribute('value', getMinutes);
 
-            let ownRemainings = @json($own_remainings);
+            let ownRemainings = @json($my_remainings);
             const arr = Object.keys(ownRemainings);
             let ownRemainingDays = 0;
             // console.log(arr);

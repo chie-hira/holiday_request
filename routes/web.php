@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Controllers\ApprovalCategoryController;
+use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\RemainingController;
 use App\Http\Controllers\ReportController;
-use App\Models\Report;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,37 +17,66 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+# メニュー画面
 Route::get('/', function () {
     return view('menu.index');
 })->name('menu');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+})
+    ->middleware(['auth'])
+    ->name('dashboard');
 
+# reportルーティング
 Route::resource('reports', ReportController::class)
     ->only(['create', 'store', 'edit', 'update', 'destroy'])
     ->middleware('auth');
 Route::resource('reports', ReportController::class)
-    ->only(['index', 'show']);
-    
+    ->only(['index', 'show'])
+    ->middleware('auth');
+
+# remainingルーティング
 Route::resource('remainings', RemainingController::class);
 
-Route::get('/approvals/pending', [ReportController::class, 'approvalPending'])
-    ->name('approvals.pending')
-    ->middleware('auth', 'can:general_and_factory_gl');
-Route::get('/approvals', [ReportController::class, 'approved'])
-    ->name('approvals.index')
-    ->middleware('auth', 'can:general_and_factory_gl');
-Route::get('/approvals/list', [ReportController::class, 'approvalList'])
-    ->name('approvals.list');
-Route::get('/approval/{report}', [ReportController::class, 'approval'])
-    ->name('approval');
-// Route::get('/approval1/{report}', [ReportController::class, 'approval1'])
-//     ->name('approval1');
-// Route::get('/approval2/{report}', [ReportController::class, 'approval2'])
-//     ->name('approval2');
-// Route::get('/approval3/{report}', [ReportController::class, 'approval3'])
-//     ->name('approval3');
+# usersルーティング
+Route::resource('users', UserController::class);
 
-require __DIR__.'/auth.php';
+# approvalsルーティング
+Route::resource('approvals', ApprovalController::class)->middleware('auth');
+
+# 承諾ルーティング
+Route::get('/pending_approval', [ReportController::class, 'pendingApproval'])
+    ->name('reports.pending_approval')
+    ->middleware('auth', 'can:general_and_factory_gl');
+Route::get('/approved', [ReportController::class, 'approved'])
+    ->name('reports.approved')
+    ->middleware('auth', 'can:general_and_factory_gl');
+Route::get('/get_and_remaining', [ReportController::class, 'getAndRemaining'])->name(
+    'reports.get_and_remaining'
+);
+Route::get('/approval/{report}', [ReportController::class, 'approval'])->name(
+    'approval'
+);
+
+# remaining加算ルーティング
+Route::get('/update_remainings', function () {
+    return view('remainings.update_form');
+})->name('remainings.update_form');
+Route::post('/add_remainings', [
+    RemainingController::class,
+    'addRemainings',
+])->name('remainings.add_remainings');
+
+# my_indexルーティング
+Route::get('/my_remainings', [RemainingController::class, 'myIndex'])->name(
+    'remainings.my_index'
+);
+
+# 承諾後のreport削除
+Route::delete('/reports/approved/{report}', [
+    ReportController::class,
+    'approvedDelete',
+])->name('reports.approved_delete');
+
+require __DIR__ . '/auth.php';

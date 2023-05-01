@@ -42,5 +42,10 @@ class AuthServiceProvider extends ServiceProvider
                     !empty($user->approvals->where('approval_id', '=', 2)->first()) ||
                     !empty($user->approvals->where('approval_id', '=', 3)->first()));
         });
+
+        // 権限なしに適用
+        Gate::define('no_approvals', function ($user) {
+            return (empty($user->approvals->first()));
+        });
     }
 }

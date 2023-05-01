@@ -2,7 +2,7 @@
     <section class="text-gray-600 body-font">
         <div class="container px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-10">
-                <h1 class="sm:text-4xl text-3xl font-medium title-font text-gray-900">承認待 届け一覧</h1>
+                <h1 class="sm:text-4xl text-3xl font-medium title-font text-gray-900">承諾待 届け一覧</h1>
             </div>
 
             {{-- <x-notice :message="session('notice')" /> --}}
@@ -36,10 +36,6 @@
                                                 class="w-32 px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 日数・時間
                                             </th>
-                                            {{-- <th scope="col"
-                                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                承 認
-                                            </th> --}}
                                             <th scope="col"
                                                 class="px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 部 長
@@ -108,20 +104,12 @@
                                                         {{ $report->get_minutes }} 分
                                                     @endif
                                                 </td>
-                                                {{-- <td
-                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                                    @if ($report->approval1 == 0 || $report->approval2 == 0 || $report->approval3 == 0)
-                                                        <span class="text-pink-500">未承認</span>
-                                                    @else
-                                                        <span class="text-blue-500">承認済み</span>
-                                                    @endif
-                                                </td> --}}
                                                 <td
                                                     class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
                                                     @if ($report->approval1 == 1)
                                                         <span class="text-blue-500">
                                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                                fill="currentColor" class="w-4 h-4">
+                                                                fill="currentColor" class="w-4 h-4 mx-auto">
                                                                 <path fill-rule="evenodd"
                                                                     d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
                                                                     clip-rule="evenodd" />
@@ -147,7 +135,7 @@
                                                     @if ($report->approval3 == 1)
                                                         <span class="text-blue-500">
                                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                                fill="currentColor" class="w-4 h-4">
+                                                                fill="currentColor" class="w-4 h-4 mx-auto">
                                                                 <path fill-rule="evenodd"
                                                                     d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
                                                                     clip-rule="evenodd" />
@@ -180,7 +168,7 @@
                             clip-rule="evenodd" />
                     </svg>
                     <div class="px-2">
-                        menuへ戻る
+                        戻る
                     </div>
                 </a>
             </div>

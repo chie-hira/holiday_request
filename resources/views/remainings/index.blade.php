@@ -1,85 +1,90 @@
 <x-app-layout>
+    <!-- Page Heading -->
     <section class="text-gray-600 body-font">
-        <div class="container px-5 py-24 mx-auto">
-            <div class="flex flex-col text-center w-full mb-10">
-                <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">取得可能日数</h1>
-                <p class="lg:w-2/3 mx-auto mb-2 leading-relaxed text-base">
-                    <span class="font-semibold">
-                        {{ Auth::user()->name }}さん
-                    </span>
-                    は以下の休暇を取得できます。
+        <div class="container lg:w-2/3 px-5 py-24 mx-auto">
+            <div class="flex flex-col text-center w-full mb-6">
+                <h1 class="sm:text-4xl text-3xl font-medium title-font text-gray-900">取得可能日数一覧</h1>
+                <h2 class=" text-right">
+                    @can('general_only')
+                        <a href={{ route('remainings.update_form') }}
+                            class="inline-flex items-center justify-center text-base mr-2 font-medium text-pink-500 rounded-lg bg-gray-50 hover:text-pink-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                class="w-6 h-6">
+                                <path fill-rule="evenodd"
+                                    d="M12 5.25c1.213 0 2.415.046 3.605.135a3.256 3.256 0 013.01 3.01c.044.583.077 1.17.1 1.759L17.03 8.47a.75.75 0 10-1.06 1.06l3 3a.75.75 0 001.06 0l3-3a.75.75 0 00-1.06-1.06l-1.752 1.751c-.023-.65-.06-1.296-.108-1.939a4.756 4.756 0 00-4.392-4.392 49.422 49.422 0 00-7.436 0A4.756 4.756 0 003.89 8.282c-.017.224-.033.447-.046.672a.75.75 0 101.497.092c.013-.217.028-.434.044-.651a3.256 3.256 0 013.01-3.01c1.19-.09 2.392-.135 3.605-.135zm-6.97 6.22a.75.75 0 00-1.06 0l-3 3a.75.75 0 101.06 1.06l1.752-1.751c.023.65.06 1.296.108 1.939a4.756 4.756 0 004.392 4.392 49.413 49.413 0 007.436 0 4.756 4.756 0 004.392-4.392c.017-.223.032-.447.046-.672a.75.75 0 00-1.497-.092c-.013.217-.028.434-.044.651a3.256 3.256 0 01-3.01 3.01 47.953 47.953 0 01-7.21 0 3.256 3.256 0 01-3.01-3.01 47.759 47.759 0 01-.1-1.759L6.97 15.53a.75.75 0 001.06-1.06l-3-3z"
+                                    clip-rule="evenodd"/>
+                            </svg>
+                        </a>
+                    @endcan
+                </h2>
+                <p class="mx-auto text-lg leading-relaxed">
+                    有給休暇
                 </p>
             </div>
 
-            <div class="container bg-white lg:w-1/2 w-full mx-auto border-2 rounded-lg">
-                <div class="flex flex-col p-8">
+            <x-notice :notice="session('notice')" />
+
+            <div class="container bg-white w-full mx-auto border-2 rounded-lg">
+                <div class="flex flex-col p-6 mx-auto">
                     <div class="-m-1.5 overflow-x-auto">
                         <div class="p-1.5 min-w-full inline-block align-middle">
                             <div class="overflow-hidden">
-                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <table class="mx-auto divide-y divide-gray-200 dark:divide-gray-700">
                                     <thead>
                                         <tr>
-                                            <th scope="col"
-                                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                                名 称</th>
-                                            <th scope="col"
-                                                class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                                                取得可能日数</th>
+                                            <th
+                                                class="w-40 px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                所 属
+                                            </th>
+                                            <th
+                                                class="w-24 py-3 text-right text-xs font-medium text-gray-500 tracking-wider">
+                                                社員番号
+                                            </th>
+                                            <th
+                                                class="w-24 px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                                                氏 名
+                                            </th>
+                                            <th
+                                                class="w-24 px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                残日数
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                                        @foreach ($own_remainings as $own_remaining)
-                                            <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
+                                        @foreach ($users as $user)
+                                            <tr>
                                                 <td
-                                                    class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
-                                                    {{ $own_remaining->report_category->report_name }}</td>
-                                                </td>
-                                                <td class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium">
-                                                    {{ $own_remaining->remaining_days }} 日
-                                                    @if (!empty($own_remaining->remaining_hours))
-                                                        &ensp;{{ $own_remaining->remaining_hours }} 時間
-                                                    @else
+                                                    class="px-4 py-4 whitespace-nowrap text-xs font-medium text-gray-800 dark:text-gray-200">
+                                                    {{ $user->factory->factory_name }}工場
+                                                    @if ($user->department->id != 1)
+                                                        ・{{ $user->department->department_name }}
                                                     @endif
+                                                    @if ($user->group->id != 1)
+                                                        ・{{ $user->group->group_name }}
+                                                    @endif
+                                                </td>
+                                                <td
+                                                    class="px-4 py-4 whitespace-nowrap text-sm text-right text-gray-800 dark:text-gray-200">
+                                                    {{ $user->employee }}</td>
+                                                <td
+                                                    class="px-4 py-4 whitespace-nowrap text-sm text-left text-gray-800 dark:text-gray-200">
+                                                    {{ $user->name }}</td>
+                                                <td id="remaining_data" style="display: "
+                                                    class="px-4 py-4 whitespace-nowrap text-sm text-right text-gray-800 dark:text-gray-200">
+                                                    <div id="remaining-1_{{ $user->id }}" style="display: ">
+                                                        <x-remaining-days :user="$user" key=0 />
+                                                        {{-- 有給 --}}
+                                                    </div>
+                                                </td>
+                                                <td
+                                                    class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                            <a href="{{ route('remainings.edit', $user->remaining(1)->id) }}"
+                                                                class="px-3 py-1 text-sm text-blue-500 rounded-full bg-blue-100/60 hover:text-white hover:bg-blue-500">
+                                                                変 更
+                                                            </a>
                                                 </td>
                                             </tr>
                                         @endforeach
-
-                                        <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
-                                            <td
-                                                class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
-                                                特別休暇(弔事)</td>
-                                            <td class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium">
-                                                ※
-                                            </td>
-                                        </tr>
-
-                                        <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
-                                            <td
-                                                class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
-                                                特別休暇(短期育休)</td>
-                                            <td class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium">
-                                                ※
-                                            </td>
-                                        </tr>
-
-                                        <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
-                                            <td
-                                                class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
-                                                育児休業</td>
-                                            <td class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium">
-                                                ※
-                                            </td>
-                                        </tr>
-
-                                        <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
-                                            <td
-                                                class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
-                                                パパ育休</td>
-                                            <td class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium">
-                                                ※
-                                            </td>
-                                        </tr>
-
                                     </tbody>
                                 </table>
                             </div>
@@ -88,75 +93,7 @@
                 </div>
             </div>
 
-            <div class="flex flex-col text-center mt-10">
-                <ul class="w-84 mx-auto leading-relaxed text-sm overflow-x-auto">
-                    <li class="flex items-left text-left whitespace-nowrap">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            class="w-6 h-6 mr-3">
-                            <path fill-rule="evenodd"
-                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                clip-rule="evenodd" fill="#9999ff" />
-                        </svg>
-                        看護休暇は<span class="font-bold">小学校就学前の子</span>を養育する者が取得できます。
-                    </li>
-                    <li class="flex items-left text-left whitespace-nowrap">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            class="w-6 h-6 mr-3">
-                            <path fill-rule="evenodd"
-                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                clip-rule="evenodd" fill="#9999ff" />
-                        </svg>
-                        介護休暇、介護休業は<span class="font-bold">要介護状態の家族</span>を介護する者が取得できます。
-                    </li>
-                    <li class="flex items-left text-left whitespace-nowrap">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            class="w-6 h-6 mr-3">
-                            <path fill-rule="evenodd"
-                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                clip-rule="evenodd" fill="#9999ff" />
-                        </svg>
-                        特別休暇(慶事)は<span class="font-bold">本人が結婚する</span>ときに取得できます。
-                    </li>
-                    <li class="flex items-left text-left whitespace-nowrap">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            class="w-6 h-6 mr-3">
-                            <path fill-rule="evenodd"
-                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                clip-rule="evenodd" fill="#9999ff" />
-                        </svg>
-                        特別休暇(弔事)は近親者が喪に服すときに取得でき、<span class="font-bold">近親者によって</span>取得上限が異なります。
-                    </li>
-                    <li class="flex items-left text-left whitespace-nowrap">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            class="w-6 h-6 mr-3">
-                            <path fill-rule="evenodd"
-                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                clip-rule="evenodd" fill="#9999ff" />
-                        </svg>
-                        特別休暇(短期育休)、育児休業、パパ育休は<span class="font-bold">1歳に満たない子</span>と同居し扶養する者が取得できます。
-                    </li>
-                    <li class="flex items-left text-left whitespace-nowrap">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            class="w-6 h-6 mr-3">
-                            <path fill-rule="evenodd"
-                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                clip-rule="evenodd" fill="#9999ff" />
-                        </svg>
-                        取得可能日数は<span class="font-bold">届け出承認後の日数</span>です。
-                    </li>
-                    <li class="flex items-left text-left whitespace-nowrap">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            class="w-6 h-6 mr-3">
-                            <path fill-rule="evenodd"
-                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                clip-rule="evenodd" fill="#9999ff" />
-                        </svg>
-                        ※は<span class="font-bold">対象者、家族構成等</span>によって異なります。詳細は総務課にお問い合わせください。
-                    </li>
-                </ul>
-            </div>
-
-            <div class="flex mt-4 lg:w-2/3 w-full mx-auto">
+            <div class="flex pl-4 mt-4 lg:w-2/3 w-full mx-auto">
                 <a href="{{ route('menu') }}"
                     class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
