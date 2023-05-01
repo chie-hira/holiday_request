@@ -8,7 +8,7 @@
 
             <div class="container px-5 pt-24 mx-auto text-gray-600 bg-gray-100">
                 <div class="flex flex-col text-center w-full">
-                    <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">メンバー登録</h1>
+                    <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">ユーザー登録</h1>
                     <p class="mx-auto leading-relaxed text-base">
                         採用職員を登録してください。
                     </p>

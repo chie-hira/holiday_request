@@ -49,7 +49,7 @@ class UserController extends Controller
             $user->save();
             return redirect()
                 ->route('users.index')
-                ->with('notice', '社員情報を更新しました');
+                ->with('notice', 'ユーザー情報を更新しました');
         } catch (\Throwable $th) {
             return back()->withErrors($th->getMessage());
         }
@@ -67,7 +67,7 @@ class UserController extends Controller
             $user->delete();
             return redirect()
                 ->route('users.index')
-                ->with('notice', '社員情報を削除しました。');
+                ->with('notice', 'ユーザー情報を削除しました。');
         } catch (\Throwable $th) {
             return back()->withErrors($th->getMessage());
         }

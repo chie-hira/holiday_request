@@ -46,14 +46,14 @@ Route::resource('users', UserController::class);
 Route::resource('approvals', ApprovalController::class)->middleware('auth');
 
 # 承諾ルーティング
-Route::get('/approval_pending', [ReportController::class, 'approvalPending'])
-    ->name('approvals.pending')
+Route::get('/pending_approval', [ReportController::class, 'pendingApproval'])
+    ->name('reports.pending_approval')
     ->middleware('auth', 'can:general_and_factory_gl');
 Route::get('/approved', [ReportController::class, 'approved'])
-    ->name('approvals.approved')
+    ->name('reports.approved')
     ->middleware('auth', 'can:general_and_factory_gl');
-Route::get('/list', [ReportController::class, 'approvalList'])->name(
-    'approvals.list'
+Route::get('/get_and_remaining', [ReportController::class, 'getAndRemaining'])->name(
+    'reports.get_and_remaining'
 );
 Route::get('/approval/{report}', [ReportController::class, 'approval'])->name(
     'approval'

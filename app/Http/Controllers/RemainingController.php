@@ -164,7 +164,6 @@ class RemainingController extends Controller
 
         /** remainings更新 */
         $users = User::with('remainings')->get();
-
         try {
             foreach ($users as $user) {
                 $my_remainings = $user->remainings;
@@ -183,7 +182,12 @@ class RemainingController extends Controller
                         break;
 
                     case $length_of_service >= 1.5 && $length_of_service < 2.5:
-                        $remaining_report1->remaining = $remaining_now + 11;
+                        $remaining_add = $remaining_now + 11;
+                        if ($remaining_add >= 21) {
+                            $remaining_report1->remaining = 21;
+                        } else {
+                            $remaining_report1->remaining = $remaining_add;
+                        }
                         break;
 
                     case $length_of_service >= 2.5 && $length_of_service < 3.5:

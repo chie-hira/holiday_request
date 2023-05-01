@@ -632,7 +632,13 @@ class ReportController extends Controller
      */
     public function destroy(Report $report)
     {
-        // FIXME:残日数を復活&認証が1つでもついたら取り消しできない
+        // FIXME:通知機能、承諾途中で取り消されたら承諾した人に通知、承諾者が確認したらdelete
+        
+        // part1:通知 reportsテーブルcancelカラムが1
+        // part2:キャンセルの確認 reportsテーブルapprovalカラムがすべて0
+        // part3:削除 reportsテーブルcancelカラムが1、approvalカラムがすべて0で発動
+
+
         try {
             $report->delete();
             return redirect()
@@ -680,7 +686,7 @@ class ReportController extends Controller
     }
 
     # 承諾待ちのreports
-    public function approvalPending()
+    public function pendingApproval()
     {
         $user = Auth::user();
         # 総務部長権限
@@ -757,7 +763,7 @@ class ReportController extends Controller
                 });
             }
         }
-        return view('approvals.pending')->with(compact('reports'));
+        return view('reports.pending_approval')->with(compact('reports'));
     }
 
     # 承諾済みのreports
@@ -838,16 +844,16 @@ class ReportController extends Controller
                 });
             }
         }
-        return view('approvals.approved')->with(compact('reports'));
+        return view('reports.approved')->with(compact('reports'));
     }
 
-    public function approvalList()
+    public function getAndRemaining()
     {
         $users = User::with(['reports', 'remainings'])->get();
         $report_categories = ReportCategory::all();
         // dd($report_categories);
 
-        return view('approvals.list')->with(
+        return view('reports.get_and_remaining')->with(
             compact('users', 'report_categories')
         );
     }

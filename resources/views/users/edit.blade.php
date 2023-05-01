@@ -2,13 +2,29 @@
     <section class="text-gray-600 body-font">
         <div class="container px-5 py-24 w-full xl:w-3/4 mx-auto">
             <div class="flex flex-col text-center w-full mb-10">
-                <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">社員情報の修正</h1>
-                <p class="mx-10 lx:mx-20 text-left leading-relaxed text-sm">
-                    複数の工場、課、グループに所属する場合は、<span class="font-bold">メインの工場、課、グループ</span>を選択してください。
-                </p>
-                <p class="mx-10 xl:mx-20 text-left leading-relaxed text-sm">
+                <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">ユーザー情報の修正</h1>
+                <div class="mx-auto">
+                    <p class="flex text-left leading-relaxed text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="w-5 h-5 mr-3">
+                            <path fill-rule="evenodd"
+                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                                clip-rule="evenodd" fill="#9999ff" />
+                        </svg>
+                        複数の工場、課、グループに所属する場合は、
+                        <span class="font-bold">メインの工場、課、グループ</span>
+                        を選択してください。
+                    </p>
+                    <p class="flex text-left leading-relaxed text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="w-5 h-5 mr-3">
+                            <path fill-rule="evenodd"
+                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                                clip-rule="evenodd" fill="#9999ff" />
+                        </svg>
                     工場長など複数ある所属先が同列の場合は、<span class="font-bold">無所属</span>を選択してください。
-                </p>
+                    </p>
+                </div>
             </div>
 
             <x-errors :errors="$errors" />
@@ -47,7 +63,7 @@
                                     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                                         <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
                                             <td
-                                                class="px-8 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-800 dark:text-gray-200">
+                                                class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-800 dark:text-gray-200">
                                                 {{ $user->employee }}
                                             </td>
                                             <td
@@ -97,12 +113,12 @@
                                                     </button>
                                                 </td>
                                             </form>
-                                            <td class="px-1 py-4 whitespace-nowrap text-sm font-medium">
+                                            <td class="pl-1 pr-2 py-4 whitespace-nowrap text-sm font-medium">
                                                 <form action="{{ route('users.destroy', $user) }}" method="POST">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <input type="submit" value="社員情報削除"
-                                                        onclick="if(!confirm('社員情報を削除しますか？この操作は取り消せません。社員情報を削除した社員は、アプリを使用できなくなります。')){return false};"
+                                                    <input type="submit" value="ユーザー削除"
+                                                        onclick="if(!confirm('ユーザー情報を削除しますか？この操作は取り消せません。社員情報を削除した社員は、アプリを使用できなくなります。')){return false};"
                                                         class="px-3 py-1 text-sm text-pink-500 rounded-full bg-pink-100/60 hover:text-white hover:bg-pink-500">
                                                 </form>
                                             </td>
