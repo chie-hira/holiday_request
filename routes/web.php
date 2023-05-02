@@ -18,9 +18,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 # メニュー画面
-Route::get('/', function () {
-    return view('menu.index');
-})->name('menu');
+// Route::get('/', function () {
+//     return view('menu.index');
+// })->name('menu');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -58,6 +58,9 @@ Route::get('/get_and_remaining', [ReportController::class, 'getAndRemaining'])->
 Route::get('/approval/{report}', [ReportController::class, 'approval'])->name(
     'approval'
 );
+Route::get('/approval/{report}/cancel', [ReportController::class, 'approvalCancel'])->name(
+    'reports.approval_cancel'
+);
 
 # remaining加算ルーティング
 Route::get('/update_remainings', function () {
@@ -73,10 +76,15 @@ Route::get('/my_remainings', [RemainingController::class, 'myIndex'])->name(
     'remainings.my_index'
 );
 
+# menuルーティング
+Route::get('/', [ReportController::class, 'menu'])->name(
+    'menu'
+);
+
 # 承諾後のreport削除
-Route::delete('/reports/approved/{report}', [
+Route::delete('/reports/approved/{report}/cancel', [
     ReportController::class,
-    'approvedDelete',
-])->name('reports.approved_delete');
+    'approvedCancel',
+])->name('reports.approved_cancel');
 
 require __DIR__ . '/auth.php';

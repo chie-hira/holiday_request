@@ -55,7 +55,7 @@
                                                 氏 名
                                             </th>
                                             <th
-                                                class="w-24 px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                class="w-24 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 取得日数
                                             </th>
                                             <th id="bar_title" style="display: "></th>

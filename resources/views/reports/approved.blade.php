@@ -16,29 +16,25 @@
                                     <thead>
                                         <tr>
                                             <th scope="col"
-                                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                class="py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 届出日
                                             </th>
                                             <th scope="col"
-                                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                class="py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 氏 名
                                             </th>
                                             <th scope="col"
-                                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                class="py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 内 容
                                             </th>
                                             <th scope="col" colspan="2"
-                                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                class="py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 期 間
                                             </th>
                                             <th scope="col"
-                                                class="w-32 px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                class="w-32 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 日数・時間
                                             </th>
-                                            {{-- <th scope="col"
-                                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                承 認
-                                            </th> --}}
                                             <th scope="col"
                                                 class="px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 部 長
@@ -107,45 +103,52 @@
                                                         {{ $report->get_minutes }} 分
                                                     @endif
                                                 </td>
-                                                <td
-                                                    class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                                    @if ($report->approval1 == 1)
-                                                        <span class="text-blue-500">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                                fill="currentColor" class="w-4 h-4 mx-auto">
-                                                                <path fill-rule="evenodd"
-                                                                    d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
-                                                                    clip-rule="evenodd" />
-                                                            </svg>
-                                                        </span>
-                                                    @endif
-                                                </td>
-                                                <td
-                                                    class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                                    @if ($report->approval2 == 1)
-                                                        <span class="text-blue-500">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                                fill="currentColor" class="w-4 h-4 mx-auto">
-                                                                <path fill-rule="evenodd"
-                                                                    d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
-                                                                    clip-rule="evenodd" />
-                                                            </svg>
-                                                        </span>
-                                                    @endif
-                                                </td>
-                                                <td
-                                                    class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                                    @if ($report->approval3 == 1)
-                                                        <span class="text-blue-500">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                                fill="currentColor" class="w-4 h-4 mx-auto">
-                                                                <path fill-rule="evenodd"
-                                                                    d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
-                                                                    clip-rule="evenodd" />
-                                                            </svg>
-                                                        </span>
-                                                    @endif
-                                                </td>
+                                                @if ($report->cancel == 0)
+                                                    <td
+                                                        class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                        @if ($report->approval1 == 1)
+                                                            <span class="text-blue-500">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                                    fill="currentColor" class="w-4 h-4 mx-auto">
+                                                                    <path fill-rule="evenodd"
+                                                                        d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
+                                                                        clip-rule="evenodd" />
+                                                                </svg>
+                                                            </span>
+                                                        @endif
+                                                    </td>
+                                                    <td
+                                                        class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                        @if ($report->approval2 == 1)
+                                                            <span class="text-blue-500">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                                    fill="currentColor" class="w-4 h-4 mx-auto">
+                                                                    <path fill-rule="evenodd"
+                                                                        d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
+                                                                        clip-rule="evenodd" />
+                                                                </svg>
+                                                            </span>
+                                                        @endif
+                                                    </td>
+                                                    <td
+                                                        class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                        @if ($report->approval3 == 1)
+                                                            <span class="text-blue-500">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                                    fill="currentColor" class="w-4 h-4 mx-auto">
+                                                                    <path fill-rule="evenodd"
+                                                                        d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
+                                                                        clip-rule="evenodd" />
+                                                                </svg>
+                                                            </span>
+                                                        @endif
+                                                    </td>
+                                                @else
+                                                    <td colspan="3"
+                                                        class="px-2 py-4 text-center text-indigo-500 whitespace-nowrap text-sm">
+                                                        取消確認中
+                                                    </td>
+                                                @endif
                                                 <td
                                                     class="pl-2 pr-1 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                     <a href="{{ route('reports.show', $report) }}"
@@ -154,16 +157,18 @@
                                                     </a>
                                                 </td>
                                                 <td class="pl-1 pr-2 py-4 whitespace-nowrap text-sm font-medium">
-                                                    @can('general_only')
-                                                        <form action="{{ route('reports.approved_delete', $report) }}"
-                                                            method="POST">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <input type="submit" value="取 消"
-                                                                onclick="if(!confirm('承諾済みの届けを取消しますか？')){return false};"
-                                                                class="px-3 py-1 text-sm text-pink-500 rounded-full bg-pink-100/60 hover:text-white hover:bg-pink-500">
-                                                        </form>
-                                                    @endcan
+                                                    @if ($report->cancel == 0)
+                                                        @can('general_only')
+                                                            <form action="{{ route('reports.approved_cancel', $report) }}"
+                                                                method="POST">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <input type="submit" value="取 消"
+                                                                    onclick="if(!confirm('承諾済みの届けを取消しますか？工場長とGLの確認後に届けが削除されます。')){return false};"
+                                                                    class="px-3 py-1 text-sm text-pink-500 rounded-full bg-pink-100/60 hover:text-white hover:bg-pink-500">
+                                                            </form>
+                                                        @endcan
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @endforeach

@@ -604,12 +604,11 @@ class ReportController extends Controller
             }
         }
 
-        # reportsレコード更新
+        # reportsレコード更新&承諾リセット
         $report->fill($request->all());
         $report->approval1 = 0;
         $report->approval2 = 0;
         $report->approval3 = 0;
-        // dd($report);
 
         try {
             $report->save();
@@ -637,13 +636,38 @@ class ReportController extends Controller
         // part1:通知 reportsテーブルcancelカラムが1
         // part2:キャンセルの確認 reportsテーブルapprovalカラムがすべて0
         // part3:削除 reportsテーブルcancelカラムが1、approvalカラムがすべて0で発動
+        $report->cancel = 1;
+        $report->save();
 
+        if ($report->cancel == 1 &&
+            $report->approval1 == 0 &&
+            $report->approval2 == 0 &&
+            $report->approval3 == 0 ) {
+            try {
+                $report->delete();
+                return redirect()
+                    ->route('reports.index')
+                    ->with('notice', '届けを取り消しました');
+            } catch (\Throwable $th) {
+                return back()->withErrors($th->getMessage());
+            }
+        } else {
+            return redirect()
+                    ->route('reports.index')
+                    ->with('notice', '届けの取消を申請しました');
+        }
+    }
+
+    /** 承諾済み届出の取消申請 */
+    public function approvedCancel(Report $report)
+    {
+        $report->cancel = 1; # キャンセルon
+        $report->approval1 = 0; # 総務部長承諾off
 
         try {
-            $report->delete();
+            $report->save();
             return redirect()
-                ->route('reports.index')
-                ->with('notice', '届けを取り消しました');
+                ->route('reports.approved');
         } catch (\Throwable $th) {
             return back()->withErrors($th->getMessage());
         }
@@ -697,9 +721,7 @@ class ReportController extends Controller
                     ->first()
             )
         ) {
-            $reports = Report::where('approval1', '=', 0)
-                ->orWhere('approval2', '=', 0)
-                ->orWhere('approval3', '=', 0)
+            $reports = Report::where('approved', '=', 0)
                 ->get();
         }
 
@@ -720,9 +742,7 @@ class ReportController extends Controller
                 })
                     ->where(function ($query) {
                         $query
-                            ->where('approval1', '=', 0)
-                            ->orWhere('approval2', '=', 0)
-                            ->orWhere('approval3', '=', 0);
+                            ->where('approved', '=', 0);
                     })
                     ->get();
 
@@ -752,9 +772,7 @@ class ReportController extends Controller
                 })
                     ->where(function ($query) {
                         $query
-                            ->where('approval1', '=', 0)
-                            ->orWhere('approval2', '=', 0)
-                            ->orWhere('approval3', '=', 0);
+                            ->where('approved', '=', 0);
                     })
                     ->get();
 
@@ -778,9 +796,7 @@ class ReportController extends Controller
                     ->first()
             )
         ) {
-            $reports = Report::where('approval1', '=', 1)
-                ->where('approval2', '=', 1)
-                ->where('approval3', '=', 1)
+            $reports = Report::where('approved', '=', 1)
                 ->get();
         }
 
@@ -801,9 +817,7 @@ class ReportController extends Controller
                 })
                     ->where(function ($query) {
                         $query
-                            ->where('approval1', '=', 1)
-                            ->where('approval2', '=', 1)
-                            ->where('approval3', '=', 1);
+                            ->where('approved', '=', 1);
                     })
                     ->get();
 
@@ -833,9 +847,7 @@ class ReportController extends Controller
                 })
                     ->where(function ($query) {
                         $query
-                            ->where('approval1', '=', 1)
-                            ->where('approval2', '=', 1)
-                            ->where('approval3', '=', 1);
+                            ->where('approved', '=', 1);
                     })
                     ->get();
 
@@ -965,6 +977,7 @@ class ReportController extends Controller
         }
 
         /** すべて承諾された場合、remainingを更新 */
+        
         DB::beginTransaction(); # トランザクション開始
         try {
             $report->save(); # 承諾を保存
@@ -974,6 +987,8 @@ class ReportController extends Controller
                 $report->approval2 == 1 &&
                 $report->approval3 == 1
             ) {
+                $report->approved = 1;
+                $report->save();
                 $report_id = $report->report_id;
                 $remaining = Remaining::where('user_id', '=', $report->user_id)
                     ->where('report_id', '=', $report_id)
@@ -994,5 +1009,335 @@ class ReportController extends Controller
                 ->withInput()
                 ->withErrors($e->getMessage());
         }
+    }
+
+    # 承諾取消
+    public function approvalCancel(Report $report)
+    {
+        /** departmentが無所属または自身の届けの場合 */
+        if (
+            $report->user->department_id == 1 ||
+            $report->user->id == Auth::user()->id
+        ) {
+            /** 権限ごとに承諾取消 */
+            if (
+                !empty(
+                    Auth::user()
+                        ->approvals->where('approval_id', '=', 1)
+                        ->first()
+                )
+            ) {
+                $report->approval1 = 0;
+                $report->approval2 = 0;
+                $report->approval3 = 0;
+            }
+            if (
+                !empty(
+                    Auth::user()
+                        ->approvals->where('approval_id', '=', 2)
+                        ->first()
+                )
+            ) {
+                $report->approval2 = 0;
+                $report->approval3 = 0;
+            }
+            if (
+                !empty(
+                    Auth::user()
+                        ->approvals->where('approval_id', '=', 3)
+                        ->first()
+                )
+            ) {
+                $report->approval3 = 0;
+            }
+            /** 通常の承諾 */
+        } else {
+            /** 権限ごとに承諾 */
+            if (
+                !empty(
+                    Auth::user()
+                        ->approvals->where('approval_id', '=', 1)
+                        ->first()
+                )
+            ) {
+                $report->approval1 = 0;
+            }
+            if (
+                !empty(
+                    Auth::user()
+                        ->approvals->where(
+                            'factory_id',
+                            '=',
+                            $report->user->factory_id
+                        )
+                        ->where('approval_id', '=', 2)
+                        ->first()
+                )
+            ) {
+                $report->approval2 = 0;
+            }
+
+            if (
+                !empty(
+                    Auth::user()
+                        ->approvals->where(
+                            'factory_id',
+                            '=',
+                            $report->user->factory_id
+                        )
+                        ->where(
+                            'department_id',
+                            '=',
+                            $report->user->department_id
+                        )
+                        ->where('approval_id', '=', 3)
+                        ->first()
+                )
+            ) {
+                $report->approval3 = 0;
+            }
+        }
+
+        try {
+            $report->save();
+        } catch (\Throwable $th) {
+            return back()->withErrors($th->getMessage());
+        }
+
+        /** すべて確認された場合、届け削除 */
+        if ($report->cancel == 1 &&
+            $report->approval1 == 0 &&
+            $report->approval2 == 0 &&
+            $report->approval3 == 0 ) {
+            switch ($report->approved) {
+                case 0: # 未承諾の届の場合
+                    try {
+                        $report->delete();
+                        return redirect()
+                            ->route('reports.index')
+                            ->with('notice', '届けを取り消しました');
+                    } catch (\Throwable $th) {
+                        return back()->withErrors($th->getMessage());
+                    }
+                break;
+
+                case 1: # 承諾済みの届の場合
+                    $remaining = Remaining::all()
+                        ->where('report_id', '=', $report->report_id)
+                        ->where('user_id', '=', $report->user_id)
+                        ->first();
+                        // dd($remaining);
+                    if (empty($remaining)) {
+                        try {
+                            $report->delete();
+                            return redirect()
+                                ->route('reports.index')
+                                ->with('notice', '出退勤届けを取り消しました');
+                        } catch (\Throwable $th) {
+                            return back()->withErrors($th->getMessage());
+                        }
+                    } else {
+                        /** 残日数加算&届け取消 */
+                        $remaining->remaining += $report->get_days;
+                        DB::beginTransaction(); # トランザクション開始
+                        try {
+                            $remaining->save();
+                            $report->delete();
+
+                            DB::commit(); # トランザクション成功終了
+                            return redirect()
+                                ->route('reports.index')
+                                ->with('notice', '出退勤届けを取り消しました');
+                        } catch (\Throwable $th) {
+                            DB::rollBack(); # トランザクション失敗終了
+                            return back()->withErrors($th->getMessage());
+                        }
+                    }
+                    break;
+            }
+        }
+    }
+
+    public function menu()
+    {
+        $user = Auth::user();
+
+        // 未承諾のreports
+        if (!empty($user)) {
+            # 総務部長権限
+            if (
+                !empty(
+                    Auth::user()
+                        ->approvals->where('approval_id', '=', 1)
+                        ->first()
+                )
+            ) {
+                $reports = Report::where('cancel', '=', 0)
+                    ->where('approved', '=', 0)
+                    ->where('approval1', '=', 0)
+                    ->orWhere([['cancel', '=', 1],['approved', '=', 0],['approval1', '=', 1]])
+                    ->get();
+            }
+
+            # 工場長権限
+            if (
+                !empty(
+                    Auth::user()
+                        ->approvals->where('approval_id', '=', 2)
+                        ->first()
+                )
+            ) {
+                $reports = new Collection();
+                foreach ($user->approvals as $approval) {
+                    $extractions = Report::whereHas('user', function ($query) use (
+                        $approval
+                    ) {
+                        $query->where('factory_id', $approval->factory_id);
+                    })
+                        ->where(function ($query) {
+                            $query
+                                ->where('cancel', '=', 0)
+                                ->where('approved', '=', 0)
+                                ->where('approval2', '=', 0);
+                        })
+                        ->orWhere(function ($query) {
+                            $query
+                                ->where('cancel', '=', 1)
+                                ->where('approved', '=', 0)
+                                ->where('approval2', '=', 1);
+                        })
+                        ->get();
+
+                    $extractions->each(function ($extraction) use ($reports) {
+                        $reports->add($extraction);
+                    });
+                }
+            }
+
+            # GL権限
+            if (
+                !empty(
+                    Auth::user()
+                        ->approvals->where('approval_id', '=', 3)
+                        ->first()
+                )
+            ) {
+                $reports = new Collection();
+                foreach ($user->approvals as $approval) {
+                    $extractions = Report::whereHas('user', function ($query) use (
+                        $approval
+                    ) {
+                        $query
+                            ->where('factory_id', $approval->factory_id)
+                            ->where('department_id', $approval->department_id)
+                            ->where('group_id', $approval->group_id);
+                    })
+                        ->where(function ($query) {
+                            $query
+                                ->where('cancel', '=', 0)
+                                ->where('approved', '=', 0)
+                                ->where('approval3', '=', 0);
+                        })
+                        ->orWhere(function ($query) {
+                            $query
+                                ->where('cancel', '=', 1)
+                                ->where('approved', '=', 0)
+                                ->where('approval3', '=', 1);
+                        })
+                        ->get();
+
+                    $extractions->each(function ($extraction) use ($reports) {
+                        $reports->add($extraction);
+                    });
+                }
+            }
+
+            $pending = count($reports);
+            $reports = ''; # リセット
+
+            // 承諾済み
+            # 総務部長権限
+            if (
+                !empty(
+                    Auth::user()
+                        ->approvals->where('approval_id', '=', 1)
+                        ->first()
+                )
+            ) {
+                $reports = Report::where('cancel', '=', 1)
+                    ->where('approved', '=', 1)
+                    ->where('approval1', '=', 1)
+                    ->get();
+            }
+
+            # 工場長権限
+            if (
+                !empty(
+                    Auth::user()
+                        ->approvals->where('approval_id', '=', 2)
+                        ->first()
+                )
+            ) {
+                $reports = new Collection();
+                foreach ($user->approvals as $approval) {
+                    $extractions = Report::whereHas('user', function ($query) use (
+                        $approval
+                    ) {
+                        $query->where('factory_id', $approval->factory_id);
+                    })
+                        ->where(function ($query) {
+                            $query
+                                ->where('cancel', '=', 1)
+                                ->where('approved', '=', 1)
+                                ->where('approval2', '=', 1);
+                        })
+                        ->get();
+
+                    $extractions->each(function ($extraction) use ($reports) {
+                        $reports->add($extraction);
+                    });
+                }
+            }
+
+            # GL権限
+            if (
+                !empty(
+                    Auth::user()
+                        ->approvals->where('approval_id', '=', 3)
+                        ->first()
+                )
+            ) {
+                $reports = new Collection();
+                foreach ($user->approvals as $approval) {
+                    $extractions = Report::whereHas('user', function ($query) use (
+                        $approval
+                    ) {
+                        $query
+                            ->where('factory_id', $approval->factory_id)
+                            ->where('department_id', $approval->department_id)
+                            ->where('group_id', $approval->group_id);
+                    })
+                        ->where(function ($query) {
+                            $query
+                                ->where('cancel', '=', 1)
+                                ->where('approved', '=', 1)
+                                ->where('approval2', '=', 1);
+                        })
+                        ->get();
+
+                    $extractions->each(function ($extraction) use ($reports) {
+                        $reports->add($extraction);
+                    });
+                }
+            }
+
+            $approved = count($reports);
+        } else {
+            $pending = '';
+            $approved = '';
+        }
+
+        // dd($reports);
+        return view('menu.index')->with(compact('pending', 'approved'));
     }
 }
