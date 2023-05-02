@@ -7,7 +7,7 @@
                 <h2 class=" text-right">
                     @can('general_only')
                         <a href={{ route('remainings.update_form') }}
-                            class="inline-flex items-center justify-center text-base mr-2 font-medium text-pink-500 rounded-lg bg-gray-50 hover:text-pink-700">
+                            class="inline-flex items-center justify-center text-base mr-2 font-medium text-indigo-500 rounded-lg bg-gray-50 hover:text-indigo-700">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                                 class="w-6 h-6">
                                 <path fill-rule="evenodd"

@@ -16,23 +16,23 @@
                                     <thead>
                                         <tr>
                                             <th scope="col"
-                                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                class="py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 届出日
                                             </th>
                                             <th scope="col"
-                                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                class="py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 氏 名
                                             </th>
                                             <th scope="col"
-                                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                class="py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 内 容
                                             </th>
                                             <th scope="col" colspan="2"
-                                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                class="py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 期 間
                                             </th>
                                             <th scope="col"
-                                                class="w-32 px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                class="w-32 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 日数・時間
                                             </th>
                                             <th scope="col"

@@ -18,9 +18,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 # メニュー画面
-Route::get('/', function () {
-    return view('menu.index');
-})->name('menu');
+// Route::get('/', function () {
+//     return view('menu.index');
+// })->name('menu');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -74,6 +74,11 @@ Route::post('/add_remainings', [
 # my_indexルーティング
 Route::get('/my_remainings', [RemainingController::class, 'myIndex'])->name(
     'remainings.my_index'
+);
+
+# menuルーティング
+Route::get('/', [ReportController::class, 'menu'])->name(
+    'menu'
 );
 
 # 承諾後のreport削除
