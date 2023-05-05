@@ -58,9 +58,9 @@
                                     <input type="radio" name="sub_report_id" id="sub_report_id"
                                         onclick="subReportChange()" value="{{ $sub_category->id }}"
                                         @if ($sub_category->id === (int) old('sub_report_id')) checked @endif
-                                        class="shrink-0 mt-0.5 border-gray-200 rounded-full text-blue-600 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800">
+                                        class="shrink-0 mt-0.5 border-gray-200 rounded-full text-blue-600 focus:ring-blue-500 ">
                                     <label for="sub_report_id" name="sub_report_name"
-                                        class="mr-2 text-sm text-gray-500 ml-2 dark:text-gray-400">
+                                        class="mr-2 text-sm text-gray-500 ml-2 ">
                                         {{ $sub_category->sub_report_name }}
                                     </label>
                                 @endforeach

@@ -40,7 +40,7 @@
                     <div class="-m-1.5 overflow-x-auto">
                         <div class="p-1.5 min-w-full inline-block align-middle">
                             <div class="overflow-hidden">
-                                <table class="mx-auto divide-y divide-gray-200 dark:divide-gray-700">
+                                <table class="mx-auto divide-y divide-gray-200 ">
                                     <thead>
                                         <tr>
                                             <th
@@ -66,14 +66,14 @@
                                             <th colspan="2" class="w-40"></th>
                                         </tr>
                                     </thead>
-                                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                                        <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
+                                    <tbody class="divide-y divide-gray-200 ">
+                                        <tr class="hover:bg-gray-100 ">
                                             <td
-                                                class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-800 dark:text-gray-200">
+                                                class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-800 ">
                                                 {{ $user->employee }}
                                             </td>
                                             <td
-                                                class="px-4 py-4 whitespace-nowrap text-sm text-center text-gray-800 dark:text-gray-200">
+                                                class="px-4 py-4 whitespace-nowrap text-sm text-center text-gray-800 ">
                                                 {{ $user->name }}
                                             </td>
                                             <form action="{{ route('users.update', $user) }}" method="POST">

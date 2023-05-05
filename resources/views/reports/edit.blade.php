@@ -42,7 +42,7 @@
                                         @if ($sub_category->id === (int) old('sub_report_id', $report->sub_report_id)) checked @endif
                                         class="shrink-0 mt-0.5 border-gray-200 rounded-full text-blue-600 focus:ring-blue-500">
                                     <label for="sub_report_id" name="sub_report_name"
-                                        class="mr-2 text-sm text-gray-500 ml-2 dark:text-gray-400">
+                                        class="mr-2 text-sm text-gray-500 ml-2">
                                         {{ old('sub_report_name', $sub_category->sub_report_name) }}
                                     </label>
                                 @endforeach

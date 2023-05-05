@@ -12,7 +12,7 @@
                     <div class="-m-1.5 overflow-x-auto">
                         <div class="p-1.5 min-w-full inline-block align-middle">
                             <div class="overflow-hidden">
-                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <table class="min-w-full divide-y divide-gray-200 ">
                                     <thead>
                                         <tr>
                                             <th scope="col"
@@ -52,24 +52,24 @@
                                             </th>
                                         </tr>
                                     </thead>
-                                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                                    <tbody class="divide-y divide-gray-200 ">
 
                                         @foreach ($reports as $report)
-                                            <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
+                                            <tr class="hover:bg-gray-100 ">
                                                 <td
-                                                    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
+                                                    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">
                                                     {{ $report->report_date }}
                                                 </td>
                                                 <td
-                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                     {{ $report->user->name }}
                                                 </td>
                                                 <td
-                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                     <x-report-name :report="$report" />
                                                 </td>
                                                 <td
-                                                    class="pl-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                    class="pl-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                     @if ($report->start_date != null)
                                                         {{ $report->start_date }}
                                                     @else
@@ -80,7 +80,7 @@
                                                     @endif
                                                 </td>
                                                 <td
-                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                     @if ($report->end_date != null)
                                                         ~&emsp;&emsp;{{ $report->end_date }}
                                                     @endif
@@ -92,7 +92,7 @@
                                                     @endif
                                                 </td>
                                                 <td
-                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                     @if ($report->get_days_only != 0)
                                                         {{ $report->get_days_only }} 日
                                                     @endif
@@ -105,7 +105,7 @@
                                                 </td>
                                                 @if ($report->cancel == 0)
                                                     <td
-                                                        class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                        class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                         @if ($report->approval1 == 1)
                                                             <span class="text-blue-500">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
@@ -118,7 +118,7 @@
                                                         @endif
                                                     </td>
                                                     <td
-                                                        class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                        class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                         @if ($report->approval2 == 1)
                                                             <span class="text-blue-500">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
@@ -131,7 +131,7 @@
                                                         @endif
                                                     </td>
                                                     <td
-                                                        class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                        class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                         @if ($report->approval3 == 1)
                                                             <span class="text-blue-500">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"

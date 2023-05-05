@@ -29,7 +29,7 @@
                     <div class="-m-1.5 overflow-x-auto">
                         <div class="p-1.5 min-w-full inline-block align-middle">
                             <div class="overflow-hidden">
-                                <table class="mx-auto divide-y divide-gray-200 dark:divide-gray-700">
+                                <table class="mx-auto divide-y divide-gray-200 ">
                                     <thead>
                                         <tr>
                                             <th
@@ -50,11 +50,11 @@
                                             </th>
                                         </tr>
                                     </thead>
-                                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                                    <tbody class="divide-y divide-gray-200 ">
                                         @foreach ($users as $user)
                                             <tr>
                                                 <td
-                                                    class="px-4 py-4 whitespace-nowrap text-xs font-medium text-gray-800 dark:text-gray-200">
+                                                    class="px-4 py-4 whitespace-nowrap text-xs font-medium text-gray-800 ">
                                                     {{ $user->factory->factory_name }}工場
                                                     @if ($user->department->id != 1)
                                                         ・{{ $user->department->department_name }}
@@ -64,20 +64,20 @@
                                                     @endif
                                                 </td>
                                                 <td
-                                                    class="px-4 py-4 whitespace-nowrap text-sm text-right text-gray-800 dark:text-gray-200">
+                                                    class="px-4 py-4 whitespace-nowrap text-sm text-right text-gray-800 ">
                                                     {{ $user->employee }}</td>
                                                 <td
-                                                    class="px-4 py-4 whitespace-nowrap text-sm text-left text-gray-800 dark:text-gray-200">
+                                                    class="px-4 py-4 whitespace-nowrap text-sm text-left text-gray-800 ">
                                                     {{ $user->name }}</td>
                                                 <td id="remaining_data" style="display: "
-                                                    class="px-4 py-4 whitespace-nowrap text-sm text-right text-gray-800 dark:text-gray-200">
+                                                    class="px-4 py-4 whitespace-nowrap text-sm text-right text-gray-800 ">
                                                     <div id="remaining-1_{{ $user->id }}" style="display: ">
                                                         <x-remaining-days :user="$user" key=0 />
                                                         {{-- 有給 --}}
                                                     </div>
                                                 </td>
                                                 <td
-                                                    class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                    class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                             <a href="{{ route('remainings.edit', $user->remaining(1)->id) }}"
                                                                 class="px-3 py-1 text-sm text-blue-500 rounded-full bg-blue-100/60 hover:text-white hover:bg-blue-500">
                                                                 変 更

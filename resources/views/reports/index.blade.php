@@ -12,7 +12,7 @@
                     <div class="-m-1.5 overflow-x-auto">
                         <div class="p-1.5 min-w-full inline-block align-middle">
                             <div class="overflow-hidden">
-                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <table class="min-w-full divide-y divide-gray-200 ">
                                     <thead>
                                         <tr>
                                             <th scope="col"
@@ -44,24 +44,24 @@
                                             </th>
                                         </tr>
                                     </thead>
-                                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                                    <tbody class="divide-y divide-gray-200 ">
 
                                         @foreach ($reports as $report)
-                                            <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
+                                            <tr class="hover:bg-gray-100 ">
                                                 <td
-                                                    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
+                                                    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">
                                                     {{ $report->report_date }}
                                                 </td>
                                                 <td
-                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                     {{ $report->user->name }}
                                                 </td>
                                                 <td
-                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                     <x-report-name :report="$report" />
                                                 </td>
                                                 <td
-                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                     @if ($report->start_date != null)
                                                         {{ $report->start_date }}
                                                     @else
@@ -72,7 +72,7 @@
                                                     @endif
                                                 </td>
                                                 <td
-                                                    class="pr-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                    class="pr-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                     @if ($report->end_date != null)
                                                         ~&emsp;&emsp;{{ $report->end_date }}
                                                     @endif
@@ -84,7 +84,7 @@
                                                     @endif
                                                 </td>
                                                 <td
-                                                    class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-800 dark:text-gray-200">
+                                                    class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-800 ">
                                                     @if ($report->get_days_only != 0)
                                                         {{ $report->get_days_only }} 日&emsp;
                                                     @endif
@@ -96,7 +96,7 @@
                                                     @endif
                                                 </td>
                                                 <td
-                                                    class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-800 dark:text-gray-200">
+                                                    class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-800 ">
                                                     @if ($report->cancel == 1)
                                                         <span class="text-indigo-500">取消確認中</span>
                                                     @else
@@ -108,14 +108,14 @@
                                                     @endif
                                                 </td>
                                                 <td
-                                                    class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                    class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                     <a href="{{ route('reports.show', $report) }}"
                                                         class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
                                                         届表示
                                                     </a>
                                                 </td>
                                                 <td
-                                                    class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                    class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                     @if ($report->cancel == 0 && $report->approved == 0)
                                                         @can('update', $report)
                                                             <a href="{{ route('reports.edit', $report) }}"
