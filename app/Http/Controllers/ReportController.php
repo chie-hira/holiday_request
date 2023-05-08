@@ -1161,6 +1161,7 @@ class ReportController extends Controller
     public function menu()
     {
         $user = Auth::user();
+        $reports = '';
 
         // 未承諾のreports
         if (!empty($user)) {
@@ -1252,8 +1253,12 @@ class ReportController extends Controller
                 }
             }
 
-            $pending = count($reports);
-            $reports = ''; # リセット
+            if (!empty($reports)) {
+                $pending = count($reports);
+                $reports = ''; # リセット
+            } else {
+                $pending = 0;
+            }
 
             // 承諾済み
             # 総務部長権限
@@ -1331,13 +1336,17 @@ class ReportController extends Controller
                 }
             }
 
-            $approved = count($reports);
+            if (!empty($reports)) {
+                $approved = count($reports);
+            } else {
+                $approved = 0;
+            }
         } else {
             $pending = '';
             $approved = '';
         }
 
-        // dd($reports);
+        // dd($pending);
         return view('menu.index')->with(compact('pending', 'approved'));
     }
 }
