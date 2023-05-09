@@ -43,7 +43,7 @@ class ReportController extends Controller
 
         // 新採用・中途採用
         if (empty($my_remainings->first())) {
-            $report_ids = [1, 2, 3, 5, 6, 7, 8, 14];
+            $report_ids = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 16];
             foreach ($report_ids as $report_id) {
                 self::newRemaining($report_id);
             }
@@ -75,10 +75,10 @@ class ReportController extends Controller
         // バリデーション
         if (
             $request->report_id == 1 || # 有給
-            $request->report_id == 5 || # 特別休暇(看護・対象1名)
-            $request->report_id == 6 || # 特別休暇(看護・対象2名)
-            $request->report_id == 7 || # 特別休暇(介護・対象1名)
-            $request->report_id == 8
+            $request->report_id == 7 || # 特別休暇(看護・対象1名)
+            $request->report_id == 8 || # 特別休暇(看護・対象2名)
+            $request->report_id == 9 || # 特別休暇(介護・対象1名)
+            $request->report_id == 10
         ) {
             # 特別休暇(介護・対象2名)
             $request->validate([
@@ -144,7 +144,7 @@ class ReportController extends Controller
         }
         if (
             $request->report_id == 2 || # バースデイ
-            $request->report_id == 10
+            $request->report_id == 12
         ) {
             # 欠勤
             $request->validate(
@@ -160,10 +160,12 @@ class ReportController extends Controller
         if (
             $request->report_id == 3 || # 特別休暇(慶事)
             $request->report_id == 4 || # 特別休暇(弔事)
-            $request->report_id == 9 || # 特別休暇(短期育休)
-            $request->report_id == 14 || # 介護休業
-            $request->report_id == 15 || # 育児休業
-            $request->report_id == 16
+            $request->report_id == 5 || # 特別休暇(弔事)
+            $request->report_id == 6 || # 特別休暇(弔事)
+            $request->report_id == 11 || # 特別休暇(短期育休)
+            $request->report_id == 16 || # 介護休業
+            $request->report_id == 17 || # 育児休業
+            $request->report_id == 18
         ) {
             # パパ育休
             $request->validate(
@@ -179,8 +181,8 @@ class ReportController extends Controller
             );
         }
         if (
-            $request->report_id == 11 || # 遅刻
-            $request->report_id == 12
+            $request->report_id == 13 || # 遅刻
+            $request->report_id == 14
         ) {
             # 早退
             $request->validate(
@@ -246,7 +248,7 @@ class ReportController extends Controller
                 ]
             );
         }
-        if ($request->report_id == 13) {
+        if ($request->report_id == 15) {
             # 外出
             $request->validate(
                 [
@@ -368,10 +370,10 @@ class ReportController extends Controller
     {
         if (
             $request->report_id == 1 || # 有給
-            $request->report_id == 5 || # 特別休暇(看護・対象1名)
-            $request->report_id == 6 || # 特別休暇(看護・対象2名)
-            $request->report_id == 7 || # 特別休暇(介護・対象1名)
-            $request->report_id == 8
+            $request->report_id == 7 || # 特別休暇(看護・対象1名)
+            $request->report_id == 8 || # 特別休暇(看護・対象2名)
+            $request->report_id == 9 || # 特別休暇(介護・対象1名)
+            $request->report_id == 10
         ) {
             # 特別休暇(介護・対象2名)
             $request->validate([
@@ -438,7 +440,7 @@ class ReportController extends Controller
         }
         if (
             $request->report_id == 2 || # バースデイ
-            $request->report_id == 10
+            $request->report_id == 12
         ) {
             # 欠勤
             $request->validate(
@@ -455,10 +457,12 @@ class ReportController extends Controller
         if (
             $request->report_id == 3 || # 特別休暇(慶事)
             $request->report_id == 4 || # 特別休暇(弔事)
-            $request->report_id == 9 || # 特別休暇(短期育休)
-            $request->report_id == 14 || # 介護休業
-            $request->report_id == 15 || # 育児休業
-            $request->report_id == 16
+            $request->report_id == 5 || # 特別休暇(弔事)
+            $request->report_id == 6 || # 特別休暇(弔事)
+            $request->report_id == 11 || # 特別休暇(短期育休)
+            $request->report_id == 16 || # 介護休業
+            $request->report_id == 17 || # 育児休業
+            $request->report_id == 18
         ) {
             # パパ育休
             $request->validate(
@@ -475,8 +479,8 @@ class ReportController extends Controller
             $report->sub_report_id = null;
         }
         if (
-            $request->report_id == 11 || # 遅刻
-            $request->report_id == 12
+            $request->report_id == 13 || # 遅刻
+            $request->report_id == 14
         ) {
             # 早退
             $request->validate(
@@ -543,9 +547,8 @@ class ReportController extends Controller
             );
             $report->sub_report_id = null;
         }
-        if ($request->report_id == 13) {
+        if ($request->report_id == 15) {
             # 外出
-            // dd($request);
             $request->validate(
                 [
                     'start_time' => 'required|date_format:H:i',

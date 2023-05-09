@@ -419,46 +419,6 @@
         function subReportChange() {
             dateChange();
             subReportDisplaySwitch();
-            // if (subReportCategories[0].checked) { // 終日休
-            //     halfDateLabel.style.display = "none";
-            //     amPmForm.style.display = "none";
-            //     timeEmptyForm.style.display = "none";
-            //     timeForm.style.display = "none";
-            //     timeForm30.style.display = "none";
-            //     timeForm10.style.display = "none";
-            //     startTimeForm.style.display = "none";
-            //     endTimeForm.style.display = "none";
-            //     startDateLabel.style.display = "";
-            //     startDateForm.style.display = "";
-            //     endDateForm.style.display = "";
-            // }
-            // if (subReportCategories[1].checked) { // 半日休
-            //     halfDateLabel.style.display = "";
-            //     startDateForm.style.display = "";
-            //     startDateForm.style.display = "";
-            //     amPmForm.style.display = "";
-            //     timeEmptyForm.style.display = "none";
-            //     timeForm.style.display = "none";
-            //     timeForm30.style.display = "none";
-            //     timeForm10.style.display = "none";
-            //     startTimeForm.style.display = "none";
-            //     endTimeForm.style.display = "none";
-            //     startDateLabel.style.display = "none";
-            //     endDateForm.style.display = "none";
-            // }
-            // if (subReportCategories[2].checked) { // 時間休
-            //     halfDateLabel.style.display = "";
-            //     startDateForm.style.display = "";
-            //     amPmForm.style.display = "none";
-            //     timeEmptyForm.style.display = "";
-            //     timeForm.style.display = "";
-            //     timeForm30.style.display = "none";
-            //     timeForm10.style.display = "none";
-            //     startTimeForm.style.display = "";
-            //     endTimeForm.style.display = "";
-            //     startDateLabel.style.display = "none";
-            //     endDateForm.style.display = "none";
-            // }
             timeReset();
         }
 
@@ -533,10 +493,10 @@
 
             // 選択したreport_categoryでreasonのoptionを作成&追加
             if (reportCategory.value == "1" || // 有給
-                reportCategory.value == "10" || // 欠勤
-                reportCategory.value == "11" || // 遅刻
-                reportCategory.value == "12" || // 早退
-                reportCategory.value == "13") { // 外出
+                reportCategory.value == "12" || // 欠勤
+                reportCategory.value == "13" || // 遅刻
+                reportCategory.value == "14" || // 早退
+                reportCategory.value == "15") { // 外出
                 let reasonId = [1, 2, 3, 4, 5, 6, 7, 8];
                 reasonId.forEach(e => {
                     let createId = reasons[e - 1].id;
@@ -560,16 +520,32 @@
                     createOption(createId, createReason)
                 });
             }
-            if (reportCategory.value == "4") { // 特別休暇(弔事)
-                let reasonId = [11, 12, 13, 14, 15, 16, 17, 18, 19, 8];
+            if (reportCategory.value == "4") { // 特別休暇(弔事・配偶者等)
+                let reasonId = [11, 12, 13, 8];
                 reasonId.forEach(e => {
                     let createId = reasons[e - 1].id;
                     let createReason = reasons[e - 1].reason;
                     createOption(createId, createReason)
                 });
             }
-            if (reportCategory.value == "5" || // 特別休暇(看護・対象1名)
-                reportCategory.value == "6") { // 特別休暇(看護・対象2名以上)
+            if (reportCategory.value == "5") { // 特別休暇(弔事・同居の義父母)
+                let reasonId = [15, 8];
+                reasonId.forEach(e => {
+                    let createId = reasons[e - 1].id;
+                    let createReason = reasons[e - 1].reason;
+                    createOption(createId, createReason)
+                });
+            }
+            if (reportCategory.value == "6") { // 特別休暇(弔事・別居父母等)
+                let reasonId = [14, 16, 17, 18, 19, 8];
+                reasonId.forEach(e => {
+                    let createId = reasons[e - 1].id;
+                    let createReason = reasons[e - 1].reason;
+                    createOption(createId, createReason)
+                });
+            }
+            if (reportCategory.value == "7" || // 特別休暇(看護・対象1名)
+                reportCategory.value == "8") { // 特別休暇(看護・対象2名以上)
                 let reasonId = [20, 8];
                 reasonId.forEach(e => {
                     let createId = reasons[e - 1].id;
@@ -577,9 +553,9 @@
                     createOption(createId, createReason)
                 });
             }
-            if (reportCategory.value == "7" || // 特別休暇(介護・対象1名)
-                reportCategory.value == "8" || // 特別休暇(介護・対象2名)
-                reportCategory.value == "14") { // 介護休業
+            if (reportCategory.value == "9" || // 特別休暇(介護・対象1名)
+                reportCategory.value == "10" || // 特別休暇(介護・対象2名)
+                reportCategory.value == "16") { // 介護休業
                 let reasonId = [21, 22, 23, 24, 25, 26, 27, 8];
                 reasonId.forEach(e => {
                     let createId = reasons[e - 1].id;
@@ -587,9 +563,9 @@
                     createOption(createId, createReason)
                 });
             }
-            if (reportCategory.value == "9" || // 特別休暇(短期育休)
-                reportCategory.value == "15" || // 育児休業
-                reportCategory.value == "16") { // パパ育休
+            if (reportCategory.value == "11" || // 特別休暇(短期育休)
+                reportCategory.value == "17" || // 育児休業
+                reportCategory.value == "18") { // パパ育休
                 let reasonId = [28, 8];
                 reasonId.forEach(e => {
                     let createId = reasons[e - 1].id;
@@ -609,10 +585,10 @@
         // form表示切替関数
         function reportDisplaySwitch() {
             if (reportCategory.value == "1" || // 有給
-                reportCategory.value == "5" || // 特別休暇(看護・対象1名)
-                reportCategory.value == "6" || // 特別休暇(看護・対象2名)
-                reportCategory.value == "7" || // 特別休暇(介護・対象1名)
-                reportCategory.value == "8") { // 特別休暇(介護・対象2名)
+                reportCategory.value == "7" || // 特別休暇(看護・対象1名)
+                reportCategory.value == "8" || // 特別休暇(看護・対象2名)
+                reportCategory.value == "9" || // 特別休暇(介護・対象1名)
+                reportCategory.value == "10") { // 特別休暇(介護・対象2名)
                 emptyFieldForm.style.display = "none";
                 subCategoryForm.style.display = "";
                 halfDateLabel.style.display = "none";
@@ -627,13 +603,14 @@
                 startDateForm.style.display = "";
                 endDateForm.style.display = "";
             }
-            // if (reportCategory.value == "1" || // 有給
             if (reportCategory.value == "3" || // 特別休暇(慶事)
                 reportCategory.value == "4" || // 特別休暇(弔事)
-                reportCategory.value == "9" || // 特別休暇(短期育休)
-                reportCategory.value == "14" || // 介護休業
-                reportCategory.value == "15" || // 育児休業
-                reportCategory.value == "16") { // パパ育休
+                reportCategory.value == "5" || // 特別休暇(弔事)
+                reportCategory.value == "6" || // 特別休暇(弔事)
+                reportCategory.value == "11" || // 特別休暇(短期育休)
+                reportCategory.value == "16" || // 介護休業
+                reportCategory.value == "17" || // 育児休業
+                reportCategory.value == "18") { // パパ育休
                 emptyFieldForm.style.display = "";
                 subCategoryForm.style.display = "none";
                 halfDateLabel.style.display = "none";
@@ -648,8 +625,8 @@
                 startDateForm.style.display = "";
                 endDateForm.style.display = "";
             }
-            if (reportCategory.value == "11" || // 遅刻
-                reportCategory.value == "12") { // 早退
+            if (reportCategory.value == "13" || // 遅刻
+                reportCategory.value == "14") { // 早退
                 emptyFieldForm.style.display = "";
                 subCategoryForm.style.display = "none";
                 halfDateLabel.style.display = "";
@@ -664,7 +641,7 @@
                 startDateLabel.style.display = "none";
                 endDateForm.style.display = "none";
             }
-            if (reportCategory.value == "13") { // 外出
+            if (reportCategory.value == "15") { // 外出
                 emptyFieldForm.style.display = "";
                 subCategoryForm.style.display = "none";
                 halfDateLabel.style.display = "";
@@ -680,7 +657,7 @@
                 endDateForm.style.display = "none";
             }
             if (reportCategory.value == "2" || // バースデイ
-                reportCategory.value == "10") { // 欠勤
+                reportCategory.value == "12") { // 欠勤
                 emptyFieldForm.style.display = "";
                 subCategoryForm.style.display = "none";
                 halfDateLabel.style.display = "";
@@ -774,23 +751,25 @@
             if (reportCategory.value == 1 || // 有給
                 reportCategory.value == 3 || // 特別休暇(慶事)
                 reportCategory.value == 4 || // 特別休暇(弔事)
-                reportCategory.value == 5 || // 特別休暇(看護・対象1人)
-                reportCategory.value == 6 || // 特別休暇(看護・対象2人以上)
-                reportCategory.value == 7 || // 特別休暇(介護・対象1人)
-                reportCategory.value == 8 || // 特別休暇(介護・対象2人以上)
-                reportCategory.value == 9 || // 特別休暇(短期育休)
-                reportCategory.value == 14 || // 介護休業
-                reportCategory.value == 15 || // 育児休業
-                reportCategory.value == 16) { // パパ育休
+                reportCategory.value == 5 || // 特別休暇(弔事)
+                reportCategory.value == 6 || // 特別休暇(弔事)
+                reportCategory.value == 7 || // 特別休暇(看護・対象1人)
+                reportCategory.value == 8 || // 特別休暇(看護・対象2人以上)
+                reportCategory.value == 9 || // 特別休暇(介護・対象1人)
+                reportCategory.value == 10 || // 特別休暇(介護・対象2人以上)
+                reportCategory.value == 11 || // 特別休暇(短期育休)
+                reportCategory.value == 16 || // 介護休業
+                reportCategory.value == 17 || // 育児休業
+                reportCategory.value == 18) { // パパ育休
                 getDays = diffDays - dayOffs;
             }
             if (subReportCategories[1].checked) { // 半日休
                 getDays = 0.5;
             }
             if (subReportCategories[2].checked ||
-                reportCategory.value == 11 || // 遅刻
-                reportCategory.value == 12 || // 早退
-                reportCategory.value == 13) { // 外出
+                reportCategory.value == 13 || // 遅刻
+                reportCategory.value == 14 || // 早退
+                reportCategory.value == 15) { // 外出
                 getDays = ((endTimeVal - startTimeVal) / 60000) / 60 * 1 / 8;
                 // 時間換算:8時間で1日 1時間=1/8日 0.125日
                 getDays = orgRound(getDays, 100000); // 小数点以下切り捨て

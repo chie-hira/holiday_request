@@ -53,14 +53,14 @@
                                             </tr>
                                         @endforeach
 
-                                        <tr class="hover:bg-gray-100 ">
+                                        {{-- <tr class="hover:bg-gray-100 ">
                                             <td
                                                 class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-800 ">
                                                 特別休暇(弔事)</td>
                                             <td class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium">
                                                 ※
                                             </td>
-                                        </tr>
+                                        </tr> --}}
 
                                         <tr class="hover:bg-gray-100 ">
                                             <td

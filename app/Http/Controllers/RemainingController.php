@@ -114,7 +114,7 @@ class RemainingController extends Controller
 
         // 新採用・中途採用
         if (empty($my_remainings->first())) {
-            $report_ids = [1, 2, 3, 5, 6, 7, 8, 14];
+            $report_ids = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 16];
             foreach ($report_ids as $report_id) {
                 self::newRemaining($report_id);
             }
@@ -237,7 +237,7 @@ class RemainingController extends Controller
                 }
                 $remaining_report1->save(); # 有給休暇更新
 
-                $report_ids = [2, 3, 5, 6, 7, 8, 14];
+                $report_ids = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 16];
                 foreach ($report_ids as $report_id) {
                     $remaining_report = $my_remainings
                         ->where('report_id', '=', $report_id)
