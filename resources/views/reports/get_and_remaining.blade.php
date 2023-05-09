@@ -1,6 +1,6 @@
 <x-app-layout>
     <!-- Page Heading -->
-    <header class="text-sm bg-purple-50 shadow-md shadow-purple-500/50">
+    <header class="text-xs sm:text-sm bg-purple-50 shadow-md shadow-purple-500/50">
         <div class="flex max-w-7xl mx-auto py-1 px-4 sm:px-6 lg:px-8">
             <button class="mx-2" onclick="reportChange1()">有給休暇</button>
             <button class="mx-2" onclick="reportChange2()">バースデイ休暇</button>
@@ -11,7 +11,7 @@
         </div>
     </header>
     <section class="text-gray-600 body-font">
-        <div class="container md:w-3/4 px-5 py-24 mx-auto">
+        <div class="container max-w-3xl px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-6">
                 <h1 class="sm:text-4xl text-3xl font-medium title-font mb-4 text-gray-900">休暇取得状況</h1>
                 <p id="report_name-1" style="display: " class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
@@ -34,7 +34,7 @@
                 </p>
             </div>
 
-            <div class="container bg-white w-full mx-auto border-2 rounded-lg">
+            <div class="container max-w-3xl bg-white w-full mx-auto border-2 rounded-lg">
                 <div class="flex flex-col p-6">
                     <div class="-m-1.5 overflow-x-auto">
                         <div class="p-1.5 min-w-full inline-block align-middle">

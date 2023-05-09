@@ -1,18 +1,27 @@
 <x-app-layout>
     <section class="text-gray-600 body-font">
-        <div class="container px-5 py-24 mx-auto">
+        <div class="container max-w-lg px-5 pt-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-10">
                 <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">取得可能日数</h1>
-                <p class="lg:w-2/3 mx-auto mb-2 leading-relaxed text-base">
-                    <span class="font-semibold">
-                        {{ Auth::user()->name }}さん
-                    </span>
-                    は以下の休暇を取得できます。
-                </p>
+                <div class="mx-auto">
+                    <div class="flex text-left leading-relaxed text-sm mb-1">
+                        <p>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                class="w-5 h-5 mr-3">
+                                <path fill-rule="evenodd"
+                                    d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                                    clip-rule="evenodd" fill="#9999ff" />
+                            </svg>
+                        </p>
+                        <p class="text-sm">
+                            <span class="font-semibold">{{ Auth::user()->name }}さん</span>は以下の休暇を取得できます。
+                        </p>
+                    </div>
+                </div>
             </div>
 
-            <div class="container bg-white lg:w-1/2 w-full mx-auto border-2 rounded-lg">
-                <div class="flex flex-col p-8">
+            <div class="container max-w-lg bg-white w-full mx-auto border-2 rounded-lg">
+                <div class="flex flex-col p-2 sm:p-8">
                     <div class="-m-1.5 overflow-x-auto">
                         <div class="p-1.5 min-w-full inline-block align-middle">
                             <div class="overflow-hidden">
@@ -87,8 +96,110 @@
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="flex flex-col text-center mt-10">
+        <div class="container max-w-xl px-5 pb-24 mx-auto">
+            <div class="mx-auto mt-10">
+                <div class="flex text-left leading-relaxed text-sm mb-1">
+                    <p>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="w-5 h-5 mr-3">
+                            <path fill-rule="evenodd"
+                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                                clip-rule="evenodd" fill="#9999ff" />
+                        </svg>
+                    </p>
+                    <p class="text-sm">
+                        看護休暇は<span class="font-bold">小学校就学前の子</span>を養育する者が取得できます。
+                    </p>
+                </div>
+                
+                <div class="flex text-left leading-relaxed text-sm mb-1">
+                    <p>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="w-5 h-5 mr-3">
+                            <path fill-rule="evenodd"
+                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                                clip-rule="evenodd" fill="#9999ff" />
+                        </svg>
+                    </p>
+                    <p class="text-sm">
+                        介護休暇、介護休業は<span class="font-bold">要介護状態の家族</span>を介護する者が取得できます。
+                    </p>
+                </div>
+
+                <div class="flex text-left leading-relaxed text-sm mb-1">
+                    <p>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="w-5 h-5 mr-3">
+                            <path fill-rule="evenodd"
+                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                                clip-rule="evenodd" fill="#9999ff" />
+                        </svg>
+                    </p>
+                    <p class="text-sm">
+                        特別休暇(慶事)は<span class="font-bold">本人が結婚する</span>ときに取得できます。
+                    </p>
+                </div>
+
+                <div class="flex text-left leading-relaxed text-sm mb-1">
+                    <p>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="w-5 h-5 mr-3">
+                            <path fill-rule="evenodd"
+                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                                clip-rule="evenodd" fill="#9999ff" />
+                        </svg>
+                    </p>
+                    <p class="text-sm">
+                        特別休暇(弔事)は近親者が喪に服すときに取得でき、<span class="font-bold">近親者によって</span>取得上限が異なります。
+                    </p>
+                </div>
+
+                <div class="flex text-left leading-relaxed text-sm mb-1">
+                    <p>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="w-5 h-5 mr-3">
+                            <path fill-rule="evenodd"
+                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                                clip-rule="evenodd" fill="#9999ff" />
+                        </svg>
+                    </p>
+                    <p class="text-sm">
+                        特別休暇(短期育休)、育児休業、パパ育休は<span class="font-bold">1歳に満たない子</span>と同居し扶養する者が取得できます。
+                    </p>
+                </div>
+
+                <div class="flex text-left leading-relaxed text-sm mb-1">
+                    <p>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="w-5 h-5 mr-3">
+                            <path fill-rule="evenodd"
+                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                                clip-rule="evenodd" fill="#9999ff" />
+                        </svg>
+                    </p>
+                    <p class="text-sm">
+                        取得可能日数は<span class="font-bold">届け出承諾後の日数</span>です。
+                    </p>
+                </div>
+
+                <div class="flex text-left leading-relaxed text-sm mb-1">
+                    <p>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="w-5 h-5 mr-3">
+                            <path fill-rule="evenodd"
+                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                                clip-rule="evenodd" fill="#9999ff" />
+                        </svg>
+                    </p>
+                    <p class="text-sm">
+                        ※は<span class="font-bold">対象者、家族構成等</span>によって異なります。詳細は総務課にお問い合わせください。
+                    </p>
+                </div>
+            </div>
+            
+            {{-- <div class="flex flex-col text-center mt-10">
                 <ul class="w-84 mx-auto leading-relaxed text-sm overflow-x-auto">
                     <li class="flex items-left text-left whitespace-nowrap">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
@@ -154,9 +265,9 @@
                         ※は<span class="font-bold">対象者、家族構成等</span>によって異なります。詳細は総務課にお問い合わせください。
                     </li>
                 </ul>
-            </div>
+            </div> --}}
 
-            <div class="flex mt-4 lg:w-2/3 w-full mx-auto">
+            <div class="flex mt-4 w-full mx-auto">
                 <a href="{{ route('menu') }}"
                     class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">

@@ -1,7 +1,7 @@
 <x-app-layout>
     <!-- Page Heading -->
     <section class="text-gray-600 body-font">
-        <div class="container lg:w-2/3 lx:w-1/2 px-5 py-24 mx-auto">
+        <div class="container max-w-2xl px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-6">
                 <h1 class="sm:text-4xl text-3xl font-medium title-font text-gray-900">ユーザー一覧</h1>
                 <h2 class=" text-right">
@@ -18,21 +18,25 @@
                     @endcan
                 </h2>
                 <div class="mx-auto">
-                    <p class="flex text-left leading-relaxed text-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            class="w-5 h-5 mr-3">
-                            <path fill-rule="evenodd"
-                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                clip-rule="evenodd" fill="#9999ff" />
-                        </svg>
-                        設定から<span class="font-bold">所属の変更</span>と<span class="font-bold">ユーザーの削除</span>ができます。
-                    </p>
+                    <div class="flex text-left leading-relaxed text-sm mb-1">
+                        <p>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                class="w-5 h-5 mr-3">
+                                <path fill-rule="evenodd"
+                                    d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                                    clip-rule="evenodd" fill="#9999ff" />
+                            </svg>
+                        </p>
+                        <p class="text-sm">
+                            設定から<span class="font-bold">所属の変更</span>と<span class="font-bold">ユーザーの削除</span>ができます。
+                        </p>
+                    </div>
                 </div>
             </div>
 
             <x-notice :notice="session('notice')" />
 
-            <div class="container bg-white w-full mx-auto border-2 rounded-lg">
+            <div class="container max-w-2xl bg-white w-full mx-auto border-2 rounded-lg">
                 <div class="flex flex-col p-6 mx-auto">
                     <div class="-m-1.5 overflow-x-auto">
                         <div class="p-1.5 min-w-full inline-block align-middle">

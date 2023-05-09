@@ -38,14 +38,21 @@
                         <label for="report_id" class="block mb-2 text-sm font-medium text-gray-900">
                             届出内容
                         </label>
-                        <select name="report_id" id="report_id" onchange="reportChange();"
+                        <x-select name="report_id" id="report_id" onchange="reportChange();" class="block mt-1 w-full" required autofocus>
+                            @foreach ($report_categories as $report_category)
+                                <option value="{{ $report_category->id }}"
+                                    @if ($report_category->id === (int) old('report_id')) selected @endif>
+                                    {{ $report_category->report_name }}</option>
+                            @endforeach
+                        </x-select>
+                        {{-- <select name="report_id" id="report_id" onchange="reportChange();"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                             @foreach ($report_categories as $report_category)
                                 <option value="{{ $report_category->id }}"
                                     @if ($report_category->id === (int) old('report_id')) selected @endif>
                                     {{ $report_category->report_name }}</option>
                             @endforeach
-                        </select>
+                        </select> --}}
                     </div>
                     <div style="display: " id="empty_field_form"></div>
                     <div style="display: none" id="sub_category_form">
@@ -58,7 +65,7 @@
                                     <input type="radio" name="sub_report_id" id="sub_report_id"
                                         onclick="subReportChange()" value="{{ $sub_category->id }}"
                                         @if ($sub_category->id === (int) old('sub_report_id')) checked @endif
-                                        class="shrink-0 mt-0.5 border-gray-200 rounded-full text-blue-600 focus:ring-blue-500 ">
+                                        class="shrink-0 mt-0.5 border-gray-200 rounded-full text-indigo-300 focus:ring-indigo-200 ">
                                     <label for="sub_report_id" name="sub_report_name"
                                         class="mr-2 text-sm text-gray-500 ml-2 ">
                                         {{ $sub_category->sub_report_name }}
@@ -71,40 +78,50 @@
                         <label for="reason_id" class="block mb-2 text-sm font-medium text-gray-900">
                             理由
                         </label>
-                        <select name="reason_id" id="reason_id" onchange="reasonChange();"
+                        <x-select name="reason_id" id="reason_id" onchange="reasonChange();" class="block mt-1 w-full" required>
+                            @foreach ($reasons as $reason)
+                                <option value="{{ $reason->id }}" @if ($reason->id === (int) old('reason_id')) selected @endif>
+                                    {{ $reason->reason }}
+                                </option>
+                            @endforeach
+                        </x-select>
+                        {{-- <select name="reason_id" id="reason_id" onchange="reasonChange();"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                             @foreach ($reasons as $reason)
                                 <option value="{{ $reason->id }}" @if ($reason->id === (int) old('reason_id')) selected @endif>
                                     {{ $reason->reason }}
                                 </option>
                             @endforeach
-                        </select>
+                        </select> --}}
                     </div>
                     <div></div>
                     <div style="display: none" class="col-span-2" id="reason_detail">
                         <label for="reason_detail" class="block mb-2 text-sm font-medium text-gray-900">
                             理由を記入してください
                         </label>
-                        <input type="text" id="" name="reason_detail"
+                        <x-input type="text" id="" name="reason_detail" class="block mt-1 w-full" :value="old('reason_detail')"/>
+                        {{-- <input type="text" id="" name="reason_detail"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            value="{{ old('reason_detail') }}">
+                            value="{{ old('reason_detail') }}"> --}}
                     </div>
                     <div>
                         <label for="report_date" class="block mb-2 text-sm font-medium text-gray-900">
                             届出日
                         </label>
-                        <input type="date" id="report_date" name="report_date"
+                        <x-input type="date" id="report_date" name="report_date" class="block mt-1 w-full" :value="old('report_date')" required/>
+                        {{-- <input type="date" id="report_date" name="report_date"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            value="{{ old('report_date') }}" required>
+                            value="{{ old('report_date') }}" required> --}}
                     </div>
                     <div>
                         <label for="user_id" class="block mb-2 text-sm font-medium text-gray-900">
                             氏名
                         </label>
                         <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
-                        <input type="text" id="user_id"
+                        <x-input type="text" id="user_id" class="block mt-1 w-full" :value="Auth::user()->name" readonly/>
+                        {{-- <input type="text" id="user_id"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            value="{{ Auth::user()->name }}" readonly>
+                            value="{{ Auth::user()->name }}" readonly> --}}
                     </div>
 
                     <!-- 有給休暇 - start -->
@@ -117,18 +134,21 @@
                             class="block mb-2 text-sm font-medium text-gray-900">
                             日付
                         </label>
-                        <input style="display: " type="date" id="start_date" name="start_date"
+                        <x-input style="display: " type="date" id="start_date" name="start_date"
+                            onchange="dateChange();" class="block mt-1 w-full" :value="old('start_date')" required/>
+                        {{-- <input style="display: " type="date" id="start_date" name="start_date"
                             onchange="dateChange();"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            value="{{ old('start_date') }}">
+                            value="{{ old('start_date') }}"> --}}
                     </div>
                     <div style="display: " id="end_date_form">
                         <label for="end_date" class="block mb-2 text-sm font-medium text-gray-900">
                             期間：何日まで
                         </label>
-                        <input type="date" id="end_date" name="end_date" onchange="dateChange();"
+                        <x-input type="date" id="end_date" name="end_date" onchange="dateChange();" class="block mt-1 w-full" :value="old('end_date')"/>
+                        {{-- <input type="date" id="end_date" name="end_date" onchange="dateChange();"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            value="{{ old('end_date') }}">
+                            value="{{ old('end_date') }}"> --}}
                     </div>
                     <!-- 有給休暇 - end -->
 
@@ -137,12 +157,17 @@
                         <label for="am_pm" class="block mb-2 text-sm font-medium text-gray-900">
                             午前・午後
                         </label>
-                        <select name="am_pm" id="am_pm"
+                        <x-select name="am_pm" id="am_pm" class="block mt-1 w-full">
+                            <option value="">選択してください</option>
+                            <option value="1" @if (1 === (int) old('am_pm')) selected @endif>午前</option>
+                            <option value="2" @if (2 === (int) old('am_pm')) selected @endif>午後</option>
+                        </x-select>
+                        {{-- <select name="am_pm" id="am_pm"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                             <option value="">選択してください</option>
                             <option value="1" @if (1 === (int) old('am_pm')) selected @endif>午前</option>
                             <option value="2" @if (2 === (int) old('am_pm')) selected @endif>午後</option>
-                        </select>
+                        </select> --}}
                     </div>
                     <!-- 半日有給 - end -->
 
@@ -153,19 +178,23 @@
                         <label for="start_time" class="block mb-2 text-sm font-medium text-gray-900">
                             期間：何時から<span class="text-xs text-gray-600">&emsp;5分刻み</span>
                         </label>
-                        <input type="time" id="start_time" name="start_time" step="300"
+                        <x-input type="time" id="start_time" name="start_time" step="300"
+                            onchange="dateChange();" class="block mt-1 w-full" :value="old('start_time')"/>
+                        {{-- <input type="time" id="start_time" name="start_time" step="300"
                             onchange="dateChange();"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            value="{{ old('start_time') }}">
+                            value="{{ old('start_time') }}"> --}}
                     </div>
                     <div style="display: none" id="end_time_form">
                         <label for="end_time" class="block mb-2 text-sm font-medium text-gray-900">
                             期間：何時まで<span class="text-xs text-gray-600">&emsp;5分刻み</span>
                         </label>
-                        <input type="time" id="end_time" name="end_time" step="300"
+                        <x-input type="time" id="end_time" name="end_time" step="300"
+                            onchange="dateChange();" class="block mt-1 w-full" :value="old('end_time')"/>
+                        {{-- <input type="time" id="end_time" name="end_time" step="300"
                             onchange="dateChange();"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            value="{{ old('end_time') }}">
+                            value="{{ old('end_time') }}"> --}}
                     </div>
                 </div>
                 <div style="display: none" id="time_form">
@@ -244,21 +273,27 @@
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             value="{{ old('get_days') }}" readonly required>
                         <div class="flex items-center mb-1">
-                            <input type="number" id="get_days_only" name="get_days_only"
+                            <x-input type="number" id="get_days_only" name="get_days_only"
+                                class="block mt-1 w-20" :value="old('get_days_only')" readonly/>
+                            {{-- <input type="number" id="get_days_only" name="get_days_only"
                                 class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-20 p-2.5"
-                                value="{{ old('get_days_only') }}" readonly>
+                                value="{{ old('get_days_only') }}" readonly> --}}
                             <p class="ml-2">日</p>
                         </div>
                         <div class="flex items-center mb-1">
-                            <input type="number" id="get_hours" name="get_hours"
+                            <x-input type="number" id="get_hours" name="get_hours"
+                                class="block mt-1 w-20" :value="old('get_hours')" readonly/>
+                            {{-- <input type="number" id="get_hours" name="get_hours"
                                 class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-20 p-2.5"
-                                value="{{ old('get_hours') }}" readonly>
+                                value="{{ old('get_hours') }}" readonly> --}}
                             <p class="ml-2">時間</p>
                         </div>
                         <div class="flex items-center">
-                            <input type="number" id="get_minutes" name="get_minutes"
+                            <x-input type="number" id="get_minutes" name="get_minutes"
+                                class="block mt-1 w-20" :value="old('get_minutes')" readonly/>
+                            {{-- <input type="number" id="get_minutes" name="get_minutes"
                                 class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-20 p-2.5"
-                                value="{{ old('get_minutes') }}" readonly>
+                                value="{{ old('get_minutes') }}" readonly> --}}
                             <p class="ml-2">分</p>
                         </div>
                     </div>
@@ -271,21 +306,27 @@
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             value="{{ old('remaining_days') }}" readonly required>
                         <div class="flex items-center mb-1">
-                            <input type="number" id="remaining_days_only" name="remaining_days_only"
+                            <x-input type="number" id="remaining_days_only" name="remaining_days_only"
+                                class="block mt-1 w-20" :value="old('remaining_days_only')" readonly/>
+                            {{-- <input type="number" id="remaining_days_only" name="remaining_days_only"
                                 class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-20 p-2.5"
-                                value="{{ old('remaining_days_only') }}" readonly>
+                                value="{{ old('remaining_days_only') }}" readonly> --}}
                             <p class="ml-2">日</p>
                         </div>
                         <div class="flex items-center mb-1">
-                            <input type="number" id="remaining_hours" name="remaining_hours"
+                            <x-input type="number" id="remaining_hours" name="remaining_hours"
+                                class="block mt-1 w-20" :value="old('remaining_hours')" readonly/>
+                            {{-- <input type="number" id="remaining_hours" name="remaining_hours"
                                 class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-20 p-2.5"
-                                value="{{ old('remaining_hours') }}" readonly>
+                                value="{{ old('remaining_hours') }}" readonly> --}}
                             <p class="ml-2">時間</p>
                         </div>
                         <div class="flex items-center">
-                            <input type="number" id="remaining_minutes" name="remaining_minutes"
+                            <x-input type="number" id="remaining_minutes" name="remaining_minutes"
+                                class="block mt-1 w-20" :value="old('remaining_minutes')" readonly/>
+                            {{-- <input type="number" id="remaining_minutes" name="remaining_minutes"
                                 class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-20 p-2.5"
-                                value="{{ old('remaining_minutes') }}" readonly>
+                                value="{{ old('remaining_minutes') }}" readonly> --}}
                             <p class="ml-2">分</p>
                         </div>
                     </div>
