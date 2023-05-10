@@ -1,17 +1,17 @@
 <x-app-layout>
     <!-- Page Heading -->
-    <header class="text-sm bg-purple-50 shadow-md shadow-purple-500/50">
+    <header class="text-xs sm:text-sm bg-purple-50 shadow-md shadow-purple-500/50">
         <div class="flex max-w-7xl mx-auto py-1 px-4 sm:px-6 lg:px-8">
             <button class="mx-2" onclick="reportChange1()">有給休暇</button>
             <button class="mx-2" onclick="reportChange2()">バースデイ休暇</button>
-            <button class="mx-2" onclick="reportChange10()">欠 勤</button>
-            <button class="mx-2" onclick="reportChange11()">遅 刻</button>
-            <button class="mx-2" onclick="reportChange12()">早 退</button>
-            <button class="mx-2" onclick="reportChange13()">外 出</button>
+            <button class="mx-2" onclick="reportChange12()">欠 勤</button>
+            <button class="mx-2" onclick="reportChange13()">遅 刻</button>
+            <button class="mx-2" onclick="reportChange14()">早 退</button>
+            <button class="mx-2" onclick="reportChange15()">外 出</button>
         </div>
     </header>
     <section class="text-gray-600 body-font">
-        <div class="container md:w-3/4 px-5 py-24 mx-auto">
+        <div class="container max-w-3xl px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-6">
                 <h1 class="sm:text-4xl text-3xl font-medium title-font mb-4 text-gray-900">休暇取得状況</h1>
                 <p id="report_name-1" style="display: " class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
@@ -20,21 +20,21 @@
                 <p id="report_name-2" style="display: none" class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
                     バースデイ休暇
                 </p>
-                <p id="report_name-10" style="display: none" class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
+                <p id="report_name-12" style="display: none" class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
                     欠 勤
                 </p>
-                <p id="report_name-11" style="display: none" class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
+                <p id="report_name-13" style="display: none" class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
                     遅 刻
                 </p>
-                <p id="report_name-12" style="display: none" class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
+                <p id="report_name-14" style="display: none" class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
                     早 退
                 </p>
-                <p id="report_name-13" style="display: none" class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
+                <p id="report_name-15" style="display: none" class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
                     外 出
                 </p>
             </div>
 
-            <div class="container bg-white w-full mx-auto border-2 rounded-lg">
+            <div class="container max-w-3xl bg-white w-full mx-auto border-2 rounded-lg">
                 <div class="flex flex-col p-6">
                     <div class="-m-1.5 overflow-x-auto">
                         <div class="p-1.5 min-w-full inline-block align-middle">
@@ -70,11 +70,11 @@
                                             <tr>
                                                 <td
                                                     class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">
-                                                    {{ $user->factory->factory_name }}工場
+                                                    {{ $user->factory->factory_name }}
                                                     @if ($user->department->id != 1)
                                                         ・{{ $user->department->department_name }}
                                                     @endif
-                                                    @if ($user->group->id != 1)
+                                                    @if ($user->group != null && $user->group->id != 1)
                                                         ・{{ $user->group->group_name }}
                                                     @endif
                                                 </td>
@@ -92,20 +92,20 @@
                                                     <div id="get-2_{{ $user->id }}" style="display: none">
                                                         <x-sum-get-days :user="$user" key=2 /> {{-- バースデイ --}}
                                                     </div>
-                                                    <div id="get-10_{{ $user->id }}" style="display: none">
-                                                        <x-sum-get-days :user="$user" key=10 />
-                                                        {{-- 欠勤 --}}
-                                                    </div>
-                                                    <div id="get-11_{{ $user->id }}" style="display: none">
-                                                        <x-sum-get-days :user="$user" key=11 />
-                                                        {{-- 遅刻 --}}
-                                                    </div>
                                                     <div id="get-12_{{ $user->id }}" style="display: none">
                                                         <x-sum-get-days :user="$user" key=12 />
-                                                        {{-- 早退 --}}
+                                                        {{-- 欠勤 --}}
                                                     </div>
                                                     <div id="get-13_{{ $user->id }}" style="display: none">
                                                         <x-sum-get-days :user="$user" key=13 />
+                                                        {{-- 遅刻 --}}
+                                                    </div>
+                                                    <div id="get-14_{{ $user->id }}" style="display: none">
+                                                        <x-sum-get-days :user="$user" key=14 />
+                                                        {{-- 早退 --}}
+                                                    </div>
+                                                    <div id="get-15_{{ $user->id }}" style="display: none">
+                                                        <x-sum-get-days :user="$user" key=15 />
                                                         {{-- 外出 --}}
                                                     </div>
                                                 </td>
@@ -157,10 +157,10 @@
     <script>
         let reportName1 = document.getElementById('report_name-1');
         let reportName2 = document.getElementById('report_name-2');
-        let reportName10 = document.getElementById('report_name-10');
-        let reportName11 = document.getElementById('report_name-11');
         let reportName12 = document.getElementById('report_name-12');
         let reportName13 = document.getElementById('report_name-13');
+        let reportName14 = document.getElementById('report_name-14');
+        let reportName15 = document.getElementById('report_name-15');
         let remainingTitle = document.getElementById('remaining_title');
         let remainingData = document.getElementById('remaining_data');
         let barTitle = document.getElementById('bar_title');
@@ -176,16 +176,6 @@
             reportDataRemainingOn(2);
         }
 
-        function reportChange10() {
-            reportNameRemainingOff(reportName10);
-            reportDataRemainingOff(10);
-        }
-
-        function reportChange11() {
-            reportNameRemainingOff(reportName11);
-            reportDataRemainingOff(11);
-        }
-
         function reportChange12() {
             reportNameRemainingOff(reportName12);
             reportDataRemainingOff(12);
@@ -196,6 +186,16 @@
             reportDataRemainingOff(13);
         }
 
+        function reportChange14() {
+            reportNameRemainingOff(reportName14);
+            reportDataRemainingOff(14);
+        }
+
+        function reportChange15() {
+            reportNameRemainingOff(reportName15);
+            reportDataRemainingOff(15);
+        }
+
         function reportDataRemainingOn(repoortCategoryId) {
             let getId = 'get-' + repoortCategoryId;
             let remainingId = 'remaining-' + repoortCategoryId;
@@ -203,14 +203,14 @@
             users.forEach(e => {
                 let getId1 = document.getElementById('get-1_' + e.id);
                 let getId2 = document.getElementById('get-2_' + e.id);
-                let getId10 = document.getElementById('get-10_' + e.id);
-                let getId11 = document.getElementById('get-11_' + e.id);
                 let getId12 = document.getElementById('get-12_' + e.id);
                 let getId13 = document.getElementById('get-13_' + e.id);
+                let getId14 = document.getElementById('get-14_' + e.id);
+                let getId15 = document.getElementById('get-15_' + e.id);
                 let remainingId1 = document.getElementById('remaining-1_' + e.id);
                 let remainingId2 = document.getElementById('remaining-2_' + e.id);
                 let barId = document.getElementById('bar_' + e.id);
-                const getIds = [getId1, getId2, getId10, getId11, getId12, getId13];
+                const getIds = [getId1, getId2, getId12, getId13, getId14, getId15];
                 const remainingIds = [remainingId1, remainingId2];
 
                 getIds.forEach(id => {
@@ -240,14 +240,14 @@
             users.forEach(e => {
                 let getId1 = document.getElementById('get-1_' + e.id);
                 let getId2 = document.getElementById('get-2_' + e.id);
-                let getId10 = document.getElementById('get-10_' + e.id);
-                let getId11 = document.getElementById('get-11_' + e.id);
                 let getId12 = document.getElementById('get-12_' + e.id);
                 let getId13 = document.getElementById('get-13_' + e.id);
+                let getId14 = document.getElementById('get-14_' + e.id);
+                let getId15 = document.getElementById('get-15_' + e.id);
                 let remainingId1 = document.getElementById('remaining-1_' + e.id);
                 let remainingId2 = document.getElementById('remaining-2_' + e.id);
                 let barId = document.getElementById('bar_' + e.id);
-                const getIds = [getId1, getId2, getId10, getId11, getId12, getId13];
+                const getIds = [getId1, getId2, getId12, getId13, getId14, getId15];
 
                 getIds.forEach(id => {
                     idSplit = id.id.split('_');
@@ -265,7 +265,7 @@
         }
 
         function reportNameRemainingOn(reportName) {
-            const reportNames = [reportName1, reportName2, reportName10, reportName11, reportName12, reportName13];
+            const reportNames = [reportName1, reportName2, reportName12, reportName13, reportName14, reportName15];
             reportNames.forEach(name => {
                 if (reportName == name) {
                     reportName.style.display = '';
@@ -278,7 +278,7 @@
         }
 
         function reportNameRemainingOff(reportName) {
-            const reportNames = [reportName1, reportName2, reportName10, reportName11, reportName12, reportName13];
+            const reportNames = [reportName1, reportName2, reportName12, reportName13, reportName14, reportName15];
             reportNames.forEach(name => {
                 if (reportName == name) {
                     reportName.style.display = '';

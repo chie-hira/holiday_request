@@ -19,7 +19,9 @@ class ReportCategorySeeder extends Seeder
             ['report_name' => '有給休暇', 'max_days' => 40, 'max_times' => null], # 半日有給、時間休も含む
             ['report_name' => 'バースデイ休暇', 'max_days' => 1, 'max_times' => 1],
             ['report_name' => '特別休暇(慶事)', 'max_days' => 5, 'max_times' => null],
-            ['report_name' => '特別休暇(弔事)', 'max_days' => null, 'max_times' => null],
+            ['report_name' => '特別休暇(弔事・配偶者等)', 'max_days' => 3, 'max_times' => null],
+            ['report_name' => '特別休暇(弔事・同居の義父母)', 'max_days' => 2, 'max_times' => null],
+            ['report_name' => '特別休暇(弔事・別居父母等)', 'max_days' => 1, 'max_times' => null],
             ['report_name' => '特別休暇(看護・対象1人)', 'max_days' => 5, 'max_times' => null], # 時間単位
             ['report_name' => '特別休暇(看護・対象2人以上)', 'max_days' => 10, 'max_times' => null], # 時間単位
             ['report_name' => '特別休暇(介護・対象1人)', 'max_days' => 5, 'max_times' => null], # 時間単位

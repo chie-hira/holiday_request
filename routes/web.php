@@ -37,39 +37,41 @@ Route::resource('reports', ReportController::class)
     ->middleware('auth');
 
 # remainingルーティング
-Route::resource('remainings', RemainingController::class)
-    ->middleware('auth');
+Route::resource('remainings', RemainingController::class)->middleware('auth');
 
 # usersルーティング
-Route::resource('users', UserController::class)
-    ->middleware('auth');
+Route::resource('users', UserController::class)->middleware('auth');
 
 # approvalsルーティング
-Route::resource('approvals', ApprovalController::class)
-    ->middleware('auth');
+Route::resource('approvals', ApprovalController::class)->middleware('auth');
 
 # 承諾ルーティング
 Route::get('/pending_approval', [ReportController::class, 'pendingApproval'])
     ->name('reports.pending_approval')
-    ->middleware('auth', 'can:general_and_factory_gl');
+    ->middleware('auth', 'can:general_factory_gl_reader');
 Route::get('/approved', [ReportController::class, 'approved'])
     ->name('reports.approved')
-    ->middleware('auth', 'can:general_and_factory_gl');
+    ->middleware('auth', 'can:general_factory_gl_reader');
 Route::get('/get_and_remaining', [ReportController::class, 'getAndRemaining'])
     ->name('reports.get_and_remaining')
-    ->middleware('auth');
+    ->middleware('auth', 'can:general_factory_gl_reader');
 Route::get('/approval/{report}', [ReportController::class, 'approval'])
     ->name('approval')
     ->middleware('auth');
-Route::get('/approval/{report}/cancel', [ReportController::class, 'approvalCancel'])
+Route::get('/approval/{report}/cancel', [
+    ReportController::class,
+    'approvalCancel',
+])
     ->name('reports.approval_cancel')
     ->middleware('auth');
 
 # remaining加算ルーティング
-Route::get('/update_remainings', function () {return view('remainings.update_form');})
+Route::get('/update_remainings', function () {
+    return view('remainings.update_form');
+})
     ->name('remainings.update_form')
     ->middleware('auth');
-Route::post('/add_remainings', [RemainingController::class,'addRemainings',])
+Route::post('/add_remainings', [RemainingController::class, 'addRemainings'])
     ->name('remainings.add_remainings')
     ->middleware('auth');
 
@@ -84,7 +86,10 @@ Route::get('/', [ReportController::class, 'menu'])
     ->middleware('auth');
 
 # 承諾後のreport削除
-Route::delete('/reports/approved/{report}/cancel', [ReportController::class, 'approvedCancel',])
+Route::delete('/reports/approved/{report}/cancel', [
+    ReportController::class,
+    'approvedCancel',
+])
     ->name('reports.approved_cancel')
     ->middleware('auth');
 

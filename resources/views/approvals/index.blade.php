@@ -1,7 +1,7 @@
 <x-app-layout>
     <!-- Page Heading -->
     <section class="text-gray-600 body-font">
-        <div class="container lg:w-2/3 lx:w-1/2 px-5 py-24 mx-auto">
+        <div class="container max-w-3xl px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-6">
                 <h1 class="sm:text-4xl text-3xl font-medium title-font text-gray-900">権限一覧</h1>
                 <h2 class=" text-right">
@@ -31,7 +31,7 @@
 
             <x-notice :notice="session('notice')" />
 
-            <div class="container bg-white w-full mx-auto border-2 rounded-lg">
+            <div class="container max-w-3xl bg-white w-full mx-auto border-2 rounded-lg">
                 <div class="flex flex-col p-6 mx-auto">
                     <div class="-m-1.5 overflow-x-auto">
                         <div class="p-1.5 min-w-full inline-block align-middle">
@@ -71,11 +71,12 @@
                                                 </td>
                                                 <td
                                                     class="px-4 py-4 whitespace-nowrap text-xs text-gray-800 dark:text-gray-200">
-                                                    {{ $approval->factory->factory_name }}工場
-                                                    @if ($approval->department->id != 1)
+                                                    {{ $approval->factory->factory_name }}
+                                                    {{-- @if ($approval->department->id != 1) --}}
                                                         ・{{ $approval->department->department_name }}
-                                                    @endif
-                                                    @if ($approval->group->id != 1)
+                                                    {{-- @endif --}}
+                                                    @if ($approval->group != null && $approval->group->id != 1)
+                                                    {{-- @if ($approval->group != null) --}}
                                                         ・{{ $approval->group->group_name }}
                                                     @endif
                                                 </td>

@@ -43,24 +43,28 @@
                                     </thead>
                                     <tbody class="divide-y divide-gray-200 ">
                                         <tr class="hover:bg-gray-100">
-                                            <td
-                                                class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-800">
+                                            <td class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-800">
                                                 {{ $remaining->user->name }}
                                             </td>
-                                            <td
-                                                class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-800">
+                                            <td class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-800">
                                                 {{ $remaining->report_category->report_name }}
                                             </td>
                                             <form action="{{ route('remainings.update', $remaining) }}" method="POST">
                                                 @csrf
                                                 @method('PUT')
                                                 <td class="px-6 py-3 whitespace-nowrap text-center text-sm font-medium">
-                                                    <input name="remaining_days" type="number" max="40" min="0"
-                                                    class="w-24 h-8 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
-                                                        value="{{ old('remaining_days', $remaining->remaining_days) }}">日
-                                                    <input name="remaining_hours" type="number" max="7" min="0"
-                                                    class="w-24 h-8 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
-                                                        value="{{ old('remaining_hours', $remaining->remaining_hours) }}">時間
+                                                    <x-input name="remaining_days" type="number" max="40" min="0"
+                                                        class="inline h-8 mt-1 w-20" :value="old('remaining_days', $remaining->remaining_days)" />日
+                                                    {{-- <input name="remaining_days" type="number" max="40"
+                                                        min="0"
+                                                        class="w-24 h-8 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
+                                                        value="{{ old('remaining_days', $remaining->remaining_days) }}">日 --}}
+                                                    <x-input name="remaining_hours" type="number" max="7" min="0"
+                                                        class="inline h-8 mt-1 w-20" :value="old('remaining_hours', $remaining->remaining_hours)" />時間
+                                                    {{-- <input name="remaining_hours" type="number" max="7"
+                                                        min="0"
+                                                        class="w-24 h-8 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
+                                                        value="{{ old('remaining_hours', $remaining->remaining_hours) }}">時間 --}}
                                                 </td>
                                                 <td class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium">
                                                     <button type="submit"

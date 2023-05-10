@@ -1,13 +1,13 @@
 <x-app-layout>
     <section class="text-gray-600 body-font">
-        <div class="container px-5 py-24 mx-auto">
+        <div class="container max-w-7xl px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-10">
                 <h1 class="sm:text-4xl text-3xl font-medium title-font text-gray-900">出退勤届け一覧</h1>
             </div>
 
             <x-notice :notice="session('notice')" />
 
-            <div class="container bg-white w-full mx-auto border-2 rounded-lg">
+            <div class="container max-w-7xl bg-white w-full mx-auto border-2 rounded-lg">
                 <div class="flex flex-col p-6">
                     <div class="-m-1.5 overflow-x-auto">
                         <div class="p-1.5 min-w-full inline-block align-middle">
@@ -125,7 +125,7 @@
                                                         @endcan
                                                     @endif
                                                 </td>
-                                                <td class="px-1 py-4 whitespace-nowrap text-sm font-medium">
+                                                <td class="pl-1 pr-4 py-4 whitespace-nowrap text-sm font-medium">
                                                     @if ($report->cancel == 0 && $report->approved == 0)
                                                         @can('delete', $report)
                                                             <form action="{{ route('reports.destroy', $report) }}"

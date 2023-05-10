@@ -23,30 +23,33 @@
             <div class="hidden sm:flex sm:items-center sm:ml-6">
                 @auth
                     <p class="text-xs text-white">
-                        {{ Auth::user()->factory->factory_name }}工場
+                        {{ Auth::user()->factory->factory_name }}
                         @if (Auth::user()->department->id != 1)
                             ・{{ Auth::user()->department->department_name }}
                         @endif
-                        @if (Auth::user()->group->id != 1)
+                        @if (Auth::user()->group != null && Auth::user()->group->id != 1)
                             ・{{ Auth::user()->group->group_name }}
                         @endif
                         &emsp;/&emsp;
                     </p>
-                    @if (Auth::user()->approvals->first())
-                        {{-- @if ($approvals->contains == 'apploval_id', 2)
-                        @endif --}}
+                    @if (Auth::user()->approvals)
                         <p class="text-xs text-white mr-1">
                         @foreach (Auth::user()->approvals as $approval)
-                            @if ($approval->approval_id == 1 || $approval->approval_id == 2)
+                            <!-- 会社承諾or工場承諾 -->
+                            @if ($approval->approval_id == 1 || $approval->approval_id == 2) 
                                 {{ Auth::user()->getApprovalName($approval->approval_id) }}&emsp;/&emsp;
-                            @else
-                                @if ($approval->department_id != 1)
-                                    {{ Auth::user()->getApprovalDepartment($approval->department_id) }}
-                                @endif
+                            @endif
+                            @if ($approval->approval_id == 3 || $approval->approval_id == 4) 
                                 @if ($approval->group_id != 1)
+                                    {{ Auth::user()->getApprovalDepartment($approval->department_id) }}
                                     ・{{ Auth::user()->getApprovalGroup($approval->group_id) }}
+                                    ・{{ Auth::user()->getApprovalName($approval->approval_id) }}&emsp;/&emsp;
+                                @else
+                                    {{ Auth::user()->getApprovalName($approval->approval_id) }}&emsp;/&emsp;
                                 @endif
-                                ・{{ Auth::user()->getApprovalName($approval->approval_id) }}&emsp;/&emsp;
+                            @endif
+                            @if ($approval->approval_id == 5) 
+                                {{ Auth::user()->getApprovalName($approval->approval_id) }}&emsp;/&emsp;
                             @endif
                         @endforeach
                         </p>

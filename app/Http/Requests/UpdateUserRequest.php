@@ -26,7 +26,7 @@ class UpdateUserRequest extends FormRequest
         return [
             'factory_id' => 'required|integer',
             'department_id' => 'required|integer',
-            'group_id' => 'required|integer',
+            'group_id' => 'required',
         ];
     }
 }

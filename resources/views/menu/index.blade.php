@@ -52,7 +52,8 @@
                         <span class="w-32">my届出一覧</span>
                     </a>
 
-                    @can('general_and_factory_gl')
+                    <!-- 閲覧権限以上 start -->
+                    @canany(['general_and_factory_gl', 'reader'])
                         <a href={{ route('reports.pending_approval') }}
                             class="inline-flex items-center p-2 text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 ">
                             <span class="mr-3">
@@ -79,9 +80,7 @@
                                 </div>
                             @endif
                         </a>
-                    @endcan
 
-                    @can('general_and_factory_gl')
                         <a href={{ route('reports.approved') }}
                             class="inline-flex items-center p-2 text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 ">
                             <span class="mr-3">
@@ -108,14 +107,11 @@
                                 </div>
                             @endif
                         </a>
-                    @endcan
 
-                    @can('general_and_factory')
                         <a href={{ route('reports.get_and_remaining') }}
                             class="inline-flex items-center p-2 text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 ">
                             <span class="mr-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                    class="w-6 h-6">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                                     <path fill-rule="evenodd"
                                         d="M1.5 5.625c0-1.036.84-1.875 1.875-1.875h17.25c1.035 0 1.875.84 1.875 1.875v12.75c0 1.035-.84 1.875-1.875 1.875H3.375A1.875 1.875 0 011.5 18.375V5.625zM21 9.375A.375.375 0 0020.625 9h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zm0 3.75a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zm0 3.75a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zM10.875 18.75a.375.375 0 00.375-.375v-1.5a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5zM3.375 15h7.5a.375.375 0 00.375-.375v-1.5a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375zm0-3.75h7.5a.375.375 0 00.375-.375v-1.5A.375.375 0 0010.875 9h-7.5A.375.375 0 003 9.375v1.5c0 .207.168.375.375.375z"
                                         clip-rule="evenodd" />
@@ -124,13 +120,14 @@
                             <span class="w-32">休暇取得状況</span>
                         </a>
                     @endcan
+                    <!-- 閲覧権限以上 start -->
 
-                    @can('general_only')
+                    <!-- 管理者 start -->
+                    @can('admin_only')
                         <a href={{ route('remainings.index') }}
                             class="inline-flex items-center p-2 text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 ">
                             <span class="mr-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                    class="w-6 h-6">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                                     <path fill-rule="evenodd"
                                         d="M1.5 5.625c0-1.036.84-1.875 1.875-1.875h17.25c1.035 0 1.875.84 1.875 1.875v12.75c0 1.035-.84 1.875-1.875 1.875H3.375A1.875 1.875 0 011.5 18.375V5.625zM21 9.375A.375.375 0 0020.625 9h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zm0 3.75a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zm0 3.75a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zM10.875 18.75a.375.375 0 00.375-.375v-1.5a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5zM3.375 15h7.5a.375.375 0 00.375-.375v-1.5a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375zm0-3.75h7.5a.375.375 0 00.375-.375v-1.5A.375.375 0 0010.875 9h-7.5A.375.375 0 003 9.375v1.5c0 .207.168.375.375.375z"
                                         clip-rule="evenodd" />
@@ -138,9 +135,7 @@
                             </span>
                             <span class="w-32">有給休暇設定</span>
                         </a>
-                    @endcan
 
-                    @can('general_only')
                         <a href={{ route('users.index') }}
                             class="inline-flex items-center p-2 text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 ">
                             <span class="mr-3">
@@ -153,9 +148,7 @@
                             </span>
                             <span class="w-32">ユーザー設定</span>
                         </a>
-                    @endcan
 
-                    @can('general_only')
                         <a href={{ route('approvals.index') }}
                             class="inline-flex items-center p-2 text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 ">
                             <span class="mr-3">
@@ -169,6 +162,7 @@
                             <span class="w-32">権限設定</span>
                         </a>
                     @endcan
+                    <!-- 管理者 end -->
 
                 </div>
             @endauth

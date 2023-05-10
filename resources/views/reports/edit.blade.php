@@ -39,7 +39,16 @@
                         <label for="report_id" class="block mb-2 text-sm font-medium text-gray-900">
                             届出内容
                         </label>
-                        <select name="report_id" id="report_id" onchange="reportChange();"
+                        <x-select name="report_id" id="report_id" onchange="reportChange();" class="block mt-1 w-full" required autofocus>
+                            <option value="{{ $report->report_id }}">{{ $report->report_category->report_name }}
+                            </option>
+                            @foreach ($report_categories as $report_category)
+                                <option value="{{ $report_category->id }}"
+                                    @if ($report_category->id === (int) old('report_id')) selected @endif>
+                                    {{ $report_category->report_name }}</option>
+                            @endforeach
+                        </x-select>
+                        {{-- <select name="report_id" id="report_id" onchange="reportChange();"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                             <option value="{{ $report->report_id }}">{{ $report->report_category->report_name }}
                             </option>
@@ -48,7 +57,7 @@
                                     @if ($report_category->id === (int) old('report_id')) selected @endif>
                                     {{ $report_category->report_name }}</option>
                             @endforeach
-                        </select>
+                        </select> --}}
                     </div>
                     <div style="display: " id="empty_field_form"></div>
                     <div style="display: none" id="sub_category_form">
@@ -60,7 +69,7 @@
                                 @foreach ($sub_report_categories as $sub_category)
                                     <input type="radio" name="sub_report_id" value="{{ $sub_category->id }}"
                                         @if ($sub_category->id === (int) old('sub_report_id', $report->sub_report_id)) checked @endif
-                                        class="shrink-0 mt-0.5 border-gray-200 rounded-full text-blue-600 focus:ring-blue-500">
+                                        class="shrink-0 mt-0.5 border-gray-200 rounded-full text-indigo-300 focus:ring-indigo-200 ">
                                     <label for="sub_report_id" name="sub_report_name"
                                         class="mr-2 text-sm text-gray-500 ml-2">
                                         {{ old('sub_report_name', $sub_category->sub_report_name) }}
@@ -73,7 +82,15 @@
                         <label for="reason_id" class="block mb-2 text-sm font-medium text-gray-900">
                             理由
                         </label>
-                        <select name="reason_id" id="reason_id" onchange="reasonChange();"
+                        <x-select name="reason_id" id="reason_id" onchange="reasonChange();" class="block mt-1 w-full" required>
+                            <option value="{{ $report->reason_id }}">{{ $report->reason_category->reason }}</option>
+                            @foreach ($reasons as $reason)
+                                <option value="{{ $reason->id }}" @if ($reason->id === (int) old('reason_id')) selected @endif>
+                                    {{ $reason->reason }}
+                                </option>
+                            @endforeach
+                        </x-select>
+                        {{-- <select name="reason_id" id="reason_id" onchange="reasonChange();"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                             <option value="{{ $report->reason_id }}">{{ $report->reason_category->reason }}</option>
                             @foreach ($reasons as $reason)
@@ -81,33 +98,36 @@
                                     {{ $reason->reason }}
                                 </option>
                             @endforeach
-                        </select>
+                        </select> --}}
                     </div>
                     <div></div>
                     <div style="display: none" class="col-span-2" id="reason_detail">
                         <label for="reason_detail" class="block mb-2 text-sm font-medium text-gray-900">
                             理由を記入してください
                         </label>
-                        <input type="text" id="" name="reason_detail"
+                        <x-input type="text" id="" name="reason_detail" class="block mt-1 w-full" :value="old('reason_detail', $report->reason_detail)"/>
+                        {{-- <input type="text" id="" name="reason_detail"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            value="{{ old('reason_detail', $report->reason_detail) }}">
+                            value="{{ old('reason_detail', $report->reason_detail) }}"> --}}
                     </div>
                     <div>
                         <label for="report_date" class="block mb-2 text-sm font-medium text-gray-900">
                             届出日
                         </label>
-                        <input type="date" id="report_date" name="report_date"
+                        <x-input type="date" id="report_date" name="report_date" class="block mt-1 w-full" :value="old('report_date', $report->report_date)" required/>
+                        {{-- <input type="date" id="report_date" name="report_date"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            value="{{ old('report_date', $report->report_date) }}" required>
+                            value="{{ old('report_date', $report->report_date) }}" required> --}}
                     </div>
                     <div>
                         <label for="user_id" class="block mb-2 text-sm font-medium text-gray-900">
                             氏名
                         </label>
                         <input type="hidden" name="user_id" value="{{ $report->user_id }}">
-                        <input type="text" id="user_id"
+                        <x-input type="text" id="user_id" class="block mt-1 w-full" :value="$report->user->name" readonly/>
+                        {{-- <input type="text" id="user_id"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            value="{{ $report->user->name }}" readonly>
+                            value="{{ $report->user->name }}" readonly> --}}
                     </div>
 
                     <!-- 有給休暇 - start -->
@@ -120,18 +140,21 @@
                             class="block mb-2 text-sm font-medium text-gray-900">
                             日付
                         </label>
-                        <input style="display: " type="date" id="start_date" name="start_date"
+                        <x-input style="display: " type="date" id="start_date" name="start_date"
+                            onchange="dateChange();" class="block mt-1 w-full" :value="old('start_date', $report->start_date)" required/>
+                        {{-- <input style="display: " type="date" id="start_date" name="start_date"
                             onchange="dateChange();"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            value="{{ old('start_date', $report->start_date) }}">
+                            value="{{ old('start_date', $report->start_date) }}"> --}}
                     </div>
                     <div style="display: " id="end_date_form">
                         <label for="end_date" class="block mb-2 text-sm font-medium text-gray-900">
                             期間：何日まで
                         </label>
-                        <input type="date" id="end_date" name="end_date" onchange="dateChange();"
+                        <x-input type="date" id="end_date" name="end_date" onchange="dateChange();" class="block mt-1 w-full" :value="old('end_date', $report->end_date)"/>
+                        {{-- <input type="date" id="end_date" name="end_date" onchange="dateChange();"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            value="{{ old('end_date', $report->end_date) }}">
+                            value="{{ old('end_date', $report->end_date) }}"> --}}
                     </div>
                     <!-- 有給休暇 - end -->
 
@@ -140,12 +163,17 @@
                         <label for="am_pm" class="block mb-2 text-sm font-medium text-gray-900">
                             午前・午後
                         </label>
-                        <select name="am_pm" id="am_pm"
+                        <x-select name="am_pm" id="am_pm" class="block mt-1 w-full">
+                            <option value="">選択してください</option>
+                            <option value="1" @if (1 === (int) old('am_pm', $report->am_pm)) selected @endif>午前</option>
+                            <option value="2" @if (2 === (int) old('am_pm', $report->am_pm)) selected @endif>午後</option>
+                        </x-select>
+                        {{-- <select name="am_pm" id="am_pm"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                             <option value="">選択してください</option>
                             <option value="1" @if (1 === (int) old('am_pm', $report->am_pm)) selected @endif>午前</option>
                             <option value="2" @if (2 === (int) old('am_pm', $report->am_pm)) selected @endif>午後</option>
-                        </select>
+                        </select> --}}
                     </div>
                     <!-- 半日有給 - end -->
 
@@ -156,19 +184,23 @@
                         <label for="start_time" class="block mb-2 text-sm font-medium text-gray-900">
                             期間：何時から<span class="text-xs text-gray-600">&emsp;5分刻み</span>
                         </label>
-                        <input type="time" id="start_time" name="start_time" step="300"
+                        <x-input type="time" id="start_time" name="start_time" step="300"
+                            onchange="dateChange();" class="block mt-1 w-full" :value="old('start_time', substr($report->start_time, 0, 5))"/>
+                        {{-- <input type="time" id="start_time" name="start_time" step="300"
                             onchange="dateChange();"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            value="{{ old('start_time', substr($report->start_time, 0, 5)) }}">
+                            value="{{ old('start_time', substr($report->start_time, 0, 5)) }}"> --}}
                     </div>
                     <div style="display: none" id="end_time_form">
                         <label for="end_time" class="block mb-2 text-sm font-medium text-gray-900">
                             期間：何時まで<span class="text-xs text-gray-600">&emsp;5分刻み</span>
                         </label>
-                        <input type="time" id="end_time" name="end_time" step="300"
+                        <x-input type="time" id="end_time" name="end_time" step="300"
+                            onchange="dateChange();" class="block mt-1 w-full" :value="old('end_time', substr($report->end_time, 0, 5))"/>
+                        {{-- <input type="time" id="end_time" name="end_time" step="300"
                             onchange="dateChange();"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            value="{{ old('end_time', substr($report->end_time, 0, 5)) }}">
+                            value="{{ old('end_time', substr($report->end_time, 0, 5)) }}"> --}}
                     </div>
                 </div>
                 <div style="display: none" id="time_form">
@@ -247,21 +279,27 @@
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             value="{{ old('get_days') }}" readonly required>
                         <div class="flex items-center mb-1">
-                            <input type="number" id="get_days_only" name="get_days_only"
+                            <x-input type="number" id="get_days_only" name="get_days_only"
+                                class="block mt-1 w-20" :value="old('get_days_only')" readonly/>
+                            {{-- <input type="number" id="get_days_only" name="get_days_only"
                                 class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-20 p-2.5"
-                                value="{{ old('get_days_only') }}" readonly>
+                                value="{{ old('get_days_only') }}" readonly> --}}
                             <p class="ml-2">日</p>
                         </div>
                         <div class="flex items-center mb-1">
-                            <input type="number" id="get_hours" name="get_hours"
+                            <x-input type="number" id="get_hours" name="get_hours"
+                                class="block mt-1 w-20" :value="old('get_hours')" readonly/>
+                            {{-- <input type="number" id="get_hours" name="get_hours"
                                 class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-20 p-2.5"
-                                value="{{ old('get_hours') }}" readonly>
+                                value="{{ old('get_hours') }}" readonly> --}}
                             <p class="ml-2">時間</p>
                         </div>
                         <div class="flex items-center">
-                            <input type="number" id="get_minutes" name="get_minutes"
+                            <x-input type="number" id="get_minutes" name="get_minutes"
+                                class="block mt-1 w-20" :value="old('get_minutes')" readonly/>
+                            {{-- <input type="number" id="get_minutes" name="get_minutes"
                                 class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-20 p-2.5"
-                                value="{{ old('get_minutes') }}" readonly>
+                                value="{{ old('get_minutes') }}" readonly> --}}
                             <p class="ml-2">分</p>
                         </div>
                     </div>
@@ -274,21 +312,27 @@
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             value="{{ old('remaining_days') }}" readonly required>
                         <div class="flex items-center mb-1">
-                            <input type="number" id="remaining_days_only" name="remaining_days_only"
+                            <x-input type="number" id="remaining_days_only" name="remaining_days_only"
+                                class="block mt-1 w-20" :value="old('remaining_days_only')" readonly/>
+                            {{-- <input type="number" id="remaining_days_only" name="remaining_days_only"
                                 class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-20 p-2.5"
-                                value="{{ old('remaining_days_only') }}" readonly>
+                                value="{{ old('remaining_days_only') }}" readonly> --}}
                             <p class="ml-2">日</p>
                         </div>
                         <div class="flex items-center mb-1">
-                            <input type="number" id="remaining_hours" name="remaining_hours"
+                            <x-input type="number" id="remaining_hours" name="remaining_hours"
+                                class="block mt-1 w-20" :value="old('remaining_hours')" readonly/>
+                            {{-- <input type="number" id="remaining_hours" name="remaining_hours"
                                 class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-20 p-2.5"
-                                value="{{ old('remaining_hours') }}" readonly>
+                                value="{{ old('remaining_hours') }}" readonly> --}}
                             <p class="ml-2">時間</p>
                         </div>
                         <div class="flex items-center">
-                            <input type="number" id="remaining_minutes" name="remaining_minutes"
+                            <x-input type="number" id="remaining_minutes" name="remaining_minutes"
+                                class="block mt-1 w-20" :value="old('remaining_minutes')" readonly/>
+                            {{-- <input type="number" id="remaining_minutes" name="remaining_minutes"
                                 class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-20 p-2.5"
-                                value="{{ old('remaining_minutes') }}" readonly>
+                                value="{{ old('remaining_minutes') }}" readonly> --}}
                             <p class="ml-2">分</p>
                         </div>
                     </div>
@@ -383,46 +427,6 @@
         function subReportChange() {
             dateChange();
             subReportDisplaySwitch();
-            // if (subReportCategories[0].checked) { // 終日休
-            //     halfDateLabel.style.display = "none";
-            //     amPmForm.style.display = "none";
-            //     timeEmptyForm.style.display = "none";
-            //     timeForm.style.display = "none";
-            //     timeForm30.style.display = "none";
-            //     timeForm10.style.display = "none";
-            //     startTimeForm.style.display = "none";
-            //     endTimeForm.style.display = "none";
-            //     startDateLabel.style.display = "";
-            //     startDateForm.style.display = "";
-            //     endDateForm.style.display = "";
-            // }
-            // if (subReportCategories[1].checked) { // 半日休
-            //     halfDateLabel.style.display = "";
-            //     startDateForm.style.display = "";
-            //     startDateForm.style.display = "";
-            //     amPmForm.style.display = "";
-            //     timeEmptyForm.style.display = "none";
-            //     timeForm.style.display = "none";
-            //     timeForm30.style.display = "none";
-            //     timeForm10.style.display = "none";
-            //     startTimeForm.style.display = "none";
-            //     endTimeForm.style.display = "none";
-            //     startDateLabel.style.display = "none";
-            //     endDateForm.style.display = "none";
-            // }
-            // if (subReportCategories[2].checked) { // 時間休
-            //     halfDateLabel.style.display = "";
-            //     startDateForm.style.display = "";
-            //     amPmForm.style.display = "none";
-            //     timeEmptyForm.style.display = "";
-            //     timeForm.style.display = "";
-            //     timeForm30.style.display = "none";
-            //     timeForm10.style.display = "none";
-            //     startTimeForm.style.display = "";
-            //     endTimeForm.style.display = "";
-            //     startDateLabel.style.display = "none";
-            //     endDateForm.style.display = "none";
-            // }
             timeReset();
         }
 
@@ -496,10 +500,10 @@
 
             // 選択したreport_categoryでreasonのoptionを作成&追加
             if (reportCategory.value == "1" || // 有給
-                reportCategory.value == "10" || // 欠勤
-                reportCategory.value == "11" || // 遅刻
-                reportCategory.value == "12" || // 早退
-                reportCategory.value == "13") { // 外出
+                reportCategory.value == "12" || // 欠勤
+                reportCategory.value == "13" || // 遅刻
+                reportCategory.value == "14" || // 早退
+                reportCategory.value == "15") { // 外出
                 let reasonId = [1, 2, 3, 4, 5, 6, 7, 8];
                 reasonId.forEach(e => {
                     let createId = reasons[e - 1].id;
@@ -523,16 +527,32 @@
                     createOption(createId, createReason)
                 });
             }
-            if (reportCategory.value == "4") { // 特別休暇(弔事)
-                let reasonId = [11, 12, 13, 14, 15, 16, 17, 18, 19, 8];
+            if (reportCategory.value == "4") { // 特別休暇(弔事・配偶者等)
+                let reasonId = [11, 12, 13, 8];
                 reasonId.forEach(e => {
                     let createId = reasons[e - 1].id;
                     let createReason = reasons[e - 1].reason;
                     createOption(createId, createReason)
                 });
             }
-            if (reportCategory.value == "5" || // 特別休暇(看護・対象1名)
-                reportCategory.value == "6") { // 特別休暇(看護・対象2名以上)
+            if (reportCategory.value == "5") { // 特別休暇(弔事・同居の義父母)
+                let reasonId = [15, 8];
+                reasonId.forEach(e => {
+                    let createId = reasons[e - 1].id;
+                    let createReason = reasons[e - 1].reason;
+                    createOption(createId, createReason)
+                });
+            }
+            if (reportCategory.value == "6") { // 特別休暇(弔事・別居父母等)
+                let reasonId = [14, 16, 17, 18, 19, 8];
+                reasonId.forEach(e => {
+                    let createId = reasons[e - 1].id;
+                    let createReason = reasons[e - 1].reason;
+                    createOption(createId, createReason)
+                });
+            }
+            if (reportCategory.value == "7" || // 特別休暇(看護・対象1名)
+                reportCategory.value == "8") { // 特別休暇(看護・対象2名以上)
                 let reasonId = [20, 8];
                 reasonId.forEach(e => {
                     let createId = reasons[e - 1].id;
@@ -540,9 +560,9 @@
                     createOption(createId, createReason)
                 });
             }
-            if (reportCategory.value == "7" || // 特別休暇(介護・対象1名)
-                reportCategory.value == "8" || // 特別休暇(介護・対象2名)
-                reportCategory.value == "14") { // 介護休業
+            if (reportCategory.value == "9" || // 特別休暇(介護・対象1名)
+                reportCategory.value == "10" || // 特別休暇(介護・対象2名)
+                reportCategory.value == "16") { // 介護休業
                 let reasonId = [21, 22, 23, 24, 25, 26, 27, 8];
                 reasonId.forEach(e => {
                     let createId = reasons[e - 1].id;
@@ -550,9 +570,9 @@
                     createOption(createId, createReason)
                 });
             }
-            if (reportCategory.value == "9" || // 特別休暇(短期育休)
-                reportCategory.value == "15" || // 育児休業
-                reportCategory.value == "16") { // パパ育休
+            if (reportCategory.value == "11" || // 特別休暇(短期育休)
+                reportCategory.value == "17" || // 育児休業
+                reportCategory.value == "18") { // パパ育休
                 let reasonId = [28, 8];
                 reasonId.forEach(e => {
                     let createId = reasons[e - 1].id;
@@ -572,10 +592,10 @@
         // form表示関数
         function reportDisplaySwitch() {
             if (reportCategory.value == "1" || // 有給
-                reportCategory.value == "5" || // 特別休暇(看護・対象1名)
-                reportCategory.value == "6" || // 特別休暇(看護・対象2名)
-                reportCategory.value == "7" || // 特別休暇(介護・対象1名)
-                reportCategory.value == "8") { // 特別休暇(介護・対象2名)
+                reportCategory.value == "7" || // 特別休暇(看護・対象1名)
+                reportCategory.value == "8" || // 特別休暇(看護・対象2名)
+                reportCategory.value == "9" || // 特別休暇(介護・対象1名)
+                reportCategory.value == "10") { // 特別休暇(介護・対象2名)
                 emptyFieldForm.style.display = "none";
                 subCategoryForm.style.display = "";
                 halfDateLabel.style.display = "none";
@@ -592,10 +612,12 @@
             }
             if (reportCategory.value == "3" || // 特別休暇(慶事)
                 reportCategory.value == "4" || // 特別休暇(弔事)
-                reportCategory.value == "9" || // 特別休暇(短期育休)
-                reportCategory.value == "14" || // 介護休業
-                reportCategory.value == "15" || // 育児休業
-                reportCategory.value == "16") { // パパ育休
+                reportCategory.value == "5" || // 特別休暇(弔事)
+                reportCategory.value == "6" || // 特別休暇(弔事)
+                reportCategory.value == "11" || // 特別休暇(短期育休)
+                reportCategory.value == "16" || // 介護休業
+                reportCategory.value == "17" || // 育児休業
+                reportCategory.value == "18") { // パパ育休
                 emptyFieldForm.style.display = "";
                 subCategoryForm.style.display = "none";
                 halfDateLabel.style.display = "none";
@@ -610,8 +632,8 @@
                 startDateForm.style.display = "";
                 endDateForm.style.display = "";
             }
-            if (reportCategory.value == "11" || // 遅刻
-                reportCategory.value == "12") { // 早退
+            if (reportCategory.value == "13" || // 遅刻
+                reportCategory.value == "14") { // 早退
                 emptyFieldForm.style.display = "";
                 subCategoryForm.style.display = "none";
                 halfDateLabel.style.display = "";
@@ -626,7 +648,7 @@
                 startDateLabel.style.display = "none";
                 endDateForm.style.display = "none";
             }
-            if (reportCategory.value == "13") { // 外出
+            if (reportCategory.value == "15") { // 外出
                 emptyFieldForm.style.display = "";
                 subCategoryForm.style.display = "none";
                 halfDateLabel.style.display = "";
@@ -642,7 +664,7 @@
                 endDateForm.style.display = "none";
             }
             if (reportCategory.value == "2" || // バースデイ
-                reportCategory.value == "10") { // 欠勤
+                reportCategory.value == "12") { // 欠勤
                 emptyFieldForm.style.display = "";
                 subCategoryForm.style.display = "none";
                 halfDateLabel.style.display = "";
@@ -736,28 +758,30 @@
             if (reportCategory.value == 1 || // 有給
                 reportCategory.value == 3 || // 特別休暇(慶事)
                 reportCategory.value == 4 || // 特別休暇(弔事)
-                reportCategory.value == 5 || // 特別休暇(看護・対象1人)
-                reportCategory.value == 6 || // 特別休暇(看護・対象2人以上)
-                reportCategory.value == 7 || // 特別休暇(介護・対象1人)
-                reportCategory.value == 8 || // 特別休暇(介護・対象2人以上)
-                reportCategory.value == 9 || // 特別休暇(短期育休)
-                reportCategory.value == 14 || // 介護休業
-                reportCategory.value == 15 || // 育児休業
-                reportCategory.value == 16) { // パパ育休
+                reportCategory.value == 5 || // 特別休暇(弔事)
+                reportCategory.value == 6 || // 特別休暇(弔事)
+                reportCategory.value == 7 || // 特別休暇(看護・対象1人)
+                reportCategory.value == 8 || // 特別休暇(看護・対象2人以上)
+                reportCategory.value == 9 || // 特別休暇(介護・対象1人)
+                reportCategory.value == 10 || // 特別休暇(介護・対象2人以上)
+                reportCategory.value == 11 || // 特別休暇(短期育休)
+                reportCategory.value == 16 || // 介護休業
+                reportCategory.value == 17 || // 育児休業
+                reportCategory.value == 18) { // パパ育休
                 getDays = diffDays - dayOffs;
             }
             if (subReportCategories[1].checked) { // 半日休
                 getDays = 0.5;
             }
             if (subReportCategories[2].checked ||
-                reportCategory.value == 11 || // 遅刻
-                reportCategory.value == 12 || // 早退
-                reportCategory.value == 13) { // 外出
+                reportCategory.value == 13 || // 遅刻
+                reportCategory.value == 14 || // 早退
+                reportCategory.value == 15) { // 外出
                 getDays = ((endTimeVal - startTimeVal) / 60000) / 60 * 1 / 8;
                 // 時間換算:8時間で1日 1時間=1/8日 0.125日
                 getDays = orgRound(getDays, 100000); // 小数点以下切り捨て
             }
-            if (reportCategory.value == 2 || reportCategory.value == 10) {
+            if (reportCategory.value == 2 || reportCategory.value == 12) {
                 getDays = 1.0;
             }
 
