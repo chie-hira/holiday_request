@@ -12,7 +12,7 @@
                 </h5>
                 <p
                     class="border-solid border-2 px-4 py-1 border-indigo-500 rounded-md text-md font-medium text-indigo-600 hover:underline">
-                    {{ $report->user->factory->factory_name }}工場
+                    {{ $report->user->factory->factory_name }}
                 </p>
             </div>
             <div class="flow-root">

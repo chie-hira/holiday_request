@@ -15,8 +15,8 @@
                             </svg>
                         </p>
                         <p class="text-sm">
-                            複数の工場、課、グループに所属する場合は、
-                            <span class="font-bold">メインの工場、課、グループ</span>
+                            工場長は、
+                            <span class="font-bold">全課、全グループ</span>
                             を選択してください。
                         </p>
                     </div>
@@ -30,8 +30,8 @@
                             </svg>
                         </p>
                         <p class="text-sm">
-                            工場長など複数ある所属先が同列の場合は、
-                            <span class="font-bold">無所属</span>
+                            グループのない課は
+                            <span class="font-bold">全グループ</span>
                             を選択してください。
                         </p>
                     </div>
@@ -95,17 +95,6 @@
                                                                 {{ $factory_category->factory_name }}</option>
                                                         @endforeach
                                                     </x-select>
-
-                                                    {{-- <select name="factory_id"
-                                                        class="w-24 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5">
-                                                        <option value="{{ $user->factory->id }}">
-                                                            {{ $user->factory->factory_name }}工場</option>
-                                                        @foreach ($factory_categories as $factory_category)
-                                                            <option value="{{ $factory_category->id }}"
-                                                                @if ($factory_category->id === (int) old('factory_id')) selected @endif>
-                                                                {{ $factory_category->factory_name }}工場</option>
-                                                        @endforeach
-                                                    </select> --}}
                                                 </td>
                                                 <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
                                                     <x-select name="department_id"
@@ -118,36 +107,10 @@
                                                                 {{ $department_category->department_name }}</option>
                                                         @endforeach
                                                     </x-select>
-
-                                                    {{-- <select name="department_id"
-                                                        class="w-32 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5">
-                                                        <option value="{{ $user->department->id }}">
-                                                            {{ $user->department->department_name }}</option>
-                                                        @foreach ($department_categories as $department_category)
-                                                            <option value="{{ $department_category->id }}"
-                                                                @if ($department_category->id === (int) old('department_id')) selected @endif>
-                                                                {{ $department_category->department_name }}</option>
-                                                        @endforeach
-                                                    </select> --}}
                                                 </td>
                                                 <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
                                                     <x-select name="group_id"
                                                         class="block mt-1 w-32 text-sm" required>
-                                                        @if ($user->group != null)
-                                                            <option value="{{ $user->group->id }}">
-                                                                {{ $user->group->group_name }}</option>
-                                                        @else
-                                                            <option value="null">グループなし</option>
-                                                        @endif
-                                                        <option value="null">グループなし</option>
-                                                        @foreach ($group_categories as $group_category)
-                                                            <option value="{{ $group_category->id }}"
-                                                                @if ($group_category->id === (int) old('group_id')) selected @endif>
-                                                                {{ $group_category->group_name }}</option>
-                                                        @endforeach
-                                                    </x-select>
-                                                    {{-- <select name="group_id"
-                                                        class="w-32 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5">
                                                         <option value="{{ $user->group->id }}">
                                                             {{ $user->group->group_name }}</option>
                                                         @foreach ($group_categories as $group_category)
@@ -155,7 +118,7 @@
                                                                 @if ($group_category->id === (int) old('group_id')) selected @endif>
                                                                 {{ $group_category->group_name }}</option>
                                                         @endforeach
-                                                    </select> --}}
+                                                    </x-select>
                                                 </td>
                                                 <td class="px-1 py-4 whitespace-nowrap text-sm text-gray-800">
                                                     <button type="submit"
@@ -169,7 +132,7 @@
                                                     @csrf
                                                     @method('DELETE')
                                                     <input type="submit" value="ユーザー削除"
-                                                        onclick="if(!confirm('ユーザー情報を削除しますか？この操作は取り消せません。社員情報を削除した社員は、アプリを使用できなくなります。')){return false};"
+                                                        onclick="if(!confirm('ユーザー情報を削除しますか？この操作は取り消せません。削除したユーザーは、アプリを使用できなくなります。')){return false};"
                                                         class="px-3 py-1 text-sm text-pink-500 rounded-full bg-pink-100/60 hover:text-white hover:bg-pink-500">
                                                 </form>
                                             </td>

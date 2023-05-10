@@ -30,10 +30,10 @@ Route::get('/dashboard', function () {
 
 # reportルーティング
 Route::resource('reports', ReportController::class)
-    ->only(['create', 'store', 'edit', 'update', 'destroy'])
+    ->only(['create', 'store', 'edit', 'update'])
     ->middleware('auth');
 Route::resource('reports', ReportController::class)
-    ->only(['index', 'show'])
+    ->only(['index', 'show', 'destroy'])
     ->middleware('auth');
 
 # remainingルーティング

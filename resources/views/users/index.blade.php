@@ -73,8 +73,11 @@
                                                     @if ($user->department->id != 1)
                                                         ・{{ $user->department->department_name }}
                                                     @endif
-                                                    @if ($user->group != null && $user->group->id != 1)
+                                                    @if ($user->group->id != 1)
                                                         ・{{ $user->group->group_name }}
+                                                    @endif
+                                                    @if ($user->department->id == 1)
+                                                        ・工場長
                                                     @endif
                                                 </td>
                                                 <td class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 ">

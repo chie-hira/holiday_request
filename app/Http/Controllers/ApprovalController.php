@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+// use App\Http\Requests\StoreApprovalRequest;
 use App\Http\Requests\StoreApprovalRequest;
 use App\Http\Requests\UpdateApprovalRequest;
 use App\Models\Approval;
@@ -46,13 +47,12 @@ class ApprovalController extends Controller
      * @param  \App\Http\Requests\StoreApprovalRequest  $request
      * @return \Illuminate\Http\Response
      */
-    // FIXME:StoreApprovalRequest通らない
-    // public function store(StoreApprovalRequest $request)
-    public function store(Request $request)
+    // FIXME:StoreApprovalRequest通らない useから書き直しで通った
+    public function store(StoreApprovalRequest $request)
     {
         $approval = new Approval();
         $approval->fill($request->all());
-        dd($approval);
+        // dd($approval);
 
         try {
             $approval->save();
