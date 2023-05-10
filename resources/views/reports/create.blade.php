@@ -774,7 +774,7 @@
                 // 時間換算:8時間で1日 1時間=1/8日 0.125日
                 getDays = orgRound(getDays, 100000); // 小数点以下切り捨て
             }
-            if (reportCategory.value == 2 || reportCategory.value == 10) {
+            if (reportCategory.value == 2 || reportCategory.value == 12) {
                 getDays = 1.0;
             }
 

@@ -8,11 +8,9 @@
                     @can('general_only')
                         <a href={{ route('register') }}
                             class="inline-flex items-center justify-center text-base mr-2 font-medium text-indigo-500 rounded-lg bg-gray-50 hover:text-indigo-700">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                class="w-6 h-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                                 <path
-                                    d="M6.25 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM3.25 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM19.75 7.5a.75.75 0 00-1.5 0v2.25H16a.75.75 0 000 1.5h2.25v2.25a.75.75 0 001.5 0v-2.25H22a.75.75 0 000-1.5h-2.25V7.5z"
-                                    />
+                                    d="M6.25 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM3.25 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM19.75 7.5a.75.75 0 00-1.5 0v2.25H16a.75.75 0 000 1.5h2.25v2.25a.75.75 0 001.5 0v-2.25H22a.75.75 0 000-1.5h-2.25V7.5z" />
                             </svg>
                         </a>
                     @endcan
@@ -70,18 +68,16 @@
                                                     class="px-4 py-4 whitespace-nowrap text-sm text-left text-gray-800 ">
                                                     {{ $user->name }}
                                                 </td>
-                                                <td
-                                                    class="px-4 py-4 whitespace-nowrap text-xs text-gray-800 ">
-                                                    {{ $user->factory->factory_name }}工場
+                                                <td class="px-4 py-4 whitespace-nowrap text-xs text-gray-800 ">
+                                                    {{ $user->factory->factory_name }}
                                                     @if ($user->department->id != 1)
                                                         ・{{ $user->department->department_name }}
                                                     @endif
-                                                    @if ($user->group->id != 1)
+                                                    @if ($user->group != null && $user->group->id != 1)
                                                         ・{{ $user->group->group_name }}
                                                     @endif
                                                 </td>
-                                                <td
-                                                    class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                <td class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                     <a href="{{ route('users.edit', $user) }}"
                                                         class="px-3 py-1 text-sm text-blue-500 rounded-full bg-blue-100/60 hover:text-white hover:bg-blue-500">
                                                         設 定

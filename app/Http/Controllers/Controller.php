@@ -8,7 +8,9 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Remaining;
+use App\Models\Report;
 use App\Models\ReportCategory;
+use Illuminate\Support\Facades\DB;
 
 class Controller extends BaseController
 {

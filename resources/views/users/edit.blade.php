@@ -88,11 +88,11 @@
                                                     <x-select name="factory_id"
                                                         class="block mt-1 w-32 text-sm" required autofocus>
                                                         <option value="{{ $user->factory->id }}">
-                                                            {{ $user->factory->factory_name }}工場</option>
+                                                            {{ $user->factory->factory_name }}</option>
                                                         @foreach ($factory_categories as $factory_category)
                                                             <option value="{{ $factory_category->id }}"
                                                                 @if ($factory_category->id === (int) old('factory_id')) selected @endif>
-                                                                {{ $factory_category->factory_name }}工場</option>
+                                                                {{ $factory_category->factory_name }}</option>
                                                         @endforeach
                                                     </x-select>
 
@@ -133,8 +133,13 @@
                                                 <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
                                                     <x-select name="group_id"
                                                         class="block mt-1 w-32 text-sm" required>
-                                                        <option value="{{ $user->group->id }}">
-                                                            {{ $user->group->group_name }}</option>
+                                                        @if ($user->group != null)
+                                                            <option value="{{ $user->group->id }}">
+                                                                {{ $user->group->group_name }}</option>
+                                                        @else
+                                                            <option value="null">グループなし</option>
+                                                        @endif
+                                                        <option value="null">グループなし</option>
                                                         @foreach ($group_categories as $group_category)
                                                             <option value="{{ $group_category->id }}"
                                                                 @if ($group_category->id === (int) old('group_id')) selected @endif>

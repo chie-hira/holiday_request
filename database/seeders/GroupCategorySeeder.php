@@ -15,8 +15,7 @@ class GroupCategorySeeder extends Seeder
     public function run()
     {
         $param = [
-            ['group_name' => '無所属'],
-            ['group_name' => '自動車・一般'],
+            ['group_name' => '全グループ'], # groupがない場合はnull
             ['group_name' => 'プレスG'],
             ['group_name' => '溶接Ｇ'],
             ['group_name' => 'ベンドＧ'],

@@ -60,16 +60,13 @@
                                                     class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">
                                                     {{ $report->report_date }}
                                                 </td>
-                                                <td
-                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                     {{ $report->user->name }}
                                                 </td>
-                                                <td
-                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                     <x-report-name :report="$report" />
                                                 </td>
-                                                <td
-                                                    class="pl-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                <td class="pl-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                     @if ($report->start_date != null)
                                                         {{ $report->start_date }}
                                                     @else
@@ -79,8 +76,7 @@
                                                         &emsp;{{ Str::substr($report->start_time, 0, 5) }}
                                                     @endif
                                                 </td>
-                                                <td
-                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                     @if ($report->end_date != null)
                                                         ~&emsp;&emsp;{{ $report->end_date }}
                                                     @endif
@@ -91,8 +87,7 @@
                                                         {{ $report->am_pm == 0 ? '午 前' : '午 後' }}
                                                     @endif
                                                 </td>
-                                                <td
-                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                     @if ($report->get_days_only != 0)
                                                         {{ $report->get_days_only }} 日
                                                     @endif
@@ -104,12 +99,12 @@
                                                     @endif
                                                 </td>
                                                 @if ($report->cancel == 0)
-                                                    <td
-                                                        class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                         @if ($report->approval1 == 1)
                                                             <span class="text-blue-500">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                                    fill="currentColor" class="w-4 h-4 mx-auto">
+                                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                                    viewBox="0 0 24 24" fill="currentColor"
+                                                                    class="w-4 h-4 mx-auto">
                                                                     <path fill-rule="evenodd"
                                                                         d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
                                                                         clip-rule="evenodd" />
@@ -117,12 +112,12 @@
                                                             </span>
                                                         @endif
                                                     </td>
-                                                    <td
-                                                        class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                         @if ($report->approval2 == 1)
                                                             <span class="text-blue-500">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                                    fill="currentColor" class="w-4 h-4 mx-auto">
+                                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                                    viewBox="0 0 24 24" fill="currentColor"
+                                                                    class="w-4 h-4 mx-auto">
                                                                     <path fill-rule="evenodd"
                                                                         d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
                                                                         clip-rule="evenodd" />
@@ -130,12 +125,12 @@
                                                             </span>
                                                         @endif
                                                     </td>
-                                                    <td
-                                                        class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                    <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                         @if ($report->approval3 == 1)
                                                             <span class="text-blue-500">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                                    fill="currentColor" class="w-4 h-4 mx-auto">
+                                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                                    viewBox="0 0 24 24" fill="currentColor"
+                                                                    class="w-4 h-4 mx-auto">
                                                                     <path fill-rule="evenodd"
                                                                         d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
                                                                         clip-rule="evenodd" />

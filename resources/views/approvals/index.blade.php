@@ -71,11 +71,12 @@
                                                 </td>
                                                 <td
                                                     class="px-4 py-4 whitespace-nowrap text-xs text-gray-800 dark:text-gray-200">
-                                                    {{ $approval->factory->factory_name }}工場
-                                                    @if ($approval->department->id != 1)
+                                                    {{ $approval->factory->factory_name }}
+                                                    {{-- @if ($approval->department->id != 1) --}}
                                                         ・{{ $approval->department->department_name }}
-                                                    @endif
-                                                    @if ($approval->group->id != 1)
+                                                    {{-- @endif --}}
+                                                    @if ($approval->group != null && $approval->group->id != 1)
+                                                    {{-- @if ($approval->group != null) --}}
                                                         ・{{ $approval->group->group_name }}
                                                     @endif
                                                 </td>

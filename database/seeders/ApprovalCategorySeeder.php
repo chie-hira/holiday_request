@@ -15,10 +15,12 @@ class ApprovalCategorySeeder extends Seeder
     public function run()
     {
         $param = [
-            ['approval_name' => '総務部長'],
-            ['approval_name' => '工場長'],
-            ['approval_name' => 'GL'],
+            # 承諾権限は閲覧含む
+            ['approval_name' => '会社承諾'], # 総務部長承諾
+            ['approval_name' => '工場承諾'], # 工場長承諾
+            ['approval_name' => 'グループ承諾'], # GL承諾
             ['approval_name' => '閲覧'],
+            ['approval_name' => '管理者'], # 各種設定権限
         ];
         DB::table('approval_categories')->insert($param);
     }
