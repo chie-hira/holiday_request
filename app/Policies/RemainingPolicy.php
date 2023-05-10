@@ -2,11 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\Limit;
+use App\Models\Remaining;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class LimitPolicy
+class RemainingPolicy
 {
     use HandlesAuthorization;
 
@@ -25,10 +25,10 @@ class LimitPolicy
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Limit  $limit
+     * @param  \App\Models\Remaining  $limit
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Limit $limit)
+    public function view(User $user, Remaining $limit)
     {
         //
     }
@@ -48,10 +48,10 @@ class LimitPolicy
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Limit  $limit
+     * @param  \App\Models\Remaining  $limit
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Limit $limit)
+    public function update(User $user, Remaining $limit)
     {
         //
     }
@@ -60,10 +60,10 @@ class LimitPolicy
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Limit  $limit
+     * @param  \App\Models\Remaining  $limit
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Limit $limit)
+    public function delete(User $user, Remaining $limit)
     {
         //
     }
@@ -72,10 +72,10 @@ class LimitPolicy
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Limit  $limit
+     * @param  \App\Models\Remaining  $limit
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, Limit $limit)
+    public function restore(User $user, Remaining $limit)
     {
         //
     }
@@ -84,10 +84,10 @@ class LimitPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Limit  $limit
+     * @param  \App\Models\Remaining  $limit
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, Limit $limit)
+    public function forceDelete(User $user, Remaining $limit)
     {
         //
     }

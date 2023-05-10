@@ -16,7 +16,8 @@ class ApprovalSeeder extends Seeder
     {
         $param = [
             ['user_id' => 48, 'factory_id' => 1, 'department_id' => 1, 'group_id' => 1, 'approval_id' => 1], # 366 総務部長
-            ['user_id' => 48, 'factory_id' => 1, 'department_id' => 1, 'group_id' => 1, 'approval_id' => 5], # 366 管理者
+            ['user_id' => 48, 'factory_id' => 1, 'department_id' => 1, 'group_id' => 1, 'approval_id' => 5], # 366 一関工場管理者
+            ['user_id' => 48, 'factory_id' => 2, 'department_id' => 1, 'group_id' => 1, 'approval_id' => 5], # 366 前沢工場管理者
             ['user_id' => 49, 'factory_id' => 1, 'department_id' => 1, 'group_id' => 1, 'approval_id' => 4], # 201 一関工場閲覧
             ['user_id' => 49, 'factory_id' => 2, 'department_id' => 1, 'group_id' => 1, 'approval_id' => 4], # 201 前沢工場閲覧
             ['user_id' => 50, 'factory_id' => 1, 'department_id' => 1, 'group_id' => 1, 'approval_id' => 4], # 214 一関工場閲覧
@@ -24,7 +25,7 @@ class ApprovalSeeder extends Seeder
             ['user_id' => 51, 'factory_id' => 1, 'department_id' => 1, 'group_id' => 1, 'approval_id' => 4], # 640 一関工場閲覧
             ['user_id' => 52, 'factory_id' => 1, 'department_id' => 1, 'group_id' => 1, 'approval_id' => 4], # 499 一関工場閲覧
             ['user_id' => 26, 'factory_id' => 1, 'department_id' => 1, 'group_id' => 1, 'approval_id' => 2], # 411 工場長
-            ['user_id' => 2, 'factory_id' => 1, 'department_id' => 2, 'group_id' => null, 'approval_id' => 3], # 618 営業GL
+            ['user_id' => 2, 'factory_id' => 1, 'department_id' => 2, 'group_id' => 1, 'approval_id' => 3], # 618 営業GL
             ['user_id' => 7, 'factory_id' => 1, 'department_id' => 3, 'group_id' => 2, 'approval_id' => 3],
             ['user_id' => 6, 'factory_id' => 1, 'department_id' => 3, 'group_id' => 3, 'approval_id' => 3],
             ['user_id' => 27, 'factory_id' => 1, 'department_id' => 4, 'group_id' => 4, 'approval_id' => 3],
@@ -32,7 +33,8 @@ class ApprovalSeeder extends Seeder
             ['user_id' => 1, 'factory_id' => 1, 'department_id' => 5, 'group_id' => 6, 'approval_id' => 3],
             ['user_id' => 1, 'factory_id' => 1, 'department_id' => 5, 'group_id' => 7, 'approval_id' => 3],
             ['user_id' => 47, 'factory_id' => 1, 'department_id' => 6, 'group_id' => 8, 'approval_id' => 3],
-            ['user_id' => 56, 'factory_id' => 2, 'department_id' => 1, 'group_id' => 1, 'approval_id' => 2], # 425 工場長
+            ['user_id' => 56, 'factory_id' => 2, 'department_id' => 1, 'group_id' => 1, 'approval_id' => 2], # 425 前沢工場長
+            ['user_id' => 56, 'factory_id' => 2, 'department_id' => 1, 'group_id' => 1, 'approval_id' => 5], # 425 前沢工場管理者
             ['user_id' => 57, 'factory_id' => 2, 'department_id' => 9, 'group_id' => 9, 'approval_id' => 3],
             ['user_id' => 59, 'factory_id' => 2, 'department_id' => 9, 'group_id' => 10, 'approval_id' => 3],
             ['user_id' => 64, 'factory_id' => 2, 'department_id' => 6, 'group_id' => 11, 'approval_id' => 3],

@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
 
 class RemainingController extends Controller
 {
@@ -22,10 +23,21 @@ class RemainingController extends Controller
      */
     public function index()
     {
-        $users = User::with(['reports', 'remainings'])->get();
-        $report_categories = ReportCategory::all();
+        $approvals = Auth::user()->approvals->where('approval_id', 5);
 
-        return view('remainings.index')->with(compact('users', 'report_categories'));
+        # 工場単位で一覧作成
+        $users = new Collection();
+        foreach ($approvals as $approval) {
+            $extractions = User::with(['reports', 'remainings'])
+                            ->where('factory_id', $approval->factory_id)
+                            ->get();
+
+            $extractions->each(function ($extraction) use ($users) {
+                $users->add($extraction);
+            });
+        }
+
+        return view('remainings.index')->with(compact('users'));
     }
 
     /**
@@ -78,13 +90,15 @@ class RemainingController extends Controller
      * @param  \App\Models\Limit  $limit
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateRemainingRequest $request, Remaining $remaining)
-    {
+    public function update(
+        UpdateRemainingRequest $request,
+        Remaining $remaining
+    ) {
         $remaining_days = $request->remaining_days;
         $remaining_hours = $request->remaining_hours;
 
-        $remaining->remaining = $remaining_days*1 + $remaining_hours*0.125 ;
-        
+        $remaining->remaining = $remaining_days * 1 + $remaining_hours * 0.125;
+
         try {
             $remaining->save();
             return redirect()
@@ -236,7 +250,6 @@ class RemainingController extends Controller
                         break;
                 }
                 $remaining_report1->save(); # 有給休暇更新
-
                 $report_ids = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 16];
                 foreach ($report_ids as $report_id) {
                     $remaining_report = $my_remainings
