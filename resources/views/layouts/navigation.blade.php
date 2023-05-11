@@ -32,7 +32,7 @@
                         @endif
                         &emsp;/&emsp;
                     </p>
-                    @if (Auth::user()->approvals)
+                    {{-- @if (Auth::user()->approvals)
                         <p class="text-xs text-white mr-1">
                         @foreach (Auth::user()->approvals as $approval)
                             <!-- 会社承諾or工場承諾 -->
@@ -53,7 +53,7 @@
                             @endif
                         @endforeach
                         </p>
-                    @endif
+                    @endif --}}
                 @endauth
 
                 <x-dropdown align="right" width="48">

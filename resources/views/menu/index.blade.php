@@ -1,13 +1,6 @@
 <x-app-layout>
     <section class="text-gray-600 body-font">
         <div class="container w-2/3 px-5 py-24 mx-auto">
-            <div class="flex flex-col text-center w-full mb-12">
-                @guest
-                    <p class="lg:w-2/3 mx-auto leading-relaxed text-base">
-                        ログインして出退勤届けを作成してください。
-                    </p>
-                @endguest
-            </div>
 
             @auth
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
@@ -163,9 +156,51 @@
                         </a>
                     @endcan
                     <!-- 管理者 end -->
-
                 </div>
             @endauth
+
+            <div class="text-left w-full my-14 mx-4">
+                @if (Auth::user()->approvals)
+                    <p class="text-gray-700 font-semibold mb-2">所有権限</p>
+                    <ul class="">
+                        @foreach (Auth::user()->approvals as $approval)
+                            <li class="flex mx-auto items-center leading-relaxed text-sm">
+                                <span
+                                    class="w-4 h-4 mr-2 rounded-full inline-flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                        class="w-5 h-5">
+                                        <path fill-rule="evenodd"
+                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                                            clip-rule="evenodd" fill="#cc99ff" />
+                                    </svg>
+                                </span>
+                                <!-- その他 -->
+                                @if ($approval->approval_id == 3)
+                                    {{ Auth::user()->getApprovalDepartment($approval->department_id) }}
+                                    ・{{ Auth::user()->getApprovalGroup($approval->group_id) }}
+                                    ・{{ Auth::user()->getApprovalName($approval->approval_id) }}
+                                @endif
+                                <!-- 閲覧 -->
+                                @if ($approval->approval_id == 4)
+                                    {{ Auth::user()->getApprovalFactory($approval->factory_id) }}
+                                    ・{{ Auth::user()->getApprovalDepartment($approval->department_id) }}
+                                    ・{{ Auth::user()->getApprovalGroup($approval->group_id) }}
+                                    ・{{ Auth::user()->getApprovalName($approval->approval_id) }}
+                                @endif
+                                <!-- 会社承諾 -->
+                                @if ($approval->approval_id == 1)
+                                    {{ Auth::user()->getApprovalName($approval->approval_id) }}
+                                @endif
+                                <!-- 管理者 -->
+                                @if ($approval->approval_id == 2 || $approval->approval_id == 5)
+                                    {{ Auth::user()->getApprovalFactory($approval->factory_id) }}
+                                    ・{{ Auth::user()->getApprovalName($approval->approval_id) }}
+                                @endif
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+            </div>
         </div>
     </section>
 
