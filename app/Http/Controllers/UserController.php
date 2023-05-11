@@ -7,6 +7,8 @@ use App\Models\FactoryCategory;
 use App\Models\GroupCategory;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Collection;
 
 class UserController extends Controller
 {
@@ -17,7 +19,21 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
+        // $users = User::all();
+        $approvals = Auth::user()->approvals->where('approval_id', 5);
+
+        # 工場単位で一覧作成
+        $users = new Collection();
+        foreach ($approvals as $approval) {
+            $extractions = User::with(['reports', 'remainings'])
+                            ->where('factory_id', $approval->factory_id)
+                            ->get();
+
+            $extractions->each(function ($extraction) use ($users) {
+                $users->add($extraction);
+            });
+        }
+
         return view('users.index')->with(compact('users'));
     }
 

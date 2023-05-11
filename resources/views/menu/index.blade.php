@@ -141,7 +141,11 @@
                             </span>
                             <span class="w-32">ユーザー設定</span>
                         </a>
+                    @endcan
+                    <!-- 管理者 end -->
 
+                    <!-- 会社承諾 start -->
+                    @can('general_only')
                         <a href={{ route('approvals.index') }}
                             class="inline-flex items-center p-2 text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 ">
                             <span class="mr-3">
@@ -155,7 +159,7 @@
                             <span class="w-32">権限設定</span>
                         </a>
                     @endcan
-                    <!-- 管理者 end -->
+                    <!-- 会社承諾 end -->
                 </div>
             @endauth
 

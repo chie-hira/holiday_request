@@ -25,6 +25,7 @@ class ApprovalSeeder extends Seeder
             ['user_id' => 51, 'factory_id' => 1, 'department_id' => 1, 'group_id' => 1, 'approval_id' => 4], # 640 一関工場閲覧
             ['user_id' => 52, 'factory_id' => 1, 'department_id' => 1, 'group_id' => 1, 'approval_id' => 4], # 499 一関工場閲覧
             ['user_id' => 26, 'factory_id' => 1, 'department_id' => 1, 'group_id' => 1, 'approval_id' => 2], # 411 工場長
+            ['user_id' => 26, 'factory_id' => 1, 'department_id' => 1, 'group_id' => 1, 'approval_id' => 5], # 411 一関工場管理
             ['user_id' => 2, 'factory_id' => 1, 'department_id' => 2, 'group_id' => 1, 'approval_id' => 3], # 618 営業GL
             ['user_id' => 7, 'factory_id' => 1, 'department_id' => 3, 'group_id' => 2, 'approval_id' => 3],
             ['user_id' => 6, 'factory_id' => 1, 'department_id' => 3, 'group_id' => 3, 'approval_id' => 3],
