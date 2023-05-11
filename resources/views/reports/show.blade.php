@@ -138,13 +138,18 @@
                                             @if ($report->cancel == 1 && $report->approval1 == 1)
                                                 <a href="{{ route('reports.approval_cancel', $report) }}"
                                                     onclick="if(!confirm('取消を確認しました')){return false};"
-                                                    class="px-3 py-1 text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
-                                                    <i class="fa-solid fa-eraser"></i>
+                                                    class="px-1 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
+                                                    取消確認
                                                 </a>
                                             @endif
                                             @if ($report->cancel == 1 && $report->approval1 == 0)
-                                                <div class="text-gray-800">
-                                                    <i class="fa-solid fa-eraser"></i>
+                                                <div class="py-2 text-gray-300 inline-flex">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                        class="w-6 h-6">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+                                                    </svg>
                                                 </div>
                                             @endif
                                             @if ($report->cancel == 0 && $report->approval1 == 0)
@@ -166,8 +171,13 @@
                                             @endif
                                         @else
                                             @if ($report->cancel == 1 && $report->approval1 == 0)
-                                                <div class="text-gray-800">
-                                                    <i class="fa-solid fa-eraser"></i>
+                                                <div class="py-2 text-gray-300 inline-flex">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                        class="w-6 h-6">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+                                                    </svg>
                                                 </div>
                                             @endif
                                             @if ($report->cancel == 0 && $report->approval1 == 1)
@@ -189,13 +199,18 @@
                                             @if ($report->cancel == 1 && $report->approval2 == 1)
                                                 <a href="{{ route('reports.approval_cancel', $report) }}"
                                                     onclick="if(!confirm('取消を確認しました')){return false};"
-                                                    class="px-3 py-1 text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
-                                                    <i class="fa-solid fa-eraser"></i>
+                                                    class="px-1 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
+                                                    取消確認
                                                 </a>
                                             @endif
                                             @if ($report->cancel == 1 && $report->approval2 == 0)
-                                                <div class="text-gray-800">
-                                                    <i class="fa-solid fa-eraser"></i>
+                                                <div class="py-2 text-gray-300 inline-flex">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                        class="w-6 h-6">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+                                                    </svg>
                                                 </div>
                                             @endif
                                             @if ($report->cancel == 0 && $report->approval2 == 0)
@@ -217,8 +232,13 @@
                                             @endif
                                         @else
                                             @if ($report->cancel == 1 && $report->approval2 == 0)
-                                                <div class="text-gray-800">
-                                                    <i class="fa-solid fa-eraser"></i>
+                                                <div class="py-2 text-gray-300 inline-flex">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                        class="w-6 h-6">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+                                                    </svg>
                                                 </div>
                                             @endif
                                             @if ($report->cancel == 0 && $report->approval2 == 1)
@@ -234,39 +254,24 @@
                                         @endif
                                     </td>
                                     <td class="w-20 h-12 border border-gray-500 text-center">
-                                        {{-- @if (!empty(
-        Auth::user()->approvals->where('approval_id', '=', 3)->where('factory_id', '=', $report->user->factory_id)->where('department_id', '=', $report->user->department_id)->first()
-    ) &&
-    $report->approval3 == 0)
-                                        <a href="{{ route('approval', $report) }}"
-                                            onclick="if(!confirm('承諾しますか？')){return false};"
-                                            class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
-                                            承諾
-                                        </a>
-                                    @endif
-                                    @if ($report->approval3 == 1)
-                                        <div class="py-2 text-purple-300 inline-flex">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                fill="currentColor" class="w-8 h-8">
-                                                <path fill-rule="evenodd"
-                                                    d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
-                                                    clip-rule="evenodd" fill="" />
-                                            </svg>
-                                        </div>
-                                    @endif --}}
                                         @if (
                                             !empty(Auth::user()->approvals->where('approval_id', 3)->where('factory_id', $report->user->factory_id)->where('department_id', $report->user->department_id)->where('group_id', $report->user->group_id)->first()
                                             ))
                                             @if ($report->cancel == 1 && $report->approval3 == 1)
                                                 <a href="{{ route('reports.approval_cancel', $report) }}"
                                                     onclick="if(!confirm('取消を確認しました')){return false};"
-                                                    class="px-3 py-1 text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
-                                                    <i class="fa-solid fa-eraser"></i>
+                                                    class="px-1 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
+                                                    取消確認
                                                 </a>
                                             @endif
                                             @if ($report->cancel == 1 && $report->approval3 == 0)
-                                                <div class="text-gray-800">
-                                                    <i class="fa-solid fa-eraser"></i>
+                                                <div class="py-2 text-gray-300 inline-flex">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                        class="w-6 h-6">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+                                                    </svg>
                                                 </div>
                                             @endif
                                             @if ($report->cancel == 0 && $report->approval3 == 0)
@@ -288,8 +293,13 @@
                                             @endif
                                         @else
                                             @if ($report->cancel == 1 && $report->approval3 == 0)
-                                                <div class="text-gray-800">
-                                                    <i class="fa-solid fa-eraser"></i>
+                                                <div class="py-2 text-gray-300 inline-flex">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                        class="w-6 h-6">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+                                                    </svg>
                                                 </div>
                                             @endif
                                             @if ($report->cancel == 0 && $report->approval3 == 1)

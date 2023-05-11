@@ -127,6 +127,11 @@ class User extends Authenticatable
         $approval = ApprovalCategory::find($approval_id);
         return $approval->approval_name;
     }
+    public function getApprovalFactory($factory_id)
+    {
+        $factory = FactoryCategory::find($factory_id);
+        return $factory->factory_name;
+    }
     public function getApprovalDepartment($department_id)
     {
         $department = DepartmentCategory::find($department_id);
