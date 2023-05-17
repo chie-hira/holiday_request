@@ -7,7 +7,7 @@
                 <h2 class=" text-right">
                     @can('general_only')
                         <a href={{ route('register') }}
-                            class="inline-flex items-center justify-center text-base mr-2 font-medium text-indigo-500 rounded-lg bg-gray-50 hover:text-indigo-700">
+                            class="inline-flex items-center justify-center text-base mr-2 font-medium text-fuchsia-400 rounded-lg bg-gray-50 hover:text-fuchsia-600 hover:font-bold">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                                 <path
                                     d="M6.25 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM3.25 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM19.75 7.5a.75.75 0 00-1.5 0v2.25H16a.75.75 0 000 1.5h2.25v2.25a.75.75 0 001.5 0v-2.25H22a.75.75 0 000-1.5h-2.25V7.5z" />
@@ -19,10 +19,10 @@
                     <div class="flex text-left leading-relaxed text-sm mb-1">
                         <p>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                class="w-5 h-5 mr-3">
+                                class="w-5 h-5 mr-3 text-sky-600">
                                 <path fill-rule="evenodd"
                                     d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                    clip-rule="evenodd" fill="#9999ff" />
+                                    clip-rule="evenodd" fill="" />
                             </svg>
                         </p>
                         <p class="text-sm">
@@ -80,11 +80,10 @@
                                                         ・工場長
                                                     @endif
                                                 </td>
-                                                <td class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 ">
-                                                    <a href="{{ route('users.edit', $user) }}"
-                                                        class="px-3 py-1 text-sm text-blue-500 rounded-full bg-blue-100/60 hover:text-white hover:bg-blue-500">
-                                                        設 定
-                                                    </a>
+                                                <td class="pl-1 pr-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                    <x-edit-a-button href="{{ route('users.edit', $user) }}">
+                                                        {{ __('Setting') }}
+                                                    </x-edit-a-button>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -94,20 +93,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="flex pl-4 mt-4 lg:w-2/3 w-full mx-auto">
-                <a href="{{ route('menu') }}"
-                    class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-                        <path fill-rule="evenodd"
-                            d="M9.53 2.47a.75.75 0 010 1.06L4.81 8.25H15a6.75 6.75 0 010 13.5h-3a.75.75 0 010-1.5h3a5.25 5.25 0 100-10.5H4.81l4.72 4.72a.75.75 0 11-1.06 1.06l-6-6a.75.75 0 010-1.06l6-6a.75.75 0 011.06 0z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    <div class="px-2 mt-1">
-                        戻る
-                    </div>
-                </a>
             </div>
         </div>
     </section>

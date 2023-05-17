@@ -5,7 +5,7 @@
                 <h1 class="sm:text-4xl text-3xl font-medium title-font text-gray-900">承諾済 届け一覧</h1>
             </div>
 
-            {{-- <x-notice :message="session('notice')" /> --}}
+            <x-notice :notice="session('notice')" />
 
             <div class="container bg-white w-full mx-auto border-2 rounded-lg">
                 <div class="flex flex-col p-6">
@@ -101,54 +101,29 @@
                                                 @if ($report->cancel == 0)
                                                     <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                         @if ($report->approval1 == 1)
-                                                            <span class="text-blue-500">
-                                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                                    viewBox="0 0 24 24" fill="currentColor"
-                                                                    class="w-4 h-4 mx-auto">
-                                                                    <path fill-rule="evenodd"
-                                                                        d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
-                                                                        clip-rule="evenodd" />
-                                                                </svg>
-                                                            </span>
+                                                            <x-checked-mark />
                                                         @endif
                                                     </td>
                                                     <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                         @if ($report->approval2 == 1)
-                                                            <span class="text-blue-500">
-                                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                                    viewBox="0 0 24 24" fill="currentColor"
-                                                                    class="w-4 h-4 mx-auto">
-                                                                    <path fill-rule="evenodd"
-                                                                        d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
-                                                                        clip-rule="evenodd" />
-                                                                </svg>
-                                                            </span>
+                                                            <x-checked-mark />
                                                         @endif
                                                     </td>
                                                     <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                         @if ($report->approval3 == 1)
-                                                            <span class="text-blue-500">
-                                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                                    viewBox="0 0 24 24" fill="currentColor"
-                                                                    class="w-4 h-4 mx-auto">
-                                                                    <path fill-rule="evenodd"
-                                                                        d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
-                                                                        clip-rule="evenodd" />
-                                                                </svg>
-                                                            </span>
+                                                            <x-checked-mark />
                                                         @endif
                                                     </td>
                                                 @else
                                                     <td colspan="3"
-                                                        class="px-2 py-4 text-center text-indigo-500 whitespace-nowrap text-sm">
+                                                        class="px-2 py-4 text-center text-red-600 whitespace-nowrap text-sm">
                                                         取消確認中
                                                     </td>
                                                 @endif
                                                 <td class="flex pl-2 pr-1 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                    <a href="{{ route('reports.show', $report) }}"
-                                                        class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
-                                                        届表示
-                                                    </a>
+                                                    <x-show-a-button href="{{ route('reports.show', $report) }}" class="px-3 py-1">
+                                                        {{ __('Show') }}
+                                                    </x-show-a-button>
                                                     @if (Auth::user()->approvals->where('approval_id', 1)->first())
                                                         @if ($report->approval1 == 1 && $report->cancel == 1)
                                                             <div class="mt-2 -ml-2 text-pink-400">
@@ -168,7 +143,7 @@
                                                                 $report->approval2 == 1 &&
                                                                 $report->cancel == 1
                                                             )
-                                                                <div class="mt-2 -ml-2 text-pink-400">
+                                                                {{-- <div class="mt-2 -ml-2 text-pink-400">
                                                                     <svg xmlns="http://www.w3.org/2000/svg"
                                                                         viewBox="0 0 20 20" fill="currentColor"
                                                                         class="w-5 h-5">
@@ -176,6 +151,9 @@
                                                                             d="M10 1a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 0110 1zM5.05 3.05a.75.75 0 011.06 0l1.062 1.06A.75.75 0 116.11 5.173L5.05 4.11a.75.75 0 010-1.06zm9.9 0a.75.75 0 010 1.06l-1.06 1.062a.75.75 0 01-1.062-1.061l1.061-1.06a.75.75 0 011.06 0zM3 8a.75.75 0 01.75-.75h1.5a.75.75 0 010 1.5h-1.5A.75.75 0 013 8zm11 0a.75.75 0 01.75-.75h1.5a.75.75 0 010 1.5h-1.5A.75.75 0 0114 8zm-6.828 2.828a.75.75 0 010 1.061L6.11 12.95a.75.75 0 01-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm3.594-3.317a.75.75 0 00-1.37.364l-.492 6.861a.75.75 0 001.204.65l1.043-.799.985 3.678a.75.75 0 001.45-.388l-.978-3.646 1.292.204a.75.75 0 00.74-1.16l-3.874-5.764z"
                                                                             clip-rule="evenodd"/>
                                                                     </svg>
+                                                                </div> --}}
+                                                                <div class="mt-2 -ml-3">
+                                                                    <x-check-mark />
                                                                 </div>
                                                             @endif
                                                         @endforeach
@@ -188,14 +166,8 @@
                                                                 $report->approval3 == 1 &&
                                                                 $report->cancel == 1
                                                             )
-                                                                <div class="mt-2 -ml-2 text-pink-400">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                                                        viewBox="0 0 20 20" fill="currentColor"
-                                                                        class="w-5 h-5">
-                                                                        <path fill-rule="evenodd"
-                                                                            d="M10 1a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 0110 1zM5.05 3.05a.75.75 0 011.06 0l1.062 1.06A.75.75 0 116.11 5.173L5.05 4.11a.75.75 0 010-1.06zm9.9 0a.75.75 0 010 1.06l-1.06 1.062a.75.75 0 01-1.062-1.061l1.061-1.06a.75.75 0 011.06 0zM3 8a.75.75 0 01.75-.75h1.5a.75.75 0 010 1.5h-1.5A.75.75 0 013 8zm11 0a.75.75 0 01.75-.75h1.5a.75.75 0 010 1.5h-1.5A.75.75 0 0114 8zm-6.828 2.828a.75.75 0 010 1.061L6.11 12.95a.75.75 0 01-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm3.594-3.317a.75.75 0 00-1.37.364l-.492 6.861a.75.75 0 001.204.65l1.043-.799.985 3.678a.75.75 0 001.45-.388l-.978-3.646 1.292.204a.75.75 0 00.74-1.16l-3.874-5.764z"
-                                                                            clip-rule="evenodd"/>
-                                                                    </svg>
+                                                                <div class="mt-2 -ml-3">
+                                                                    <x-check-mark />
                                                                 </div>
                                                             @endif
                                                         @endforeach
@@ -208,9 +180,9 @@
                                                                 method="POST">
                                                                 @csrf
                                                                 @method('DELETE')
-                                                                <input type="submit" value="取 消"
+                                                                <input type="submit" value="取消"
                                                                     onclick="if(!confirm('承諾済みの届けを取消しますか？工場長とGLの確認後に届けが削除されます。')){return false};"
-                                                                    class="px-3 py-1 text-sm text-pink-500 rounded-full bg-pink-100/60 hover:text-white hover:bg-pink-500">
+                                                                    class="px-3 py-1 text-sm text-red-500 border-2 border-gray-400 rounded-full bg-red-100/60 hover:text-white hover:font-semibold hover:bg-red-500">
                                                             </form>
                                                         @endcan
                                                     @endif
@@ -223,20 +195,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="flex pl-4 mt-4 lg:w-2/3 w-full mx-auto">
-                <a href="{{ route('menu') }}"
-                    class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-                        <path fill-rule="evenodd"
-                            d="M9.53 2.47a.75.75 0 010 1.06L4.81 8.25H15a6.75 6.75 0 010 13.5h-3a.75.75 0 010-1.5h3a5.25 5.25 0 100-10.5H4.81l4.72 4.72a.75.75 0 11-1.06 1.06l-6-6a.75.75 0 010-1.06l6-6a.75.75 0 011.06 0z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    <div class="px-2">
-                        戻る
-                    </div>
-                </a>
             </div>
         </div>
     </section>

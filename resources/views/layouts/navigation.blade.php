@@ -1,10 +1,10 @@
-<nav x-data="{ open: false }" class="bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-400 border-b border-gray-100">
+<nav x-data="{ open: false }" class="bg-sky-600">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-10">
             <div class="flex">
                 <!-- Logo -->
-                <div class="shrink-0 flex items-center text-white hover:text-gray-700">
+                <div class="shrink-0 flex items-center text-white hover:text-sky-800">
                     <a href="{{ route('menu') }}">
                         <x-application-logo class="block h-10 w-auto fill-current text-gray-600" />
                     </a>
@@ -32,34 +32,12 @@
                         @endif
                         &emsp;/&emsp;
                     </p>
-                    {{-- @if (Auth::user()->approvals)
-                        <p class="text-xs text-white mr-1">
-                        @foreach (Auth::user()->approvals as $approval)
-                            <!-- 会社承諾or工場承諾 -->
-                            @if ($approval->approval_id == 1 || $approval->approval_id == 2) 
-                                {{ Auth::user()->getApprovalName($approval->approval_id) }}&emsp;/&emsp;
-                            @endif
-                            @if ($approval->approval_id == 3 || $approval->approval_id == 4) 
-                                @if ($approval->group_id != 1)
-                                    {{ Auth::user()->getApprovalDepartment($approval->department_id) }}
-                                    ・{{ Auth::user()->getApprovalGroup($approval->group_id) }}
-                                    ・{{ Auth::user()->getApprovalName($approval->approval_id) }}&emsp;/&emsp;
-                                @else
-                                    {{ Auth::user()->getApprovalName($approval->approval_id) }}&emsp;/&emsp;
-                                @endif
-                            @endif
-                            @if ($approval->approval_id == 5) 
-                                {{ Auth::user()->getApprovalName($approval->approval_id) }}&emsp;/&emsp;
-                            @endif
-                        @endforeach
-                        </p>
-                    @endif --}}
                 @endauth
 
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button {{-- class="flex items-center text-sm font-medium text-white hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out"> --}}
-                            class="flex items-center text-sm font-medium text-white transition duration-150 ease-in-out hover:text-gray-700">
+                            class="flex items-center text-sm font-medium text-white transition duration-150 ease-in-out hover:text-sky-800">
                             @auth
                                 <div>{{ Auth::user()->employee }}&ensp;{{ Auth::user()->name }}</div>
                             @else
@@ -104,7 +82,8 @@
             <!-- Hamburger -->
             <div class="-mr-2 flex items-center sm:hidden">
                 <button @click="open = ! open"
-                    class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
+                    class="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-sky-800 focus:outline-none focus:text-sky-800 transition duration-150 ease-in-out">
+                    {{-- class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"> --}}
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{ 'hidden': open, 'inline-flex': !open }" class="inline-flex"
                             stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -119,18 +98,18 @@
 
     <!-- Responsive Navigation Menu -->
     <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
+        {{-- <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-        </div>
+        </div> --}}
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
             @auth
                 <div class="px-4">
-                    <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                    <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
+                    <div class="font-medium text-base text-white">{{ Auth::user()->name }}</div>
+                    <div class="font-medium text-sm text-white">{{ Auth::user()->email }}</div>
                 </div>
             @endauth
 

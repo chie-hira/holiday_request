@@ -1,12 +1,23 @@
 <x-app-layout>
+<!-- Page Heading -->
+    {{-- <header class="text-xs sm:text-sm bg-sky-50 shadow-md shadow-sky-500/50">
+        <div class="flex max-w-7xl mx-auto py-1 px-4 sm:px-6 lg:px-8">
+            <a href="{{ route('users.index') }}" class="text-sky-600 inline-flex mr-2 hover:-translate-x-1">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                    <path fill-rule="evenodd"
+                        d="M9.53 2.47a.75.75 0 010 1.06L4.81 8.25H15a6.75 6.75 0 010 13.5h-3a.75.75 0 010-1.5h3a5.25 5.25 0 100-10.5H4.81l4.72 4.72a.75.75 0 11-1.06 1.06l-6-6a.75.75 0 010-1.06l6-6a.75.75 0 011.06 0z"
+                        clip-rule="evenodd" />
+                </svg>
+                <div class="px-2">
+                    ユーザー一覧
+                </div>
+            </a>
+        </div>
+    </header> --}}
 
     <x-auth-card>
         <x-slot name="logo">
-            {{-- <a href="/">
-                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-            </a> --}}
-
-            <div class="container px-5 pt-24 mx-auto text-gray-600 bg-gray-100">
+            <div class="container px-5 mx-auto text-gray-600">
                 <div class="flex flex-col text-center w-full">
                     <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">ユーザー登録</h1>
                     <p class="mx-auto leading-relaxed text-base">
@@ -14,7 +25,6 @@
                     </p>
                 </div>
             </div>
-
         </x-slot>
 
         <!-- Validation Errors -->

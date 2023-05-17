@@ -34,6 +34,7 @@
 
 <body class="font-sans antialiased">
     <div class="min-h-screen bg-gray-50">
+    {{-- <div class="min-h-screen bg-sky-50"> --}}
         @include('layouts.navigation')
 
         <!-- Page Heading -->

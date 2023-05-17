@@ -1,6 +1,6 @@
 <x-app-layout>
     <!-- Page Heading -->
-    <header class="text-xs sm:text-sm bg-purple-50 shadow-md shadow-purple-500/50">
+    <header class="text-xs sm:text-sm bg-sky-50 shadow-md shadow-sky-500/50">
         <div class="flex max-w-7xl mx-auto py-1 px-4 sm:px-6 lg:px-8">
             <button class="mx-2" onclick="reportChange1()">有給休暇</button>
             <button class="mx-2" onclick="reportChange2()">バースデイ休暇</button>
@@ -138,7 +138,7 @@
                 </div>
             </div>
 
-            <div class="flex pl-4 mt-4 lg:w-2/3 w-full mx-auto">
+            {{-- <div class="flex pl-4 mt-4 lg:w-2/3 w-full mx-auto">
                 <a href="{{ route('menu') }}"
                     class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
@@ -150,7 +150,7 @@
                         戻る
                     </div>
                 </a>
-            </div>
+            </div> --}}
         </div>
     </section>
 

@@ -7,7 +7,7 @@
                 <h2 class=" text-right">
                     @can('general_only')
                         <a href={{ route('approvals.create') }}
-                            class="inline-flex items-center justify-center text-base mr-2 font-medium text-indigo-500 rounded-lg bg-gray-50 hover:text-indigo-700">
+                            class="inline-flex items-center justify-center text-base mr-2 font-medium text-fuchsia-400 rounded-lg bg-gray-50 hover:text-fuchsia-600 hover:font-bold">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                                 <path fill-rule="evenodd"
                                     d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z"
@@ -19,10 +19,10 @@
                 <div class="mx-auto">
                     <p class="flex text-left leading-relaxed text-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            class="w-5 h-5 mr-3">
+                            class="w-5 h-5 mr-3 text-sky-600">
                             <path fill-rule="evenodd"
                                 d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                clip-rule="evenodd" fill="#9999ff" />
+                                clip-rule="evenodd" fill="" />
                         </svg>
                         設定から<span class="font-bold">権限の変更</span>と<span class="font-bold">取消</span>ができます。
                     </p>
@@ -72,11 +72,8 @@
                                                 <td
                                                     class="px-4 py-4 whitespace-nowrap text-xs text-gray-800 dark:text-gray-200">
                                                     {{ $approval->factory->factory_name }}
-                                                    {{-- @if ($approval->department->id != 1) --}}
                                                         ・{{ $approval->department->department_name }}
-                                                    {{-- @endif --}}
                                                     @if ($approval->group != null && $approval->group->id != 1)
-                                                    {{-- @if ($approval->group != null) --}}
                                                         ・{{ $approval->group->group_name }}
                                                     @endif
                                                 </td>
@@ -85,11 +82,10 @@
                                                     {{ $approval->approval_category->approval_name }}
                                                 </td>
                                                 <td
-                                                    class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                                    <a href="{{ route('approvals.edit', $approval) }}"
-                                                        class="px-3 py-1 text-sm text-blue-500 rounded-full bg-blue-100/60 hover:text-white hover:bg-blue-500">
-                                                        設 定
-                                                    </a>
+                                                    class="pl-1 pr-4 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                                                    <x-show-a-button href="{{ route('approvals.edit', $approval) }}" class="px-3 py-1">
+                                                        {{ __('Setting') }}
+                                                    </x-shos-a-button>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -99,20 +95,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="flex pl-4 mt-4 lg:w-2/3 w-full mx-auto">
-                <a href="{{ route('menu') }}"
-                    class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-                        <path fill-rule="evenodd"
-                            d="M9.53 2.47a.75.75 0 010 1.06L4.81 8.25H15a6.75 6.75 0 010 13.5h-3a.75.75 0 010-1.5h3a5.25 5.25 0 100-10.5H4.81l4.72 4.72a.75.75 0 11-1.06 1.06l-6-6a.75.75 0 010-1.06l6-6a.75.75 0 011.06 0z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    <div class="px-2 mt-1">
-                        戻る
-                    </div>
-                </a>
             </div>
         </div>
     </section>
