@@ -1,54 +1,120 @@
 <x-app-layout>
     <section class="text-gray-600 body-font">
-        <div class="container w-2/3 px-5 py-24 mx-auto">
+        <div class="container w-2/3 py-24 mx-auto">
 
             @auth
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+                <div class="grid grid-cols-1 mb-10">
+                    <!-- 通知機能 閲覧権限以上 start -->
+                    @can('general_and_factory_gl')
+                        {{-- @if (!empty($pending)) --}}
+                        @empty(!($pending||$approved))
+                            <ul class="p-4 mb-8 text-sm text-sky-700 border-l-4 border-b border-sky-600 bg-sky-50" role="alert">
+                                @if ($pending)
+                                    <li class="flex">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                            class="w-5 h-5 mr-2">
+                                            <path
+                                                d="M5.85 3.5a.75.75 0 00-1.117-1 9.719 9.719 0 00-2.348 4.876.75.75 0 001.479.248A8.219 8.219 0 015.85 3.5zM19.267 2.5a.75.75 0 10-1.118 1 8.22 8.22 0 011.987 4.124.75.75 0 001.48-.248A9.72 9.72 0 0019.266 2.5z" />
+                                            <path fill-rule="evenodd"
+                                                d="M12 2.25A6.75 6.75 0 005.25 9v.75a8.217 8.217 0 01-2.119 5.52.75.75 0 00.298 1.206c1.544.57 3.16.99 4.831 1.243a3.75 3.75 0 107.48 0 24.583 24.583 0 004.83-1.244.75.75 0 00.298-1.205 8.217 8.217 0 01-2.118-5.52V9A6.75 6.75 0 0012 2.25zM9.75 18c0-.034 0-.067.002-.1a25.05 25.05 0 004.496 0l.002.1a2.25 2.25 0 11-4.5 0z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                        <span class="text-sky-700 font-bold">{{ $pending }}件</span>の<span
+                                            class="text-sky-700 font-bold">承諾待</span>があります
+                                    </li>
+                                @endif
+                                @if ($approved)
+                                    <li class="flex">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                            class="w-5 h-5 mr-2">
+                                            <path
+                                                d="M5.85 3.5a.75.75 0 00-1.117-1 9.719 9.719 0 00-2.348 4.876.75.75 0 001.479.248A8.219 8.219 0 015.85 3.5zM19.267 2.5a.75.75 0 10-1.118 1 8.22 8.22 0 011.987 4.124.75.75 0 001.48-.248A9.72 9.72 0 0019.266 2.5z" />
+                                            <path fill-rule="evenodd"
+                                                d="M12 2.25A6.75 6.75 0 005.25 9v.75a8.217 8.217 0 01-2.119 5.52.75.75 0 00.298 1.206c1.544.57 3.16.99 4.831 1.243a3.75 3.75 0 107.48 0 24.583 24.583 0 004.83-1.244.75.75 0 00.298-1.205 8.217 8.217 0 01-2.118-5.52V9A6.75 6.75 0 0012 2.25zM9.75 18c0-.034 0-.067.002-.1a25.05 25.05 0 004.496 0l.002.1a2.25 2.25 0 11-4.5 0z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                        <span class="text-sky-700 font-bold">{{ $approved }}件</span>の<span
+                                            class="text-sky-700 font-bold">取消確認</span>があります
+                                    </li>
+                                @endif
+                            </ul>
+                        @endempty
+                        {{-- @endif --}}
+                    @endcan
+                    <!-- 通知機能 閲覧権限以上 end -->
+
+                    <!-- 有休残日数 start -->
+                    <p class="flex items-center text-lg mb-10">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="w-6 h-6 mr-3 text-sky-600">
+                            <path fill-rule="evenodd"
+                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                                clip-rule="evenodd" fill="" />
+                        </svg>
+                        有休残日数&ensp;:&ensp;
+                        @if (!empty($paid_holidays->remaining_days))
+                            <span class="font-bold">
+                                {{ $paid_holidays->remaining_days }}
+                            </span> 日
+                        @endif
+                        @if (!empty($paid_holidays->remaining_hours))
+                            <span class="font-bold">
+                                &ensp;{{ $paid_holidays->remaining_hours }}
+                            </span> 時間
+                        @endif
+                    </p>
+                    <!-- 有休残日数 end -->
+
+                    <!-- 基本機能 atart -->
                     <a href={{ route('reports.create') }}
-                        class="inline-flex items-center p-2 text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 ">
-                        <span class="mr-3">
+                        class="block text-center items-center p-3 my-2 text-white rounded-xl border-2 border-gray-500 bg-cyan-500 hover:text-gray-600 hover:font-semibold hover:bg-white focus:text-cyan-500 ">
+                        <div class="flex justify-center items-center text-2xl">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                                 <path
-                                    d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z"
-                                    fill="#6666ff" />
+                                    d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
                                 <path
-                                    d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
+                                    d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z"
+                                    fill="" />
                             </svg>
-                        </span>
-                        <span class="w-32">届出作成</span>
+                            <span class="ZenMaruGothic w-40">届 出 作 成</span>
+                        </div>
                     </a>
 
                     <a href={{ route('remainings.my_index') }}
-                        class="inline-flex items-center p-2 text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 ">
-                        <span class="mr-3">
+                        class="block text-center items-center p-3 my-2 text-base text-white rounded-xl border-2 border-gray-500 bg-fuchsia-400 hover:text-gray-600 hover:font-semibold hover:bg-white focus:text-fuchsia-400 ">
+                        <div class="flex justify-center items-center text-2xl">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                                 <path fill-rule="evenodd"
                                     d="M9 1.5H5.625c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V12.75A3.75 3.75 0 0016.5 9h-1.875a1.875 1.875 0 01-1.875-1.875V5.25A3.75 3.75 0 009 1.5zm6.61 10.936a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 14.47a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
-                                    clip-rule="evenodd" fill="#6666ff" />
+                                    clip-rule="evenodd" />
                                 <path
                                     d="M12.971 1.816A5.23 5.23 0 0114.25 5.25v1.875c0 .207.168.375.375.375H16.5a5.23 5.23 0 013.434 1.279 9.768 9.768 0 00-6.963-6.963z"
                                     fill="" />
                             </svg>
-                        </span>
-                        <span class="w-32">休暇可能日数</span>
+                            <span class="ZenMaruGothic w-40">休暇可能日数</span>
+                        </div>
                     </a>
 
                     <a href={{ route('reports.index') }}
-                        class="inline-flex items-center p-2 text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 ">
-                        <span class="mr-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                        class="block text-center items-center p-3 my-2 text-white rounded-xl border-2 border-gray-500 bg-amber-400 hover:text-gray-600 hover:font-semibold hover:bg-white focus:text-amber-400 ">
+                        <div class="flex justify-center items-center text-2xl">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                class="w-6 h-6 hover:text-cyan-400">
                                 <path fill-rule="evenodd"
                                     d="M1.5 5.625c0-1.036.84-1.875 1.875-1.875h17.25c1.035 0 1.875.84 1.875 1.875v12.75c0 1.035-.84 1.875-1.875 1.875H3.375A1.875 1.875 0 011.5 18.375V5.625zM21 9.375A.375.375 0 0020.625 9h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zm0 3.75a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zm0 3.75a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zM10.875 18.75a.375.375 0 00.375-.375v-1.5a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5zM3.375 15h7.5a.375.375 0 00.375-.375v-1.5a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375zm0-3.75h7.5a.375.375 0 00.375-.375v-1.5A.375.375 0 0010.875 9h-7.5A.375.375 0 003 9.375v1.5c0 .207.168.375.375.375z"
-                                    clip-rule="evenodd" fill="#6666ff" />
+                                    clip-rule="evenodd" fill="" />
                             </svg>
-                        </span>
-                        <span class="w-32">my届出一覧</span>
+                            <span class="ZenMaruGothic w-40">届 出 一 覧</span>
+                        </div>
                     </a>
+                    <!-- 基本機能 end -->
+                </div>
 
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
                     <!-- 閲覧権限以上 start -->
                     @canany(['general_and_factory_gl', 'reader'])
                         <a href={{ route('reports.pending_approval') }}
-                            class="inline-flex items-center p-2 text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 ">
+                            class="inline-flex items-center p-2 text-base font-medium text-gray-600 hover:text-sky-600 hover:font-bold">
                             <span class="mr-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                                     <path fill-rule="evenodd"
@@ -60,14 +126,14 @@
                                 承諾待ち
                             </span>
                             @if ($pending)
-                                <div class="flex justify-center relative -ml-4 -mt-4">
+                                <div class="flex justify-center relative -ml-4 -mt-5">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                        class="w-5 h-5">
+                                        class="w-6 h-6 text-sky-700">
                                         <path fill-rule="evenodd"
                                             d="M5.337 21.718a6.707 6.707 0 01-.533-.074.75.75 0 01-.44-1.223 3.73 3.73 0 00.814-1.686c.023-.115-.022-.317-.254-.543C3.274 16.587 2.25 14.41 2.25 12c0-5.03 4.428-9 9.75-9s9.75 3.97 9.75 9c0 5.03-4.428 9-9.75 9-.833 0-1.643-.097-2.417-.279a6.721 6.721 0 01-4.246.997z"
-                                            clip-rule="evenodd" fill="#cc99ff" />
+                                            clip-rule="evenodd" fill="" />
                                     </svg>
-                                    <div class="absolute text-xs text-white leading-5 text-center">
+                                    <div class="absolute text-xs text-white font-bold leading-6 text-center">
                                         {{ $pending }}
                                     </div>
                                 </div>
@@ -75,7 +141,8 @@
                         </a>
 
                         <a href={{ route('reports.approved') }}
-                            class="inline-flex items-center p-2 text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 ">
+                            class="inline-flex items-center p-2 text-base font-medium text-gray-600 hover:text-sky-600 hover:font-bold">
+                            {{-- class="inline-flex items-center p-2 text-base font-medium text-gray-600 rounded-lg bg-gray-50 hover:text-sky-600 hover:font-bold"> --}}
                             <span class="mr-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                                     <path fill-rule="evenodd"
@@ -87,14 +154,14 @@
                                 承諾済み
                             </span>
                             @if ($approved)
-                                <div class="flex justify-center relative -ml-4 -mt-4">
+                                <div class="flex justify-center relative -ml-4 -mt-5">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                        class="w-5 h-5">
+                                        class="w-6 h-6 text-sky-700">
                                         <path fill-rule="evenodd"
                                             d="M5.337 21.718a6.707 6.707 0 01-.533-.074.75.75 0 01-.44-1.223 3.73 3.73 0 00.814-1.686c.023-.115-.022-.317-.254-.543C3.274 16.587 2.25 14.41 2.25 12c0-5.03 4.428-9 9.75-9s9.75 3.97 9.75 9c0 5.03-4.428 9-9.75 9-.833 0-1.643-.097-2.417-.279a6.721 6.721 0 01-4.246.997z"
-                                            clip-rule="evenodd" fill="#cc99ff" />
+                                            clip-rule="evenodd" fill="" />
                                     </svg>
-                                    <div class="absolute text-xs text-white leading-5 text-center">
+                                    <div class="absolute text-xs text-white font-bold leading-6 text-center">
                                         {{ $approved }}
                                     </div>
                                 </div>
@@ -102,9 +169,11 @@
                         </a>
 
                         <a href={{ route('reports.get_and_remaining') }}
-                            class="inline-flex items-center p-2 text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 ">
+                            class="inline-flex items-center p-2 text-base font-medium text-gray-600 hover:text-sky-600 hover:font-bold">
+                            {{-- class="inline-flex items-center p-2 text-base font-medium text-gray-600 rounded-lg bg-gray-50 hover:text-sky-600 hover:font-bold"> --}}
                             <span class="mr-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                    class="w-6 h-6">
                                     <path fill-rule="evenodd"
                                         d="M1.5 5.625c0-1.036.84-1.875 1.875-1.875h17.25c1.035 0 1.875.84 1.875 1.875v12.75c0 1.035-.84 1.875-1.875 1.875H3.375A1.875 1.875 0 011.5 18.375V5.625zM21 9.375A.375.375 0 0020.625 9h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zm0 3.75a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zm0 3.75a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zM10.875 18.75a.375.375 0 00.375-.375v-1.5a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5zM3.375 15h7.5a.375.375 0 00.375-.375v-1.5a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375zm0-3.75h7.5a.375.375 0 00.375-.375v-1.5A.375.375 0 0010.875 9h-7.5A.375.375 0 003 9.375v1.5c0 .207.168.375.375.375z"
                                         clip-rule="evenodd" />
@@ -118,9 +187,11 @@
                     <!-- 管理者 start -->
                     @can('admin_only')
                         <a href={{ route('remainings.index') }}
-                            class="inline-flex items-center p-2 text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 ">
+                            class="inline-flex items-center p-2 text-base font-medium text-gray-600 hover:text-sky-600 hover:font-bold">
+                            {{-- class="inline-flex items-center p-2 text-base font-medium text-gray-600 rounded-lg bg-gray-50 hover:text-sky-600 hover:font-bold"> --}}
                             <span class="mr-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                    class="w-6 h-6">
                                     <path fill-rule="evenodd"
                                         d="M1.5 5.625c0-1.036.84-1.875 1.875-1.875h17.25c1.035 0 1.875.84 1.875 1.875v12.75c0 1.035-.84 1.875-1.875 1.875H3.375A1.875 1.875 0 011.5 18.375V5.625zM21 9.375A.375.375 0 0020.625 9h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zm0 3.75a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zm0 3.75a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zM10.875 18.75a.375.375 0 00.375-.375v-1.5a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5zM3.375 15h7.5a.375.375 0 00.375-.375v-1.5a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375zm0-3.75h7.5a.375.375 0 00.375-.375v-1.5A.375.375 0 0010.875 9h-7.5A.375.375 0 003 9.375v1.5c0 .207.168.375.375.375z"
                                         clip-rule="evenodd" />
@@ -130,7 +201,8 @@
                         </a>
 
                         <a href={{ route('users.index') }}
-                            class="inline-flex items-center p-2 text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 ">
+                            class="inline-flex items-center p-2 text-base font-medium text-gray-600 hover:text-sky-600 hover:font-bold">
+                            {{-- class="inline-flex items-center p-2 text-base font-medium text-gray-600 rounded-lg bg-gray-50 hover:text-sky-600 hover:font-bold"> --}}
                             <span class="mr-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                                     class="w-6 h-6">
@@ -147,7 +219,8 @@
                     <!-- 会社承諾 start -->
                     @can('general_only')
                         <a href={{ route('approvals.index') }}
-                            class="inline-flex items-center p-2 text-base font-medium text-gray-500 rounded-lg bg-gray-50 hover:text-gray-900 hover:bg-gray-100 ">
+                            class="inline-flex items-center p-2 text-base font-medium text-gray-600 hover:text-sky-600 hover:font-bold">
+                            {{-- class="inline-flex items-center p-2 text-base font-medium text-gray-600 rounded-lg bg-gray-50 hover:text-sky-600 hover:font-bold"> --}}
                             <span class="mr-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                                     class="w-6 h-6">
@@ -163,19 +236,17 @@
                 </div>
             @endauth
 
-            <div class="text-left w-full my-14 mx-4">
-                @if (Auth::user()->approvals)
-                    <p class="text-gray-700 font-semibold mb-2">所有権限</p>
+            <div class="text-left w-full my-12 mx-4">
+                @if (Auth::user()->approvals->first())
                     <ul class="">
                         @foreach (Auth::user()->approvals as $approval)
                             <li class="flex mx-auto items-center leading-relaxed text-sm">
-                                <span
-                                    class="w-4 h-4 mr-2 rounded-full inline-flex items-center justify-center">
+                                <span class="w-4 h-4 mr-2 rounded-full inline-flex items-center justify-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                                        class="w-5 h-5">
+                                        class="w-5 h-5 text-sky-600">
                                         <path fill-rule="evenodd"
                                             d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                                            clip-rule="evenodd" fill="#cc99ff" />
+                                            clip-rule="evenodd" fill="" />
                                     </svg>
                                 </span>
                                 <!-- その他 -->

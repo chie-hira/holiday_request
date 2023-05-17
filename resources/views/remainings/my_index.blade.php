@@ -7,10 +7,10 @@
                     <div class="flex text-left leading-relaxed text-sm mb-1">
                         <p>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                class="w-5 h-5 mr-3">
+                                class="w-5 h-5 mr-3 text-sky-600">
                                 <path fill-rule="evenodd"
                                     d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                    clip-rule="evenodd" fill="#9999ff" />
+                                    clip-rule="evenodd" fill="" />
                             </svg>
                         </p>
                         <p class="text-sm">
@@ -53,15 +53,6 @@
                                             </tr>
                                         @endforeach
 
-                                        {{-- <tr class="hover:bg-gray-100 ">
-                                            <td
-                                                class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-800 ">
-                                                特別休暇(弔事)</td>
-                                            <td class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium">
-                                                ※
-                                            </td>
-                                        </tr> --}}
-
                                         <tr class="hover:bg-gray-100 ">
                                             <td
                                                 class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-800 ">
@@ -103,10 +94,10 @@
                 <div class="flex text-left leading-relaxed text-sm mb-1">
                     <p>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            class="w-5 h-5 mr-3">
+                            class="w-5 h-5 mr-3 text-sky-600">
                             <path fill-rule="evenodd"
                                 d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                clip-rule="evenodd" fill="#9999ff" />
+                                clip-rule="evenodd" fill="" />
                         </svg>
                     </p>
                     <p class="text-sm">
@@ -117,10 +108,10 @@
                 <div class="flex text-left leading-relaxed text-sm mb-1">
                     <p>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            class="w-5 h-5 mr-3">
+                            class="w-5 h-5 mr-3 text-sky-600">
                             <path fill-rule="evenodd"
                                 d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                clip-rule="evenodd" fill="#9999ff" />
+                                clip-rule="evenodd" fill="" />
                         </svg>
                     </p>
                     <p class="text-sm">
@@ -131,10 +122,10 @@
                 <div class="flex text-left leading-relaxed text-sm mb-1">
                     <p>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            class="w-5 h-5 mr-3">
+                            class="w-5 h-5 mr-3 text-sky-600">
                             <path fill-rule="evenodd"
                                 d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                clip-rule="evenodd" fill="#9999ff" />
+                                clip-rule="evenodd" fill="" />
                         </svg>
                     </p>
                     <p class="text-sm">
@@ -145,10 +136,10 @@
                 <div class="flex text-left leading-relaxed text-sm mb-1">
                     <p>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            class="w-5 h-5 mr-3">
+                            class="w-5 h-5 mr-3 text-sky-600">
                             <path fill-rule="evenodd"
                                 d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                clip-rule="evenodd" fill="#9999ff" />
+                                clip-rule="evenodd" fill="" />
                         </svg>
                     </p>
                     <p class="text-sm">
@@ -159,10 +150,10 @@
                 <div class="flex text-left leading-relaxed text-sm mb-1">
                     <p>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            class="w-5 h-5 mr-3">
+                            class="w-5 h-5 mr-3 text-sky-600">
                             <path fill-rule="evenodd"
                                 d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                clip-rule="evenodd" fill="#9999ff" />
+                                clip-rule="evenodd" fill="" />
                         </svg>
                     </p>
                     <p class="text-sm">
@@ -173,10 +164,10 @@
                 <div class="flex text-left leading-relaxed text-sm mb-1">
                     <p>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            class="w-5 h-5 mr-3">
+                            class="w-5 h-5 mr-3 text-sky-600">
                             <path fill-rule="evenodd"
                                 d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                clip-rule="evenodd" fill="#9999ff" />
+                                clip-rule="evenodd" fill="" />
                         </svg>
                     </p>
                     <p class="text-sm">
@@ -187,98 +178,16 @@
                 <div class="flex text-left leading-relaxed text-sm mb-1">
                     <p>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            class="w-5 h-5 mr-3">
+                            class="w-5 h-5 mr-3 text-sky-600">
                             <path fill-rule="evenodd"
                                 d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                clip-rule="evenodd" fill="#9999ff" />
+                                clip-rule="evenodd" fill="" />
                         </svg>
                     </p>
                     <p class="text-sm">
                         ※は<span class="font-bold">対象者、家族構成等</span>によって異なります。詳細は総務課にお問い合わせください。
                     </p>
                 </div>
-            </div>
-            
-            {{-- <div class="flex flex-col text-center mt-10">
-                <ul class="w-84 mx-auto leading-relaxed text-sm overflow-x-auto">
-                    <li class="flex items-left text-left whitespace-nowrap">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            class="w-5 h-5 mr-3">
-                            <path fill-rule="evenodd"
-                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                clip-rule="evenodd" fill="#9999ff" />
-                        </svg>
-                        看護休暇は<span class="font-bold">小学校就学前の子</span>を養育する者が取得できます。
-                    </li>
-                    <li class="flex items-left text-left whitespace-nowrap">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            class="w-5 h-5 mr-3">
-                            <path fill-rule="evenodd"
-                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                clip-rule="evenodd" fill="#9999ff" />
-                        </svg>
-                        介護休暇、介護休業は<span class="font-bold">要介護状態の家族</span>を介護する者が取得できます。
-                    </li>
-                    <li class="flex items-left text-left whitespace-nowrap">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            class="w-5 h-5 mr-3">
-                            <path fill-rule="evenodd"
-                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                clip-rule="evenodd" fill="#9999ff" />
-                        </svg>
-                        特別休暇(慶事)は<span class="font-bold">本人が結婚する</span>ときに取得できます。
-                    </li>
-                    <li class="flex items-left text-left whitespace-nowrap">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            class="w-5 h-5 mr-3">
-                            <path fill-rule="evenodd"
-                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                clip-rule="evenodd" fill="#9999ff" />
-                        </svg>
-                        特別休暇(弔事)は近親者が喪に服すときに取得でき、<span class="font-bold">近親者によって</span>取得上限が異なります。
-                    </li>
-                    <li class="flex items-left text-left whitespace-nowrap">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            class="w-5 h-5 mr-3">
-                            <path fill-rule="evenodd"
-                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                clip-rule="evenodd" fill="#9999ff" />
-                        </svg>
-                        特別休暇(短期育休)、育児休業、パパ育休は<span class="font-bold">1歳に満たない子</span>と同居し扶養する者が取得できます。
-                    </li>
-                    <li class="flex items-left text-left whitespace-nowrap">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            class="w-5 h-5 mr-3">
-                            <path fill-rule="evenodd"
-                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                clip-rule="evenodd" fill="#9999ff" />
-                        </svg>
-                        取得可能日数は<span class="font-bold">届け出承諾後の日数</span>です。
-                    </li>
-                    <li class="flex items-left text-left whitespace-nowrap">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            class="w-5 h-5 mr-3">
-                            <path fill-rule="evenodd"
-                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                clip-rule="evenodd" fill="#9999ff" />
-                        </svg>
-                        ※は<span class="font-bold">対象者、家族構成等</span>によって異なります。詳細は総務課にお問い合わせください。
-                    </li>
-                </ul>
-            </div> --}}
-
-            <div class="flex mt-4 w-full mx-auto">
-                <a href="{{ route('menu') }}"
-                    class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-                        <path fill-rule="evenodd"
-                            d="M9.53 2.47a.75.75 0 010 1.06L4.81 8.25H15a6.75 6.75 0 010 13.5h-3a.75.75 0 010-1.5h3a5.25 5.25 0 100-10.5H4.81l4.72 4.72a.75.75 0 11-1.06 1.06l-6-6a.75.75 0 010-1.06l6-6a.75.75 0 011.06 0z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    <div class="px-2 mt-1">
-                        戻る
-                    </div>
-                </a>
             </div>
         </div>
     </section>

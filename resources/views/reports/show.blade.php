@@ -1,5 +1,43 @@
 <x-app-layout>
-    <div class="container px-5 py-10 mx-auto">
+    <!-- Page Heading -->
+    <header class="text-xs sm:text-sm bg-sky-50 shadow-md shadow-sky-500/50">
+        <div class="flex max-w-7xl mx-auto py-1 px-4 sm:px-6 lg:px-8">
+            <a href="{{ route('reports.index') }}" class="text-sky-600 inline-flex mr-2 hover:-translate-x-1">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                    <path fill-rule="evenodd"
+                        d="M9.53 2.47a.75.75 0 010 1.06L4.81 8.25H15a6.75 6.75 0 010 13.5h-3a.75.75 0 010-1.5h3a5.25 5.25 0 100-10.5H4.81l4.72 4.72a.75.75 0 11-1.06 1.06l-6-6a.75.75 0 010-1.06l6-6a.75.75 0 011.06 0z"
+                        clip-rule="evenodd" />
+                </svg>
+                <div class="px-2">
+                    出退勤届け一覧
+                </div>
+            </a>
+            @can('general_and_factory_gl')
+                <a href="{{ route('reports.pending_approval') }}" class="text-sky-600 inline-flex mr-2 hover:-translate-x-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                        <path fill-rule="evenodd"
+                            d="M9.53 2.47a.75.75 0 010 1.06L4.81 8.25H15a6.75 6.75 0 010 13.5h-3a.75.75 0 010-1.5h3a5.25 5.25 0 100-10.5H4.81l4.72 4.72a.75.75 0 11-1.06 1.06l-6-6a.75.75 0 010-1.06l6-6a.75.75 0 011.06 0z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <div class="px-2">
+                        承諾待ち一覧へ
+                    </div>
+                </a>
+                <a href="{{ route('reports.approved') }}" class="text-sky-600 inline-flex hover:-translate-x-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                        <path fill-rule="evenodd"
+                            d="M9.53 2.47a.75.75 0 010 1.06L4.81 8.25H15a6.75 6.75 0 010 13.5h-3a.75.75 0 010-1.5h3a5.25 5.25 0 100-10.5H4.81l4.72 4.72a.75.75 0 11-1.06 1.06l-6-6a.75.75 0 010-1.06l6-6a.75.75 0 011.06 0z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <div class="px-2">
+                        承諾済み一覧へ
+                    </div>
+                </a>
+            @endcan
+        </div>
+    </header>
+
+    <div class="container px-5 py-6 mx-auto">
         <div class="w-full max-w-md mx-auto mt-10">
             <x-notice :notice="session('notice')" />
         </div>
@@ -11,7 +49,7 @@
                     出 退 勤 届 け
                 </h5>
                 <p
-                    class="border-solid border-2 px-4 py-1 border-indigo-500 rounded-md text-md font-medium text-indigo-600 hover:underline">
+                    class="border-solid border-2 px-4 py-1 border-sky-500 rounded-md text-md font-medium text-sky-600 hover:underline">
                     {{ $report->user->factory->factory_name }}
                 </p>
             </div>
@@ -136,121 +174,67 @@
                                             !empty(Auth::user()->approvals->where('approval_id', 1)->first()
                                             ))
                                             @if ($report->cancel == 1 && $report->approval1 == 1)
-                                                <a href="{{ route('reports.approval_cancel', $report) }}"
-                                                    onclick="if(!confirm('取消を確認しました')){return false};"
-                                                    class="px-1 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
-                                                    取消確認
-                                                </a>
-                                            @endif
-                                            @if ($report->cancel == 1 && $report->approval1 == 0)
-                                                <div class="py-2 text-gray-300 inline-flex">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                        class="w-6 h-6">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
-                                                    </svg>
-                                                </div>
+                                                <x-show-a-button href="{{ route('reports.approval_cancel', $report) }}"
+                                                    onclick="if(!confirm('取消を確認しました')){return false};" class="px-1 py-1">
+                                                    {{ __('CancelCheck') }}
+                                                </x-show-a-button>
                                             @endif
                                             @if ($report->cancel == 0 && $report->approval1 == 0)
-                                                <a href="{{ route('approval', $report) }}"
-                                                    onclick="if(!confirm('承諾しますか？')){return false};"
-                                                    class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
-                                                    承諾
-                                                </a>
-                                            @endif
-                                            @if ($report->cancel == 0 && $report->approval1 == 1)
-                                                <div class="py-2 text-purple-300 inline-flex">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                        fill="currentColor" class="w-8 h-8">
-                                                        <path fill-rule="evenodd"
-                                                            d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
-                                                            clip-rule="evenodd" fill="" />
-                                                    </svg>
-                                                </div>
+                                                <x-show-a-button href="{{ route('approval', $report) }}"
+                                                    onclick="if(!confirm('承諾しますか？')){return false};" class="px-3 py-1">
+                                                    {{ __('Approval') }}
+                                                </x-show-a-button>
                                             @endif
                                         @else
-                                            @if ($report->cancel == 1 && $report->approval1 == 0)
-                                                <div class="py-2 text-gray-300 inline-flex">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                        class="w-6 h-6">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
-                                                    </svg>
+                                            @if ($report->cancel == 1 && $report->approval1 == 1)
+                                                <div class="flex justify-center">
+                                                    <x-approved-stamp />
                                                 </div>
                                             @endif
-                                            @if ($report->cancel == 0 && $report->approval1 == 1)
-                                                <div class="py-2 text-purple-300 inline-flex">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                        fill="currentColor" class="w-8 h-8">
-                                                        <path fill-rule="evenodd"
-                                                            d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
-                                                            clip-rule="evenodd" fill="" />
-                                                    </svg>
-                                                </div>
-                                            @endif
+                                        @endif
+                                        @if ($report->cancel == 0 && $report->approval1 == 1)
+                                            <div class="flex justify-center">
+                                                <x-approved-stamp />
+                                            </div>
+                                        @endif
+                                        @if ($report->cancel == 1 && $report->approval1 == 0)
+                                            <div class="flex justify-center">
+                                                <x-cancel-stamp />
+                                            </div>
                                         @endif
                                     </td>
                                     <td class="w-20 h-12 border border-gray-500 text-center">
                                         @if (
-                                            !empty(Auth::user()->approvals->where('approval_id', 2)->where('factory_id', '=', $report->user->factory_id)->first()
+                                            !empty(Auth::user()->approvals->where('approval_id', 2)->where('factory_id', $report->user->factory_id)->first()
                                             ))
                                             @if ($report->cancel == 1 && $report->approval2 == 1)
-                                                <a href="{{ route('reports.approval_cancel', $report) }}"
-                                                    onclick="if(!confirm('取消を確認しました')){return false};"
-                                                    class="px-1 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
-                                                    取消確認
-                                                </a>
-                                            @endif
-                                            @if ($report->cancel == 1 && $report->approval2 == 0)
-                                                <div class="py-2 text-gray-300 inline-flex">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                        class="w-6 h-6">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
-                                                    </svg>
-                                                </div>
+                                                <x-show-a-button href="{{ route('reports.approval_cancel', $report) }}"
+                                                    onclick="if(!confirm('取消を確認しました')){return false};" class="px-1 py-1">
+                                                    {{ __('CancelCheck') }}
+                                                </x-show-a-button>
                                             @endif
                                             @if ($report->cancel == 0 && $report->approval2 == 0)
-                                                <a href="{{ route('approval', $report) }}"
-                                                    onclick="if(!confirm('承諾しますか？')){return false};"
-                                                    class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
-                                                    承諾
-                                                </a>
-                                            @endif
-                                            @if ($report->cancel == 0 && $report->approval2 == 1)
-                                                <div class="py-2 text-purple-300 inline-flex">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                        fill="currentColor" class="w-8 h-8">
-                                                        <path fill-rule="evenodd"
-                                                            d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
-                                                            clip-rule="evenodd" fill="" />
-                                                    </svg>
-                                                </div>
+                                                <x-show-a-button href="{{ route('approval', $report) }}"
+                                                    onclick="if(!confirm('承諾しますか？')){return false};" class="px-3 py-1">
+                                                    {{ __('Approval') }}
+                                                </x-show-a-button>
                                             @endif
                                         @else
-                                            @if ($report->cancel == 1 && $report->approval2 == 0)
-                                                <div class="py-2 text-gray-300 inline-flex">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                        class="w-6 h-6">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
-                                                    </svg>
+                                            @if ($report->cancel == 1 && $report->approval2 == 1)
+                                                <div class="flex justify-center">
+                                                    <x-approved-stamp />
                                                 </div>
                                             @endif
-                                            @if ($report->cancel == 0 && $report->approval2 == 1)
-                                                <div class="py-2 text-purple-300 inline-flex">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                        fill="currentColor" class="w-8 h-8">
-                                                        <path fill-rule="evenodd"
-                                                            d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
-                                                            clip-rule="evenodd" fill="" />
-                                                    </svg>
-                                                </div>
-                                            @endif
+                                        @endif
+                                        @if ($report->cancel == 0 && $report->approval2 == 1)
+                                            <div class="flex justify-center">
+                                                <x-approved-stamp />
+                                            </div>
+                                        @endif
+                                        @if ($report->cancel == 1 && $report->approval2 == 0)
+                                            <div class="flex justify-center">
+                                                <x-cancel-stamp />
+                                            </div>
                                         @endif
                                     </td>
                                     <td class="w-20 h-12 border border-gray-500 text-center">
@@ -258,60 +242,33 @@
                                             !empty(Auth::user()->approvals->where('approval_id', 3)->where('factory_id', $report->user->factory_id)->where('department_id', $report->user->department_id)->where('group_id', $report->user->group_id)->first()
                                             ))
                                             @if ($report->cancel == 1 && $report->approval3 == 1)
-                                                <a href="{{ route('reports.approval_cancel', $report) }}"
-                                                    onclick="if(!confirm('取消を確認しました')){return false};"
-                                                    class="px-1 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
-                                                    取消確認
-                                                </a>
-                                            @endif
-                                            @if ($report->cancel == 1 && $report->approval3 == 0)
-                                                <div class="py-2 text-gray-300 inline-flex">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                        class="w-6 h-6">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
-                                                    </svg>
-                                                </div>
+                                                <x-show-a-button href="{{ route('reports.approval_cancel', $report) }}"
+                                                    onclick="if(!confirm('取消を確認しました')){return false};" class="px-1 py-1">
+                                                    {{ __('CancelCheck') }}
+                                                </x-show-a-button>
                                             @endif
                                             @if ($report->cancel == 0 && $report->approval3 == 0)
-                                                <a href="{{ route('approval', $report) }}"
-                                                    onclick="if(!confirm('承諾しますか？')){return false};"
-                                                    class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
-                                                    承諾
-                                                </a>
-                                            @endif
-                                            @if ($report->cancel == 0 && $report->approval3 == 1)
-                                                <div class="py-2 text-purple-300 inline-flex">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                        fill="currentColor" class="w-8 h-8">
-                                                        <path fill-rule="evenodd"
-                                                            d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
-                                                            clip-rule="evenodd" fill="" />
-                                                    </svg>
-                                                </div>
+                                                <x-show-a-button href="{{ route('approval', $report) }}"
+                                                    onclick="if(!confirm('承諾しますか？')){return false};" class="px-3 py-1">
+                                                    {{ __('Approval') }}
+                                                </x-show-a-button>
                                             @endif
                                         @else
-                                            @if ($report->cancel == 1 && $report->approval3 == 0)
-                                                <div class="py-2 text-gray-300 inline-flex">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                        class="w-6 h-6">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
-                                                    </svg>
+                                            @if ($report->cancel == 1 && $report->approval3 == 1)
+                                                <div class="flex justify-center">
+                                                    <x-approved-stamp />
                                                 </div>
                                             @endif
-                                            @if ($report->cancel == 0 && $report->approval3 == 1)
-                                                <div class="py-2 text-purple-300 inline-flex">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                        fill="currentColor" class="w-8 h-8">
-                                                        <path fill-rule="evenodd"
-                                                            d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
-                                                            clip-rule="evenodd" fill="" />
-                                                    </svg>
-                                                </div>
-                                            @endif
+                                        @endif
+                                        @if ($report->cancel == 0 && $report->approval3 == 1)
+                                            <div class="flex justify-center">
+                                                <x-approved-stamp />
+                                            </div>
+                                        @endif
+                                        @if ($report->cancel == 1 && $report->approval3 == 0)
+                                            <div class="flex justify-center">
+                                                <x-cancel-stamp />
+                                            </div>
                                         @endif
                                     </td>
                                 </tr>
@@ -321,72 +278,5 @@
                 </ul>
             </div>
         </div>
-
-        <div class="flex w-full mx-auto">
-            <button onClick="history.back();"
-                class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-                    <path fill-rule="evenodd"
-                        d="M9.53 2.47a.75.75 0 010 1.06L4.81 8.25H15a6.75 6.75 0 010 13.5h-3a.75.75 0 010-1.5h3a5.25 5.25 0 100-10.5H4.81l4.72 4.72a.75.75 0 11-1.06 1.06l-6-6a.75.75 0 010-1.06l6-6a.75.75 0 011.06 0z"
-                        clip-rule="evenodd" />
-                </svg>
-                <div class="px-2 mt-1">
-                    戻る
-                </div>
-            </button>
-        </div>
     </div>
-
-    {{-- <div class="grid grid-cols-1 md:grid-cols-3 w-2/3 mx-auto">
-        @can('no_approvals')
-            <div></div>
-        @endcan
-        <div class="flex mt-4 lg:w-2/3 w-full">
-            <a href="{{ route('reports.index') }}"
-                class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-                    <path fill-rule="evenodd"
-                        d="M20.25 12a.75.75 0 01-.75.75H6.31l5.47 5.47a.75.75 0 11-1.06 1.06l-6.75-6.75a.75.75 0 010-1.06l6.75-6.75a.75.75 0 111.06 1.06l-5.47 5.47H19.5a.75.75 0 01.75.75z"
-                        clip-rule="evenodd" />
-                </svg>
-                <div class="px-2 mt-1">
-                    my届出一覧へ
-                </div>
-            </a>
-        </div>
-
-        @can('general_and_factory_gl')
-            <div class="flex mt-4 lg:w-2/3 w-full">
-                <a href="{{ route('reports.pending_approval') }}"
-                    class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-                        <path fill-rule="evenodd"
-                            d="M20.25 12a.75.75 0 01-.75.75H6.31l5.47 5.47a.75.75 0 11-1.06 1.06l-6.75-6.75a.75.75 0 010-1.06l6.75-6.75a.75.75 0 111.06 1.06l-5.47 5.47H19.5a.75.75 0 01.75.75z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    <div class="px-2 leading-7">
-                        承諾待ち一覧へ
-                    </div>
-                </a>
-            </div>
-        @endcan
-
-        @can('general_and_factory_gl')
-            <div class="flex mt-4 lg:w-2/3 w-full mx-auto">
-                <a href="{{ route('reports.approved') }}"
-                    class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-                        <path fill-rule="evenodd"
-                            d="M20.25 12a.75.75 0 01-.75.75H6.31l5.47 5.47a.75.75 0 11-1.06 1.06l-6.75-6.75a.75.75 0 010-1.06l6.75-6.75a.75.75 0 111.06 1.06l-5.47 5.47H19.5a.75.75 0 01.75.75z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    <div class="px-2 leading-7">
-                        承諾済み一覧へ
-                    </div>
-                </a>
-            </div>
-        @endcan
-    </div>
-    <div>&emsp;</div> --}}
-
 </x-app-layout>

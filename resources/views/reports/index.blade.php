@@ -37,7 +37,6 @@
                                             </th>
                                             <th scope="col"
                                                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                承 諾
                                             </th>
                                             <th scope="col" colspan="3"
                                                 class="px-6 py-3 text-right text-xs font-medium text-gray-500 tracking-wider">
@@ -52,16 +51,13 @@
                                                     class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">
                                                     {{ $report->report_date }}
                                                 </td>
-                                                <td
-                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                     {{ $report->user->name }}
                                                 </td>
-                                                <td
-                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                     <x-report-name :report="$report" />
                                                 </td>
-                                                <td
-                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                     @if ($report->start_date != null)
                                                         {{ $report->start_date }}
                                                     @else
@@ -71,8 +67,7 @@
                                                         &emsp;{{ Str::substr($report->start_time, 0, 5) }}
                                                     @endif
                                                 </td>
-                                                <td
-                                                    class="pr-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                <td class="pr-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                     @if ($report->end_date != null)
                                                         ~&emsp;&emsp;{{ $report->end_date }}
                                                     @endif
@@ -98,30 +93,26 @@
                                                 <td
                                                     class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-800 ">
                                                     @if ($report->cancel == 1)
-                                                        <span class="text-indigo-500">取消確認中</span>
+                                                        <span class="text-red-600">取消確認中</span>
                                                     @else
                                                         @if ($report->approval1 == 0 || $report->approval2 == 0 || $report->approval3 == 0)
-                                                            <span class="text-pink-500">未承諾</span>
+                                                            <span class="text-red-600">未承諾</span>
                                                         @else
-                                                            <span class="text-blue-500">承諾済み</span>
+                                                            <span class="text-sky-600">承諾</span>
                                                         @endif
                                                     @endif
                                                 </td>
-                                                <td
-                                                    class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 ">
-                                                    <a href="{{ route('reports.show', $report) }}"
-                                                        class="px-3 py-1 text-sm text-indigo-500 rounded-full bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
-                                                        届表示
-                                                    </a>
+                                                <td class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                    <x-show-a-button href="{{ route('reports.show', $report) }}" class="px-3 py-1">
+                                                        {{ __('Show') }}
+                                                    </x-show-a-button>
                                                 </td>
-                                                <td
-                                                    class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                <td class="px-1 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                     @if ($report->cancel == 0 && $report->approved == 0)
                                                         @can('update', $report)
-                                                            <a href="{{ route('reports.edit', $report) }}"
-                                                                class="px-3 py-1 text-sm text-blue-500 rounded-full bg-blue-100/60 hover:text-white hover:bg-blue-500">
-                                                                変 更
-                                                            </a>
+                                                            <x-edit-a-button href="{{ route('reports.edit', $report) }}">
+                                                                {{ __('Edit') }}
+                                                            </x-edit-a-button>
                                                         @endcan
                                                     @endif
                                                 </td>
@@ -132,9 +123,7 @@
                                                                 method="POST">
                                                                 @csrf
                                                                 @method('DELETE')
-                                                                <input type="submit" value="取 消"
-                                                                    onclick="if(!confirm('届けを取消しますか？')){return false};"
-                                                                    class="px-3 py-1 text-sm text-pink-500 rounded-full bg-pink-100/60 hover:text-white hover:bg-pink-500">
+                                                                <x-delete-input-button value="取消" onclick="if(!confirm('届けを取消しますか？')){return false};"/>
                                                             </form>
                                                         @endcan
                                                     @endif
@@ -147,20 +136,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="flex pl-4 mt-4 lg:w-2/3 w-full mx-auto">
-                <a href="{{ route('menu') }}"
-                    class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-                        <path fill-rule="evenodd"
-                            d="M9.53 2.47a.75.75 0 010 1.06L4.81 8.25H15a6.75 6.75 0 010 13.5h-3a.75.75 0 010-1.5h3a5.25 5.25 0 100-10.5H4.81l4.72 4.72a.75.75 0 11-1.06 1.06l-6-6a.75.75 0 010-1.06l6-6a.75.75 0 011.06 0z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    <div class="px-2 mt-1">
-                        戻る
-                    </div>
-                </a>
             </div>
         </div>
     </section>
