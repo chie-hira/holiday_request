@@ -1,51 +1,16 @@
 <x-app-layout>
-    <!-- Page Heading -->
-    <header class="text-xs sm:text-sm bg-sky-50 shadow-md shadow-sky-500/50">
-        <div class="flex max-w-7xl mx-auto py-1 px-4 sm:px-6 lg:px-8">
-            <a href="{{ route('reports.index') }}" class="text-sky-600 inline-flex mr-2 hover:-translate-x-1">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
-                    <path fill-rule="evenodd"
-                        d="M9.53 2.47a.75.75 0 010 1.06L4.81 8.25H15a6.75 6.75 0 010 13.5h-3a.75.75 0 010-1.5h3a5.25 5.25 0 100-10.5H4.81l4.72 4.72a.75.75 0 11-1.06 1.06l-6-6a.75.75 0 010-1.06l6-6a.75.75 0 011.06 0z"
-                        clip-rule="evenodd" />
-                </svg>
-                <div class="px-2">
-                    出退勤届け一覧
-                </div>
-            </a>
-            @can('general_and_factory_gl')
-                <a href="{{ route('reports.pending_approval') }}" class="text-sky-600 inline-flex mr-2 hover:-translate-x-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
-                        <path fill-rule="evenodd"
-                            d="M9.53 2.47a.75.75 0 010 1.06L4.81 8.25H15a6.75 6.75 0 010 13.5h-3a.75.75 0 010-1.5h3a5.25 5.25 0 100-10.5H4.81l4.72 4.72a.75.75 0 11-1.06 1.06l-6-6a.75.75 0 010-1.06l6-6a.75.75 0 011.06 0z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    <div class="px-2">
-                        承諾待ち一覧へ
-                    </div>
-                </a>
-                <a href="{{ route('reports.approved') }}" class="text-sky-600 inline-flex hover:-translate-x-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
-                        <path fill-rule="evenodd"
-                            d="M9.53 2.47a.75.75 0 010 1.06L4.81 8.25H15a6.75 6.75 0 010 13.5h-3a.75.75 0 010-1.5h3a5.25 5.25 0 100-10.5H4.81l4.72 4.72a.75.75 0 11-1.06 1.06l-6-6a.75.75 0 010-1.06l6-6a.75.75 0 011.06 0z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    <div class="px-2">
-                        承諾済み一覧へ
-                    </div>
-                </a>
-            @endcan
-        </div>
-    </header>
 
     <div class="container px-5 py-6 mx-auto">
-        <div class="w-full max-w-md mx-auto mt-10">
-            <x-notice :notice="session('notice')" />
+        <div class="w-full max-w-md mx-auto mt-10 -mb-5">
+            @if ($report->cancel == 1)
+                <p class="text-center text-red-600 text-2xl font-semibold">取消確認中</p>
+            @endif
         </div>
 
         <div class="w-full max-w-md mx-auto mt-10 mb-8 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
             <div class="flex items-center justify-between mb-4">
                 <h5
-                    class="border-solid border-2 px-10 py-2 border-gray-500 rounded-md text-xl font-bold leading-none text-gray-900">
+                    class="border-solid border-2 px-6 sm:px-10 py-2 border-gray-500 rounded-md text-xl font-bold leading-none text-gray-900">
                     出 退 勤 届 け
                 </h5>
                 <p
@@ -175,13 +140,14 @@
                                             ))
                                             @if ($report->cancel == 1 && $report->approval1 == 1)
                                                 <x-show-a-button href="{{ route('reports.approval_cancel', $report) }}"
-                                                    onclick="if(!confirm('取消を確認しました')){return false};" class="px-1 py-1">
+                                                    onclick="if(!confirm('取消を確認しました')){return false};"
+                                                    class="px-1 py-1">
                                                     {{ __('CancelCheck') }}
                                                 </x-show-a-button>
                                             @endif
                                             @if ($report->cancel == 0 && $report->approval1 == 0)
                                                 <x-show-a-button href="{{ route('approval', $report) }}"
-                                                    onclick="if(!confirm('承諾しますか？')){return false};" class="px-3 py-1">
+                                                    onclick="if(!confirm('承認しますか？')){return false};" class="px-3 py-1">
                                                     {{ __('Approval') }}
                                                 </x-show-a-button>
                                             @endif
@@ -209,13 +175,14 @@
                                             ))
                                             @if ($report->cancel == 1 && $report->approval2 == 1)
                                                 <x-show-a-button href="{{ route('reports.approval_cancel', $report) }}"
-                                                    onclick="if(!confirm('取消を確認しました')){return false};" class="px-1 py-1">
+                                                    onclick="if(!confirm('取消を確認しました')){return false};"
+                                                    class="px-1 py-1">
                                                     {{ __('CancelCheck') }}
                                                 </x-show-a-button>
                                             @endif
                                             @if ($report->cancel == 0 && $report->approval2 == 0)
                                                 <x-show-a-button href="{{ route('approval', $report) }}"
-                                                    onclick="if(!confirm('承諾しますか？')){return false};" class="px-3 py-1">
+                                                    onclick="if(!confirm('承認しますか？')){return false};" class="px-3 py-1">
                                                     {{ __('Approval') }}
                                                 </x-show-a-button>
                                             @endif
@@ -243,13 +210,14 @@
                                             ))
                                             @if ($report->cancel == 1 && $report->approval3 == 1)
                                                 <x-show-a-button href="{{ route('reports.approval_cancel', $report) }}"
-                                                    onclick="if(!confirm('取消を確認しました')){return false};" class="px-1 py-1">
+                                                    onclick="if(!confirm('取消を確認しました')){return false};"
+                                                    class="px-1 py-1">
                                                     {{ __('CancelCheck') }}
                                                 </x-show-a-button>
                                             @endif
                                             @if ($report->cancel == 0 && $report->approval3 == 0)
                                                 <x-show-a-button href="{{ route('approval', $report) }}"
-                                                    onclick="if(!confirm('承諾しますか？')){return false};" class="px-3 py-1">
+                                                    onclick="if(!confirm('承認しますか？')){return false};" class="px-3 py-1">
                                                     {{ __('Approval') }}
                                                 </x-show-a-button>
                                             @endif
@@ -276,6 +244,33 @@
                         </table>
                     </li>
                 </ul>
+                <div class="w-full max-w-md mx-auto mt-2 -mb-4">
+                    <x-notice :notice="session('notice')" />
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-2">
+            @can('general_and_factory_gl')
+                <div class="flex justify-end">
+                    <x-return-button class="w-30 mr-2" href="{{ route('reports.pending_approval') }}">
+                        承認待ち一覧
+                    </x-return-button>
+                    <x-return-button class="w-30" href="{{ route('reports.approved') }}">
+                        承認済み一覧
+                    </x-return-button>
+                </div>
+            @endcan
+            @cannot('general_and_factory_gl')
+                <div></div>
+            @endcan
+            <div class="flex justify-end sm:justify-start">
+                <x-return-button class="w-24 mr-2" href="{{ route('reports.index') }}">
+                    一覧
+                </x-return-button>
+                <x-back-home-button class="w-24" href="{{ route('menu') }}">
+                    {{ __('Back') }}
+                </x-back-home-button>
             </div>
         </div>
     </div>

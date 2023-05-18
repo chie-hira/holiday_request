@@ -17,7 +17,7 @@ class CreateApprovalCategoriesTable extends Migration
             $table
                 ->id()
                 ->index()
-                ->comment('承諾ID');
+                ->comment('承認ID');
             $table->string('approval_name')->unique();
             $table->timestamps();
         });

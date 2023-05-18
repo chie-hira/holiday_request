@@ -45,7 +45,7 @@ Route::resource('users', UserController::class)->middleware('auth');
 # approvalsルーティング
 Route::resource('approvals', ApprovalController::class)->middleware('auth');
 
-# 承諾ルーティング
+# 承認ルーティング
 Route::get('/pending_approval', [ReportController::class, 'pendingApproval'])
     ->name('reports.pending_approval')
     ->middleware('auth', 'can:general_factory_gl_reader');
@@ -85,7 +85,7 @@ Route::get('/', [ReportController::class, 'menu'])
     ->name('menu')
     ->middleware('auth');
 
-# 承諾後のreport削除
+# 承認後のreport削除
 Route::delete('/reports/approved/{report}/cancel', [
     ReportController::class,
     'approvedCancel',

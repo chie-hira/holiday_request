@@ -15,10 +15,10 @@ class ApprovalCategorySeeder extends Seeder
     public function run()
     {
         $param = [
-            # 承諾権限は閲覧含む
-            ['approval_name' => '会社承諾'], # 総務部長承諾
-            ['approval_name' => '工場承諾'], # 工場長承諾
-            ['approval_name' => 'グループ承諾'], # GL承諾
+            # 承認権限は閲覧含む
+            ['approval_name' => '会社承認'], # 総務部長承認
+            ['approval_name' => '工場承認'], # 工場長承認
+            ['approval_name' => 'グループ承認'], # GL承認
             ['approval_name' => '閲覧'],
             ['approval_name' => '管理者'], # 各種設定権限
         ];

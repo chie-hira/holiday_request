@@ -27,26 +27,20 @@ class AuthServiceProvider extends ServiceProvider
 
         // 管理者だけ
         Gate::define('admin_only', function ($user) {
-            return !empty(
-                $user->approvals->where('approval_id', 5)->first()
-            );
+            return !empty($user->approvals->where('approval_id', 5)->first());
         });
 
-        // 会社承諾だけ
+        // 会社承認だけ
         Gate::define('general_only', function ($user) {
-            return !empty(
-                $user->approvals->where('approval_id', 1)->first()
-            );
+            return !empty($user->approvals->where('approval_id', 1)->first());
         });
 
         // 閲覧
         Gate::define('reader', function ($user) {
-            return !empty(
-                $user->approvals->where('approval_id', 4)->first()
-            );
+            return !empty($user->approvals->where('approval_id', 4)->first());
         });
 
-        // 会社承諾と工場承諾に適用
+        // 会社承認と工場承認に適用
         Gate::define('general_and_factory', function ($user) {
             return !empty(
                 $user->approvals->where('approval_id', '=', 1)->first()
@@ -54,7 +48,7 @@ class AuthServiceProvider extends ServiceProvider
                 !empty($user->approvals->where('approval_id', '=', 2)->first());
         });
 
-        // 会社承諾と工場承諾とGL承諾に適用
+        // 会社承認と工場承認とGL承認に適用
         Gate::define('general_and_factory_gl', function ($user) {
             return !empty(
                 $user->approvals->where('approval_id', '=', 1)->first()
@@ -65,7 +59,7 @@ class AuthServiceProvider extends ServiceProvider
                 !empty($user->approvals->where('approval_id', '=', 3)->first());
         });
 
-        // 会社承諾,工場承諾,GL承諾,閲覧に適用
+        // 会社承認,工場承認,GL承認,閲覧に適用
         Gate::define('general_factory_gl_reader', function ($user) {
             return !empty(
                 $user->approvals->where('approval_id', '<=', 4)->first()
