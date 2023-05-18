@@ -1,7 +1,7 @@
 @props(['notice'])
 
 @if ($notice)
-    <div id="alert-border-1" class="px-4 py-2 mb-4 text-xs sm:text-sm text-cyan-700 border-l-4 border-b border-cyan-600 bg-cyan-50" role="alert">
+    <div id="alert-border-1" class="px-4 py-2 mb-4 text-xs sm:text-sm text-sky-600 border-l-4 border-b border-sky-500 bg-sky-50" role="alert">
         <p class="flex items-center">
             <span class="font-medium mr-2">
                 <i class="fa-solid fa-bell"></i>
@@ -9,9 +9,8 @@
             <b class="text-xs sm:text-base font-medium">
                 {{ $notice }}
             </b>
-            {{-- <button type="button" onclick="window.location.href='{{route('dashboard')}}'" --}}
             <button type="button" onclick="window.location.reload();"
-                class="ml-auto -mx-1.5 -my-1.5 text-cyan-400 p-1.5 hover:text-cyan-500 inline-flex h-8 w-8"
+                class="ml-auto -mx-1.5 -my-1.5 text-sky-400 p-1.5 hover:text-sky-500 inline-flex h-8 w-8"
                 data-dismiss-target="#alert-border-1" aria-label="Close">
                 <span class="sr-only">Dismiss</span>
                 <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"

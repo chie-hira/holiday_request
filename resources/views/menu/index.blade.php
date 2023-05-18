@@ -1,68 +1,66 @@
 <x-app-layout>
-    <section class="text-gray-600 body-font">
-        <div class="container w-2/3 py-24 mx-auto">
-
-            @auth
-                <div class="grid grid-cols-1 mb-10">
-                    <!-- 通知機能 閲覧権限以上 start -->
-                    @can('general_and_factory_gl')
-                        @empty(!($pending||$approved))
-                            <ul class="p-4 mb-8 text-lg text-red-700 border-l-4 border-b border-red-600 bg-red-50" role="alert">
-                                @if ($pending)
-                                    <li class="flex">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                            class="w-6 h-6 mr-2">
-                                            <path
-                                                d="M5.85 3.5a.75.75 0 00-1.117-1 9.719 9.719 0 00-2.348 4.876.75.75 0 001.479.248A8.219 8.219 0 015.85 3.5zM19.267 2.5a.75.75 0 10-1.118 1 8.22 8.22 0 011.987 4.124.75.75 0 001.48-.248A9.72 9.72 0 0019.266 2.5z" />
-                                            <path fill-rule="evenodd"
-                                                d="M12 2.25A6.75 6.75 0 005.25 9v.75a8.217 8.217 0 01-2.119 5.52.75.75 0 00.298 1.206c1.544.57 3.16.99 4.831 1.243a3.75 3.75 0 107.48 0 24.583 24.583 0 004.83-1.244.75.75 0 00.298-1.205 8.217 8.217 0 01-2.118-5.52V9A6.75 6.75 0 0012 2.25zM9.75 18c0-.034 0-.067.002-.1a25.05 25.05 0 004.496 0l.002.1a2.25 2.25 0 11-4.5 0z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                        <span class="font-bold">{{ $pending }}件</span>の<span
-                                            class="font-bold">承諾待</span>があります
-                                    </li>
-                                @endif
-                                @if ($approved)
-                                    <li class="flex">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                            class="w-6 h-6 mr-2">
-                                            <path
-                                                d="M5.85 3.5a.75.75 0 00-1.117-1 9.719 9.719 0 00-2.348 4.876.75.75 0 001.479.248A8.219 8.219 0 015.85 3.5zM19.267 2.5a.75.75 0 10-1.118 1 8.22 8.22 0 011.987 4.124.75.75 0 001.48-.248A9.72 9.72 0 0019.266 2.5z" />
-                                            <path fill-rule="evenodd"
-                                                d="M12 2.25A6.75 6.75 0 005.25 9v.75a8.217 8.217 0 01-2.119 5.52.75.75 0 00.298 1.206c1.544.57 3.16.99 4.831 1.243a3.75 3.75 0 107.48 0 24.583 24.583 0 004.83-1.244.75.75 0 00.298-1.205 8.217 8.217 0 01-2.118-5.52V9A6.75 6.75 0 0012 2.25zM9.75 18c0-.034 0-.067.002-.1a25.05 25.05 0 004.496 0l.002.1a2.25 2.25 0 11-4.5 0z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                        <span class="text-sky-700 font-bold">{{ $approved }}件</span>の<span
-                                            class="text-sky-700 font-bold">取消確認</span>があります
-                                    </li>
-                                @endif
-                            </ul>
-                        @endempty
-                    @endcan
-                    <!-- 通知機能 閲覧権限以上 end -->
-
-                    <!-- 有休残日数 start -->
-                    <p class="flex items-center text-lg mb-10">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            class="w-6 h-6 mr-3 text-sky-600">
+    <!-- Page Heading -->
+    <header class="text-xs sm:text-sm bg-sky-50 border-b-2 border-gray-400">
+        <p class="flex items-center py-2 px-4 text-gray-700 text-xl">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                class="w-6 h-6 mr-3 text-sky-600">
+                <path fill-rule="evenodd"
+                    d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                    clip-rule="evenodd" fill="" />
+            </svg>
+            有休残日数&ensp;:&ensp;
+            @if (!empty($paid_holidays->remaining_days))
+                <span class="font-bold">
+                    {{ $paid_holidays->remaining_days }}
+                </span> 日
+            @endif
+            @if (!empty($paid_holidays->remaining_hours))
+                <span class="font-bold">
+                    &ensp;{{ $paid_holidays->remaining_hours }}
+                </span> 時間
+            @endif
+        </p>
+    </header>
+    <!-- 通知機能 閲覧権限以上 start -->
+    @can('general_and_factory_gl')
+        @empty(!($pending || $approved))
+            <ul class="px-6 py-4 mb-2 text-md sm:text-lg text-red-700 border-l-4 border-b border-red-600 bg-red-50"
+                role="alert">
+                @if ($pending)
+                    <li class="flex">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 mr-2">
+                            <path
+                                d="M5.85 3.5a.75.75 0 00-1.117-1 9.719 9.719 0 00-2.348 4.876.75.75 0 001.479.248A8.219 8.219 0 015.85 3.5zM19.267 2.5a.75.75 0 10-1.118 1 8.22 8.22 0 011.987 4.124.75.75 0 001.48-.248A9.72 9.72 0 0019.266 2.5z" />
                             <path fill-rule="evenodd"
-                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                clip-rule="evenodd" fill="" />
+                                d="M12 2.25A6.75 6.75 0 005.25 9v.75a8.217 8.217 0 01-2.119 5.52.75.75 0 00.298 1.206c1.544.57 3.16.99 4.831 1.243a3.75 3.75 0 107.48 0 24.583 24.583 0 004.83-1.244.75.75 0 00.298-1.205 8.217 8.217 0 01-2.118-5.52V9A6.75 6.75 0 0012 2.25zM9.75 18c0-.034 0-.067.002-.1a25.05 25.05 0 004.496 0l.002.1a2.25 2.25 0 11-4.5 0z"
+                                clip-rule="evenodd" />
                         </svg>
-                        有休残日数&ensp;:&ensp;
-                        @if (!empty($paid_holidays->remaining_days))
-                            <span class="font-bold">
-                                {{ $paid_holidays->remaining_days }}
-                            </span> 日
-                        @endif
-                        @if (!empty($paid_holidays->remaining_hours))
-                            <span class="font-bold">
-                                &ensp;{{ $paid_holidays->remaining_hours }}
-                            </span> 時間
-                        @endif
-                    </p>
-                    <!-- 有休残日数 end -->
+                        <div>
+                            <span class="font-bold">{{ $pending }}件</span>の<span class="font-bold">承認待</span>があります
+                        </div>
+                    </li>
+                @endif
+                @if ($approved)
+                    <li class="flex">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 mr-2">
+                            <path
+                                d="M5.85 3.5a.75.75 0 00-1.117-1 9.719 9.719 0 00-2.348 4.876.75.75 0 001.479.248A8.219 8.219 0 015.85 3.5zM19.267 2.5a.75.75 0 10-1.118 1 8.22 8.22 0 011.987 4.124.75.75 0 001.48-.248A9.72 9.72 0 0019.266 2.5z" />
+                            <path fill-rule="evenodd"
+                                d="M12 2.25A6.75 6.75 0 005.25 9v.75a8.217 8.217 0 01-2.119 5.52.75.75 0 00.298 1.206c1.544.57 3.16.99 4.831 1.243a3.75 3.75 0 107.48 0 24.583 24.583 0 004.83-1.244.75.75 0 00.298-1.205 8.217 8.217 0 01-2.118-5.52V9A6.75 6.75 0 0012 2.25zM9.75 18c0-.034 0-.067.002-.1a25.05 25.05 0 004.496 0l.002.1a2.25 2.25 0 11-4.5 0z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        <span class="font-bold">{{ $approved }}件</span>の<span class="font-bold">取消確認</span>があります
+                    </li>
+                @endif
+            </ul>
+        @endempty
+    @endcan
+    <!-- 通知機能 閲覧権限以上 end -->
 
+    <section class="text-gray-600 body-font">
+        <div class="container w-3/4 py-10 mx-auto">
+            @auth
+                <div class="max-w-md mx-auto grid grid-cols-1 mb-10">
                     <!-- 基本機能 atart -->
                     <a href={{ route('reports.create') }}
                         class="block text-center items-center p-3 my-2 text-white rounded-xl border-2 border-gray-500 bg-cyan-500 hover:text-gray-600 hover:font-semibold hover:bg-white focus:text-cyan-500 ">
@@ -121,7 +119,7 @@
                                 </svg>
                             </span>
                             <span class="flex items-center w-24">
-                                承諾待ち
+                                承認待ち
                             </span>
                             @if ($pending)
                                 <div class="flex justify-center relative -ml-4 -mt-5">
@@ -148,7 +146,7 @@
                                 </svg>
                             </span>
                             <span class="flex items-center w-24">
-                                承諾済み
+                                承認済み
                             </span>
                             @if ($approved)
                                 <div class="flex justify-center relative -ml-4 -mt-5">
@@ -210,7 +208,7 @@
                     @endcan
                     <!-- 管理者 end -->
 
-                    <!-- 会社承諾 start -->
+                    <!-- 会社承認 start -->
                     @can('general_only')
                         <a href={{ route('approvals.index') }}
                             class="inline-flex items-center p-2 text-lg font-medium text-gray-600 hover:text-sky-600 hover:font-bold">
@@ -225,15 +223,15 @@
                             <span class="w-32">権限設定</span>
                         </a>
                     @endcan
-                    <!-- 会社承諾 end -->
+                    <!-- 会社承認 end -->
                 </div>
             @endauth
 
-            <div class="text-left w-full my-12 mx-4">
+            <div class="text-left w-full my-12">
                 @if (Auth::user()->approvals->first())
-                    <ul class="">
+                    <ul class="text-sm">
                         @foreach (Auth::user()->approvals as $approval)
-                            <li class="flex mx-auto items-center leading-relaxed text-md">
+                            <li class="flex mx-auto items-center leading-relaxed">
                                 <span class="w-4 h-4 mr-2 rounded-full inline-flex items-center justify-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
                                         class="w-5 h-5 text-sky-600">
@@ -255,7 +253,7 @@
                                     ・{{ Auth::user()->getApprovalGroup($approval->group_id) }}
                                     ・{{ Auth::user()->getApprovalName($approval->approval_id) }}
                                 @endif
-                                <!-- 会社承諾 -->
+                                <!-- 会社承認 -->
                                 @if ($approval->approval_id == 1)
                                     {{ Auth::user()->getApprovalName($approval->approval_id) }}
                                 @endif

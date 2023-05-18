@@ -2,28 +2,28 @@
     <section class="text-gray-600 body-font">
         <div class="container max-w-5xl px-5 py-24 w-full mx-auto">
             <div class="flex flex-col text-center w-full mb-10">
-                <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">承諾権限の追加</h1>
+                <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">権限の追加</h1>
                 <div class="mx-auto">
                     <div class="flex text-left leading-relaxed text-sm mb-1">
                         <p>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                class="w-5 h-5 mr-3">
+                                class="w-5 h-5 mr-3 text-sky-600">
                                 <path fill-rule="evenodd"
                                     d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                    clip-rule="evenodd" fill="#9999ff" />
+                                    clip-rule="evenodd" fill="" />
                             </svg>
                         </p>
                         <p class="text-sm">
-                            <span class="font-bold">会社承諾権限</span>は管轄工場、管轄課、管轄グループの選択に関わらず、すべての届けの承諾権です。
+                            <span class="font-bold">会社承認権限</span>は管轄工場、管轄課、管轄グループの選択に関わらず、すべての届けの承認権です。
                         </p>
                     </div>
                     <div class="flex text-left leading-relaxed text-sm mb-1">
                         <p>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                class="w-5 h-5 mr-3">
+                                class="w-5 h-5 mr-3 text-sky-600">
                                 <path fill-rule="evenodd"
                                     d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                    clip-rule="evenodd" fill="#9999ff" />
+                                    clip-rule="evenodd" fill="" />
                             </svg>
                         </p>
                         <p class="text-sm">
@@ -33,23 +33,24 @@
                     <div class="flex text-left leading-relaxed text-sm mb-1">
                         <p>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                class="w-5 h-5 mr-3">
+                                class="w-5 h-5 mr-3 text-sky-600">
                                 <path fill-rule="evenodd"
                                     d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                    clip-rule="evenodd" fill="#9999ff" />
+                                    clip-rule="evenodd" fill="" />
                             </svg>
                         </p>
                         <p class="text-sm">
-                            <span class="font-bold">工場全体を管轄</span>する場合は、<span class="font-bold">全課、全グループ</span>を選択してください。
+                            <span class="font-bold">工場全体を管轄</span>する場合は、<span
+                                class="font-bold">全課、全グループ</span>を選択してください。
                         </p>
                     </div>
                     <div class="flex text-left leading-relaxed text-sm mb-1">
                         <p>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                class="w-5 h-5 mr-3">
+                                class="w-5 h-5 mr-3 text-sky-600">
                                 <path fill-rule="evenodd"
                                     d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                    clip-rule="evenodd" fill="#9999ff" />
+                                    clip-rule="evenodd" fill="" />
                             </svg>
                         </p>
                         <p class="text-sm">
@@ -96,8 +97,8 @@
                                                 @csrf
                                                 <td
                                                     class="px-2 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-800 dark:text-gray-200">
-                                                    <x-select name="user_id"
-                                                        class="block mt-1 w-40 text-sm" required autofocus>
+                                                    <x-select name="user_id" class="block mt-1 w-40 text-sm" required
+                                                        autofocus>
                                                         @foreach ($users as $user)
                                                             <option value="{{ $user->id }}"
                                                                 @if ($user->id === (int) old('user_id')) selected @endif>
@@ -106,8 +107,8 @@
                                                     </x-select>
                                                 </td>
                                                 <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
-                                                    <x-select name="factory_id"
-                                                        class="block mt-1 w-30 text-sm" required>
+                                                    <x-select name="factory_id" class="block mt-1 w-30 text-sm"
+                                                        required>
                                                         @foreach ($factory_categories as $factory_category)
                                                             <option value="{{ $factory_category->id }}"
                                                                 @if ($factory_category->id === (int) old('factory_id')) selected @endif>
@@ -116,8 +117,8 @@
                                                     </x-select>
                                                 </td>
                                                 <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
-                                                    <x-select name="department_id"
-                                                        class="block mt-1 w-32 text-sm" required>
+                                                    <x-select name="department_id" class="block mt-1 w-32 text-sm"
+                                                        required>
                                                         @foreach ($department_categories as $department_category)
                                                             <option value="{{ $department_category->id }}"
                                                                 @if ($department_category->id === (int) old('department_id')) selected @endif>
@@ -126,8 +127,7 @@
                                                     </x-select>
                                                 </td>
                                                 <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
-                                                    <x-select name="group_id"
-                                                        class="block mt-1 w-32 text-sm" required>
+                                                    <x-select name="group_id" class="block mt-1 w-32 text-sm" required>
                                                         @foreach ($group_categories as $group_category)
                                                             <option value="{{ $group_category->id }}"
                                                                 @if ($group_category->id === (int) old('group_id')) selected @endif>
@@ -136,8 +136,8 @@
                                                     </x-select>
                                                 </td>
                                                 <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
-                                                    <x-select name="approval_id"
-                                                        class="block mt-1 w-32 text-sm" required>
+                                                    <x-select name="approval_id" class="block mt-1 w-32 text-sm"
+                                                        required>
                                                         @foreach ($approval_categories as $approval_category)
                                                             <option value="{{ $approval_category->id }}"
                                                                 @if ($approval_category->id === (int) old('approval_id')) selected @endif>
@@ -146,10 +146,9 @@
                                                     </x-select>
                                                 </td>
                                                 <td class="pl-1 pr-4 py-4 whitespace-nowrap text-sm text-gray-800">
-                                                    <button type="submit"
-                                                        class="px-3 py-1 text-sm text-blue-500 rounded-full bg-blue-100/60 hover:text-white hover:bg-blue-500">
-                                                        権限追加
-                                                    </button>
+                                                    <x-show-button>
+                                                        {{ __('Add') }}
+                                                    </x-show-button>
                                                 </td>
                                             </form>
                                         </tr>
@@ -161,19 +160,15 @@
                 </div>
             </div>
 
-            <div class="flex mt-4 lg:w-2/3 w-full mx-auto">
-                <a href="{{ route('approvals.index') }}"
-                    class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-                        <path fill-rule="evenodd"
-                            d="M9.53 2.47a.75.75 0 010 1.06L4.81 8.25H15a6.75 6.75 0 010 13.5h-3a.75.75 0 010-1.5h3a5.25 5.25 0 100-10.5H4.81l4.72 4.72a.75.75 0 11-1.06 1.06l-6-6a.75.75 0 010-1.06l6-6a.75.75 0 011.06 0z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    <div class="px-2 mt-1">
-                        戻る
-                    </div>
-                </a>
+            <div class="mt-10 flex justify-end">
+                <x-return-button class="w-24 mr-2" href="{{ route('approvals.index') }}">
+                    一覧
+                </x-return-button>
+                <x-back-home-button class="w-24" href="{{ route('menu') }}">
+                    {{ __('Back') }}
+                </x-back-home-button>
             </div>
+
         </div>
     </section>
 </x-app-layout>

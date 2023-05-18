@@ -1,6 +1,6 @@
 <x-app-layout>
     <!-- Page Heading -->
-    <header class="text-xs sm:text-sm bg-sky-50 shadow-md shadow-sky-500/50">
+    <header class="text-xs sm:text-sm bg-sky-50 border-b-2 border-gray-400">
         <div class="flex max-w-7xl mx-auto py-1 px-4 sm:px-6 lg:px-8">
             <button class="mx-2" onclick="reportChange1()">有給休暇</button>
             <button class="mx-2" onclick="reportChange2()">バースデイ休暇</button>
@@ -138,19 +138,11 @@
                 </div>
             </div>
 
-            {{-- <div class="flex pl-4 mt-4 lg:w-2/3 w-full mx-auto">
-                <a href="{{ route('menu') }}"
-                    class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-                        <path fill-rule="evenodd"
-                            d="M9.53 2.47a.75.75 0 010 1.06L4.81 8.25H15a6.75 6.75 0 010 13.5h-3a.75.75 0 010-1.5h3a5.25 5.25 0 100-10.5H4.81l4.72 4.72a.75.75 0 11-1.06 1.06l-6-6a.75.75 0 010-1.06l6-6a.75.75 0 011.06 0z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    <div class="px-2 mt-1">
-                        戻る
-                    </div>
-                </a>
-            </div> --}}
+            <div class="mt-10 flex justify-end">
+                <x-back-home-button class="w-24" href="{{ route('menu') }}">
+                    {{ __('Back') }}
+                </x-back-home-button>
+            </div>
         </div>
     </section>
 

@@ -54,8 +54,7 @@
                                         @endforeach
 
                                         <tr class="hover:bg-gray-100 ">
-                                            <td
-                                                class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-800 ">
+                                            <td class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-800 ">
                                                 特別休暇(短期育休)</td>
                                             <td class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium">
                                                 ※
@@ -63,8 +62,7 @@
                                         </tr>
 
                                         <tr class="hover:bg-gray-100 ">
-                                            <td
-                                                class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-800 ">
+                                            <td class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-800 ">
                                                 育児休業</td>
                                             <td class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium">
                                                 ※
@@ -72,8 +70,7 @@
                                         </tr>
 
                                         <tr class="hover:bg-gray-100 ">
-                                            <td
-                                                class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-800 ">
+                                            <td class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-800 ">
                                                 パパ育休</td>
                                             <td class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium">
                                                 ※
@@ -104,7 +101,7 @@
                         看護休暇は<span class="font-bold">小学校就学前の子</span>を養育する者が取得できます。
                     </p>
                 </div>
-                
+
                 <div class="flex text-left leading-relaxed text-sm mb-1">
                     <p>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
@@ -171,7 +168,7 @@
                         </svg>
                     </p>
                     <p class="text-sm">
-                        取得可能日数は<span class="font-bold">届け出承諾後の日数</span>です。
+                        取得可能日数は<span class="font-bold">届け出承認後の日数</span>です。
                     </p>
                 </div>
 
@@ -185,9 +182,15 @@
                         </svg>
                     </p>
                     <p class="text-sm">
-                        ※は<span class="font-bold">対象者、家族構成等</span>によって異なります。詳細は総務課にお問い合わせください。
+                        ※は<span class="font-bold">対象者によって異なります</span>。詳細は総務課にお問い合わせください。
                     </p>
                 </div>
+            </div>
+
+            <div class="mt-10 flex justify-end">
+                <x-back-home-button class="w-24" href="{{ route('menu') }}">
+                    {{ __('Back') }}
+                </x-back-home-button>
             </div>
         </div>
     </section>

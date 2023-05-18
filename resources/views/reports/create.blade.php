@@ -12,18 +12,7 @@
                                 clip-rule="evenodd" fill="" />
                         </svg>
                         <span class="text-sm">
-                            項目を入力して、<span class="font-bold">日付算出ボタン</span>を押してください。
-                        </span>
-                    </p>
-                    <p class="flex text-left leading-relaxed text-sm mb-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            class="w-5 h-5 mr-3 text-sky-600">
-                            <path fill-rule="evenodd"
-                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                                clip-rule="evenodd" fill="" />
-                        </svg>
-                        <span class="text-sm">
-                            取得日数、残日数は<span class="font-bold">自動計算</span>されます。
+                            項目を入力して、<span class="font-bold">提出</span>を押してください。
                         </span>
                     </p>
                 </div>
@@ -272,19 +261,11 @@
                 </x-button>
             </form>
 
-            {{-- <div class="flex pl-4 mt-4 lg:w-2/3 w-full mx-auto">
-                <a href="{{ route('menu') }}"
-                    class="text-indigo-500 inline-flex mx-auto md:mb-2 lg:mb-0 hover:-translate-x-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-                        <path fill-rule="evenodd"
-                            d="M9.53 2.47a.75.75 0 010 1.06L4.81 8.25H15a6.75 6.75 0 010 13.5h-3a.75.75 0 010-1.5h3a5.25 5.25 0 100-10.5H4.81l4.72 4.72a.75.75 0 11-1.06 1.06l-6-6a.75.75 0 010-1.06l6-6a.75.75 0 011.06 0z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    <div class="px-2">
-                        戻る
-                    </div>
-                </a>
-            </div> --}}
+            <div class="mt-10 flex justify-end">
+                <x-back-home-button class="w-24" href="{{ route('menu') }}">
+                    {{ __('Back') }}
+                </x-back-home-button>
+            </div>
         </div>
     </section>
 
@@ -624,157 +605,157 @@
         /* 表示切替end */
 
         /* 日数算出start */
-        let button = document.getElementById('button');
+        // let button = document.getElementById('button');
         let startDate = document.getElementById('start_date');
         let endDate = document.getElementById('end_date');
         let startTime = document.getElementById('start_time');
         let endTime = document.getElementById('end_time');
 
-        button.addEventListener("click", function() {
-            // 取得日数
-            const startVal = new Date(startDate.value);
-            const endVal = new Date(endDate.value);
-            const startTimeVal = new Date(startDate.value + ' ' + startTime.value);
-            const endTimeVal = new Date(startDate.value + ' ' + endTime.value);
-            let reportId = reportCategory.value;
-            let diffDays = (endVal - startVal) / 86400000 + 1; // 単純な差
-            let getDays = 0;
-            let dayOffs = 0;
+        // button.addEventListener("click", function() {
+        //     // 取得日数
+        //     const startVal = new Date(startDate.value);
+        //     const endVal = new Date(endDate.value);
+        //     const startTimeVal = new Date(startDate.value + ' ' + startTime.value);
+        //     const endTimeVal = new Date(startDate.value + ' ' + endTime.value);
+        //     let reportId = reportCategory.value;
+        //     let diffDays = (endVal - startVal) / 86400000 + 1; // 単純な差
+        //     let getDays = 0;
+        //     let dayOffs = 0;
 
-            //土曜日、日曜日は基本休業日でdayOffsに加算
-            let remainderDays = diffDays % 7
-            let startWeek = startVal.getDay(); //0~6の曜日数値
-            dayOffs = (diffDays - remainderDays) / 7 * 2;
-            for (var i = 0; i < remainderDays; i++) {
-                if (startWeek + i == 0 || startWeek + i == 6 || startWeek + i == 7) {
-                    dayOffs++; // 土曜日6,日曜日0,7は休日数に加算
-                }
-            }
+        //     //土曜日、日曜日は基本休業日でdayOffsに加算
+        //     let remainderDays = diffDays % 7
+        //     let startWeek = startVal.getDay(); //0~6の曜日数値
+        //     dayOffs = (diffDays - remainderDays) / 7 * 2;
+        //     for (var i = 0; i < remainderDays; i++) {
+        //         if (startWeek + i == 0 || startWeek + i == 6 || startWeek + i == 7) {
+        //             dayOffs++; // 土曜日6,日曜日0,7は休日数に加算
+        //         }
+        //     }
 
-            // 土曜日の営業日をdayOffsから減算
-            const saturday = [ //土曜日の営業日を配列
-                '20230819',
-                '20240309',
-            ];
-            for (let d = new Date(startDate.value); d <= endVal; d.setDate(d.getDate() + 1)) {
-                let startYMD = d.getFullYear() + ('0' + (d.getMonth() + 1)).slice(-2) + ('0' + d
-                    .getDate()).slice(-2);
-                if (saturday.indexOf(startYMD) != -1) {
-                    dayOffs--; // 土曜日の営業日は休日数から減算
-                    // console.log(startYMD);
-                }
-            }
+        //     // 土曜日の営業日をdayOffsから減算
+        //     const saturday = [ //土曜日の営業日を配列
+        //         '20230819',
+        //         '20240309',
+        //     ];
+        //     for (let d = new Date(startDate.value); d <= endVal; d.setDate(d.getDate() + 1)) {
+        //         let startYMD = d.getFullYear() + ('0' + (d.getMonth() + 1)).slice(-2) + ('0' + d
+        //             .getDate()).slice(-2);
+        //         if (saturday.indexOf(startYMD) != -1) {
+        //             dayOffs--; // 土曜日の営業日は休日数から減算
+        //             // console.log(startYMD);
+        //         }
+        //     }
 
-            // 祝祭日等の休業日をdayOffsに加算
-            const holiday = [ // 土日以外の休業日を配列で記載
-                '20230503',
-                '20230504',
-                '20230505',
-                '20230814',
-                '20230815',
-                '20230816',
-                '20240101',
-                '20240102',
-                '20240103',
-            ];
-            for (let d = new Date(startDate.value); d <= endVal; d.setDate(d.getDate() + 1)) {
-                let startYMD = d.getFullYear() + ('0' + (d.getMonth() + 1)).slice(-2) + ('0' + d
-                    .getDate()).slice(-2);
-                if (holiday.indexOf(startYMD) != -1) {
-                    dayOffs++; // 土曜日の営業日は休日数から減算
-                    // console.log(startYMD);
-                }
-            }
+        //     // 祝祭日等の休業日をdayOffsに加算
+        //     const holiday = [ // 土日以外の休業日を配列で記載
+        //         '20230503',
+        //         '20230504',
+        //         '20230505',
+        //         '20230814',
+        //         '20230815',
+        //         '20230816',
+        //         '20240101',
+        //         '20240102',
+        //         '20240103',
+        //     ];
+        //     for (let d = new Date(startDate.value); d <= endVal; d.setDate(d.getDate() + 1)) {
+        //         let startYMD = d.getFullYear() + ('0' + (d.getMonth() + 1)).slice(-2) + ('0' + d
+        //             .getDate()).slice(-2);
+        //         if (holiday.indexOf(startYMD) != -1) {
+        //             dayOffs++; // 土曜日の営業日は休日数から減算
+        //             // console.log(startYMD);
+        //         }
+        //     }
 
-            if (reportCategory.value == 1 || // 有給
-                reportCategory.value == 3 || // 特別休暇(慶事)
-                reportCategory.value == 4 || // 特別休暇(弔事)
-                reportCategory.value == 5 || // 特別休暇(弔事)
-                reportCategory.value == 6 || // 特別休暇(弔事)
-                reportCategory.value == 7 || // 特別休暇(看護・対象1人)
-                reportCategory.value == 8 || // 特別休暇(看護・対象2人以上)
-                reportCategory.value == 9 || // 特別休暇(介護・対象1人)
-                reportCategory.value == 10 || // 特別休暇(介護・対象2人以上)
-                reportCategory.value == 11 || // 特別休暇(短期育休)
-                reportCategory.value == 16 || // 介護休業
-                reportCategory.value == 17 || // 育児休業
-                reportCategory.value == 18) { // パパ育休
-                getDays = diffDays - dayOffs;
-            }
-            if (subReportCategories[1].checked) { // 半日休
-                getDays = 0.5;
-            }
-            if (subReportCategories[2].checked ||
-                reportCategory.value == 13 || // 遅刻
-                reportCategory.value == 14 || // 早退
-                reportCategory.value == 15) { // 外出
-                getDays = ((endTimeVal - startTimeVal) / 60000) / 60 * 1 / 8;
-                // 時間換算:8時間で1日 1時間=1/8日 0.125日
-                getDays = orgRound(getDays, 100000); // 小数点以下切り捨て
-            }
-            if (reportCategory.value == 2 || reportCategory.value == 12) {
-                getDays = 1.0;
-            }
+        //     if (reportCategory.value == 1 || // 有給
+        //         reportCategory.value == 3 || // 特別休暇(慶事)
+        //         reportCategory.value == 4 || // 特別休暇(弔事)
+        //         reportCategory.value == 5 || // 特別休暇(弔事)
+        //         reportCategory.value == 6 || // 特別休暇(弔事)
+        //         reportCategory.value == 7 || // 特別休暇(看護・対象1人)
+        //         reportCategory.value == 8 || // 特別休暇(看護・対象2人以上)
+        //         reportCategory.value == 9 || // 特別休暇(介護・対象1人)
+        //         reportCategory.value == 10 || // 特別休暇(介護・対象2人以上)
+        //         reportCategory.value == 11 || // 特別休暇(短期育休)
+        //         reportCategory.value == 16 || // 介護休業
+        //         reportCategory.value == 17 || // 育児休業
+        //         reportCategory.value == 18) { // パパ育休
+        //         getDays = diffDays - dayOffs;
+        //     }
+        //     if (subReportCategories[1].checked) { // 半日休
+        //         getDays = 0.5;
+        //     }
+        //     if (subReportCategories[2].checked ||
+        //         reportCategory.value == 13 || // 遅刻
+        //         reportCategory.value == 14 || // 早退
+        //         reportCategory.value == 15) { // 外出
+        //         getDays = ((endTimeVal - startTimeVal) / 60000) / 60 * 1 / 8;
+        //         // 時間換算:8時間で1日 1時間=1/8日 0.125日
+        //         getDays = orgRound(getDays, 100000); // 小数点以下切り捨て
+        //     }
+        //     if (reportCategory.value == 2 || reportCategory.value == 12) {
+        //         getDays = 1.0;
+        //     }
 
-            // get_days書き出し
-            document.getElementById('get_days').setAttribute('value', getDays);
+        //     // get_days書き出し
+        //     document.getElementById('get_days').setAttribute('value', getDays);
 
-            // get時間&get日数作成&書き出し
-            function orgRound(value, base) { // 小数点以下を丸める関数
-                return Math.round(value * base) / base;
-            }
+        //     // get時間&get日数作成&書き出し
+        //     function orgRound(value, base) { // 小数点以下を丸める関数
+        //         return Math.round(value * base) / base;
+        //     }
 
-            function decimalPart(num, decDigits) { // 指定した桁数の小数点以下を取り出す関数
-                var decPart = num - ((num >= 0) ? Math.floor(num) : Math.ceil(num));
-                return decPart.toFixed(decDigits);
-            }
+        //     function decimalPart(num, decDigits) { // 指定した桁数の小数点以下を取り出す関数
+        //         var decPart = num - ((num >= 0) ? Math.floor(num) : Math.ceil(num));
+        //         return decPart.toFixed(decDigits);
+        //     }
 
-            // console.log(orgRound(getDays, 100000)); // 小数5桁
-            let getDaysOnly = getDays - decimalPart(getDays, 5);
-            let getHours = decimalPart(getDays, 5) * 8;
-            let getMinutes = 0;
-            if (decimalPart(getHours, 5) != 0 && decimalPart(getHours, 5) < 1) {
-                getHoursOnly = getHours - decimalPart(getHours, 5);
-                getHoursOnly = orgRound(getHoursOnly, 1);
-                getMinutes = decimalPart(getHours, 5) * 60;
-                getMinutes = orgRound(getMinutes, 1);
-            } else {
-                getHoursOnly = getHours;
-            }
-            document.getElementById('get_days_only').setAttribute('value', getDaysOnly);
-            document.getElementById('get_hours').setAttribute('value', getHoursOnly);
-            document.getElementById('get_minutes').setAttribute('value', getMinutes);
+        //     // console.log(orgRound(getDays, 100000)); // 小数5桁
+        //     let getDaysOnly = getDays - decimalPart(getDays, 5);
+        //     let getHours = decimalPart(getDays, 5) * 8;
+        //     let getMinutes = 0;
+        //     if (decimalPart(getHours, 5) != 0 && decimalPart(getHours, 5) < 1) {
+        //         getHoursOnly = getHours - decimalPart(getHours, 5);
+        //         getHoursOnly = orgRound(getHoursOnly, 1);
+        //         getMinutes = decimalPart(getHours, 5) * 60;
+        //         getMinutes = orgRound(getMinutes, 1);
+        //     } else {
+        //         getHoursOnly = getHours;
+        //     }
+        //     document.getElementById('get_days_only').setAttribute('value', getDaysOnly);
+        //     document.getElementById('get_hours').setAttribute('value', getHoursOnly);
+        //     document.getElementById('get_minutes').setAttribute('value', getMinutes);
 
-            let ownRemainings = @json($my_remainings);
-            const arr = Object.keys(ownRemainings);
-            let ownRemainingDays = 0;
-            // console.log(arr);
-            arr.forEach((el) => {
-                if (ownRemainings[el].report_id == reportId) {
-                    ownRemainingDays = ownRemainings[el].remaining;
-                }
-            });
+        //     let ownRemainings = @json($my_remainings);
+        //     const arr = Object.keys(ownRemainings);
+        //     let ownRemainingDays = 0;
+        //     // console.log(arr);
+        //     arr.forEach((el) => {
+        //         if (ownRemainings[el].report_id == reportId) {
+        //             ownRemainingDays = ownRemainings[el].remaining;
+        //         }
+        //     });
 
-            let remainingDays = ownRemainingDays - getDays;
-            // 残日数書き出し
-            document.getElementById('remaining_days').setAttribute('value', remainingDays);
+        //     let remainingDays = ownRemainingDays - getDays;
+        //     // 残日数書き出し
+        //     document.getElementById('remaining_days').setAttribute('value', remainingDays);
 
-            // console.log(orgRound(remainingDays, 100000)); // 小数5桁
-            let remainingDaysOnly = remainingDays - decimalPart(remainingDays, 5);
-            let remainingHours = decimalPart(remainingDays, 5) * 8;
-            let remainingMinutes = 0;
-            if (decimalPart(remainingHours, 5) != 0 && decimalPart(remainingHours, 5) < 1) {
-                remainingHoursOnly = remainingHours - decimalPart(remainingHours, 5);
-                remainingHoursOnly = orgRound(remainingHoursOnly, 1);
-                remainingMinutes = decimalPart(remainingHours, 5) * 60;
-                remainingMinutes = orgRound(remainingMinutes, 1);
-            } else {
-                remainingHoursOnly = getHours;
-            }
-            document.getElementById('remaining_days_only').setAttribute('value', remainingDaysOnly);
-            document.getElementById('remaining_hours').setAttribute('value', remainingHoursOnly);
-            document.getElementById('remaining_minutes').setAttribute('value', remainingMinutes);
-        });
+        //     // console.log(orgRound(remainingDays, 100000)); // 小数5桁
+        //     let remainingDaysOnly = remainingDays - decimalPart(remainingDays, 5);
+        //     let remainingHours = decimalPart(remainingDays, 5) * 8;
+        //     let remainingMinutes = 0;
+        //     if (decimalPart(remainingHours, 5) != 0 && decimalPart(remainingHours, 5) < 1) {
+        //         remainingHoursOnly = remainingHours - decimalPart(remainingHours, 5);
+        //         remainingHoursOnly = orgRound(remainingHoursOnly, 1);
+        //         remainingMinutes = decimalPart(remainingHours, 5) * 60;
+        //         remainingMinutes = orgRound(remainingMinutes, 1);
+        //     } else {
+        //         remainingHoursOnly = getHours;
+        //     }
+        //     document.getElementById('remaining_days_only').setAttribute('value', remainingDaysOnly);
+        //     document.getElementById('remaining_hours').setAttribute('value', remainingHoursOnly);
+        //     document.getElementById('remaining_minutes').setAttribute('value', remainingMinutes);
+        // });
 
         function countDays() {
             // get_daysリセット

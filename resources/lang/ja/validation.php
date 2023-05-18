@@ -12,7 +12,7 @@
 */
 
 return [
-    'accepted' => ':attributeを承諾してください。',
+    'accepted' => ':attributeを承認してください。',
     'accepted_if' =>
         ':otherが:valueの場合、:attributeを受け入れる必要があります。',
     'active_url' => ':attributeは、有効なURLではありません。',

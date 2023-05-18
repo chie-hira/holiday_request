@@ -1,24 +1,8 @@
 <x-app-layout>
-    <!-- Page Heading -->
-    <header class="text-xs sm:text-sm bg-sky-50 shadow-md shadow-sky-500/50">
-        <div class="flex max-w-7xl mx-auto py-1 px-4 sm:px-6 lg:px-8">
-            <a href="{{ route('approvals.index') }}" class="text-sky-600 inline-flex mr-2 hover:-translate-x-1">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
-                    <path fill-rule="evenodd"
-                        d="M9.53 2.47a.75.75 0 010 1.06L4.81 8.25H15a6.75 6.75 0 010 13.5h-3a.75.75 0 010-1.5h3a5.25 5.25 0 100-10.5H4.81l4.72 4.72a.75.75 0 11-1.06 1.06l-6-6a.75.75 0 010-1.06l6-6a.75.75 0 011.06 0z"
-                        clip-rule="evenodd" />
-                </svg>
-                <div class="px-2">
-                    権限一覧
-                </div>
-            </a>
-        </div>
-    </header>
-
     <section class="text-gray-600 body-font">
         <div class="container max-w-6xl px-5 py-24 w-full mx-auto">
             <div class="flex flex-col text-center w-full mb-10">
-                <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">承諾権限の変更</h1>
+                <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">承認権限の変更</h1>
                 <div class="mx-auto">
                     <div class="flex text-left leading-relaxed text-sm mb-1">
                         <p>
@@ -30,7 +14,7 @@
                             </svg>
                         </p>
                         <p class="text-sm">
-                            <span class="font-bold">会社承諾権限</span>は管轄工場、管轄課、管轄グループの選択に関わらず、すべての届けの承諾権です。
+                            <span class="font-bold">会社承認権限</span>は管轄工場、管轄課、管轄グループの選択に関わらず、すべての届けの承認権です。
                         </p>
                     </div>
                     <div class="flex text-left leading-relaxed text-sm mb-1">
@@ -56,7 +40,8 @@
                             </svg>
                         </p>
                         <p class="text-sm">
-                            <span class="font-bold">工場全体を管轄</span>する場合は、<span class="font-bold">全課、全グループ</span>を選択してください。
+                            <span class="font-bold">工場全体を管轄</span>する場合は、<span
+                                class="font-bold">全課、全グループ</span>を選択してください。
                         </p>
                     </div>
                     <div class="flex text-left leading-relaxed text-sm mb-1">
@@ -126,8 +111,8 @@
                                                 @csrf
                                                 @method('PUT')
                                                 <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
-                                                    <x-select name="factory_id"
-                                                        class="block mt-1 w-32 text-sm" required autofocus>
+                                                    <x-select name="factory_id" class="block mt-1 w-32 text-sm" required
+                                                        autofocus>
                                                         <option value="{{ $approval->factory_id }}">
                                                             {{ $approval->factory->factory_name }}</option>
                                                         @foreach ($factory_categories as $factory_category)
@@ -138,8 +123,8 @@
                                                     </x-select>
                                                 </td>
                                                 <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
-                                                    <x-select name="department_id"
-                                                        class="block mt-1 w-32 text-sm" required autofocus>
+                                                    <x-select name="department_id" class="block mt-1 w-32 text-sm"
+                                                        required autofocus>
                                                         <option value="{{ $approval->department_id }}">
                                                             {{ $approval->department->department_name }}</option>
                                                         @foreach ($department_categories as $department_category)
@@ -150,8 +135,8 @@
                                                     </x-select>
                                                 </td>
                                                 <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
-                                                    <x-select name="group_id"
-                                                        class="block mt-1 w-32 text-sm" required autofocus>
+                                                    <x-select name="group_id" class="block mt-1 w-32 text-sm" required
+                                                        autofocus>
                                                         <option value="{{ $approval->group_id }}">
                                                             {{ $approval->group->group_name }}</option>
                                                         @foreach ($group_categories as $group_category)
@@ -162,8 +147,8 @@
                                                     </x-select>
                                                 </td>
                                                 <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
-                                                    <x-select name="approval_id"
-                                                        class="block mt-1 w-32 text-sm" required autofocus>
+                                                    <x-select name="approval_id" class="block mt-1 w-32 text-sm"
+                                                        required autofocus>
                                                         <option value="{{ $approval->approval_id }}">
                                                             {{ $approval->approval_category->approval_name }}</option>
                                                         @foreach ($approval_categories as $approval_category)
@@ -174,11 +159,7 @@
                                                     </x-select>
                                                 </td>
                                                 <td class="px-1 py-4 whitespace-nowrap text-sm text-gray-800">
-                                                    {{-- <button type="submit"
-                                                        class="px-3 py-1 text-sm text-blue-500 rounded-full bg-blue-100/60 hover:text-white hover:bg-blue-500">
-                                                        権限更新
-                                                    </button> --}}
-                                                    <x-edit-button >
+                                                    <x-edit-button>
                                                         {{ __('Update') }}
                                                     </x-edit-button>
                                                 </td>
@@ -188,10 +169,8 @@
                                                     method="POST">
                                                     @csrf
                                                     @method('DELETE')
-                                                    {{-- <input type="submit" value="権限削除"
-                                                        onclick="if(!confirm('承諾権限を取消しますか？')){return false};"
-                                                        class="px-3 py-1 text-sm text-pink-500 rounded-full bg-pink-100/60 hover:text-white hover:bg-pink-500"> --}}
-                                                    <x-delete-input-button value="権限削除" onclick="if(!confirm('承諾権限を取消しますか？')){return false};"/>
+                                                    <x-delete-input-button value="権限削除"
+                                                        onclick="if(!confirm('承認権限を取消しますか？')){return false};" />
                                                 </form>
                                             </td>
                                         </tr>
@@ -201,6 +180,15 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="mt-10 flex justify-end">
+                <x-return-button class="w-24 mr-2" href="{{ route('approvals.index') }}">
+                    一覧
+                </x-return-button>
+                <x-back-home-button class="w-24" href="{{ route('menu') }}">
+                    {{ __('Back') }}
+                </x-back-home-button>
             </div>
         </div>
     </section>

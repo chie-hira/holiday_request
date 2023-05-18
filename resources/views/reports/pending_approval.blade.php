@@ -2,7 +2,7 @@
     <section class="text-gray-600 body-font">
         <div class="container px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-10">
-                <h1 class="sm:text-4xl text-3xl font-medium title-font text-gray-900">承諾待 届け一覧</h1>
+                <h1 class="sm:text-4xl text-3xl font-medium title-font text-gray-900">承認待 一覧</h1>
             </div>
 
             <x-notice :notice="session('notice')" />
@@ -183,7 +183,8 @@
                                                                 $report->user->factory_id == $approval->factory_id &&
                                                                     $report->user->department_id == $approval->department_id &&
                                                                     $report->user->group_id == $approval->group_id &&
-                                                                    $report->approval3 == 0 && $report->cancel == 0)
+                                                                    $report->approval3 == 0 &&
+                                                                    $report->cancel == 0)
                                                                 <div class="mt-2 -ml-3">
                                                                     <x-check-mark />
                                                                 </div>
@@ -192,7 +193,8 @@
                                                                 $report->user->factory_id == $approval->factory_id &&
                                                                     $report->user->department_id == $approval->department_id &&
                                                                     $report->user->group_id == $approval->group_id &&
-                                                                    $report->approval3 == 1 && $report->cancel == 1)
+                                                                    $report->approval3 == 1 &&
+                                                                    $report->cancel == 1)
                                                                 <div class="mt-2 -ml-3">
                                                                     <x-check-mark />
                                                                 </div>
@@ -208,6 +210,12 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="mt-10 flex justify-end">
+                <x-back-home-button class="w-24" href="{{ route('menu') }}">
+                    {{ __('Back') }}
+                </x-back-home-button>
             </div>
         </div>
     </section>

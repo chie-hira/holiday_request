@@ -12,7 +12,7 @@
 */
 
 return [
-    'accepted' => 'この項目が未承諾です。',
+    'accepted' => 'この項目が未承認です。',
     'accepted_if' =>
         'このフィールドは、:other が :valueのときに受け付ける必要がある。',
     'active_url' => '有効なURLではありません。',

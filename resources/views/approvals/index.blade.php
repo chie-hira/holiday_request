@@ -7,8 +7,9 @@
                 <h2 class=" text-right">
                     @can('general_only')
                         <a href={{ route('approvals.create') }}
-                            class="inline-flex items-center justify-center text-base mr-2 font-medium text-fuchsia-400 rounded-lg bg-gray-50 hover:text-fuchsia-600 hover:font-bold">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                            class="inline-flex items-center justify-center text-base mr-2 font-medium text-sky-600 hover:text-sky-50 p-1 rounded-full border-2 border-gray-400 bg-sky-100/60 hover:bg-sky-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                class="w-6 h-6">
                                 <path fill-rule="evenodd"
                                     d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z"
                                     clip-rule="evenodd" />
@@ -95,6 +96,12 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="mt-10 flex justify-end">
+                <x-back-home-button class="w-24" href="{{ route('menu') }}">
+                    {{ __('Back') }}
+                </x-back-home-button>
             </div>
         </div>
     </section>
