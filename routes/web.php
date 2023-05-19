@@ -4,6 +4,7 @@ use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\RemainingController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
+use App\Models\ReportCategory;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -92,5 +93,12 @@ Route::delete('/reports/approved/{report}/cancel', [
 ])
     ->name('reports.approved_cancel')
     ->middleware('auth');
+
+# エクスポート
+Route::get('/export', [ReportController::class, 'export'])
+    ->name('reports.export');
+// Route::get('/reports/export', [ReportController::class, 'export'])
+//     ->name('reports.export');
+
 
 require __DIR__ . '/auth.php';

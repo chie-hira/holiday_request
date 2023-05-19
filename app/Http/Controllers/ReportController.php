@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ReportExport;
 
 class ReportController extends Controller
 {
@@ -307,7 +309,7 @@ class ReportController extends Controller
 
         try {
             $report->save();
-            return redirect(route('reports.index'))->with(
+            return redirect(route('reports.show', $report))->with(
                 'notice',
                 '出退勤届けを提出しました'
             );
@@ -609,7 +611,7 @@ class ReportController extends Controller
 
         try {
             $report->save();
-            return redirect(route('reports.index'))->with(
+            return redirect(route('reports.show', $report))->with(
                 'notice',
                 '出退勤届けを更新しました。'
             );
@@ -696,6 +698,40 @@ class ReportController extends Controller
             $report->approval1 = 0;
             $report->approval2 = 0;
             $report->approval3 = 0;
+
+            /** remainingを更新 */
+            $remaining = Remaining::all()
+                ->where('report_id', '=', $report->report_id)
+                ->where('user_id', '=', $report->user_id)
+                ->first();
+            if (empty($remaining)) {
+                # remainingがない場合
+                try {
+                    $report->delete();
+                    return redirect()
+                        ->route('reports.approved')
+                        ->with('notice', '出退勤届けを取り消しました');
+                } catch (\Throwable $th) {
+                    return back()->withErrors($th->getMessage());
+                }
+            } else {
+                # remainingがある場合
+                /** 残日数加算&届け取消 */
+                $remaining->remaining += $report->get_days;
+                DB::beginTransaction(); # トランザクション開始
+                try {
+                    $remaining->save();
+                    $report->delete();
+
+                    DB::commit(); # トランザクション成功終了
+                    return redirect()
+                        ->route('reports.approved')
+                        ->with('notice', '出退勤届けを取り消しました');
+                } catch (\Throwable $th) {
+                    DB::rollBack(); # トランザクション失敗終了
+                    return back()->withErrors($th->getMessage());
+                }
+            }
         }
 
         # 工場承認者が自分の届を承認取消
@@ -716,53 +752,14 @@ class ReportController extends Controller
             $report->approval3 = 0;
         }
 
-        // $report->approval1 = 0; # 会社承認off
-        // // FIXME:
-        // if ($report->user->id == Auth::user()->id) {
-        //     $report->approval2 = 0; # 工場承認off
-        //     $report->approval3 = 0; # GL承認off
-        // self::approvedDelete($report); # なぜかこれだと迷子
-        //     $remaining = Remaining::all()
-        //         ->where('report_id', '=', $report->report_id)
-        //         ->where('user_id', '=', $report->user_id)
-        //         ->first();
-
-        //     if (empty($remaining)) {
-        //         try {
-        //             $report->delete();
-        //             return redirect()
-        //                 ->route('reports.approved')
-        //                 ->with('notice', '出退勤届けを取り消しました');
-        //         } catch (\Throwable $th) {
-        //             return back()->withErrors($th->getMessage());
-        //         }
-        //     }
-
-        //     /** 残日数加算&届け取消 */
-        //     $remaining->remaining += $report->get_days;
-        //     DB::beginTransaction(); # トランザクション開始
-        //     try {
-        //         $remaining->save();
-        //         $report->delete();
-
-        //         DB::commit(); # トランザクション成功終了
-        //         return redirect()
-        //             ->route('reports.approved')
-        //             ->with('notice', '出退勤届けを取り消しました');
-        //     } catch (\Throwable $th) {
-        //         DB::rollBack(); # トランザクション失敗終了
-        //         return back()->withErrors($th->getMessage());
-        //     }
-        // } else {
         try {
             $report->save();
             return redirect()
-                ->route('reports.approved')
+                ->route('reports.index')
                 ->with('notice', '届けの取消を申請しました');
         } catch (\Throwable $th) {
             return back()->withErrors($th->getMessage());
         }
-        // }
     }
 
     // /** 承認済み届出の取消 */
@@ -1116,23 +1113,6 @@ class ReportController extends Controller
                     $query->where('approved', 1);
                 })
                 ->get();
-
-            // $reports = new Collection();
-            // foreach ($factory_apps as $approval) {
-            //     $extractions = Report::whereHas('user', function ($query) use (
-            //         $approval
-            //     ) {
-            //         $query->where('factory_id', $approval->factory_id);
-            //     })
-            //         ->where(function ($query) {
-            //             $query->where('approved', 1);
-            //         })
-            //         ->get();
-
-            //     $extractions->each(function ($extraction) use ($reports) {
-            //         $reports->add($extraction);
-            //     });
-            // }
         }
 
         # 会社承認
@@ -1326,7 +1306,7 @@ class ReportController extends Controller
                 DB::commit(); # トランザクション成功終了
                 return redirect()
                     ->route('reports.show', $report)
-                    ->with('notice', '承認しました。');
+                    ->with('msg', '承認しました。');
             } catch (\Exception $e) {
                 DB::rollBack(); # トランザクション失敗終了
                 return back()
@@ -1338,7 +1318,7 @@ class ReportController extends Controller
                 $report->save(); # 承認を保存
                 return redirect()
                     ->route('reports.show', $report)
-                    ->with('notice', '承認しました。');
+                    ->with('msg', '承認しました。');
             } catch (\Throwable $th) {
                 return back()->withErrors($th->getMessage());
             }
@@ -1465,7 +1445,7 @@ class ReportController extends Controller
                 $report->save(); # 承認を保存
                 return redirect()
                     ->route('reports.show', $report)
-                    ->with('notice', '確認しました。');
+                    ->with('msg', '確認しました。');
             } catch (\Throwable $th) {
                 return back()->withErrors($th->getMessage());
             }
@@ -1706,11 +1686,9 @@ class ReportController extends Controller
         /** 有休取得日数 */
         $get_days_only = 0;
         $get_days_hours = 0;
-        $get_days_minutes = 0;
         if (Auth::user()->sum_get_days->first()) {
-            $get_days_only = Auth::user()->self::sumGetDaysOnly(1); # 有給休暇id=1
-            $get_days_hours = Auth::user()->self::sumGetHours(1); # 有給休暇id=1
-            $get_days_minutes = Auth::user()->self::sumGetMinutes(1); # 有給休暇id=1
+            $get_days_only = Auth::user()->sum_get_days_only; # 有給休暇id=1
+            $get_days_hours = Auth::user()->sum_paid_holiday_hours; # 有給休暇id=1
         }
 
         return view('menu.index')->with(
@@ -1722,9 +1700,28 @@ class ReportController extends Controller
                 'year_end',
                 'lost_days',
                 'get_days_only',
-                'get_days_hours',
-                'get_days_minutes',
+                'get_days_hours'
             )
         );
+    }
+
+    public function export()
+    {
+        # 全データ出力
+        // return Excel::download(new MixInfoExport(), 'mix_info.xlsx');
+
+        # 帳票出力
+        $reports = Report::with(
+            'user',
+            'report_category',
+            'sub_report_category',
+            'reason_category'
+        )
+            ->where('approved', 1)
+            ->where('cancel', 0)
+            ->get();
+        // dd($reports);
+        $view = view('reports.export')->with(compact('reports'));
+        return Excel::download(new ReportExport($view), 'reports.xlsx');
     }
 }

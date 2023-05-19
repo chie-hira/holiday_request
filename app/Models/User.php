@@ -118,12 +118,38 @@ class User extends Authenticatable
             ->map(function ($report_id) {
                 return $report_id->sum('get_days');
             });
-
-        // if (empty($sum_get_days->first())) {
-        // dd($sum_get_days);
-        //     $sum_get_days = 0;
-        // }
+            
         return $sum_get_days;
+    }
+
+    public function getSumPaidHolidayDaysAttribute() # 有給日数だけ
+    {
+        $sum_get_days = $this->sum_get_days;
+        if ($sum_get_days->has(1)) { # keyの存在確認
+            $exp = explode('.', $sum_get_days[1]);
+            return $exp[0];
+        } else {
+            return 0;
+        }
+    }
+
+    public function getSumPaidHolidayHoursAttribute() # 有給時間だけ
+    {
+        $sum_get_days = $this->sum_get_days;
+        if ($sum_get_days->has(1)) { # keyの存在確認
+            $exp = explode('.', $sum_get_days[1]);
+        } else {
+            return 0;
+        }
+
+        if (array_key_exists(1, $exp)) {
+            # 小数点以下あり(1日未満)
+            $decimal_p = '0.' . $exp[1];
+            $exp_hour = explode('.', $decimal_p * 8); # 8時間で1日
+            return $exp_hour[0];
+        } else {
+            return 0;
+        }
     }
 
     // メソッド(関数)

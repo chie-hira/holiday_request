@@ -1,9 +1,19 @@
 <x-app-layout>
 
     <div class="container px-5 py-6 mx-auto">
+        <div class="w-full max-w-md mx-auto mt-10">
+            <x-notice :notice="session('notice')" />
+        </div>
+
         <div class="w-full max-w-md mx-auto mt-10 -mb-5">
             @if ($report->cancel == 1)
                 <p class="text-center text-red-600 text-2xl font-semibold">取消確認中</p>
+            @endif
+            @if ($report->cancel == 0 && $report->approved == 0)
+                <p class="text-center text-amber-500 text-2xl font-semibold">承認中</p>
+            @endif
+            @if ($report->cancel == 0 && $report->approved == 1)
+                <p class="text-center text-sky-600 text-2xl font-semibold">承認済み</p>
             @endif
         </div>
 
@@ -139,17 +149,17 @@
                                             !empty(Auth::user()->approvals->where('approval_id', 1)->first()
                                             ))
                                             @if ($report->cancel == 1 && $report->approval1 == 1)
-                                                <x-show-a-button href="{{ route('reports.approval_cancel', $report) }}"
+                                                <x-delete-a-button href="{{ route('reports.approval_cancel', $report) }}"
                                                     onclick="if(!confirm('取消を確認しました')){return false};"
                                                     class="px-1 py-1">
                                                     {{ __('CancelCheck') }}
-                                                </x-show-a-button>
+                                                </x-delete-a-button>
                                             @endif
                                             @if ($report->cancel == 0 && $report->approval1 == 0)
-                                                <x-show-a-button href="{{ route('approval', $report) }}"
+                                                <x-edit-a-button href="{{ route('approval', $report) }}"
                                                     onclick="if(!confirm('承認しますか？')){return false};" class="px-3 py-1">
                                                     {{ __('Approval') }}
-                                                </x-show-a-button>
+                                                </x-edit-a-button>
                                             @endif
                                         @else
                                             @if ($report->cancel == 1 && $report->approval1 == 1)
@@ -174,17 +184,17 @@
                                             !empty(Auth::user()->approvals->where('approval_id', 2)->where('factory_id', $report->user->factory_id)->first()
                                             ))
                                             @if ($report->cancel == 1 && $report->approval2 == 1)
-                                                <x-show-a-button href="{{ route('reports.approval_cancel', $report) }}"
+                                                <x-delete-a-button href="{{ route('reports.approval_cancel', $report) }}"
                                                     onclick="if(!confirm('取消を確認しました')){return false};"
                                                     class="px-1 py-1">
                                                     {{ __('CancelCheck') }}
-                                                </x-show-a-button>
+                                                </x-delete-a-button>
                                             @endif
                                             @if ($report->cancel == 0 && $report->approval2 == 0)
-                                                <x-show-a-button href="{{ route('approval', $report) }}"
+                                                <x-edit-a-button href="{{ route('approval', $report) }}"
                                                     onclick="if(!confirm('承認しますか？')){return false};" class="px-3 py-1">
                                                     {{ __('Approval') }}
-                                                </x-show-a-button>
+                                                </x-edit-a-button>
                                             @endif
                                         @else
                                             @if ($report->cancel == 1 && $report->approval2 == 1)
@@ -209,17 +219,17 @@
                                             !empty(Auth::user()->approvals->where('approval_id', 3)->where('factory_id', $report->user->factory_id)->where('department_id', $report->user->department_id)->where('group_id', $report->user->group_id)->first()
                                             ))
                                             @if ($report->cancel == 1 && $report->approval3 == 1)
-                                                <x-show-a-button href="{{ route('reports.approval_cancel', $report) }}"
+                                                <x-delete-a-button href="{{ route('reports.approval_cancel', $report) }}"
                                                     onclick="if(!confirm('取消を確認しました')){return false};"
                                                     class="px-1 py-1">
                                                     {{ __('CancelCheck') }}
-                                                </x-show-a-button>
+                                                </x-delete-a-button>
                                             @endif
                                             @if ($report->cancel == 0 && $report->approval3 == 0)
-                                                <x-show-a-button href="{{ route('approval', $report) }}"
+                                                <x-edit-a-button href="{{ route('approval', $report) }}"
                                                     onclick="if(!confirm('承認しますか？')){return false};" class="px-3 py-1">
                                                     {{ __('Approval') }}
-                                                </x-show-a-button>
+                                                </x-edit-a-button>
                                             @endif
                                         @else
                                             @if ($report->cancel == 1 && $report->approval3 == 1)
@@ -245,7 +255,7 @@
                     </li>
                 </ul>
                 <div class="w-full max-w-md mx-auto mt-2 -mb-4">
-                    <x-notice :notice="session('notice')" />
+                    <x-approval-msg :msg="session('msg')" />
                 </div>
             </div>
         </div>
