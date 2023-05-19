@@ -118,6 +118,11 @@ class User extends Authenticatable
             ->map(function ($report_id) {
                 return $report_id->sum('get_days');
             });
+
+        // if (empty($sum_get_days->first())) {
+        // dd($sum_get_days);
+        //     $sum_get_days = 0;
+        // }
         return $sum_get_days;
     }
 

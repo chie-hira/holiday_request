@@ -10,6 +10,7 @@ use App\Models\Report;
 use App\Models\ReportCategory;
 use App\Models\SubReportCategory;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -660,7 +661,6 @@ class ReportController extends Controller
     public function approvedCancel(Report $report)
     {
         $report->cancel = 1; # キャンセルon
-
         $approvals = Auth::user()->approvals;
 
         /** 通常の承認取消*/
@@ -721,7 +721,7 @@ class ReportController extends Controller
         // if ($report->user->id == Auth::user()->id) {
         //     $report->approval2 = 0; # 工場承認off
         //     $report->approval3 = 0; # GL承認off
-            // self::approvedDelete($report); # なぜかこれだと迷子
+        // self::approvedDelete($report); # なぜかこれだと迷子
         //     $remaining = Remaining::all()
         //         ->where('report_id', '=', $report->report_id)
         //         ->where('user_id', '=', $report->user_id)
@@ -754,14 +754,14 @@ class ReportController extends Controller
         //         return back()->withErrors($th->getMessage());
         //     }
         // } else {
-            try {
-                $report->save();
-                return redirect()
-                    ->route('reports.approved')
-                    ->with('notice', '届けの取消を申請しました');
-            } catch (\Throwable $th) {
-                return back()->withErrors($th->getMessage());
-            }
+        try {
+            $report->save();
+            return redirect()
+                ->route('reports.approved')
+                ->with('notice', '届けの取消を申請しました');
+        } catch (\Throwable $th) {
+            return back()->withErrors($th->getMessage());
+        }
         // }
     }
 
@@ -1472,13 +1472,18 @@ class ReportController extends Controller
         }
     }
 
-    /** refactoring済 */
     public function menu()
     {
         $approvals = Auth::user()->approvals;
+        $birthday = new Carbon(
+            Carbon::now()->year . '-' . Auth::user()->birthday
+        ); # 誕生日
+        $year_end = new Carbon(Carbon::now()->addYear(1)->year . '-03-31'); # 年度末日
         $reports = '';
         $pending = '';
         $approved = '';
+        // $birthday = new Carbon('2023-02-22');
+        // $year_end = new Carbon('2023-06-06');
 
         /** 承認待ち件数 */
         # 会社承認
@@ -1591,22 +1596,6 @@ class ReportController extends Controller
                             ->where('approval2', 1);
                     })
                     ->get();
-
-                // $extractions = Report::whereHas('user', function ($query) use (
-                //     $approval
-                // ) {
-                //     $query->where('factory_id', $approval->factory_id);
-                // })
-                //     ->where(function ($query) {
-                //         $query
-                //             ->where('cancel', 1)
-                //             ->where('approved', 1)
-                //             ->where('approval2', 1);
-                //     })
-                //     ->get();
-                // $extractions->each(function ($extraction) use ($reports) {
-                //     $reports->add($extraction);
-                // });
             }
         }
 
@@ -1633,25 +1622,6 @@ class ReportController extends Controller
                             ->where('approval3', 1);
                     })
                     ->get();
-
-                // $extractions = Report::whereHas('user', function ($query) use (
-                //     $approval
-                // ) {
-                //     $query
-                //         ->where('factory_id', $approval->factory_id)
-                //         ->where('department_id', $approval->department_id)
-                //         ->where('group_id', $approval->group_id);
-                // })
-                //     ->where(function ($query) {
-                //         $query
-                //             ->where('cancel', 1)
-                //             ->where('approved', 1)
-                //             ->where('approval3', 1);
-                //     })
-                //     ->get();
-                // $extractions->each(function ($extraction) use ($reports) {
-                //     $reports->add($extraction);
-                // });
             }
         }
 
@@ -1662,12 +1632,99 @@ class ReportController extends Controller
             $approved = 0;
         }
 
+        /** 有休残日数 */
         $paid_holidays = Auth::user()
             ->remainings->where('report_id', 1)
             ->first();
 
+        /** 有休失効日数 */
+        $adoption_date_carbon = new Carbon(Auth::user()->adoption_date); # 採用年月日
+        $diff = $adoption_date_carbon->diff($year_end);
+        $length_of_service = floatval($diff->y . '.' . $diff->m); # 勤続年数
+        $remaining_now = $paid_holidays->remaining;
+
+        switch ($length_of_service) {
+            case $length_of_service >= 0.5 && $length_of_service < 1.5:
+                $lost_days = 0;
+                break;
+
+            case $length_of_service >= 1.5 && $length_of_service < 2.5:
+                $remaining_add = $remaining_now + 11;
+                if ($remaining_add > 21) {
+                    $lost_days = $remaining_add - 21;
+                } else {
+                    $lost_days = 0;
+                }
+                break;
+
+            case $length_of_service >= 2.5 && $length_of_service < 3.5:
+                $remaining_add = $remaining_now + 12;
+                if ($remaining_add > 23) {
+                    $lost_days = $remaining_add - 23;
+                } else {
+                    $lost_days = 0;
+                }
+                break;
+
+            case $length_of_service >= 3.5 && $length_of_service < 4.5:
+                $remaining_add = $remaining_now + 14;
+                if ($remaining_add > 26) {
+                    $lost_days = $remaining_add - 26;
+                } else {
+                    $lost_days = 0;
+                }
+                break;
+
+            case $length_of_service >= 4.5 && $length_of_service < 5.5:
+                $remaining_add = $remaining_now + 16;
+                if ($remaining_add > 30) {
+                    $lost_days = $remaining_add - 30;
+                } else {
+                    $lost_days = 0;
+                }
+                break;
+
+            case $length_of_service >= 5.5 && $length_of_service < 6.5:
+                $remaining_add = $remaining_now + 18;
+                if ($remaining_add > 32) {
+                    $lost_days = $remaining_add - 32;
+                } else {
+                    $lost_days = 0;
+                }
+                break;
+
+            case $length_of_service >= 6.5:
+                $remaining_add = $remaining_now + 20;
+                if ($remaining_add > 40) {
+                    $lost_days = $remaining_add - 40;
+                } else {
+                    $lost_days = 0;
+                }
+                break;
+        }
+
+        /** 有休取得日数 */
+        $get_days_only = 0;
+        $get_days_hours = 0;
+        $get_days_minutes = 0;
+        if (Auth::user()->sum_get_days->first()) {
+            $get_days_only = Auth::user()->self::sumGetDaysOnly(1); # 有給休暇id=1
+            $get_days_hours = Auth::user()->self::sumGetHours(1); # 有給休暇id=1
+            $get_days_minutes = Auth::user()->self::sumGetMinutes(1); # 有給休暇id=1
+        }
+
         return view('menu.index')->with(
-            compact('pending', 'approved', 'paid_holidays')
+            compact(
+                'pending',
+                'approved',
+                'paid_holidays',
+                'birthday',
+                'year_end',
+                'lost_days',
+                'get_days_only',
+                'get_days_hours',
+                'get_days_minutes',
+            )
         );
     }
 }

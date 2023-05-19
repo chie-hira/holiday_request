@@ -26,6 +26,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 5,
             'group_id' => 1,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-19',
             ],
             [
             'name' => '千葉　伸',
@@ -36,6 +37,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 2,
             'group_id' => 1,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '今野 祐香',
@@ -46,6 +48,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 2,
             'group_id' => 1,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '菅原　麻由子',
@@ -56,6 +59,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 2,
             'group_id' => 1,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '佐藤 友南',
@@ -66,6 +70,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 2,
             'group_id' => 1,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '岩淵 信之',
@@ -76,6 +81,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 1,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '千葉 新治',
@@ -86,6 +92,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 2,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '沼倉　淳',
@@ -96,6 +103,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 2,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '木村 勝枝',
@@ -106,6 +114,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 2,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '那須野 定',
@@ -116,6 +125,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 2,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '齋藤 北斗',
@@ -126,6 +136,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 2,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '岩渕　昭一',
@@ -136,6 +147,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 2,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '佐藤　健治',
@@ -146,6 +158,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 2,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '千葉　茂',
@@ -156,6 +169,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 2,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '菅原 綾',
@@ -166,6 +180,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 2,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '岩渕　宏',
@@ -176,6 +191,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 2,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '阿部　敏久',
@@ -186,6 +202,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 2,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '岩淵 信之',
@@ -196,6 +213,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 3,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '佐藤 欣也',
@@ -206,6 +224,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 3,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '鈴木 良樹',
@@ -216,6 +235,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 3,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '猪岡 英宣',
@@ -226,6 +246,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 3,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '佐藤　憲一',
@@ -236,6 +257,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 3,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '小松 勇児',
@@ -246,6 +268,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 3,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '小田中 秀樹',
@@ -256,6 +279,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 3,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '氏家　達也',
@@ -266,6 +290,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 3,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '佐藤　誠',
@@ -276,6 +301,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 1,
             'group_id' => 1,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '金田 政樹',
@@ -286,6 +312,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 4,
             'group_id' => 4,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '吉家 勝之',
@@ -296,6 +323,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 4,
             'group_id' => 4,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '菅原 富男',
@@ -306,6 +334,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 4,
             'group_id' => 4,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '遠藤 悦子',
@@ -316,6 +345,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 4,
             'group_id' => 4,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '渡辺　剛',
@@ -326,6 +356,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 4,
             'group_id' => 5,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '菅原 勝明',
@@ -336,6 +367,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 4,
             'group_id' => 5,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '鈴木 立萍',
@@ -346,6 +378,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 4,
             'group_id' => 5,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '田村 和之',
@@ -356,6 +389,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 4,
             'group_id' => 5,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '菊地 嵩斗',
@@ -366,6 +400,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 4,
             'group_id' => 5,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '松田　伸一',
@@ -376,6 +411,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 4,
             'group_id' => 5,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '千葉　花那',
@@ -386,6 +422,8 @@ class UsersTableSeeder extends Seeder
             'department_id' => 4,
             'group_id' => 5,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
+            'birthday' => '5-18',
             ],
             [
             'name' => '小野寺 純',
@@ -396,6 +434,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 4,
             'group_id' => 5,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '山本　恵子',
@@ -406,6 +445,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 5,
             'group_id' => 6,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '渡辺　久美',
@@ -416,6 +456,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 5,
             'group_id' => 6,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '米倉　美月',
@@ -426,6 +467,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 5,
             'group_id' => 6,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '岩渕 てい子',
@@ -436,6 +478,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 5,
             'group_id' => 7,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '千葉　優二',
@@ -446,6 +489,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 5,
             'group_id' => 7,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '千葉　博',
@@ -456,6 +500,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 5,
             'group_id' => 7,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '千葉　梢',
@@ -466,6 +511,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 5,
             'group_id' => 7,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '千葉 和俊',
@@ -476,6 +522,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 6,
             'group_id' => 1,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '小野 裕一',
@@ -486,6 +533,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 6,
             'group_id' => 8,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '須藤三樹夫',
@@ -496,6 +544,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 7,
             'group_id' => 1,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '浅利　摩実',
@@ -506,6 +555,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 7,
             'group_id' => 1,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '千葉　寛子',
@@ -516,6 +566,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 7,
             'group_id' => 1,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '松井　むつみ',
@@ -526,6 +577,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 7,
             'group_id' => 1,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '蜂谷　昭子',
@@ -536,6 +588,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 7,
             'group_id' => 1,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '熊谷琴美',
@@ -546,6 +599,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 8,
             'group_id' => 1,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '八重樫美菜',
@@ -556,6 +610,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 8,
             'group_id' => 1,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '松本英之',
@@ -566,6 +621,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 8,
             'group_id' => 1,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             # 前沢工場
             [
@@ -576,6 +632,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 1,
             'group_id' => 1,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '鈴木　和夫',
@@ -585,6 +642,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 9,
             'group_id' => 9,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '浅野　正弘',
@@ -594,6 +652,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 9,
             'group_id' => 9,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '金野　寛子',
@@ -603,6 +662,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 9,
             'group_id' => 10,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '菊地　さとみ',
@@ -612,6 +672,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 9,
             'group_id' => 10,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '鈴木　綾海',
@@ -621,6 +682,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 9,
             'group_id' => 10,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '千田　りん子',
@@ -630,6 +692,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 9,
             'group_id' => 10,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '千葉　潤',
@@ -639,6 +702,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 9,
             'group_id' => 10,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '永澤　祐太',
@@ -648,6 +712,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 6,
             'group_id' => 11,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '高橋　敏春',
@@ -657,6 +722,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 6,
             'group_id' => 11,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '石川　勝巳',
@@ -666,6 +732,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 6,
             'group_id' => 11,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '岩渕　涼音',
@@ -675,6 +742,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 6,
             'group_id' => 11,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '伊藤　皓揮',
@@ -684,6 +752,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 12,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '佐藤　貴志',
@@ -693,6 +762,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 12,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '大内　涼',
@@ -702,6 +772,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 12,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '加藤　優和',
@@ -711,6 +782,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 12,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '小岩　肇',
@@ -720,6 +792,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 13,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '柴田 恵美子',
@@ -729,6 +802,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 13,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '佐藤　花菜',
@@ -738,6 +812,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 13,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '佐藤　渓介',
@@ -747,6 +822,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 13,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '阿部　将士',
@@ -756,6 +832,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 14,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '高野　正博',
@@ -765,6 +842,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 14,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '菊地 宏輝',
@@ -774,6 +852,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 14,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '丸山　善憲',
@@ -783,6 +862,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 14,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '三浦　丈史',
@@ -792,6 +872,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 14,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '八重樫　滉',
@@ -801,6 +882,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 14,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '酒井　皇司',
@@ -810,6 +892,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 14,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '阿部　瞳',
@@ -819,6 +902,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 14,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '照井　吉次',
@@ -828,6 +912,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 14,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '境澤　実知也',
@@ -837,6 +922,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 15,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '細川　純',
@@ -846,6 +932,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 15,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '因幡 浩幸',
@@ -855,6 +942,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 15,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '吉田 洋次郎',
@@ -864,6 +952,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 15,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '菅原　孝春',
@@ -873,6 +962,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 15,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '佐藤　香奈',
@@ -882,6 +972,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 15,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '三浦　楓花',
@@ -891,6 +982,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 15,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '佐藤　由佳',
@@ -900,6 +992,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 15,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '及川蒼依',
@@ -909,6 +1002,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 15,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '佐藤　賢一',
@@ -918,6 +1012,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 15,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '佐々木 仁美',
@@ -927,6 +1022,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 15,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '佐藤蓮太朗',
@@ -936,6 +1032,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 15,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '千田　優太',
@@ -945,6 +1042,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 16,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '濁沼 さつき',
@@ -954,6 +1052,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 16,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '鈴木 まゆみ',
@@ -963,6 +1062,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 16,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '高橋 一也',
@@ -972,6 +1072,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 16,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '長前 秀幸',
@@ -981,6 +1082,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 16,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '千葉　孝',
@@ -990,6 +1092,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 16,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '丹野　美紗',
@@ -999,6 +1102,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 16,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '高橋 悦也',
@@ -1008,6 +1112,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 16,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '西城　千香',
@@ -1017,6 +1122,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 16,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '佐々木陽人',
@@ -1026,6 +1132,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 16,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '小野寺美月',
@@ -1035,6 +1142,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 16,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '加藤　武史',
@@ -1044,6 +1152,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 17,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '高橋　知也',
@@ -1053,6 +1162,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 17,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '菊地　和哉',
@@ -1062,6 +1172,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 17,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '沼田　庸弥',
@@ -1071,6 +1182,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 17,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '三宅　敏典',
@@ -1080,6 +1192,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 17,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '懸田　竜馬',
@@ -1089,6 +1202,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 17,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '岩渕　颯',
@@ -1098,6 +1212,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 17,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '高橋　誠一',
@@ -1107,6 +1222,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 10,
             'group_id' => 17,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '菅原　千春',
@@ -1116,6 +1232,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 18,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '伊藤　雪奈',
@@ -1125,6 +1242,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 18,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '菅原　優',
@@ -1134,6 +1252,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 18,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '伊藤　祐',
@@ -1143,6 +1262,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 2,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '阿部 真吾',
@@ -1152,6 +1272,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 2,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '菅原　悌',
@@ -1161,6 +1282,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 2,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '千葉　隆好',
@@ -1170,6 +1292,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 2,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '三浦 　実',
@@ -1179,6 +1302,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 2,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '千田　瀬成',
@@ -1188,6 +1312,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 2,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '菅原 佳己',
@@ -1197,6 +1322,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 2,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '高橋　秀斗',
@@ -1206,6 +1332,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 2,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '小部　裕',
@@ -1215,6 +1342,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 2,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '菅原　巧',
@@ -1224,6 +1352,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 2,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '小野寺　敏夫',
@@ -1233,6 +1362,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 19,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '阿部 龍磨',
@@ -1242,6 +1372,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 19,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
             [
             'name' => '佐藤　建樹',
@@ -1251,6 +1382,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 3,
             'group_id' => 19,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
+            'birthday' => '5-18',
             ],
         ];
         

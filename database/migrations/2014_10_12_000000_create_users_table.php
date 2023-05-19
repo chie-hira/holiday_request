@@ -33,6 +33,7 @@ class CreateUsersTable extends Migration
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
             $table->date('adoption_date');
+            $table->string('birthday');
             $table->rememberToken();
             $table->timestamps();
         });
