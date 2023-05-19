@@ -26,7 +26,7 @@ class UsersTableSeeder extends Seeder
             'department_id' => 5,
             'group_id' => 1,
             'adoption_date' => $faker->dateTimeBetween('-10years', '-1years')->format('Y-m-d'),
-            'birthday' => '5-18',
+            'birthday' => '5-19',
             ],
             [
             'name' => '千葉　伸',

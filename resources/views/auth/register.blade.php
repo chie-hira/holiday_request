@@ -101,7 +101,7 @@
                 <x-return-button class="w-24 mr-2" href="{{ route('users.index') }}">
                     一覧
                 </x-return-button>
-                <x-back-home-button class="w-24" href="{{ route('menu') }}">
+                <x-back-home-button class="w-30" href="{{ route('menu') }}">
                     {{ __('Back') }}
                 </x-back-home-button>
             </div>

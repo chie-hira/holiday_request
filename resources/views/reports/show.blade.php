@@ -250,25 +250,26 @@
             </div>
         </div>
 
-        <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div class="w-full max-w-md mx-auto mt-10 grid grid-cols-1 gap-2">
+            <div class="flex justify-end">
+                <x-return-button class="w-30" href="{{ route('reports.index') }}">
+                    一覧へ戻る
+                </x-return-button>
+            </div>
             @can('general_and_factory_gl')
                 <div class="flex justify-end">
-                    <x-return-button class="w-30 mr-2" href="{{ route('reports.pending_approval') }}">
+                    <x-return-button class="w-30" href="{{ route('reports.pending_approval') }}">
                         承認待ち一覧
                     </x-return-button>
+                </div>
+                <div class="flex justify-end">
                     <x-return-button class="w-30" href="{{ route('reports.approved') }}">
                         承認済み一覧
                     </x-return-button>
                 </div>
             @endcan
-            @cannot('general_and_factory_gl')
-                <div></div>
-            @endcan
-            <div class="flex justify-end sm:justify-start">
-                <x-return-button class="w-24 mr-2" href="{{ route('reports.index') }}">
-                    一覧
-                </x-return-button>
-                <x-back-home-button class="w-24" href="{{ route('menu') }}">
+            <div class="flex justify-end">
+                <x-back-home-button class="w-30" href="{{ route('menu') }}">
                     {{ __('Back') }}
                 </x-back-home-button>
             </div>

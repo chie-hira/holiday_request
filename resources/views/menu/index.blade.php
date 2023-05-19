@@ -80,7 +80,7 @@
             日間の有給休暇が失効します。
         </p>
         @endif
-        @if (now()->addMonth(1) >= $year_end && $get_days < 5)
+        @if (now()->addMonth(1) >= $year_end && $get_days_only < 5)
         <p class="flex items-center py-2 px-6 text-gray-700 text-xl">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                 class="w-6 h-6 mr-2 text-red-700">
@@ -91,8 +91,8 @@
                     clip-rule="evenodd" />
             </svg>
             有給休暇を取得してください。年度末までにあと
-            {{ 5 - $get_days }}
-            日の取得を推奨します。
+            {{ 5 - $get_days_only }}
+            日間以上の有給休暇を推奨します。
         </p>
         @endif
     </header>
@@ -195,7 +195,7 @@
                                 </svg>
                             </span>
                             <span class="flex items-center w-24">
-                                承認待ち
+                                承認<span class="text-red-700 font-bold">待ち</span>
                             </span>
                             @if ($pending)
                                 <div class="flex justify-center relative -ml-4 -mt-5">
@@ -223,7 +223,7 @@
                                 </svg>
                             </span>
                             <span class="flex items-center w-24">
-                                承認済み
+                                承認<span class="font-bold text-sky-600">済み</span>
                             </span>
                             @if ($approved)
                                 <div class="flex justify-center relative -ml-4 -mt-5">
