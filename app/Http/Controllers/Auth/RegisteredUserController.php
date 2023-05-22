@@ -71,7 +71,6 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         $user->approved($request->name);
-        // $user->registered($request->name);
 
         Auth::login($user);
 
