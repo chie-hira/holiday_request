@@ -2,7 +2,7 @@
     <section class="text-gray-600 body-font">
         <div class="container max-w-7xl px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-10">
-                <h1 class="sm:text-4xl text-3xl font-medium title-font mb-4 text-gray-900">出退勤届け一覧</h1>
+                <h1 class="sm:text-4xl text-3xl font-medium title-font mb-4 text-gray-900">届出一覧</h1>
                 <div class="mx-auto">
                     <p class="flex text-left leading-relaxed text-sm mb-1">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
@@ -132,9 +132,9 @@
                                                         <span class="text-red-600">取消確認中</span>
                                                     @else
                                                         @if ($report->approval1 == 0 || $report->approval2 == 0 || $report->approval3 == 0)
-                                                            <span class="text-red-600">未承認</span>
+                                                            <span class="text-amber-600">承認中</span>
                                                         @else
-                                                            <span class="text-sky-600">承認</span>
+                                                            <span class="text-sky-600">承認済み</span>
                                                         @endif
                                                     @endif
                                                 </td>

@@ -24,7 +24,7 @@
                     出 退 勤 届 け
                 </h5>
                 <p
-                    class="border-solid border-2 px-4 py-1 border-sky-500 rounded-md text-md font-medium text-sky-600 hover:underline">
+                    class="border-solid border-2 px-4 py-1 border-sky-500 rounded-md text-md font-medium text-sky-600">
                     {{ $report->user->factory->factory_name }}
                 </p>
             </div>
@@ -263,7 +263,7 @@
         <div class="w-full max-w-md mx-auto mt-10 grid grid-cols-1 gap-2">
             <div class="flex justify-end">
                 <x-return-button class="w-30" href="{{ route('reports.index') }}">
-                    一覧へ戻る
+                    届出一覧
                 </x-return-button>
             </div>
             @can('general_and_factory_gl')
