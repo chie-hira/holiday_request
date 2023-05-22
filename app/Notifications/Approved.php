@@ -10,15 +10,16 @@ use Illuminate\Notifications\Notification;
 class Approved extends Notification
 {
     use Queueable;
+    public $user_name;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($user)
     {
-        //
+        $this->user_name = $user;
     }
 
     /**
@@ -40,10 +41,13 @@ class Approved extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+        return (new MailMessage())->markdown('mail.approved', [
+            'user_name' => $this->user_name,
+        ]);
+        // return (new MailMessage())
+        //     ->line('The introduction to the notification.')
+        //     ->action('Notification Action', url('/'))
+        //     ->line('Thank you for using our application!');
     }
 
     /**
@@ -55,7 +59,7 @@ class Approved extends Notification
     public function toArray($notifiable)
     {
         return [
-            //
-        ];
+                //
+            ];
     }
 }
