@@ -3,6 +3,20 @@
         <div class="container px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-10">
                 <h1 class="sm:text-4xl text-3xl font-medium title-font text-gray-900">承認済 一覧</h1>
+                <h2 class=" text-right">
+                    @can('general_only')
+                        <a href={{ route('reports.export') }}
+                            class="inline-flex items-center justify-center text-base mr-2 font-medium text-sky-600 hover:text-sky-50 p-1 rounded-full border-2 border-gray-400 bg-sky-100/60 hover:bg-sky-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                                <path fill-rule="evenodd"
+                                    d="M5.625 1.5H9a3.75 3.75 0 013.75 3.75v1.875c0 1.036.84 1.875 1.875 1.875H16.5a3.75 3.75 0 013.75 3.75v7.875c0 1.035-.84 1.875-1.875 1.875H5.625a1.875 1.875 0 01-1.875-1.875V3.375c0-1.036.84-1.875 1.875-1.875zm5.845 17.03a.75.75 0 001.06 0l3-3a.75.75 0 10-1.06-1.06l-1.72 1.72V12a.75.75 0 00-1.5 0v4.19l-1.72-1.72a.75.75 0 00-1.06 1.06l3 3z"
+                                    clip-rule="evenodd" />
+                                <path
+                                    d="M14.25 5.25a5.23 5.23 0 00-1.279-3.434 9.768 9.768 0 016.963 6.963A5.23 5.23 0 0016.5 7.5h-1.875a.375.375 0 01-.375-.375V5.25z" />
+                            </svg>
+                        </a>
+                    @endcan
+                </h2>
             </div>
 
             <x-notice :notice="session('notice')" />
@@ -142,15 +156,6 @@
                                                     @if (Auth::user()->approvals->where('approval_id', 2)->first())
                                                         @foreach (Auth::user()->approvals->where('approval_id', 2) as $approval)
                                                             @if ($report->user->factory_id == $approval->factory_id && $report->approval2 == 1 && $report->cancel == 1)
-                                                                {{-- <div class="mt-2 -ml-2 text-pink-400">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                                                        viewBox="0 0 20 20" fill="currentColor"
-                                                                        class="w-5 h-5">
-                                                                        <path fill-rule="evenodd"
-                                                                            d="M10 1a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 0110 1zM5.05 3.05a.75.75 0 011.06 0l1.062 1.06A.75.75 0 116.11 5.173L5.05 4.11a.75.75 0 010-1.06zm9.9 0a.75.75 0 010 1.06l-1.06 1.062a.75.75 0 01-1.062-1.061l1.061-1.06a.75.75 0 011.06 0zM3 8a.75.75 0 01.75-.75h1.5a.75.75 0 010 1.5h-1.5A.75.75 0 013 8zm11 0a.75.75 0 01.75-.75h1.5a.75.75 0 010 1.5h-1.5A.75.75 0 0114 8zm-6.828 2.828a.75.75 0 010 1.061L6.11 12.95a.75.75 0 01-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm3.594-3.317a.75.75 0 00-1.37.364l-.492 6.861a.75.75 0 001.204.65l1.043-.799.985 3.678a.75.75 0 001.45-.388l-.978-3.646 1.292.204a.75.75 0 00.74-1.16l-3.874-5.764z"
-                                                                            clip-rule="evenodd"/>
-                                                                    </svg>
-                                                                </div> --}}
                                                                 <div class="mt-2 -ml-3">
                                                                     <x-check-mark />
                                                                 </div>
@@ -172,20 +177,6 @@
                                                         @endforeach
                                                     @endif
                                                 </td>
-                                                {{-- <td class="pl-1 pr-2 py-4 whitespace-nowrap text-sm font-medium">
-                                                    @if ($report->cancel == 0)
-                                                        @can('general_only')
-                                                            <form action="{{ route('reports.approved_cancel', $report) }}"
-                                                                method="POST">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <input type="submit" value="取消"
-                                                                    onclick="if(!confirm('承認済みの届けを取消しますか？工場長とGLの確認後に届けが削除されます。')){return false};"
-                                                                    class="px-3 py-1 text-sm text-red-500 border-2 border-gray-400 rounded-full bg-red-100/60 hover:text-white hover:font-semibold hover:bg-red-500">
-                                                            </form>
-                                                        @endcan
-                                                    @endif
-                                                </td> --}}
                                             </tr>
                                         @endforeach
                                     </tbody>

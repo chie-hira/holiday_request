@@ -21,7 +21,9 @@
                 </p>
             </div>
 
-            <x-notice :notice="session('notice')" />
+            <div class="max-w-xl w-full mx-auto">
+                <x-notice :notice="session('notice')" />
+            </div>
 
             <div class="container max-w-3xl bg-white w-full mx-auto border-2 rounded-lg">
                 <div class="flex flex-col p-6 mx-auto">
