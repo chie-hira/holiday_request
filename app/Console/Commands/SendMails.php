@@ -11,14 +11,14 @@ class SendMails extends Command
      *
      * @var string
      */
-    protected $signature = 'command:name';
+    protected $signature = 'mail:send';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Mail sending';
 
     /**
      * Create a new command instance.
@@ -37,6 +37,7 @@ class SendMails extends Command
      */
     public function handle()
     {
-        return 0;
+        // return 0;
+        echo 'send mail';
     }
 }
