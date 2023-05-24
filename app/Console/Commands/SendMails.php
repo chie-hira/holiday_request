@@ -40,11 +40,13 @@ class SendMails extends Command
     public function handle()
     {
         // return 0;
-        echo 'send mail';
-        // $user = User::first();
-        // // テキストメールで短文の場合
+        // echo 'send mail';
+        $user = User::first();
+        // テキストメールで短文の場合
         // Mail::raw('本文です', function ($message) use ($user) {
-        //     $message->to($user->email)->subject('タイトルです');
-        // });
+            // $message->to($user->email)->subject('タイトルです');
+        Mail::raw('本文です', function ($message) {
+            $message->to('capella.a36@gmail.com')->subject('タイトルです');
+        });
     }
 }
