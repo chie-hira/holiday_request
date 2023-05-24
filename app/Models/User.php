@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Notifications\Approved;
 use PHPUnit\TextUI\XmlConfiguration\Group;
 
 class User extends Authenticatable
@@ -25,6 +26,9 @@ class User extends Authenticatable
         'employee',
         'factory_id',
         'department_id',
+        'group_id',
+        'adoption_date',
+        'birthday',
     ];
 
     /**
@@ -266,5 +270,11 @@ class User extends Authenticatable
     {
         $remainings = $this->remainings;
         return $remainings->where('report_id', '=', $report_category_id)->first();
+    }
+
+    # mail通知
+    public function approved($val)
+    {
+        $this->notify(new Approved($val));
     }
 }

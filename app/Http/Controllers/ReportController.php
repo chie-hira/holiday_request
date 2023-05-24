@@ -1462,8 +1462,8 @@ class ReportController extends Controller
         $reports = '';
         $pending = '';
         $approved = '';
-        // $birthday = new Carbon('2023-02-22');
-        // $year_end = new Carbon('2023-06-06');
+        $birthday = new Carbon('2023-02-22');
+        $year_end = new Carbon('2023-06-06');
 
         /** 承認待ち件数 */
         # 会社承認
