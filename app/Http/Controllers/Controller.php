@@ -16,10 +16,10 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public function newRemaining($report_id)
+    public function newRemaining($report_id, $user_id)
     {
         $remaining = new Remaining();
-        $remaining->user_id = Auth::id();
+        $remaining->user_id = $user_id;
         $remaining->report_id = $report_id;
         $report_category = ReportCategory::find($report_id);
         $remaining->remaining = $report_category->max_days;
