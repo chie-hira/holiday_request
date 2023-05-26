@@ -12,7 +12,7 @@
                                 clip-rule="evenodd" fill="" />
                         </svg>
                         <span class="text-sm">
-                            <span class="text-red-600">未承認</span>の届出書は<span class="font-bold">編集、削除</span>できます。
+                            <span class="text-red-600">未承認</span>の届出書は<span class="font-bold">編集、取消</span>できます。
                         </span>
                     </p>
                     <p class="flex text-left leading-relaxed text-sm mb-1">
@@ -52,30 +52,35 @@
                                     <thead>
                                         <tr>
                                             <th scope="col"
-                                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 届出日
                                             </th>
-                                            <th scope="col"
-                                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                氏 名
+                                            {{-- <th scope="col"
+                                                class="pl-4 pr-1 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                {{ __('Team') }}
                                             </th>
                                             <th scope="col"
-                                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                class="py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                {{ __('Employee') }}
+                                            </th>
+                                            <th scope="col"
+                                                class="pl-1 pr-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                {{ __('Name') }}
+                                            </th> --}}
+                                            <th scope="col"
+                                                class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 内 容
                                             </th>
                                             <th scope="col" colspan="2"
-                                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 期 間
                                             </th>
                                             <th scope="col"
                                                 class="w-32 px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 日数・時間
                                             </th>
-                                            <th scope="col"
-                                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                            </th>
-                                            <th scope="col" colspan="3"
-                                                class="px-6 py-3 text-right text-xs font-medium text-gray-500 tracking-wider">
+                                            <th scope="col" colspan="4"
+                                                class="px-4 py-3 text-right text-xs font-medium text-gray-500 tracking-wider">
                                             </th>
                                         </tr>
                                     </thead>
@@ -84,16 +89,28 @@
                                         @foreach ($reports as $report)
                                             <tr class="hover:bg-gray-100 ">
                                                 <td
-                                                    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">
+                                                    class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">
                                                     {{ $report->report_date }}
                                                 </td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
-                                                    {{ $report->user->name }}
+                                                {{-- <td class="pl-4 pr-1 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                    {{ $report->user->team }}
                                                 </td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                    @if (Str::length($report->user->employee) == 1)
+                                                        &ensp;&ensp;
+                                                    @endif
+                                                    @if (Str::length($report->user->employee) == 2)
+                                                        &ensp;
+                                                    @endif
+                                                    {{ $report->user->employee }}
+                                                </td>
+                                                <td class="pl-1 pr-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                    {{ $report->user->name }}
+                                                </td> --}}
+                                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                     <x-report-name :report="$report" />
                                                 </td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                     @if ($report->start_date != null)
                                                         {{ $report->start_date }}
                                                     @else
@@ -127,11 +144,11 @@
                                                     @endif
                                                 </td>
                                                 <td
-                                                    class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-800 ">
+                                                    class="px-4 py-4 whitespace-nowrap text-sm text-center text-gray-800 ">
                                                     @if ($report->cancel == 1)
                                                         <span class="text-red-600">取消確認中</span>
                                                     @else
-                                                        @if ($report->approval1 == 0 || $report->approval2 == 0 || $report->approval3 == 0)
+                                                        @if ($report->approval1 == 0 || $report->approval2 == 0)
                                                             <span class="text-amber-600">承認中</span>
                                                         @else
                                                             <span class="text-sky-600">承認済み</span>
@@ -172,7 +189,7 @@
                                                             @csrf
                                                             @method('DELETE')
                                                             <input type="submit" value="取消"
-                                                                onclick="if(!confirm('承認済みの届けを取消しますか？工場長とGLの確認後に届けが削除されます。')){return false};"
+                                                                onclick="if(!confirm('承認済みの届けを取消しますか？上長とGLの確認後に届けが削除されます。')){return false};"
                                                                 class="px-3 py-1 text-sm text-red-500 border-2 border-gray-400 rounded-full bg-red-100/60 hover:text-white hover:font-semibold hover:bg-red-500">
                                                         </form>
                                                         {{-- @endcan --}}

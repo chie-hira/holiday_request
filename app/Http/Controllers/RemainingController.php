@@ -23,14 +23,14 @@ class RemainingController extends Controller
      */
     public function index()
     {
-        $approvals = Auth::user()->approvals->where('approval_id', 5);
+        $approvals = Auth::user()->approvals->where('approval_id', 1);
 
         # 工場単位で一覧作成
         $users = new Collection();
         foreach ($approvals as $approval) {
             $extractions = User::with(['reports', 'remainings'])
-                            ->where('factory_id', $approval->factory_id)
-                            ->get();
+                ->where('factory_id', $approval->factory_id)
+                ->get();
 
             $extractions->each(function ($extraction) use ($users) {
                 $users->add($extraction);
@@ -126,20 +126,63 @@ class RemainingController extends Controller
     {
         $my_remainings = Auth::user()->remainings;
 
-        // 新採用・中途採用
-        if (empty($my_remainings->first())) {
-            $report_ids = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 16];
-            foreach ($report_ids as $report_id) {
-                self::newRemaining($report_id);
-            }
-            $my_remainings = Remaining::all()->where(
-                'user_id',
-                '==',
-                Auth::id()
-            );
+        $reports = Auth::user()
+            ->reports->whereIn('report_id', [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                16,
+            ])
+            ->where('approved', 0)
+            ->where('cancel', 0);
+        if (empty($reports->first())) {
+            $reports = [];
         }
 
-        return view('remainings.my_index')->with(compact('my_remainings'));
+        /** 承認前の届出の取得日数を$remainingにセット */
+        // 集計したget_daysをFunctionに入れる
+        // $my_remaining->get_days()で呼び出せるようにアクセサ
+        // foreach ($my_remainings as $my_remaining) {
+        // }
+        // dd($my_remainings);
+
+
+        /** 最後の弔事届出から14日で弔事の残日数をリセット */
+        $mourning_reports = Auth::user()
+            ->reports->whereIn('report_id', [4, 5, 6]);
+        if ($mourning_reports->isNotEmpty()) {
+            $now = new Carbon(Carbon::now());
+            $last_mourning_date = new Carbon($mourning_reports->last()->report_date); # 説明変数
+            
+            if ($now->diffInDays($last_mourning_date) >= 14) {
+                $report_ids = [4, 5, 6];
+                foreach ($report_ids as $report_id) {
+                    self::resetRemaining($report_id);
+                }
+            }
+        }
+
+        return view('remainings.my_index')->with(
+            compact('my_remainings', 'reports')
+        );
+    }
+
+    /** 残日数リセット関数 */
+    public function resetRemaining($report_id)
+    {
+        $mourning_remaining = Auth::user()->remainings
+                            ->where('report_id', $report_id)->first();
+        $mourning_remaining->remaining = ReportCategory::find($report_id)->max_days;
+        
+        return $mourning_remaining->save();
     }
 
     public function addRemainings(Request $request)
@@ -270,5 +313,11 @@ class RemainingController extends Controller
                 ->withInput()
                 ->withErrors($th->getMessage());
         }
+    }
+
+    public function remainingDaysOnly($remaining_days)
+    {
+        $exp = explode('.', $remaining_days);
+        return $exp[0];
     }
 }

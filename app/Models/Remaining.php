@@ -10,12 +10,7 @@ class Remaining extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'user_id',
-        'report_id',
-        'remaining_days',
-        'am_pm',
-    ];
+    protected $fillable = ['user_id', 'report_id', 'remaining_days', 'am_pm'];
 
     /**
      * Get the user that owns the Remaining
@@ -38,24 +33,35 @@ class Remaining extends Model
     }
 
     # アクセサ
+    /** 残日数の日数だけ */
     public function getRemainingDaysAttribute()
     {
         $exp = explode('.', $this->remaining);
         return $exp[0];
-        // return $remaining->remaining_days;
-        // return floor($remaining->remaining_days);
     }
+    /** 残日数の時間だけ */
+    /** 残日数の時間だけ */
+    /** 残日数の時間だけ */
     public function getRemainingHoursAttribute()
     {
         $exp = explode('.', $this->remaining);
         $exp_key1 = array_key_exists(1, $exp);
         if ($exp_key1) {
-            $decimal_p = '0.'. $exp[1];
+            $decimal_p = '0.' . $exp[1];
             return $decimal_p * 8; # 8時間で1日
         } else {
             return 0;
         }
-        // return $remaining->remaining_days;
-        // return floor($remaining->remaining_days);
+    }
+
+    /** 承認待ちの取得日数 */
+    public function getGetDaysAttribute()
+    {
+        $reports = Auth::user()
+                ->reports->where('report_id', $this->report_id)
+                ->where('approved', 0)
+                ->where('cancel', 0);
+
+        return $reports->sum('get_days');
     }
 }
