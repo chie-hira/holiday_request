@@ -23,11 +23,11 @@ use Illuminate\Support\Facades\Route;
 //     return view('menu.index');
 // })->name('menu');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})
-    ->middleware(['auth'])
-    ->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })
+//     ->middleware(['auth'])
+//     ->name('dashboard');
 
 # reportルーティング
 Route::resource('reports', ReportController::class)
@@ -49,13 +49,13 @@ Route::resource('approvals', ApprovalController::class)->middleware('auth');
 # 承認ルーティング
 Route::get('/pending_approval', [ReportController::class, 'pendingApproval'])
     ->name('reports.pending_approval')
-    ->middleware('auth', 'can:general_factory_gl_reader');
+    ->middleware('auth', 'can:general_gl_reader');
 Route::get('/approved', [ReportController::class, 'approved'])
     ->name('reports.approved')
-    ->middleware('auth', 'can:general_factory_gl_reader');
+    ->middleware('auth', 'can:general_gl_reader');
 Route::get('/get_and_remaining', [ReportController::class, 'getAndRemaining'])
     ->name('reports.get_and_remaining')
-    ->middleware('auth', 'can:general_factory_gl_reader');
+    ->middleware('auth', 'can:general_gl_reader');
 Route::get('/approval/{report}', [ReportController::class, 'approval'])
     ->name('approval')
     ->middleware('auth');

@@ -64,40 +64,40 @@
         @endif
         <!-- 有休失効alert -->
         @if (now()->addMonth(1) >= $year_end && $lost_days > 0)
-        <p class="flex items-center py-2 px-6 text-gray-700 text-xl">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                class="w-6 h-6 mr-2 text-red-700">
-                <path
-                    d="M5.85 3.5a.75.75 0 00-1.117-1 9.719 9.719 0 00-2.348 4.876.75.75 0 001.479.248A8.219 8.219 0 015.85 3.5zM19.267 2.5a.75.75 0 10-1.118 1 8.22 8.22 0 011.987 4.124.75.75 0 001.48-.248A9.72 9.72 0 0019.266 2.5z" />
-                <path fill-rule="evenodd"
-                    d="M12 2.25A6.75 6.75 0 005.25 9v.75a8.217 8.217 0 01-2.119 5.52.75.75 0 00.298 1.206c1.544.57 3.16.99 4.831 1.243a3.75 3.75 0 107.48 0 24.583 24.583 0 004.83-1.244.75.75 0 00.298-1.205 8.217 8.217 0 01-2.118-5.52V9A6.75 6.75 0 0012 2.25zM9.75 18c0-.034 0-.067.002-.1a25.05 25.05 0 004.496 0l.002.1a2.25 2.25 0 11-4.5 0z"
-                    clip-rule="evenodd" />
-            </svg>
-            あと
-            {{ now()->diff($year_end)->days }}
-            日で
-            {{ $lost_days }}
-            日間の有給休暇が失効します。
-        </p>
+            <p class="flex items-center py-2 px-6 text-gray-700 text-xl">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                    class="w-6 h-6 mr-2 text-red-700">
+                    <path
+                        d="M5.85 3.5a.75.75 0 00-1.117-1 9.719 9.719 0 00-2.348 4.876.75.75 0 001.479.248A8.219 8.219 0 015.85 3.5zM19.267 2.5a.75.75 0 10-1.118 1 8.22 8.22 0 011.987 4.124.75.75 0 001.48-.248A9.72 9.72 0 0019.266 2.5z" />
+                    <path fill-rule="evenodd"
+                        d="M12 2.25A6.75 6.75 0 005.25 9v.75a8.217 8.217 0 01-2.119 5.52.75.75 0 00.298 1.206c1.544.57 3.16.99 4.831 1.243a3.75 3.75 0 107.48 0 24.583 24.583 0 004.83-1.244.75.75 0 00.298-1.205 8.217 8.217 0 01-2.118-5.52V9A6.75 6.75 0 0012 2.25zM9.75 18c0-.034 0-.067.002-.1a25.05 25.05 0 004.496 0l.002.1a2.25 2.25 0 11-4.5 0z"
+                        clip-rule="evenodd" />
+                </svg>
+                あと
+                {{ now()->diff($year_end)->days }}
+                日で
+                {{ $lost_days }}
+                日間の有給休暇が失効します。
+            </p>
         @endif
         @if (now()->addMonth(1) >= $year_end && $get_days_only < 5)
-        <p class="flex items-center py-2 px-6 text-gray-700 text-xl">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                class="w-6 h-6 mr-2 text-red-700">
-                <path
-                    d="M5.85 3.5a.75.75 0 00-1.117-1 9.719 9.719 0 00-2.348 4.876.75.75 0 001.479.248A8.219 8.219 0 015.85 3.5zM19.267 2.5a.75.75 0 10-1.118 1 8.22 8.22 0 011.987 4.124.75.75 0 001.48-.248A9.72 9.72 0 0019.266 2.5z" />
-                <path fill-rule="evenodd"
-                    d="M12 2.25A6.75 6.75 0 005.25 9v.75a8.217 8.217 0 01-2.119 5.52.75.75 0 00.298 1.206c1.544.57 3.16.99 4.831 1.243a3.75 3.75 0 107.48 0 24.583 24.583 0 004.83-1.244.75.75 0 00.298-1.205 8.217 8.217 0 01-2.118-5.52V9A6.75 6.75 0 0012 2.25zM9.75 18c0-.034 0-.067.002-.1a25.05 25.05 0 004.496 0l.002.1a2.25 2.25 0 11-4.5 0z"
-                    clip-rule="evenodd" />
-            </svg>
-            有給休暇を取得してください。年度末までにあと
-            {{ 5 - $get_days_only }}
-            日間以上の有給休暇を推奨します。
-        </p>
+            <p class="flex items-center py-2 px-6 text-gray-700 text-xl">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                    class="w-6 h-6 mr-2 text-red-700">
+                    <path
+                        d="M5.85 3.5a.75.75 0 00-1.117-1 9.719 9.719 0 00-2.348 4.876.75.75 0 001.479.248A8.219 8.219 0 015.85 3.5zM19.267 2.5a.75.75 0 10-1.118 1 8.22 8.22 0 011.987 4.124.75.75 0 001.48-.248A9.72 9.72 0 0019.266 2.5z" />
+                    <path fill-rule="evenodd"
+                        d="M12 2.25A6.75 6.75 0 005.25 9v.75a8.217 8.217 0 01-2.119 5.52.75.75 0 00.298 1.206c1.544.57 3.16.99 4.831 1.243a3.75 3.75 0 107.48 0 24.583 24.583 0 004.83-1.244.75.75 0 00.298-1.205 8.217 8.217 0 01-2.118-5.52V9A6.75 6.75 0 0012 2.25zM9.75 18c0-.034 0-.067.002-.1a25.05 25.05 0 004.496 0l.002.1a2.25 2.25 0 11-4.5 0z"
+                        clip-rule="evenodd" />
+                </svg>
+                有給休暇を取得してください。年度末までにあと
+                {{ 5 - $get_days_only }}
+                日間以上の有給休暇を推奨します。
+            </p>
         @endif
     </header>
     <!-- 通知機能 閲覧権限以上 start -->
-    @can('general_and_factory_gl')
+    @can('general_and_gl')
         @empty(!($pending || $approved))
             <ul class="px-6 py-4 mb-2 text-md sm:text-lg text-red-700 border-l-4 border-b border-red-600 bg-red-50"
                 role="alert">
@@ -183,7 +183,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
                     <!-- 閲覧権限以上 start -->
-                    @canany(['general_and_factory_gl', 'reader'])
+                    @can(['general_gl_reader'])
                         <a href={{ route('reports.pending_approval') }}
                             class="inline-flex items-center p-2 text-lg font-medium text-gray-600 hover:text-sky-600 hover:font-bold">
                             <span class="mr-3">
@@ -285,7 +285,7 @@
                     @endcan
                     <!-- 管理者 end -->
 
-                    <!-- 会社承認 start -->
+                    <!-- 上長承認 start -->
                     @can('general_only')
                         <a href={{ route('approvals.index') }}
                             class="inline-flex items-center p-2 text-lg font-medium text-gray-600 hover:text-sky-600 hover:font-bold">
@@ -300,7 +300,7 @@
                             <span class="w-32">権限設定</span>
                         </a>
                     @endcan
-                    <!-- 会社承認 end -->
+                    <!-- 上長承認 end -->
                 </div>
             @endauth
 
@@ -317,7 +317,7 @@
                                             clip-rule="evenodd" fill="" />
                                     </svg>
                                 </span>
-                                <!-- その他 -->
+                                <!-- GL -->
                                 @if ($approval->approval_id == 3)
                                     {{ Auth::user()->getApprovalDepartment($approval->department_id) }}
                                     ・{{ Auth::user()->getApprovalGroup($approval->group_id) }}
@@ -326,16 +326,25 @@
                                 <!-- 閲覧 -->
                                 @if ($approval->approval_id == 4)
                                     {{ Auth::user()->getApprovalFactory($approval->factory_id) }}
-                                    ・{{ Auth::user()->getApprovalDepartment($approval->department_id) }}
-                                    ・{{ Auth::user()->getApprovalGroup($approval->group_id) }}
-                                    ・{{ Auth::user()->getApprovalName($approval->approval_id) }}
+                                    @if ($approval->department_id == 1)
+                                        ・{{ Auth::user()->getApprovalName($approval->approval_id) }}
+                                    @else
+                                        ・{{ Auth::user()->getApprovalDepartment($approval->department_id) }}
+                                        ・{{ Auth::user()->getApprovalGroup($approval->group_id) }}
+                                        ・{{ Auth::user()->getApprovalName($approval->approval_id) }}
+                                    @endif
                                 @endif
-                                <!-- 会社承認 -->
-                                @if ($approval->approval_id == 1)
-                                    {{ Auth::user()->getApprovalName($approval->approval_id) }}
+                                <!-- 上長承認 -->
+                                @if ($approval->approval_id == 2)
+                                    {{ Auth::user()->getApprovalFactory($approval->factory_id) }}
+                                    @if ($approval->department_id == 7)
+                                        ・{{ Auth::user()->getApprovalDepartment($approval->department_id) . __('長') }}
+                                    @else
+                                        ・{{ __('工場長承認') }}
+                                    @endif
                                 @endif
                                 <!-- 管理者 -->
-                                @if ($approval->approval_id == 2 || $approval->approval_id == 5)
+                                @if ($approval->approval_id == 1)
                                     {{ Auth::user()->getApprovalFactory($approval->factory_id) }}
                                     ・{{ Auth::user()->getApprovalName($approval->approval_id) }}
                                 @endif

@@ -27,12 +27,12 @@ class AuthServiceProvider extends ServiceProvider
 
         // 管理者だけ
         Gate::define('admin_only', function ($user) {
-            return !empty($user->approvals->where('approval_id', 5)->first());
+            return !empty($user->approvals->where('approval_id', 1)->first());
         });
 
-        // 会社承認だけ
+        // 上長承認だけ
         Gate::define('general_only', function ($user) {
-            return !empty($user->approvals->where('approval_id', 1)->first());
+            return !empty($user->approvals->where('approval_id', 2)->first());
         });
 
         // 閲覧
@@ -40,29 +40,26 @@ class AuthServiceProvider extends ServiceProvider
             return !empty($user->approvals->where('approval_id', 4)->first());
         });
 
-        // 会社承認と工場承認に適用
-        Gate::define('general_and_factory', function ($user) {
-            return !empty(
-                $user->approvals->where('approval_id', '=', 1)->first()
-            ) ||
-                !empty($user->approvals->where('approval_id', '=', 2)->first());
-        });
+        // // 会社承認と工場承認に適用
+        // Gate::define('general_and_factory', function ($user) {
+        //     return !empty(
+        //         $user->approvals->where('approval_id', '=', 1)->first()
+        //     ) ||
+        //         !empty($user->approvals->where('approval_id', '=', 2)->first());
+        // });
 
-        // 会社承認と工場承認とGL承認に適用
-        Gate::define('general_and_factory_gl', function ($user) {
+        // 上長承認とGL承認に適用
+        Gate::define('general_and_gl', function ($user) {
             return !empty(
-                $user->approvals->where('approval_id', '=', 1)->first()
+                $user->approvals->where('approval_id', 2)->first()
             ) ||
-                !empty(
-                    $user->approvals->where('approval_id', '=', 2)->first()
-                ) ||
                 !empty($user->approvals->where('approval_id', '=', 3)->first());
         });
 
-        // 会社承認,工場承認,GL承認,閲覧に適用
-        Gate::define('general_factory_gl_reader', function ($user) {
+        // 上長承認,GL承認,閲覧に適用
+        Gate::define('general_gl_reader', function ($user) {
             return !empty(
-                $user->approvals->where('approval_id', '<=', 4)->first()
+                $user->approvals->where('approval_id', '>', 1)->first()
             );
         });
 
