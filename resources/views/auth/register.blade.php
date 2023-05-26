@@ -27,11 +27,11 @@
             </div>
 
             <!-- Email Address -->
-            {{-- <div class="mt-4">
+            <div class="mt-4">
                 <x-label for="email" :value="__('Email')" />
 
                 <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required />
-            </div> --}}
+            </div>
 
             <!-- Password -->
             <div class="mt-4">
@@ -82,6 +82,33 @@
                             {{ $department_category->department_name }}</option>
                     @endforeach
                 </select>
+            </div>
+
+            <!-- Department_id -->
+            <div class="mt-4">
+                <x-label for="group_id" :value="__('Group')" />
+
+                <select name="group_id" id="gropu_id"
+                    class="rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 block w-full p-2.5">
+                    @foreach ($group_categories as $group_category)
+                        <option value="{{ $group_category->id }}"
+                            @if ($group_category->id === (int) old('group_id')) selected @endif>
+                            {{ $group_category->group_name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <!-- Adoption_date -->
+            <div class="mt-4">
+                <x-label for="adoption_date" :value="__('Adoption')" />
+                <x-input type="date" id="adoption_date" name="adoption_date" class="block mt-1 w-full" :value="old('adoption_date')" required/>
+            </div>
+
+            <!-- Birthday -->
+            <div class="mt-4">
+                <x-label for="birthday" :value="__('Birthday')" />
+                <x-input type="number" id="birth_m" name="birth_m" min="1" max='12' class="mt-1 w-20" :value="old('birth_m')" required/>{{ __('月') }}
+                <x-input type="number" id="birth_d" name="birth_d" min="1" max='31' class="mt-1 ml-2 w-20" :value="old('birth_m')" required/>{{ __('日') }}
             </div>
 
             <div class="flex items-center justify-end mt-4">
