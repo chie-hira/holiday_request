@@ -20,6 +20,9 @@
                 </div>
             </div>
 
+            <p>FIXME:介護休業が2人になった場合、手動で更新するフォーム</p>
+            <p>FIXME:弔事は申請日から2週間でリセット、2週間以内に対象者が出た場合、手動で更新</p>
+
             <div class="container max-w-lg bg-white w-full mx-auto border-2 rounded-lg">
                 <div class="flex flex-col p-2 sm:p-8">
                     <div class="-m-1.5 overflow-x-auto">
@@ -32,23 +35,42 @@
                                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                                                 名 称</th>
                                             <th scope="col"
-                                                class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                                                取得可能日数</th>
+                                                class="px-6 pt-3 pb-1 text-right text-xs font-medium text-gray-500 uppercase">
+                                                <p class="font-semibold">{{ __('日数') }}</p>
+                                                <p class="text-blue-400 text-xs">{{ __('予定') }}</p>
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-200 ">
                                         @foreach ($my_remainings as $my_remaining)
-                                            <tr class="hover:bg-gray-100 ">
+                                            <tr class="hover:bg-gray-100">
                                                 <td
                                                     class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-800 ">
                                                     {{ $my_remaining->report_category->report_name }}
                                                 </td>
-                                                <td class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium">
-                                                    {{ $my_remaining->remaining_days }} 日
-                                                    @if (!empty($my_remaining->remaining_hours))
-                                                        &ensp;{{ $my_remaining->remaining_hours }} 時間
-                                                    @else
-                                                    @endif
+                                                <td
+                                                    class="px-6 pt-3 pb-1 whitespace-nowrap text-right text-sm font-medium">
+                                                    <span class=" font-bold">
+                                                        {{ $my_remaining->remaining_days }} 日
+                                                        @if (!empty($my_remaining->remaining_hours))
+                                                            &ensp;{{ $my_remaining->remaining_hours }} 時間
+                                                        @endif
+                                                    </span>
+                                                    <p class="text-blue-400 text-xs">
+                                                        @if ($my_remaining->get_days != 0)
+                                                            @if ($my_remaining->remaining - $my_remaining->get_days == 0)
+                                                                {{ 0 }} 日
+                                                            @endif
+                                                            {{-- @if (Functions::remainingDaysOnly($my_remaining->remaining - $my_remaining->get_days) != 0)
+                                                                {{ Functions::remainingDaysOnly($my_remaining->remaining - $my_remaining->get_days) }}
+                                                                日
+                                                            @endif
+                                                            @if (Functions::remainingHours($my_remaining->remaining - $my_remaining->get_days) != 0)
+                                                                {{ Functions::remainingHours($my_remaining->remaining - $my_remaining->get_days) }}
+                                                                時間
+                                                            @endif --}}
+                                                        @endif
+                                                    </p>
                                                 </td>
                                             </tr>
                                         @endforeach
