@@ -10,7 +10,6 @@ use App\Models\DepartmentCategory;
 use App\Models\GroupCategory;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 
@@ -70,7 +69,14 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        Auth::login($user);
+        $report_ids = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 16];
+            foreach ($report_ids as $report_id) {
+                self::newRemaining($report_id, $user->id);
+            }
+
+        return redirect()
+                ->route('users.index')
+                ->with('notice', 'ユーザーを登録しました。');
 
         return redirect(RouteServiceProvider::HOME);
     }
