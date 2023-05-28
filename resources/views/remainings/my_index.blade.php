@@ -61,14 +61,14 @@
                                                             @if ($my_remaining->remaining - $my_remaining->get_days == 0)
                                                                 {{ 0 }} 日
                                                             @endif
-                                                            {{-- @if (Functions::remainingDaysOnly($my_remaining->remaining - $my_remaining->get_days) != 0)
-                                                                {{ Functions::remainingDaysOnly($my_remaining->remaining - $my_remaining->get_days) }}
+                                                            @if ($my_remaining->expectation_days != 0)
+                                                                {{ $my_remaining->expectation_days }}
                                                                 日
                                                             @endif
-                                                            @if (Functions::remainingHours($my_remaining->remaining - $my_remaining->get_days) != 0)
-                                                                {{ Functions::remainingHours($my_remaining->remaining - $my_remaining->get_days) }}
+                                                            @if ($my_remaining->expectation_hours != 0)
+                                                                {{ $my_remaining->expectation_hours }}
                                                                 時間
-                                                            @endif --}}
+                                                            @endif
                                                         @endif
                                                     </p>
                                                 </td>

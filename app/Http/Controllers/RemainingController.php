@@ -147,14 +147,6 @@ class RemainingController extends Controller
             $reports = [];
         }
 
-        /** 承認前の届出の取得日数を$remainingにセット */
-        // 集計したget_daysをFunctionに入れる
-        // $my_remaining->get_days()で呼び出せるようにアクセサ
-        // foreach ($my_remainings as $my_remaining) {
-        // }
-        // dd($my_remainings);
-
-
         /** 最後の弔事届出から14日で弔事の残日数をリセット */
         $mourning_reports = Auth::user()
             ->reports->whereIn('report_id', [4, 5, 6]);
@@ -313,11 +305,5 @@ class RemainingController extends Controller
                 ->withInput()
                 ->withErrors($th->getMessage());
         }
-    }
-
-    public function remainingDaysOnly($remaining_days)
-    {
-        $exp = explode('.', $remaining_days);
-        return $exp[0];
     }
 }
