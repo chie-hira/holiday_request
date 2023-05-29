@@ -120,11 +120,11 @@
                                                 <td id="remaining_data" style="display: "
                                                     class="px-2 py-4 whitespace-nowrap text-sm text-right text-gray-800 ">
                                                     <div id="remaining-1_{{ $user->id }}" style="display: ">
-                                                        <x-remaining-days :user="$user" key=0 />
+                                                        <x-remaining-days :user="$user" key=1 />
                                                         {{-- 有給 --}}
                                                     </div>
                                                     <div id="remaining-2_{{ $user->id }}" style="display: none">
-                                                        <x-remaining-days :user="$user" key=1 />
+                                                        <x-remaining-days :user="$user" key=2 />
                                                         {{-- バースデイ --}}
                                                     </div>
                                                 </td>

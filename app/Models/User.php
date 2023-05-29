@@ -2,12 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use PHPUnit\TextUI\XmlConfiguration\Group;
 
 class User extends Authenticatable
 {
@@ -25,6 +23,9 @@ class User extends Authenticatable
         'employee',
         'factory_id',
         'department_id',
+        'group_id',
+        'adoption_date',
+        'birthday',
     ];
 
     /**
@@ -108,24 +109,52 @@ class User extends Authenticatable
     }
 
     // アクセサ
-    public function getSumGetDaysAttribute() # 取得日数集計
+    public function getTeamAllAttribute()
     {
+        $team =
+            $this->factory->factory_name .
+            $this->department->department_name .
+            $this->group->group_name;
+        return $team;
+    }
+
+    public function getTeamAttribute()
+    {
+        if ($this->group->id != 1) {
+            $team =
+                $this->department->department_name. ' '. $this->group->group_name;
+        } 
+        if ($this->department->id != 1 && $this->group->id == 1) {
+            $team =
+                $this->department->department_name;
+        } 
+        if ($this->department->id == 1) {
+            $team = '工場長';
+        } 
+
+        return $team;
+    }
+
+    public function getSumGetDaysAttribute()
+    {
+        # 取得日数集計
         $sum_get_days = $this->reports
             ->where('approval1', '=', 1)
             ->where('approval2', '=', 1)
-            ->where('approval3', '=', 1)
             ->groupBy('report_id')
             ->map(function ($report_id) {
                 return $report_id->sum('get_days');
             });
-            
+
         return $sum_get_days;
     }
 
-    public function getSumPaidHolidayDaysAttribute() # 有給日数だけ
+    public function getSumPaidHolidayDaysAttribute()
     {
+        # 有給日数だけ
         $sum_get_days = $this->sum_get_days;
-        if ($sum_get_days->has(1)) { # keyの存在確認
+        if ($sum_get_days->has(1)) {
+            # keyの存在確認
             $exp = explode('.', $sum_get_days[1]);
             return $exp[0];
         } else {
@@ -133,10 +162,12 @@ class User extends Authenticatable
         }
     }
 
-    public function getSumPaidHolidayHoursAttribute() # 有給時間だけ
+    public function getSumPaidHolidayHoursAttribute()
     {
+        # 有給時間だけ
         $sum_get_days = $this->sum_get_days;
-        if ($sum_get_days->has(1)) { # keyの存在確認
+        if ($sum_get_days->has(1)) {
+            # keyの存在確認
             $exp = explode('.', $sum_get_days[1]);
         } else {
             return 0;
@@ -174,20 +205,24 @@ class User extends Authenticatable
         return $group->group_name;
     }
 
-    public function sumGetDaysOnly($key) # 取得日数だけ
+    public function sumGetDaysOnly($key)
     {
+        # 取得日数だけ
         $sum_get_days = $this->sum_get_days;
-        if ($sum_get_days->has($key)) { # keyの存在確認
+        if ($sum_get_days->has($key)) {
+            # keyの存在確認
             $exp = explode('.', $sum_get_days[$key]);
             return $exp[0];
         } else {
             return 0;
         }
     }
-    public function sumGetHours($key) # 取得時間だけ
+    public function sumGetHours($key)
     {
+        # 取得時間だけ
         $sum_get_days = $this->sum_get_days;
-        if ($sum_get_days->has($key)) { # keyの存在確認
+        if ($sum_get_days->has($key)) {
+            # keyの存在確認
             $exp = explode('.', $sum_get_days[$key]);
         } else {
             return 0;
@@ -202,10 +237,12 @@ class User extends Authenticatable
             return 0;
         }
     }
-    public function sumGetMinutes($key) # 取得分だけ
+    public function sumGetMinutes($key)
     {
+        # 取得分だけ
         $sum_get_days = $this->sum_get_days;
-        if ($sum_get_days->has($key)) { # keyの存在確認
+        if ($sum_get_days->has($key)) {
+            # keyの存在確認
             $exp = explode('.', $sum_get_days[$key]);
         } else {
             return 0;
@@ -225,46 +262,101 @@ class User extends Authenticatable
         }
     }
 
-    public function remainingDaysOnly($key) # 残日数だけ
+    public function remainingDaysOnly($key)
     {
-        $remaining = $this->remainings[$key]->remaining;
-        $exp = explode('.', $remaining);
-        return $exp[0];
-    }
-    public function remainingHours($key) # 残時間だけ
-    {
-        $remaining = $this->remainings[$key]->remaining;
-        $exp = explode('.', $remaining);
-        if (array_key_exists(1, $exp)) {
-            # 小数点以下あり(1日未満)
-            $decimal_p = '0.' . $exp[1];
-            $exp_hour = explode('.', $decimal_p * 8); # 8時間で1日
-            return $exp_hour[0];
+        # 残日数だけ
+        $remaining = $this->remainings->where('report_id', $key)->first();
+        if ($remaining) {
+            $exp = explode('.', $remaining->remaining);
+            return $exp[0];
+
         } else {
             return 0;
         }
     }
-    public function remainingMinutes($key) # 残分だけ
+
+    public function remainingHours($key)
     {
-        $remaining = $this->remainings[$key]->remaining;
-        $exp = explode('.', $remaining);
-        if (array_key_exists(1, $exp)) {
-            # 小数点以下あり(1日未満)
-            $decimal_p = '0.' . $exp[1];
-            $exp_hour = explode('.', $decimal_p * 8);
-            if (array_key_exists(1, $exp_hour)) {
-                # 小数点以下あり(1時間未満)
-                $decimal_p = '0.' . $exp_hour[1];
-                return round($decimal_p * 60);
+        # 残時間だけ
+        $remaining = $this->remainings->where('report_id', $key)->first();
+        if ($remaining) {
+            $exp = explode('.', $remaining->remaining);
+
+            if (array_key_exists(1, $exp)) {
+                # 小数点以下あり(1日未満)
+                $decimal_p = '0.' . $exp[1];
+                $exp_hour = explode('.', $decimal_p * 8); # 8時間で1日
+                return $exp_hour[0];
+            } else {
+                return 0;
             }
-        } else {
-            return 0;
         }
     }
+    public function remainingMinutes($key)
+    {
+        # 残分だけ
+        $remaining = $this->remainings->where('report_id', $key)->first();
+        if ($remaining) {
+            $exp = explode('.', $remaining->remaining);
+
+            if (array_key_exists(1, $exp)) {
+                # 小数点以下あり(1日未満)
+                $decimal_p = '0.' . $exp[1];
+                $exp_hour = explode('.', $decimal_p * 8);
+                if (array_key_exists(1, $exp_hour)) {
+                    # 小数点以下あり(1時間未満)
+                    $decimal_p = '0.' . $exp_hour[1];
+                    return round($decimal_p * 60);
+                }
+            } else {
+                return 0;
+            }
+        }
+    }
+    // public function remainingDaysOnly($key) # 残日数だけ
+    // {
+    //     $remaining = $this->remainings[$key]->remaining;
+    //     $exp = explode('.', $remaining);
+    //     return $exp[0];
+    // }
+    // public function remainingHours($key)
+    // {
+    //     # 残時間だけ
+    //     $remaining = $this->remainings[$key]->remaining;
+    //     $exp = explode('.', $remaining);
+    //     if (array_key_exists(1, $exp)) {
+    //         # 小数点以下あり(1日未満)
+    //         $decimal_p = '0.' . $exp[1];
+    //         $exp_hour = explode('.', $decimal_p * 8); # 8時間で1日
+    //         return $exp_hour[0];
+    //     } else {
+    //         return 0;
+    //     }
+    // }
+    // public function remainingMinutes($key)
+    // {
+    //     # 残分だけ
+    //     $remaining = $this->remainings[$key]->remaining;
+    //     $exp = explode('.', $remaining);
+    //     if (array_key_exists(1, $exp)) {
+    //         # 小数点以下あり(1日未満)
+    //         $decimal_p = '0.' . $exp[1];
+    //         $exp_hour = explode('.', $decimal_p * 8);
+    //         if (array_key_exists(1, $exp_hour)) {
+    //             # 小数点以下あり(1時間未満)
+    //             $decimal_p = '0.' . $exp_hour[1];
+    //             return round($decimal_p * 60);
+    //         }
+    //     } else {
+    //         return 0;
+    //     }
+    // }
 
     public function remaining($report_category_id)
     {
         $remainings = $this->remainings;
-        return $remainings->where('report_id', '=', $report_category_id)->first();
+        return $remainings
+            ->where('report_id', '=', $report_category_id)
+            ->first();
     }
 }

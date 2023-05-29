@@ -1,6 +1,6 @@
 <x-app-layout>
     <section class="text-gray-600 body-font">
-        <div class="container w-full md:w-2/3 px-5 py-24 mx-auto">
+        <div class="container max-w-2xl min-w-max w-full md:w-4/5 lg:w-2/3 px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-12">
                 <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">出退勤届け作成</h1>
                 <div class="mx-auto">
@@ -96,14 +96,14 @@
                         </label>
                         <label style="display: none" id="half_date_label" for="start_date"
                             class="block mb-2 text-sm font-medium text-gray-900">
-                            日付
+                            休暇予定日
                         </label>
                         <x-input style="display: " type="date" id="start_date" name="start_date"
                             onchange="countDays();" class="block mt-1 w-full" :value="old('start_date')" required/>
                     </div>
                     <div style="display: " id="end_date_form">
                         <label for="end_date" class="block mb-2 text-sm font-medium text-gray-900">
-                            期間：何日まで
+                            何日まで
                         </label>
                         <x-input type="date" id="end_date" name="end_date" onchange="countDays();" class="block mt-1 w-full" :value="old('end_date')"/>
                     </div>
@@ -127,14 +127,14 @@
                     </div>
                     <div style="display: none" id="start_time_form">
                         <label for="start_time" class="block mb-2 text-sm font-medium text-gray-900">
-                            期間：何時から<span class="text-xs text-gray-600">&emsp;5分刻み</span>
+                            何時から<span class="text-xs text-gray-600">&emsp;5分刻み</span>
                         </label>
                         <x-input type="time" id="start_time" name="start_time" step="300"
                             onchange="countDays();" class="block mt-1 w-full" :value="old('start_time')"/>
                     </div>
                     <div style="display: none" id="end_time_form">
                         <label for="end_time" class="block mb-2 text-sm font-medium text-gray-900">
-                            期間：何時まで<span class="text-xs text-gray-600">&emsp;5分刻み</span>
+                            何時まで<span class="text-xs text-gray-600">&emsp;5分刻み</span>
                         </label>
                         <x-input type="time" id="end_time" name="end_time" step="300"
                             onchange="countDays();" class="block mt-1 w-full" :value="old('end_time')"/>
@@ -193,20 +193,6 @@
                 </div>
                 <!-- 外出 - end -->
 
-                {{-- <div class="mb-6">
-                    <button type="button" id="button"
-                        class="w-32 h-10 flex justify-center items-center rounded-3xl text-center text-indigo-500 bg-indigo-100/60 hover:text-white hover:bg-indigo-500">
-                        <span class="pt-1">
-                            日数算出
-                        </span>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            class="w-6 h-6">
-                            <path fill-rule="evenodd"
-                                d="M6.32 1.827a49.255 49.255 0 0111.36 0c1.497.174 2.57 1.46 2.57 2.93V19.5a3 3 0 01-3 3H6.75a3 3 0 01-3-3V4.757c0-1.47 1.073-2.756 2.57-2.93zM7.5 11.25a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75H8.25a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H8.25zm-.75 3a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75H8.25a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V18a.75.75 0 00-.75-.75H8.25zm1.748-6a.75.75 0 01.75-.75h.007a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75h-.007a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.335.75.75.75h.007a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75h-.007zm-.75 3a.75.75 0 01.75-.75h.007a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75h-.007a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.335.75.75.75h.007a.75.75 0 00.75-.75V18a.75.75 0 00-.75-.75h-.007zm1.754-6a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75h-.008a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75h-.008zm-.75 3a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75h-.008a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V18a.75.75 0 00-.75-.75h-.008zm1.748-6a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75h-.008a.75.75 0 01-.75-.75v-.008zm.75 1.5a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75h-.008zm-8.25-6A.75.75 0 018.25 6h7.5a.75.75 0 01.75.75v.75a.75.75 0 01-.75.75h-7.5a.75.75 0 01-.75-.75v-.75zm9 9a.75.75 0 00-1.5 0V18a.75.75 0 001.5 0v-2.25z"
-                                clip-rule="evenodd" />
-                        </svg>
-                    </button>
-                </div> --}}
                 <div class="flex mb-6">
                     <div class="mr-4">
                         <label for="get_days" class="block mb-2 text-sm font-medium text-gray-900">
@@ -309,6 +295,7 @@
             subReportCategories[0].checked = false;
             subReportCategories[1].checked = false;
             subReportCategories[2].checked = false;
+            subReportCategories[3].checked = false;
             timeReset(); // end_date,start_time,end_timeリセット
             dateChange(); // get_daysリセット
 
@@ -344,6 +331,19 @@
         function subReportDisplaySwitch() {
             console.log(document.getElementById('get_days').value);
             if (subReportCategories[0].checked) { // 終日休
+                halfDateLabel.style.display = "";
+                startDateForm.style.display = "";
+                amPmForm.style.display = "none";
+                timeEmptyForm.style.display = "none";
+                timeForm.style.display = "none";
+                timeForm30.style.display = "none";
+                timeForm10.style.display = "none";
+                startTimeForm.style.display = "none";
+                endTimeForm.style.display = "none";
+                startDateLabel.style.display = "none";
+                endDateForm.style.display = "none";
+            }
+            if (subReportCategories[1].checked) { // 連休
                 halfDateLabel.style.display = "none";
                 amPmForm.style.display = "none";
                 timeEmptyForm.style.display = "none";
@@ -356,9 +356,8 @@
                 startDateForm.style.display = "";
                 endDateForm.style.display = "";
             }
-            if (subReportCategories[1].checked) { // 半日休
+            if (subReportCategories[2].checked) { // 半日休
                 halfDateLabel.style.display = "";
-                startDateForm.style.display = "";
                 startDateForm.style.display = "";
                 amPmForm.style.display = "";
                 timeEmptyForm.style.display = "none";
@@ -370,7 +369,7 @@
                 startDateLabel.style.display = "none";
                 endDateForm.style.display = "none";
             }
-            if (subReportCategories[2].checked) { // 時間休
+            if (subReportCategories[3].checked) { // 時間休
                 halfDateLabel.style.display = "";
                 startDateForm.style.display = "";
                 amPmForm.style.display = "none";
@@ -416,7 +415,7 @@
                 reportCategory.value == "13" || // 遅刻
                 reportCategory.value == "14" || // 早退
                 reportCategory.value == "15") { // 外出
-                let reasonId = [1, 2, 3, 4, 5, 6, 7, 8];
+                let reasonId = [1, 2, 3, 4, 5, 6, 7, 8, 9];
                 reasonId.forEach(e => {
                     let createId = reasons[e - 1].id;
                     let createReason = reasons[e - 1].reason;
@@ -424,7 +423,7 @@
                 });
             }
             if (reportCategory.value == "2") { // バースデイ
-                let reasonId = [9];
+                let reasonId = [10];
                 reasonId.forEach(e => {
                     let createId = reasons[e - 1].id;
                     let createReason = reasons[e - 1].reason;
@@ -432,7 +431,7 @@
                 });
             }
             if (reportCategory.value == "3") { // 特別休暇(慶事)
-                let reasonId = [10, 8];
+                let reasonId = [11, 9];
                 reasonId.forEach(e => {
                     let createId = reasons[e - 1].id;
                     let createReason = reasons[e - 1].reason;
@@ -440,7 +439,7 @@
                 });
             }
             if (reportCategory.value == "4") { // 特別休暇(弔事・配偶者等)
-                let reasonId = [11, 12, 13, 8];
+                let reasonId = [12, 13, 14, 9];
                 reasonId.forEach(e => {
                     let createId = reasons[e - 1].id;
                     let createReason = reasons[e - 1].reason;
@@ -448,7 +447,7 @@
                 });
             }
             if (reportCategory.value == "5") { // 特別休暇(弔事・同居の義父母)
-                let reasonId = [15, 8];
+                let reasonId = [16, 9];
                 reasonId.forEach(e => {
                     let createId = reasons[e - 1].id;
                     let createReason = reasons[e - 1].reason;
@@ -456,7 +455,7 @@
                 });
             }
             if (reportCategory.value == "6") { // 特別休暇(弔事・別居父母等)
-                let reasonId = [14, 16, 17, 18, 19, 8];
+                let reasonId = [15, 17, 18, 19, 20, 9];
                 reasonId.forEach(e => {
                     let createId = reasons[e - 1].id;
                     let createReason = reasons[e - 1].reason;
@@ -465,7 +464,7 @@
             }
             if (reportCategory.value == "7" || // 特別休暇(看護・対象1名)
                 reportCategory.value == "8") { // 特別休暇(看護・対象2名以上)
-                let reasonId = [20, 8];
+                let reasonId = [21, 9];
                 reasonId.forEach(e => {
                     let createId = reasons[e - 1].id;
                     let createReason = reasons[e - 1].reason;
@@ -475,7 +474,7 @@
             if (reportCategory.value == "9" || // 特別休暇(介護・対象1名)
                 reportCategory.value == "10" || // 特別休暇(介護・対象2名)
                 reportCategory.value == "16") { // 介護休業
-                let reasonId = [21, 22, 23, 24, 25, 26, 27, 8];
+                let reasonId = [22, 23, 24, 25, 26, 27, 28, 9];
                 reasonId.forEach(e => {
                     let createId = reasons[e - 1].id;
                     let createReason = reasons[e - 1].reason;
@@ -485,7 +484,7 @@
             if (reportCategory.value == "11" || // 特別休暇(短期育休)
                 reportCategory.value == "17" || // 育児休業
                 reportCategory.value == "18") { // パパ育休
-                let reasonId = [28, 8];
+                let reasonId = [29, 9];
                 reasonId.forEach(e => {
                     let createId = reasons[e - 1].id;
                     let createReason = reasons[e - 1].reason;
@@ -595,10 +594,10 @@
 
         // 理由form切替関数
         function reasonDisplaySwitch() {
-            if (reasonCategory.value == "8") { // 理由その他表示
+            if (reasonCategory.value == "9") { // 理由その他表示
                 reasonDetail.style.display = "";
             }
-            if (reasonCategory.value != "8") { // 理由その他非表示
+            if (reasonCategory.value != "9") { // 理由その他非表示
                 reasonDetail.style.display = "none";
             }
         }
@@ -611,151 +610,6 @@
         let startTime = document.getElementById('start_time');
         let endTime = document.getElementById('end_time');
 
-        // button.addEventListener("click", function() {
-        //     // 取得日数
-        //     const startVal = new Date(startDate.value);
-        //     const endVal = new Date(endDate.value);
-        //     const startTimeVal = new Date(startDate.value + ' ' + startTime.value);
-        //     const endTimeVal = new Date(startDate.value + ' ' + endTime.value);
-        //     let reportId = reportCategory.value;
-        //     let diffDays = (endVal - startVal) / 86400000 + 1; // 単純な差
-        //     let getDays = 0;
-        //     let dayOffs = 0;
-
-        //     //土曜日、日曜日は基本休業日でdayOffsに加算
-        //     let remainderDays = diffDays % 7
-        //     let startWeek = startVal.getDay(); //0~6の曜日数値
-        //     dayOffs = (diffDays - remainderDays) / 7 * 2;
-        //     for (var i = 0; i < remainderDays; i++) {
-        //         if (startWeek + i == 0 || startWeek + i == 6 || startWeek + i == 7) {
-        //             dayOffs++; // 土曜日6,日曜日0,7は休日数に加算
-        //         }
-        //     }
-
-        //     // 土曜日の営業日をdayOffsから減算
-        //     const saturday = [ //土曜日の営業日を配列
-        //         '20230819',
-        //         '20240309',
-        //     ];
-        //     for (let d = new Date(startDate.value); d <= endVal; d.setDate(d.getDate() + 1)) {
-        //         let startYMD = d.getFullYear() + ('0' + (d.getMonth() + 1)).slice(-2) + ('0' + d
-        //             .getDate()).slice(-2);
-        //         if (saturday.indexOf(startYMD) != -1) {
-        //             dayOffs--; // 土曜日の営業日は休日数から減算
-        //             // console.log(startYMD);
-        //         }
-        //     }
-
-        //     // 祝祭日等の休業日をdayOffsに加算
-        //     const holiday = [ // 土日以外の休業日を配列で記載
-        //         '20230503',
-        //         '20230504',
-        //         '20230505',
-        //         '20230814',
-        //         '20230815',
-        //         '20230816',
-        //         '20240101',
-        //         '20240102',
-        //         '20240103',
-        //     ];
-        //     for (let d = new Date(startDate.value); d <= endVal; d.setDate(d.getDate() + 1)) {
-        //         let startYMD = d.getFullYear() + ('0' + (d.getMonth() + 1)).slice(-2) + ('0' + d
-        //             .getDate()).slice(-2);
-        //         if (holiday.indexOf(startYMD) != -1) {
-        //             dayOffs++; // 土曜日の営業日は休日数から減算
-        //             // console.log(startYMD);
-        //         }
-        //     }
-
-        //     if (reportCategory.value == 1 || // 有給
-        //         reportCategory.value == 3 || // 特別休暇(慶事)
-        //         reportCategory.value == 4 || // 特別休暇(弔事)
-        //         reportCategory.value == 5 || // 特別休暇(弔事)
-        //         reportCategory.value == 6 || // 特別休暇(弔事)
-        //         reportCategory.value == 7 || // 特別休暇(看護・対象1人)
-        //         reportCategory.value == 8 || // 特別休暇(看護・対象2人以上)
-        //         reportCategory.value == 9 || // 特別休暇(介護・対象1人)
-        //         reportCategory.value == 10 || // 特別休暇(介護・対象2人以上)
-        //         reportCategory.value == 11 || // 特別休暇(短期育休)
-        //         reportCategory.value == 16 || // 介護休業
-        //         reportCategory.value == 17 || // 育児休業
-        //         reportCategory.value == 18) { // パパ育休
-        //         getDays = diffDays - dayOffs;
-        //     }
-        //     if (subReportCategories[1].checked) { // 半日休
-        //         getDays = 0.5;
-        //     }
-        //     if (subReportCategories[2].checked ||
-        //         reportCategory.value == 13 || // 遅刻
-        //         reportCategory.value == 14 || // 早退
-        //         reportCategory.value == 15) { // 外出
-        //         getDays = ((endTimeVal - startTimeVal) / 60000) / 60 * 1 / 8;
-        //         // 時間換算:8時間で1日 1時間=1/8日 0.125日
-        //         getDays = orgRound(getDays, 100000); // 小数点以下切り捨て
-        //     }
-        //     if (reportCategory.value == 2 || reportCategory.value == 12) {
-        //         getDays = 1.0;
-        //     }
-
-        //     // get_days書き出し
-        //     document.getElementById('get_days').setAttribute('value', getDays);
-
-        //     // get時間&get日数作成&書き出し
-        //     function orgRound(value, base) { // 小数点以下を丸める関数
-        //         return Math.round(value * base) / base;
-        //     }
-
-        //     function decimalPart(num, decDigits) { // 指定した桁数の小数点以下を取り出す関数
-        //         var decPart = num - ((num >= 0) ? Math.floor(num) : Math.ceil(num));
-        //         return decPart.toFixed(decDigits);
-        //     }
-
-        //     // console.log(orgRound(getDays, 100000)); // 小数5桁
-        //     let getDaysOnly = getDays - decimalPart(getDays, 5);
-        //     let getHours = decimalPart(getDays, 5) * 8;
-        //     let getMinutes = 0;
-        //     if (decimalPart(getHours, 5) != 0 && decimalPart(getHours, 5) < 1) {
-        //         getHoursOnly = getHours - decimalPart(getHours, 5);
-        //         getHoursOnly = orgRound(getHoursOnly, 1);
-        //         getMinutes = decimalPart(getHours, 5) * 60;
-        //         getMinutes = orgRound(getMinutes, 1);
-        //     } else {
-        //         getHoursOnly = getHours;
-        //     }
-        //     document.getElementById('get_days_only').setAttribute('value', getDaysOnly);
-        //     document.getElementById('get_hours').setAttribute('value', getHoursOnly);
-        //     document.getElementById('get_minutes').setAttribute('value', getMinutes);
-
-        //     let ownRemainings = @json($my_remainings);
-        //     const arr = Object.keys(ownRemainings);
-        //     let ownRemainingDays = 0;
-        //     // console.log(arr);
-        //     arr.forEach((el) => {
-        //         if (ownRemainings[el].report_id == reportId) {
-        //             ownRemainingDays = ownRemainings[el].remaining;
-        //         }
-        //     });
-
-        //     let remainingDays = ownRemainingDays - getDays;
-        //     // 残日数書き出し
-        //     document.getElementById('remaining_days').setAttribute('value', remainingDays);
-
-        //     // console.log(orgRound(remainingDays, 100000)); // 小数5桁
-        //     let remainingDaysOnly = remainingDays - decimalPart(remainingDays, 5);
-        //     let remainingHours = decimalPart(remainingDays, 5) * 8;
-        //     let remainingMinutes = 0;
-        //     if (decimalPart(remainingHours, 5) != 0 && decimalPart(remainingHours, 5) < 1) {
-        //         remainingHoursOnly = remainingHours - decimalPart(remainingHours, 5);
-        //         remainingHoursOnly = orgRound(remainingHoursOnly, 1);
-        //         remainingMinutes = decimalPart(remainingHours, 5) * 60;
-        //         remainingMinutes = orgRound(remainingMinutes, 1);
-        //     } else {
-        //         remainingHoursOnly = getHours;
-        //     }
-        //     document.getElementById('remaining_days_only').setAttribute('value', remainingDaysOnly);
-        //     document.getElementById('remaining_hours').setAttribute('value', remainingHoursOnly);
-        //     document.getElementById('remaining_minutes').setAttribute('value', remainingMinutes);
-        // });
 
         function countDays() {
             // get_daysリセット
@@ -837,17 +691,22 @@
                 reportCategory.value == 18) { // パパ育休
                 getDays = diffDays - dayOffs;
             }
-            if (subReportCategories[1].checked) { // 半日休
+            if (subReportCategories[0].checked) { // 終日休
+                getDays = 1.0;
+            }
+            if (subReportCategories[2].checked) { // 半日休
                 getDays = 0.5;
             }
-            if (subReportCategories[2].checked ||
+            if (subReportCategories[3].checked ||
                 reportCategory.value == 13 || // 遅刻
                 reportCategory.value == 14 || // 早退
                 reportCategory.value == 15) { // 外出
+                // FIXME:お昼挟無場合、休憩時間考慮されない
                 getDays = ((endTimeVal - startTimeVal) / 60000) / 60 * 1 / 8;
                 // 時間換算:8時間で1日 1時間=1/8日 0.125日
                 getDays = orgRound(getDays, 100000); // 小数点以下切り捨て
             }
+            // FIXME:入力日で算出するorフォームを修正
             if (reportCategory.value == 2 || reportCategory.value == 12) {
                 getDays = 1.0;
             }

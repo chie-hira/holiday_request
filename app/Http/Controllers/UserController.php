@@ -20,7 +20,7 @@ class UserController extends Controller
     public function index()
     {
         // $users = User::all();
-        $approvals = Auth::user()->approvals->where('approval_id', 5);
+        $approvals = Auth::user()->approvals->where('approval_id', 1);
 
         # 工場単位で一覧作成
         $users = new Collection();

@@ -18,6 +18,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ReportExport;
+use GuzzleHttp\Promise\Each;
 
 class ReportController extends Controller
 {
@@ -42,20 +43,7 @@ class ReportController extends Controller
         $report_categories = ReportCategory::all();
         $sub_report_categories = SubReportCategory::all();
         $reasons = ReasonCategory::all();
-        $my_remainings = Remaining::all()->where('user_id', '=', Auth::id());
-
-        // 新採用・中途採用
-        if (empty($my_remainings->first())) {
-            $report_ids = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 16];
-            foreach ($report_ids as $report_id) {
-                self::newRemaining($report_id);
-            }
-            $my_remainings = Remaining::all()->where(
-                'user_id',
-                '=',
-                Auth::id()
-            );
-        }
+        $my_remainings = Remaining::all()->where('user_id', Auth::id());
 
         return view('reports.create')->with(
             compact(
@@ -88,19 +76,26 @@ class ReportController extends Controller
             ]);
             if ($request->sub_report_id == 1) {
                 # 終日休暇
+                $request->validate([
+                    'start_date' => 'required|date|after_or_equal:report_date',
+                    'get_days' => 'required|integer',
+                ]);
+            }
+            if ($request->sub_report_id == 2) {
+                # 連休
                 $request->validate(
                     [
                         'start_date' =>
                             'required|date|after_or_equal:report_date',
                         'end_date' => 'required|date|after_or_equal:start_date',
-                        'get_days' => 'required|integer|min:1',
+                        'get_days' => 'required|integer|min:2',
                     ],
                     [
-                        'get_days.min' => '取得日数は1日以上です。',
+                        'get_days.min' => '取得日数は2日以上です。',
                     ]
                 );
             }
-            if ($request->sub_report_id == 2) {
+            if ($request->sub_report_id == 3) {
                 # 半日休暇
                 $request->validate(
                     [
@@ -116,7 +111,7 @@ class ReportController extends Controller
                     ]
                 );
             }
-            if ($request->sub_report_id == 3) {
+            if ($request->sub_report_id == 4) {
                 # 時間休
                 $request->validate(
                     [
@@ -277,7 +272,7 @@ class ReportController extends Controller
                 ]
             );
         }
-        if ($request->reason_id == 8) {
+        if ($request->reason_id == 9) {
             # 理由:その他
             $request->validate(
                 [
@@ -307,11 +302,57 @@ class ReportController extends Controller
         $report = new Report();
         $report->fill($request->all());
 
+        // FIXME:自分の届出を自分で承認する場合
+        # 上長
+        if (
+            !empty(
+                Auth::user()
+                    ->approvals->where('approval_id', 2)
+                    ->first()
+            )
+        ) {
+            $report->approval1 = 1;
+            $report->approval2 = 1;
+            $report->approved = 1;
+
+            DB::beginTransaction(); # トランザクション開始
+            try {
+                $report->save();
+                $remaining = Remaining::where('user_id', $report->user_id)
+                    ->where('report_id', $report->report_id)
+                    ->first();
+                if (!empty($remaining)) {
+                    $new_remaining = $remaining->remaining - $report->get_days;
+                    $remaining->remaining = $new_remaining;
+                    $remaining->save(); # 残日数を保存
+                }
+                DB::commit(); # トランザクション成功終了
+                return redirect()
+                    ->route('reports.show', $report)
+                    ->with('msg', '承認しました');
+            } catch (\Exception $e) {
+                DB::rollBack(); # トランザクション失敗終了
+                return back()
+                    ->withInput()
+                    ->withErrors($e->getMessage());
+            }
+        }
+        # GL
+        if (
+            !empty(
+                Auth::user()
+                    ->approvals->where('approval_id', 3)
+                    ->first()
+            )
+        ) {
+            $report->approval2 = 1;
+        }
+
         try {
             $report->save();
             return redirect(route('reports.show', $report))->with(
                 'notice',
-                '出退勤届けを提出しました'
+                '届出を提出しました'
             );
         } catch (\Throwable $th) {
             return back()
@@ -342,7 +383,7 @@ class ReportController extends Controller
         $report_categories = ReportCategory::all();
         $sub_report_categories = SubReportCategory::all();
         $reasons = ReasonCategory::all();
-        $my_remainings = Remaining::all()->where('user_id', '=', Auth::id());
+        $my_remainings = Remaining::all()->where('user_id', Auth::id());
 
         return view('reports.edit')->with(
             compact(
@@ -589,9 +630,8 @@ class ReportController extends Controller
             );
         }
 
-        $report_id = $request->report_id; // 説明変数
-        $remaining = Remaining::where('user_id', '=', Auth::user()->id)
-            ->where('report_id', '=', $report_id)
+        $remaining = Remaining::where('user_id', Auth::user()->id)
+            ->where('report_id', $request->report_id)
             ->first('remaining');
         if (!empty($remaining->remaining)) {
             $result = $remaining->remaining - $request->get_days; // 説明変数
@@ -607,13 +647,12 @@ class ReportController extends Controller
         $report->fill($request->all());
         $report->approval1 = 0;
         $report->approval2 = 0;
-        $report->approval3 = 0;
 
         try {
             $report->save();
             return redirect(route('reports.show', $report))->with(
                 'notice',
-                '出退勤届けを更新しました。'
+                '届出を更新しました'
             );
         } catch (\Throwable $th) {
             return back()
@@ -630,32 +669,28 @@ class ReportController extends Controller
      */
     public function destroy(Report $report)
     {
-        // FIXME:通知機能、承認途中で取り消されたら承認した人に通知、承認者が確認したらdelete
-
-        // part1:通知 reportsテーブルcancelカラムが1
-        // part2:キャンセルの確認 reportsテーブルapprovalカラムがすべて0
-        // part3:削除 reportsテーブルcancelカラムが1、approvalカラムがすべて0で発動
         $report->cancel = 1;
         $report->save();
 
+        # 誰も承認していない場合
         if (
             $report->cancel == 1 &&
             $report->approval1 == 0 &&
-            $report->approval2 == 0 &&
-            $report->approval3 == 0
+            $report->approval2 == 0
         ) {
             try {
                 $report->delete();
                 return redirect()
                     ->route('reports.index')
-                    ->with('notice', '届けを取り消しました');
+                    ->with('notice', '届出を取消しました');
             } catch (\Throwable $th) {
                 return back()->withErrors($th->getMessage());
             }
         } else {
+            # 承認がある場合
             return redirect()
                 ->route('reports.index')
-                ->with('notice', '届けの取消を申請しました');
+                ->with('notice', '届出の取消申請しました');
         }
     }
 
@@ -666,19 +701,35 @@ class ReportController extends Controller
         $approvals = Auth::user()->approvals;
 
         /** 通常の承認取消*/
-        if ($approvals->contains('approval_id', 1)) {
-            $report->approval1 = 0;
-        }
+        // if ($approvals->contains('approval_id', 2)) {
+        //     $report->approval1 = 0;
+        // }
 
+        # 総務部承認取消
         if (
             $approvals
                 ->where('factory_id', $report->user->factory_id)
+                ->where('department_id', 7) # 総務部
                 ->where('approval_id', 2)
-                ->first()
+                ->first() &&
+            $report->user->department_id == 7
         ) {
-            $report->approval2 = 0;
+            $report->approval1 = 0;
         }
 
+        # 工場長承認取消
+        if (
+            $approvals
+                ->where('factory_id', $report->user->factory_id)
+                ->where('department_id', '!=', 7) # 総務部以外
+                ->where('approval_id', 2)
+                ->first() &&
+            $report->user->department_id != 7
+        ) {
+            $report->approval1 = 0;
+        }
+
+        # GL承認取消
         if (
             $approvals
                 ->where('factory_id', $report->user->factory_id)
@@ -686,23 +737,30 @@ class ReportController extends Controller
                 ->where('approval_id', 3)
                 ->first()
         ) {
-            $report->approval3 = 0;
+            $report->approval2 = 0;
         }
 
         /** イレギュラーな承認取消*/
-        # 会社承認者が自分の届を承認取消
+        // # 上長が自分の届を承認取消
+        // if (
+        //     $approvals->contains('approval_id', 2) &&
+        //     $report->user->id == Auth::user()->id
+        // ) {
+        //     $report->approval1 = 0;
+        // }
+
+        # GLがいない部署の届を承認取消
         if (
-            $approvals->contains('approval_id', 1) &&
-            $report->user->id == Auth::user()->id
+            $approvals->contains('approval_id', 2) &&
+            $report->user->group->id == 1
         ) {
             $report->approval1 = 0;
             $report->approval2 = 0;
-            $report->approval3 = 0;
 
             /** remainingを更新 */
             $remaining = Remaining::all()
-                ->where('report_id', '=', $report->report_id)
-                ->where('user_id', '=', $report->user_id)
+                ->where('report_id', $report->report_id)
+                ->where('user_id', $report->user_id)
                 ->first();
             if (empty($remaining)) {
                 # remainingがない場合
@@ -710,7 +768,7 @@ class ReportController extends Controller
                     $report->delete();
                     return redirect()
                         ->route('reports.approved')
-                        ->with('notice', '出退勤届けを取り消しました');
+                        ->with('notice', '届出を取消しました');
                 } catch (\Throwable $th) {
                     return back()->withErrors($th->getMessage());
                 }
@@ -726,7 +784,7 @@ class ReportController extends Controller
                     DB::commit(); # トランザクション成功終了
                     return redirect()
                         ->route('reports.approved')
-                        ->with('notice', '出退勤届けを取り消しました');
+                        ->with('notice', '届出を取消しました');
                 } catch (\Throwable $th) {
                     DB::rollBack(); # トランザクション失敗終了
                     return back()->withErrors($th->getMessage());
@@ -734,29 +792,11 @@ class ReportController extends Controller
             }
         }
 
-        # 工場承認者が自分の届を承認取消
-        if (
-            $approvals->contains('approval_id', 2) &&
-            $report->user->id == Auth::user()->id
-        ) {
-            $report->approval2 = 0;
-            $report->approval3 = 0;
-        }
-
-        # GLがいない部署の届を承認取消
-        if (
-            $approvals->contains('approval_id', 2) &&
-            $report->user->group->id == 1
-        ) {
-            $report->approval2 = 0;
-            $report->approval3 = 0;
-        }
-
         try {
             $report->save();
             return redirect()
                 ->route('reports.index')
-                ->with('notice', '届けの取消を申請しました');
+                ->with('notice', '取消申請しました');
         } catch (\Throwable $th) {
             return back()->withErrors($th->getMessage());
         }
@@ -798,7 +838,6 @@ class ReportController extends Controller
     //     }
     // }
 
-    /** refactoring未完 */
     # 承認待ちのreports
     public function pendingApproval()
     {
@@ -878,7 +917,6 @@ class ReportController extends Controller
         # GL承認
         if ($approvals->contains('approval_id', 3)) {
             $group_apps = $approvals->where('approval_id', 3);
-            // dd($group_apps);
             $reports = new Collection();
             foreach ($group_apps as $approval) {
                 $extractions = Report::whereHas('user', function ($query) use (
@@ -900,11 +938,51 @@ class ReportController extends Controller
             }
         }
 
-        # 工場承認
-        // FIXME:同じfactory_idのapproval_id=2が複数あるとダブル計上
-        // 権限のバリデーションで同じfactory_idのapproval_id=2は作成できないようにする
-        if ($approvals->contains('approval_id', 2)) {
-            $factory_apps = $approvals->where('approval_id', 2);
+        // # 総務部承認取消
+        // if (
+        //     $approvals
+        //         ->where('factory_id', $report->user->factory_id)
+        //         ->where('department_id', 7) # 総務部
+        //         ->where('approval_id', 2)
+        //         ->first() &&
+        //     $report->user->department_id == 7
+        // ) {
+        //     $report->approval1 = 0;
+        // }
+
+        # 工場長承認
+        if (
+            $approvals
+                ->where('department_id', '!=', 7) # 総務部以外
+                ->where('approval_id', 2)
+                ->first()
+        ) {
+            $factory_apps = $approvals
+                ->where('approval_id', 2)
+                ->where('department_id', '!=', 7);
+            $reports = Report::whereHas('user', function ($query) use (
+                $factory_apps
+            ) {
+                foreach ($factory_apps as $approval) {
+                    $query->where('factory_id', $approval->factory_id);
+                }
+            })
+                ->where(function ($query) {
+                    $query->where('approved', 0);
+                })
+                ->get();
+        }
+
+        # 総務部長承認
+        if (
+            $approvals
+                ->where('department_id', 7) # 総務部
+                ->where('approval_id', 2)
+                ->first()
+        ) {
+            $factory_apps = $approvals
+                ->where('approval_id', 2)
+                ->where('department_id', 7);
             $reports = Report::whereHas('user', function ($query) use (
                 $factory_apps
             ) {
@@ -918,15 +996,9 @@ class ReportController extends Controller
                 ->get();
         }
 
-        # 会社承認
-        if ($approvals->contains('approval_id', 1)) {
-            $reports = Report::where('approved', 0)->get();
-        }
-
         return view('reports.pending_approval')->with(compact('reports'));
     }
 
-    /** refactoring未完 */
     # 承認済みのreports
     public function approved()
     {
@@ -1099,9 +1171,39 @@ class ReportController extends Controller
             // dd($reports);
         }
 
-        # 工場承認
-        if ($approvals->contains('approval_id', 2)) {
-            $factory_apps = $approvals->where('approval_id', 2);
+        # 工場長承認
+        if (
+            $approvals
+                ->where('department_id', '!=', 7) # 総務部以外
+                ->where('approval_id', 2)
+                ->first()
+        ) {
+            $factory_apps = $approvals
+                ->where('approval_id', 2)
+                ->where('department_id', '!=', 7);
+            $reports = Report::whereHas('user', function ($query) use (
+                $factory_apps
+            ) {
+                foreach ($factory_apps as $approval) {
+                    $query->where('factory_id', $approval->factory_id);
+                }
+            })
+                ->where(function ($query) {
+                    $query->where('approved', 1);
+                })
+                ->get();
+        }
+
+        # 総務部長承認
+        if (
+            $approvals
+                ->where('department_id', 7) # 総務部
+                ->where('approval_id', 2)
+                ->first()
+        ) {
+            $factory_apps = $approvals
+                ->where('approval_id', 2)
+                ->where('department_id', 7);
             $reports = Report::whereHas('user', function ($query) use (
                 $factory_apps
             ) {
@@ -1115,21 +1217,12 @@ class ReportController extends Controller
                 ->get();
         }
 
-        # 会社承認
-        if ($approvals->contains('approval_id', 1)) {
-            $reports = Report::where('approved', 1)->get();
-        }
         return view('reports.approved')->with(compact('reports'));
     }
 
     public function getAndRemaining()
     {
         $approvals = Auth::user()->approvals;
-
-        # 会社承認
-        if ($approvals->contains('approval_id', 1)) {
-            $users = User::with(['reports', 'remainings'])->get();
-        }
 
         # 工場承認
         if ($approvals->contains('approval_id', 2)) {
@@ -1227,9 +1320,9 @@ class ReportController extends Controller
         $approvals = Auth::user()->approvals;
 
         /** 通常の承認 */
-        if ($approvals->contains('approval_id', 1)) {
-            $report->approval1 = 1;
-        }
+        // if ($approvals->contains('approval_id', 2)) {
+        //     $report->approval1 = 1;
+        // }
 
         /** containsの書き方 */
         // if($approvals->contains(function ($approval) use ($report) {
@@ -1243,7 +1336,7 @@ class ReportController extends Controller
                 ->where('approval_id', 2)
                 ->first()
         ) {
-            $report->approval2 = 1;
+            $report->approval1 = 1;
         }
 
         if (
@@ -1253,49 +1346,27 @@ class ReportController extends Controller
                 ->where('approval_id', 3)
                 ->first()
         ) {
-            $report->approval3 = 1;
+            $report->approval2 = 1;
         }
 
         /** イレギュラーな承認*/
-        # 会社承認者が自分の届を承認する
-        if (
-            $approvals->contains('approval_id', 1) &&
-            $report->user->id == Auth::user()->id
-        ) {
-            $report->approval1 = 1;
-            $report->approval2 = 1;
-            $report->approval3 = 1;
-        }
-
-        # 工場承認者が自分の届を承認する
-        if (
-            $approvals->contains('approval_id', 2) &&
-            $report->user->id == Auth::user()->id
-        ) {
-            $report->approval2 = 1;
-            $report->approval3 = 1;
-        }
         # GLがいない部署の届を承認する
         if (
             $approvals->contains('approval_id', 2) &&
             $report->user->group->id == 1
         ) {
+            $report->approval1 = 1;
             $report->approval2 = 1;
-            $report->approval3 = 1;
         }
 
         /** すべて承認された場合、remainingを更新 */
-        if (
-            $report->approval1 == 1 &&
-            $report->approval2 == 1 &&
-            $report->approval3 == 1
-        ) {
+        if ($report->approval1 == 1 && $report->approval2 == 1) {
             $report->approved = 1; # 確定
             DB::beginTransaction(); # トランザクション開始
             try {
                 $report->save();
                 $report_id = $report->report_id;
-                $remaining = Remaining::where('user_id', '=', $report->user_id)
+                $remaining = Remaining::where('user_id', $report->user_id)
                     ->where('report_id', '=', $report_id)
                     ->first();
                 if (!empty($remaining)) {
@@ -1306,7 +1377,7 @@ class ReportController extends Controller
                 DB::commit(); # トランザクション成功終了
                 return redirect()
                     ->route('reports.show', $report)
-                    ->with('msg', '承認しました。');
+                    ->with('msg', '承認しました');
             } catch (\Exception $e) {
                 DB::rollBack(); # トランザクション失敗終了
                 return back()
@@ -1318,7 +1389,7 @@ class ReportController extends Controller
                 $report->save(); # 承認を保存
                 return redirect()
                     ->route('reports.show', $report)
-                    ->with('msg', '承認しました。');
+                    ->with('msg', '承認しました');
             } catch (\Throwable $th) {
                 return back()->withErrors($th->getMessage());
             }
@@ -1332,17 +1403,13 @@ class ReportController extends Controller
         $approvals = Auth::user()->approvals;
 
         /** 通常の承認取消*/
-        if ($approvals->contains('approval_id', 1)) {
-            $report->approval1 = 0;
-        }
-
         if (
             $approvals
                 ->where('factory_id', $report->user->factory_id)
                 ->where('approval_id', 2)
                 ->first()
         ) {
-            $report->approval2 = 0;
+            $report->approval1 = 0;
         }
 
         if (
@@ -1352,44 +1419,24 @@ class ReportController extends Controller
                 ->where('approval_id', 3)
                 ->first()
         ) {
-            $report->approval3 = 0;
+            $report->approval2 = 0;
         }
 
         /** イレギュラーな承認取消*/
-        # 会社承認者が自分の届を承認取消
-        if (
-            $approvals->contains('approval_id', 1) &&
-            $report->user->id == Auth::user()->id
-        ) {
-            $report->approval1 = 0;
-            $report->approval2 = 0;
-            $report->approval3 = 0;
-        }
-
-        # 工場承認者が自分の届を承認取消
-        if (
-            $approvals->contains('approval_id', 2) &&
-            $report->user->id == Auth::user()->id
-        ) {
-            $report->approval2 = 0;
-            $report->approval3 = 0;
-        }
-
         # GLがいない部署の届を承認取消
         if (
             $approvals->contains('approval_id', 2) &&
             $report->user->group->id == 1
         ) {
+            $report->approval1 = 0;
             $report->approval2 = 0;
-            $report->approval3 = 0;
         }
 
         /** すべて確認された場合、remainingを更新 */
         if (
             $report->cancel == 1 &&
             $report->approval1 == 0 &&
-            $report->approval2 == 0 &&
-            $report->approval3 == 0
+            $report->approval2 == 0
         ) {
             switch ($report->approved) {
                 case 0: # 未承認の届の場合
@@ -1397,7 +1444,7 @@ class ReportController extends Controller
                         $report->delete();
                         return redirect()
                             ->route('reports.approved')
-                            ->with('notice', '届けを取り消しました');
+                            ->with('notice', '届出を取り消しました');
                     } catch (\Throwable $th) {
                         return back()->withErrors($th->getMessage());
                     }
@@ -1416,7 +1463,7 @@ class ReportController extends Controller
                             $report->delete();
                             return redirect()
                                 ->route('reports.approved')
-                                ->with('notice', '出退勤届けを取り消しました');
+                                ->with('notice', '届出を取り消しました');
                         } catch (\Throwable $th) {
                             return back()->withErrors($th->getMessage());
                         }
@@ -1432,7 +1479,7 @@ class ReportController extends Controller
                             DB::commit(); # トランザクション成功終了
                             return redirect()
                                 ->route('reports.approved')
-                                ->with('notice', '出退勤届けを取り消しました');
+                                ->with('notice', '届出を取り消しました');
                         } catch (\Throwable $th) {
                             DB::rollBack(); # トランザクション失敗終了
                             return back()->withErrors($th->getMessage());
@@ -1466,48 +1513,95 @@ class ReportController extends Controller
         // $year_end = new Carbon('2023-06-06');
 
         /** 承認待ち件数 */
-        # 会社承認
-        if ($approvals->contains('approval_id', 1)) {
-            $reports = Report::where([
-                ['cancel', 0],
-                ['approved', 0],
-                ['approval1', 0],
-            ])
-                ->orWhere([['cancel', 1], ['approved', 0], ['approval1', 1]])
-                ->get();
-        }
-
-        # 工場承認
-        if ($approvals->contains('approval_id', 2)) {
-            $factory_approvals = $approvals->where('approval_id', 2);
+        # 工場長承認
+        if (
+            $approvals
+                ->where('department_id', '!=', 7) # 総務部長以外
+                ->where('approval_id', 2)
+                ->first()
+        ) {
+            $reports = new Collection(); # 空箱用意
+            $factory_approvals = $approvals
+                ->where('department_id', '!=', 7)
+                ->where('approval_id', 2);
             foreach ($factory_approvals as $approval) {
                 # 管轄内のreportsを取得
                 $factory_reports = Report::whereHas('user', function (
                     $query
                 ) use ($approval) {
-                    $query->where('factory_id', $approval->factory_id);
-                });
-
-                # 管轄内のreportsから未承認or未確認を取得
-                $reports = $factory_reports
+                    $query
+                        ->where('factory_id', $approval->factory_id)
+                        ->where('department_id', '!=', 7);
+                })
+                    # 未承諾を取得
                     ->where(function ($query) {
                         $query
                             ->where('cancel', 0)
                             ->where('approved', 0)
-                            ->where('approval2', 0);
+                            ->where('approval1', 0);
                     })
+                    # 未確認を取得
                     ->orWhere(function ($query) {
                         $query
                             ->where('cancel', 1)
                             ->where('approved', 0)
-                            ->where('approval2', 1);
+                            ->where('approval1', 1);
                     })
                     ->get();
+
+                # 箱に対象reportを入れる
+                $factory_reports->each(function ($factory_report) use (
+                    $reports
+                ) {
+                    $reports->add($factory_report);
+                });
+            }
+        }
+
+        # 総務部長承認
+        if (
+            $approvals
+                ->where('department_id', 7) # 総務部長
+                ->where('approval_id', 2)
+                ->first()
+        ) {
+            $reports = new Collection(); # 空箱用意
+            $factory_approvals = $approvals
+                ->where('department_id', 7) # 総務部長
+                ->where('approval_id', 2);
+            foreach ($factory_approvals as $approval) {
+                # 管轄内のreportsを取得
+                $factory_reports = Report::whereHas('user', function ($query) {
+                    $query->where('department_id', 7);
+                })
+                    # 未承認を取得
+                    ->where(function ($query) {
+                        $query
+                            ->where('cancel', 0)
+                            ->where('approved', 0)
+                            ->where('approval1', 0);
+                    })
+                    # 未確認を取得
+                    ->orWhere(function ($query) {
+                        $query
+                            ->where('cancel', 1)
+                            ->where('approved', 0)
+                            ->where('approval1', 1);
+                    })
+                    ->get();
+
+                # 箱に対象reportを入れる
+                $factory_reports->each(function ($factory_report) use (
+                    $reports
+                ) {
+                    $reports->add($factory_report);
+                });
             }
         }
 
         # GL承認
         if ($approvals->contains('approval_id', 3)) {
+            $reports = new Collection(); # 空箱用意
             $group_approvals = $approvals->where('approval_id', 3);
             foreach ($group_approvals as $approval) {
                 # 管轄内のreportsを取得
@@ -1518,23 +1612,27 @@ class ReportController extends Controller
                         ->where('factory_id', $approval->factory_id)
                         ->where('department_id', $approval->department_id)
                         ->where('group_id', $approval->group_id);
-                });
-
-                # 管轄内のreportsから未承認or未確認を取得
-                $reports = $group_reports
+                })
+                    # 未承認を取得
                     ->where(function ($query) {
                         $query
                             ->where('cancel', 0)
                             ->where('approved', 0)
-                            ->where('approval3', 0);
+                            ->where('approval2', 0);
                     })
+                    # 未確認を取得
                     ->orWhere(function ($query) {
                         $query
                             ->where('cancel', 1)
                             ->where('approved', 0)
-                            ->where('approval3', 1);
+                            ->where('approval2', 1);
                     })
                     ->get();
+
+                # 箱に対象reportを入れる
+                $group_reports->each(function ($group_report) use ($reports) {
+                    $reports->add($group_report);
+                });
             }
         }
 
@@ -1547,41 +1645,81 @@ class ReportController extends Controller
         }
 
         /** 承認済みの取消確認件数 */
-        # 会社承認
-        if ($approvals->contains('approval_id', 1)) {
-            $reports = Report::where([
-                ['cancel', 1],
-                ['approved', 1],
-                ['approval1', 1],
-            ])->get();
-        }
-
-        # 工場承認
-        if ($approvals->contains('approval_id', 2)) {
-            // $reports = new Collection();
+        # 工場長承認
+        if (
+            $approvals
+                ->where('department_id', '!=', 7) # 総務部長以外
+                ->where('approval_id', 2)
+                ->first()
+        ) {
+            $reports = new Collection(); # 空箱用意
+            $factory_approvals = $approvals
+                ->where('department_id', '!=', 7)
+                ->where('approval_id', 2);
             foreach ($factory_approvals as $approval) {
                 # 管轄内のreportsを取得
                 $factory_reports = Report::whereHas('user', function (
                     $query
                 ) use ($approval) {
-                    $query->where('factory_id', $approval->factory_id);
-                });
-
-                # 管轄内のreportsから未確認を取得
-                $reports = $factory_reports
+                    $query
+                        ->where('factory_id', $approval->factory_id)
+                        ->where('department_id', '!=', 7);
+                })
+                    # 未確認を取得
                     ->where(function ($query) {
                         $query
                             ->where('cancel', 1)
                             ->where('approved', 1)
-                            ->where('approval2', 1);
+                            ->where('approval1', 1);
                     })
                     ->get();
+
+                # 箱に対象reportを入れる
+                $factory_reports->each(function ($factory_report) use (
+                    $reports
+                ) {
+                    $reports->add($factory_report);
+                });
+            }
+        }
+
+        # 総務部長承認
+        if (
+            $approvals
+                ->where('department_id', 7) # 総務部長
+                ->where('approval_id', 2)
+                ->first()
+        ) {
+            $reports = new Collection(); # 空箱用意
+            $factory_approvals = $approvals
+                ->where('department_id', 7)
+                ->where('approval_id', 2);
+            foreach ($factory_approvals as $approval) {
+                # 管轄内のreportsを取得
+                $factory_reports = Report::whereHas('user', function ($query) {
+                    $query->where('department_id', 7);
+                })
+                    # 未確認を取得
+                    ->where(function ($query) {
+                        $query
+                            ->where('cancel', 1)
+                            ->where('approved', 1)
+                            ->where('approval1', 1);
+                    })
+                    ->get();
+
+                # 箱に対象reportを入れる
+                $factory_reports->each(function ($factory_report) use (
+                    $reports
+                ) {
+                    $reports->add($factory_report);
+                });
             }
         }
 
         # GL承認
         if ($approvals->contains('approval_id', 3)) {
-            // $reports = new Collection();
+            $reports = new Collection(); # 空箱用意
             foreach ($group_approvals as $approval) {
                 # 管轄内のreportsを取得
                 $group_reports = Report::whereHas('user', function (
@@ -1591,17 +1729,20 @@ class ReportController extends Controller
                         ->where('factory_id', $approval->factory_id)
                         ->where('department_id', $approval->department_id)
                         ->where('group_id', $approval->group_id);
-                });
-
-                # 管轄内のreportsから未承認or未確認を取得
-                $reports = $group_reports
+                })
+                    # 未確認を取得
                     ->where(function ($query) {
                         $query
                             ->where('cancel', 1)
                             ->where('approved', 1)
-                            ->where('approval3', 1);
+                            ->where('approval2', 1);
                     })
                     ->get();
+
+                # 箱に対象reportを入れる
+                $group_reports->each(function ($group_report) use ($reports) {
+                    $reports->add($group_report);
+                });
             }
         }
 
@@ -1624,7 +1765,7 @@ class ReportController extends Controller
         $remaining_now = $paid_holidays->remaining;
 
         switch ($length_of_service) {
-            case $length_of_service >= 0.5 && $length_of_service < 1.5:
+            case $length_of_service < 1.5:
                 $lost_days = 0;
                 break;
 
@@ -1691,6 +1832,11 @@ class ReportController extends Controller
             $get_days_hours = Auth::user()->sum_paid_holiday_hours; # 有給休暇id=1
         }
 
+        /** 弔事日数キャンセル */
+        # 弔事の届出から14日で自動的にリセット
+        # 14日以内に同分類に弔事が発生した場合は、総務部長にリセット申請
+
+        
         return view('menu.index')->with(
             compact(
                 'pending',

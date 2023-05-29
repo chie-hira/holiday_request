@@ -10,12 +10,7 @@ class Remaining extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'user_id',
-        'report_id',
-        'remaining_days',
-        'am_pm',
-    ];
+    protected $fillable = ['user_id', 'report_id', 'remaining_days', 'am_pm'];
 
     /**
      * Get the user that owns the Remaining
@@ -38,24 +33,69 @@ class Remaining extends Model
     }
 
     # アクセサ
+    /** 残日数の日数だけ */
     public function getRemainingDaysAttribute()
     {
         $exp = explode('.', $this->remaining);
         return $exp[0];
-        // return $remaining->remaining_days;
-        // return floor($remaining->remaining_days);
     }
+    /** 残日数の時間だけ */
     public function getRemainingHoursAttribute()
     {
         $exp = explode('.', $this->remaining);
         $exp_key1 = array_key_exists(1, $exp);
         if ($exp_key1) {
-            $decimal_p = '0.'. $exp[1];
+            $decimal_p = '0.' . $exp[1];
             return $decimal_p * 8; # 8時間で1日
         } else {
             return 0;
         }
-        // return $remaining->remaining_days;
-        // return floor($remaining->remaining_days);
+    }
+
+    /** 承認待ちの取得日数 */
+    public function getGetDaysAttribute()
+    {
+        $reports = Auth::user()
+            ->reports->where('report_id', $this->report_id)
+            ->where('approved', 0)
+            ->where('cancel', 0);
+        return $reports->sum('get_days');
+    }
+
+    /** 残日数の日数だけ */
+    public function getExpectationDaysAttribute()
+    {
+        $exp = explode('.', $this->remaining - $this->get_days);
+        return $exp[0];
+    }
+    /** 取得日数の時間だけ */
+    public function getExpectationHoursAttribute()
+    {
+        $exp = explode('.', $this->remaining - $this->get_days);
+        if (array_key_exists(1, $exp)) {
+            # 小数点以下あり(1日未満)
+            $decimal_p = '0.' . $exp[1];
+            $exp_hour = explode('.', $decimal_p * 8); # 8時間で1日
+            return $exp_hour[0];
+        } else {
+            return 0;
+        }
+    }
+    /** 取得日数の分だけ */
+    public function getExpectationMinutesAttribute()
+    {
+        $exp = explode('.', $this->remaining - $this->get_days);
+        if (array_key_exists(1, $exp)) {
+            # 小数点以下あり(1日未満)
+            $decimal_p = '0.' . $exp[1];
+            $exp_hour = explode('.', $decimal_p * 8);
+            if (array_key_exists(1, $exp_hour)) {
+                # 小数点以下あり(1時間未満)
+                $decimal_p = '0.' . $exp_hour[1];
+                return round($decimal_p * 60);
+            }
+        } else {
+            return 0;
+        }
     }
 }

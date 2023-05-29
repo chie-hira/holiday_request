@@ -18,20 +18,20 @@
         </div>
 
         <div class="w-full max-w-md mx-auto mt-10 mb-8 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
-            <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center justify-between mb-2">
                 <h5
                     class="border-solid border-2 px-6 sm:px-10 py-2 border-gray-500 rounded-md text-xl font-bold leading-none text-gray-900">
                     出 退 勤 届 け
                 </h5>
-                <p
-                    class="border-solid border-2 px-4 py-1 border-sky-500 rounded-md text-md font-medium text-sky-600">
+                <p class="border-solid border-2 px-4 py-1 border-sky-500 rounded-md text-md font-medium text-sky-600">
                     {{ $report->user->factory->factory_name }}
                 </p>
             </div>
+            <p class="text-gray-600 text-sm text-right">{{ $report->user->team }}</p>
             <div class="flow-root">
                 <ul role="list" class="divide-y divide-gray-200">
                     <!-- divide-y アンダーライン仕切り -->
-                    <li class="pt-3 pb-0 sm:pt-4">
+                    <li class="">
                         <div class="flex items-center space-x-4">
                             <div class="flex-1 min-w-0">
                                 <p class="ZenKurenaido px-2 text-xl font-semibold text-gray-800">
@@ -46,7 +46,7 @@
                                 <div class="flex items-center pb-1">
                                     <p
                                         class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
-                                        理 由
+                                        {{ __('Reason') }}
                                     </p>
                                     <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
                                         {{ $report->reason_category->reason }}</p>
@@ -137,31 +137,56 @@
                         <table>
                             <thead class="">
                                 <tr>
-                                    <th class="w-20 border border-gray-500 text-gray-900 text-center">総務部長</th>
-                                    <th class="w-20 border border-gray-500 text-gray-900 text-center">工場長</th>
+                                    <th class="w-20 border border-gray-500 text-gray-900 text-center">上長</th>
                                     <th class="w-20 border border-gray-500 text-gray-900 text-center">GL</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td class="w-20 h-12 border border-gray-500 text-center">
+                                        <!-- 総務部長承認 start -->
                                         @if (
-                                            !empty(Auth::user()->approvals->where('approval_id', 1)->first()
-                                            ))
-                                            @if ($report->cancel == 1 && $report->approval1 == 1)
-                                                <x-delete-a-button href="{{ route('reports.approval_cancel', $report) }}"
-                                                    onclick="if(!confirm('取消を確認しました')){return false};"
-                                                    class="px-1 py-1">
-                                                    {{ __('CancelCheck') }}
-                                                </x-delete-a-button>
-                                            @endif
+                                            !empty(Auth::user()->approvals->where('approval_id', 2)->where('department_id', 7)->first()
+                                            ) && $report->user->department_id == 7)
                                             @if ($report->cancel == 0 && $report->approval1 == 0)
                                                 <x-edit-a-button href="{{ route('approval', $report) }}"
                                                     onclick="if(!confirm('承認しますか？')){return false};" class="px-3 py-1">
                                                     {{ __('Approval') }}
                                                 </x-edit-a-button>
                                             @endif
-                                        @else
+                                            @if ($report->cancel == 1 && $report->approval1 == 1)
+                                                <x-delete-a-button
+                                                    href="{{ route('reports.approval_cancel', $report) }}"
+                                                    onclick="if(!confirm('取消を確認しました')){return false};"
+                                                    class="px-1 py-1">
+                                                    {{ __('CancelCheck') }}
+                                                </x-delete-a-button>
+                                            @endif
+                                        @endif
+                                        <!-- 総務部長承認 end -->
+                                        <!-- 工場長承認 start -->
+                                        @if (
+                                            !empty(Auth::user()->approvals->where('approval_id', 2)->where('factory_id', $report->user->factory_id)->where('department_id', '!=', 7)->first()
+                                            ) && $report->user->department_id != 7)
+                                            @if ($report->cancel == 0 && $report->approval1 == 0)
+                                                <x-edit-a-button href="{{ route('approval', $report) }}"
+                                                    onclick="if(!confirm('承認しますか？')){return false};" class="px-3 py-1">
+                                                    {{ __('Approval') }}
+                                                </x-edit-a-button>
+                                            @endif
+                                            @if ($report->cancel == 1 && $report->approval1 == 1)
+                                                <x-delete-a-button
+                                                    href="{{ route('reports.approval_cancel', $report) }}"
+                                                    onclick="if(!confirm('取消を確認しました')){return false};"
+                                                    class="px-1 py-1">
+                                                    {{ __('CancelCheck') }}
+                                                </x-delete-a-button>
+                                            @endif
+                                        @endif
+                                        <!-- 工場長承認 end -->
+                                        <!-- 承認&確認済み start -->
+                                        @if (empty(Auth::user()->approvals->where('approval_id', 2)->where('factory_id', $report->user->factory_id)->first()
+                                            ))
                                             @if ($report->cancel == 1 && $report->approval1 == 1)
                                                 <div class="flex justify-center">
                                                     <x-approved-stamp />
@@ -178,13 +203,15 @@
                                                 <x-cancel-stamp />
                                             </div>
                                         @endif
+                                        <!-- 承認&確認済み end -->
                                     </td>
                                     <td class="w-20 h-12 border border-gray-500 text-center">
                                         @if (
-                                            !empty(Auth::user()->approvals->where('approval_id', 2)->where('factory_id', $report->user->factory_id)->first()
+                                            !empty(Auth::user()->approvals->where('approval_id', 3)->where('factory_id', $report->user->factory_id)->where('department_id', $report->user->department_id)->where('group_id', $report->user->group_id)->first()
                                             ))
                                             @if ($report->cancel == 1 && $report->approval2 == 1)
-                                                <x-delete-a-button href="{{ route('reports.approval_cancel', $report) }}"
+                                                <x-delete-a-button
+                                                    href="{{ route('reports.approval_cancel', $report) }}"
                                                     onclick="if(!confirm('取消を確認しました')){return false};"
                                                     class="px-1 py-1">
                                                     {{ __('CancelCheck') }}
@@ -214,41 +241,6 @@
                                             </div>
                                         @endif
                                     </td>
-                                    <td class="w-20 h-12 border border-gray-500 text-center">
-                                        @if (
-                                            !empty(Auth::user()->approvals->where('approval_id', 3)->where('factory_id', $report->user->factory_id)->where('department_id', $report->user->department_id)->where('group_id', $report->user->group_id)->first()
-                                            ))
-                                            @if ($report->cancel == 1 && $report->approval3 == 1)
-                                                <x-delete-a-button href="{{ route('reports.approval_cancel', $report) }}"
-                                                    onclick="if(!confirm('取消を確認しました')){return false};"
-                                                    class="px-1 py-1">
-                                                    {{ __('CancelCheck') }}
-                                                </x-delete-a-button>
-                                            @endif
-                                            @if ($report->cancel == 0 && $report->approval3 == 0)
-                                                <x-edit-a-button href="{{ route('approval', $report) }}"
-                                                    onclick="if(!confirm('承認しますか？')){return false};" class="px-3 py-1">
-                                                    {{ __('Approval') }}
-                                                </x-edit-a-button>
-                                            @endif
-                                        @else
-                                            @if ($report->cancel == 1 && $report->approval3 == 1)
-                                                <div class="flex justify-center">
-                                                    <x-approved-stamp />
-                                                </div>
-                                            @endif
-                                        @endif
-                                        @if ($report->cancel == 0 && $report->approval3 == 1)
-                                            <div class="flex justify-center">
-                                                <x-approved-stamp />
-                                            </div>
-                                        @endif
-                                        @if ($report->cancel == 1 && $report->approval3 == 0)
-                                            <div class="flex justify-center">
-                                                <x-cancel-stamp />
-                                            </div>
-                                        @endif
-                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -266,7 +258,7 @@
                     届出一覧
                 </x-return-button>
             </div>
-            @can('general_and_factory_gl')
+            @can('general_gl_reader')
                 <div class="flex justify-end">
                     <x-return-button class="w-30" href="{{ route('reports.pending_approval') }}">
                         承認待ち一覧

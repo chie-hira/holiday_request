@@ -22,6 +22,7 @@ class ReasonCategorySeeder extends Seeder
             ['reason' => '入院(家族)'],
             ['reason' => '旅行'],
             ['reason' => '農作業'],
+            ['reason' => '私用'],
             ['reason' => 'その他'],
             ['reason' => '誕生日'],
             ['reason' => '結婚'],
