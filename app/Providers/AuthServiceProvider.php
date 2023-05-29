@@ -40,14 +40,6 @@ class AuthServiceProvider extends ServiceProvider
             return !empty($user->approvals->where('approval_id', 4)->first());
         });
 
-        // // 会社承認と工場承認に適用
-        // Gate::define('general_and_factory', function ($user) {
-        //     return !empty(
-        //         $user->approvals->where('approval_id', '=', 1)->first()
-        //     ) ||
-        //         !empty($user->approvals->where('approval_id', '=', 2)->first());
-        // });
-
         // 上長承認とGL承認に適用
         Gate::define('general_and_gl', function ($user) {
             return !empty(

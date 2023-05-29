@@ -20,9 +20,6 @@
                 </div>
             </div>
 
-            <p>FIXME:介護休業が2人になった場合、手動で更新するフォーム</p>
-            <p>FIXME:弔事は申請日から2週間でリセット、2週間以内に対象者が出た場合、手動で更新</p>
-
             <div class="container max-w-lg bg-white w-full mx-auto border-2 rounded-lg">
                 <div class="flex flex-col p-2 sm:p-8">
                     <div class="-m-1.5 overflow-x-auto">

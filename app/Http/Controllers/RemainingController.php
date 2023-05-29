@@ -38,7 +38,6 @@ class RemainingController extends Controller
         }
 
         $report_categories = ReportCategory::all();
-        // dd($users[0]->remainings);
 
         return view('remainings.index')->with(compact('users', 'report_categories'));
     }
@@ -102,7 +101,7 @@ class RemainingController extends Controller
 
         $remaining->remaining = $remaining_days * 1 + $remaining_hours * 0.125;
 
-        // FIXME:弔事はバリデーション設定したほうがいい。介護休暇はバリデーションなし
+        // FIXME:弔事は上限日数があるのでバリデーション設定したほうがいい。介護休暇はバリデーションなし
         try {
             $remaining->save();
             return redirect()
@@ -152,6 +151,8 @@ class RemainingController extends Controller
         }
 
         /** 最後の弔事届出から14日で弔事の残日数をリセット */
+        # 弔事の届出から14日で自動的にリセット
+        # 14日以内に同分類に弔事が発生した場合は、管理者が手動で更新
         $mourning_reports = Auth::user()
             ->reports->whereIn('report_id', [4, 5, 6]);
         if ($mourning_reports->isNotEmpty()) {
@@ -183,8 +184,7 @@ class RemainingController extends Controller
 
     public function addRemainings(Request $request)
     {
-        // 更新前にエクセルファイル出力
-        // 更新権限は部長
+        // TODO:更新前にエクセルファイル出力
         $request->validate([
             'update_date' => 'required',
         ]);
@@ -309,11 +309,5 @@ class RemainingController extends Controller
                 ->withInput()
                 ->withErrors($th->getMessage());
         }
-    }
-
-    public function remainingDaysOnly($remaining_days)
-    {
-        $exp = explode('.', $remaining_days);
-        return $exp[0];
     }
 }

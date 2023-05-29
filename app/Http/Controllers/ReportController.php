@@ -301,7 +301,7 @@ class ReportController extends Controller
         $report = new Report();
         $report->fill($request->all());
 
-        // FIXME:自分の届出を自分で承認する場合
+        /** 自分の届出を自分で承認する場合 */
         # 上長
         if (
             !empty(
@@ -689,7 +689,7 @@ class ReportController extends Controller
             # 承認がある場合
             return redirect()
                 ->route('reports.index')
-                ->with('notice', '届出の取消申請しました');
+                ->with('notice', '届出の取消を申請しました');
         }
     }
 
@@ -700,10 +700,6 @@ class ReportController extends Controller
         $approvals = Auth::user()->approvals;
 
         /** 通常の承認取消*/
-        // if ($approvals->contains('approval_id', 2)) {
-        //     $report->approval1 = 0;
-        // }
-
         # 総務部承認取消
         if (
             $approvals
@@ -740,14 +736,6 @@ class ReportController extends Controller
         }
 
         /** イレギュラーな承認取消*/
-        // # 上長が自分の届を承認取消
-        // if (
-        //     $approvals->contains('approval_id', 2) &&
-        //     $report->user->id == Auth::user()->id
-        // ) {
-        //     $report->approval1 = 0;
-        // }
-
         # GLがいない部署の届を承認取消
         if (
             $approvals->contains('approval_id', 2) &&
@@ -800,42 +788,6 @@ class ReportController extends Controller
             return back()->withErrors($th->getMessage());
         }
     }
-
-    // /** 承認済み届出の取消 */
-    // public function approvedDelete(Report $report)
-    // {
-    //     $remaining = Remaining::all()
-    //         ->where('report_id', '=', $report->report_id)
-    //         ->where('user_id', '=', $report->user_id)
-    //         ->first();
-
-    //     if (empty($remaining)) {
-    //         try {
-    //             $report->delete();
-    //             return redirect()
-    //                 ->route('reports.index')
-    //                 ->with('notice', '出退勤届けを取り消しました');
-    //         } catch (\Throwable $th) {
-    //             return back()->withErrors($th->getMessage());
-    //         }
-    //     }
-
-    //     /** 残日数加算&届け取消 */
-    //     $remaining->remaining += $report->get_days;
-    //     DB::beginTransaction(); # トランザクション開始
-    //     try {
-    //         $remaining->save();
-    //         $report->delete();
-
-    //         DB::commit(); # トランザクション成功終了
-    //         return redirect()
-    //             ->route('reports.index')
-    //             ->with('notice', '出退勤届けを取り消しました');
-    //     } catch (\Throwable $th) {
-    //         DB::rollBack(); # トランザクション失敗終了
-    //         return back()->withErrors($th->getMessage());
-    //     }
-    // }
 
     # 承認待ちのreports
     public function pendingApproval()
@@ -936,18 +888,6 @@ class ReportController extends Controller
                 });
             }
         }
-
-        // # 総務部承認取消
-        // if (
-        //     $approvals
-        //         ->where('factory_id', $report->user->factory_id)
-        //         ->where('department_id', 7) # 総務部
-        //         ->where('approval_id', 2)
-        //         ->first() &&
-        //     $report->user->department_id == 7
-        // ) {
-        //     $report->approval1 = 0;
-        // }
 
         # 工場長承認
         if (
@@ -1319,16 +1259,6 @@ class ReportController extends Controller
         $approvals = Auth::user()->approvals;
 
         /** 通常の承認 */
-        // if ($approvals->contains('approval_id', 2)) {
-        //     $report->approval1 = 1;
-        // }
-
-        /** containsの書き方 */
-        // if($approvals->contains(function ($approval) use ($report) {
-        //     return $approval->factory_id == $report->user->factory_id &&
-        //     $approval->approval_id == $report->user->approval_id ;
-        //     })
-        // ) {
         if (
             $approvals
                 ->where('factory_id', $report->user->factory_id)
@@ -1831,11 +1761,6 @@ class ReportController extends Controller
             $get_days_hours = Auth::user()->sum_paid_holiday_hours; # 有給休暇id=1
         }
 
-        /** 弔事日数キャンセル */
-        # 弔事の届出から14日で自動的にリセット
-        # 14日以内に同分類に弔事が発生した場合は、総務部長にリセット申請
-
-        
         return view('menu.index')->with(
             compact(
                 'pending',
@@ -1865,7 +1790,6 @@ class ReportController extends Controller
             ->where('approved', 1)
             ->where('cancel', 0)
             ->get();
-        // dd($reports);
         $view = view('reports.export')->with(compact('reports'));
         return Excel::download(new ReportExport($view), 'reports.xlsx');
     }

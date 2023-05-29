@@ -313,44 +313,6 @@ class User extends Authenticatable
             }
         }
     }
-    // public function remainingDaysOnly($key) # 残日数だけ
-    // {
-    //     $remaining = $this->remainings[$key]->remaining;
-    //     $exp = explode('.', $remaining);
-    //     return $exp[0];
-    // }
-    // public function remainingHours($key)
-    // {
-    //     # 残時間だけ
-    //     $remaining = $this->remainings[$key]->remaining;
-    //     $exp = explode('.', $remaining);
-    //     if (array_key_exists(1, $exp)) {
-    //         # 小数点以下あり(1日未満)
-    //         $decimal_p = '0.' . $exp[1];
-    //         $exp_hour = explode('.', $decimal_p * 8); # 8時間で1日
-    //         return $exp_hour[0];
-    //     } else {
-    //         return 0;
-    //     }
-    // }
-    // public function remainingMinutes($key)
-    // {
-    //     # 残分だけ
-    //     $remaining = $this->remainings[$key]->remaining;
-    //     $exp = explode('.', $remaining);
-    //     if (array_key_exists(1, $exp)) {
-    //         # 小数点以下あり(1日未満)
-    //         $decimal_p = '0.' . $exp[1];
-    //         $exp_hour = explode('.', $decimal_p * 8);
-    //         if (array_key_exists(1, $exp_hour)) {
-    //             # 小数点以下あり(1時間未満)
-    //             $decimal_p = '0.' . $exp_hour[1];
-    //             return round($decimal_p * 60);
-    //         }
-    //     } else {
-    //         return 0;
-    //     }
-    // }
 
     public function remaining($report_category_id)
     {
