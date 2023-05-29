@@ -4,13 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Validation\ValidationException;
-use Carbon\Carbon;
-use App\Models\Remaining;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Report extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
         'report_date',

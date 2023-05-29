@@ -1,4 +1,5 @@
 <x-app-layout>
+{{-- //TODO:取得可能0になったら選択から除外 --}}
     <section class="text-gray-600 body-font">
         <div class="container max-w-2xl min-w-max w-full md:w-4/5 lg:w-2/3 px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-12">

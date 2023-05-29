@@ -1,4 +1,5 @@
 <x-app-layout>
+{{-- //TODO:届出順にorder --}}
     <section class="text-gray-600 body-font">
         <div class="container max-w-7xl px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-10">

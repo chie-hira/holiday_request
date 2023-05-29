@@ -18,7 +18,6 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ReportExport;
-use GuzzleHttp\Promise\Each;
 
 class ReportController extends Controller
 {
@@ -29,7 +28,7 @@ class ReportController extends Controller
      */
     public function index()
     {
-        $reports = Report::all()->where('user_id', '=', Auth::user()->id);
+        $reports = Report::all()->where('user_id', Auth::user()->id)->sortBy('report_date');
         return view('reports.index')->with(compact('reports'));
     }
 
