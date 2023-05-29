@@ -109,6 +109,32 @@ class User extends Authenticatable
     }
 
     // アクセサ
+    public function getTeamAllAttribute()
+    {
+        $team =
+            $this->factory->factory_name .
+            $this->department->department_name .
+            $this->group->group_name;
+        return $team;
+    }
+
+    public function getTeamAttribute()
+    {
+        if ($this->group->id != 1) {
+            $team =
+                $this->department->department_name. ' '. $this->group->group_name;
+        } 
+        if ($this->department->id != 1 && $this->group->id == 1) {
+            $team =
+                $this->department->department_name;
+        } 
+        if ($this->department->id == 1) {
+            $team = '工場長';
+        } 
+
+        return $team;
+    }
+    
     public function getSumGetDaysAttribute()
     {
         # 取得日数集計
