@@ -310,4 +310,10 @@ class RemainingController extends Controller
                 ->withErrors($th->getMessage());
         }
     }
+
+    public function remainingDaysOnly($remaining_days)
+    {
+        $exp = explode('.', $remaining_days);
+        return $exp[0];
+    }
 }

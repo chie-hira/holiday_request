@@ -134,7 +134,7 @@ class User extends Authenticatable
 
         return $team;
     }
-    
+
     public function getSumGetDaysAttribute()
     {
         # 取得日数集計
@@ -269,10 +269,12 @@ class User extends Authenticatable
         if ($remaining) {
             $exp = explode('.', $remaining->remaining);
             return $exp[0];
+
         } else {
             return 0;
         }
     }
+
     public function remainingHours($key)
     {
         # 残時間だけ

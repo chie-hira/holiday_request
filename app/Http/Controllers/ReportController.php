@@ -18,6 +18,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ReportExport;
+use GuzzleHttp\Promise\Each;
 
 class ReportController extends Controller
 {

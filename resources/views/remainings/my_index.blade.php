@@ -67,6 +67,7 @@
                                                             @endif
                                                             @if ($my_remaining->expectation_hours != 0)
                                                                 {{ $my_remaining->expectation_hours }}
+
                                                                 時間
                                                             @endif
                                                         @endif
