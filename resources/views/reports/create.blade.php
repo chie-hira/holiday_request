@@ -1,6 +1,6 @@
 <x-app-layout>
     <section class="text-gray-600 body-font">
-        <div class="container w-full md:w-2/3 px-5 py-24 mx-auto">
+        <div class="container max-w-2xl min-w-max w-full md:w-4/5 lg:w-2/3 px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-12">
                 <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">出退勤届け作成</h1>
                 <div class="mx-auto">

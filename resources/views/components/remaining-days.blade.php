@@ -10,7 +10,7 @@
     @if ($user->remainingHours($key) == 0)
         &emsp;&emsp;&emsp;
     @endif
-    @if ($user->remainings->where('report_id', '=', $key+1)->first()->remaining == 0)
-        {{ $user->remainings->where('report_id', '=', $key+1)->first()->remaining }} 日&emsp; &emsp;&emsp;&emsp;
+    @if ($user->remainings->where('report_id', $key)->first()->remaining == 0)
+        {{ $user->remainings->where('report_id', $key)->first()->remaining }} 日&emsp; &emsp;&emsp;&emsp;
     @endif
 @endif

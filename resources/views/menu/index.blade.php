@@ -267,7 +267,7 @@
                                         clip-rule="evenodd" />
                                 </svg>
                             </span>
-                            <span class="w-32">有給休暇設定</span>
+                            <span class="w-32">休暇日数の設定</span>
                         </a>
 
                         <a href={{ route('users.index') }}

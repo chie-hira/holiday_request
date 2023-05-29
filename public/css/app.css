@@ -941,6 +941,10 @@ select {
 .min-w-full {
   min-width: 100%;
 }
+.min-w-max {
+  min-width: -moz-max-content;
+  min-width: max-content;
+}
 .max-w-2xl {
   max-width: 42rem;
 }
@@ -2066,6 +2070,10 @@ select {
 
   .md\:w-3\/4 {
     width: 75%;
+  }
+
+  .md\:w-4\/5 {
+    width: 80%;
   }
 
   .md\:grid-cols-2 {

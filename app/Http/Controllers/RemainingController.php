@@ -37,7 +37,10 @@ class RemainingController extends Controller
             });
         }
 
-        return view('remainings.index')->with(compact('users'));
+        $report_categories = ReportCategory::all();
+        // dd($users[0]->remainings);
+
+        return view('remainings.index')->with(compact('users', 'report_categories'));
     }
 
     /**
@@ -99,11 +102,12 @@ class RemainingController extends Controller
 
         $remaining->remaining = $remaining_days * 1 + $remaining_hours * 0.125;
 
+        // FIXME:弔事はバリデーション設定したほうがいい。介護休暇はバリデーションなし
         try {
             $remaining->save();
             return redirect()
                 ->route('remainings.index')
-                ->with('notice', '有給休暇の残日数を更新しました');
+                ->with('notice', '取得可能日数を更新しました');
         } catch (\Throwable $th) {
             return back()
                 ->withInput()
