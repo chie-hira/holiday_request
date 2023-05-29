@@ -148,7 +148,7 @@
                     </div>
                 </div>
                 <div style="display: none" id="time_form">
-                    <div class="flex h-8 leading-8 items-center text-center mb-6">
+                    <div class="flex h-8 leading-8 items-center text-center">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                             class="w-5 h-5 mr-2 text-sky-600">
                             <path fill-rule="evenodd"
@@ -166,7 +166,7 @@
 
                 <!-- 遅刻・早退 - start -->
                 <div style="display: none" id="time_form_10m">
-                    <div class="flex h-8 leading-8 items-center text-center mb-6">
+                    <div class="flex h-8 leading-8 items-center text-center">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                             class="w-5 h-5 mr-2 text-sky-600">
                             <path fill-rule="evenodd"
@@ -184,7 +184,7 @@
 
                 <!-- 外出 - start -->
                 <div style="display: none" id="time_form_30m">
-                    <div class="flex h-8 leading-8 items-center text-center mb-6">
+                    <div class="flex h-8 leading-8 items-center text-center">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                             class="w-5 h-5 mr-2 text-sky-600">
                             <path fill-rule="evenodd"
@@ -200,11 +200,25 @@
                 </div>
                 <!-- 外出 - end -->
 
+                <!-- 休日 - start -->
                 <div id="holiday_alert" style="display: none">
-                    <p>選択中の休暇予定日は休日です</p>
+                    <div class="flex h-8 leading-8 items-center text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="w-5 h-5 mr-2 text-sky-600">
+                            <path fill-rule="evenodd"
+                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                                clip-rule="evenodd" fill="" />
+                        </svg>
+                        <div class="items-center text-center">
+                            選択中の休暇予定日は
+                            <span class="font-semibold text-red-500">休日</span>
+                            です
+                        </div>
+                    </div>
                 </div>
+                <!-- 休日 - end -->
 
-                <div class="flex mb-6">
+                <div class="flex my-6">
                     <div class="mr-4">
                         <label for="get_days" class="block mb-2 text-sm font-medium text-gray-900">
                             取得日数
@@ -288,6 +302,7 @@
         let halfDateLabel = document.getElementById('half_date_label');
         let amPmForm = document.getElementById('am_pm_form');
         let amPm = document.getElementById('am_pm');
+        let holidayAlert = document.getElementById('holiday_alert');
         const reasons = @json($reasons);
 
         // リダイレクト時の表示切替
@@ -340,7 +355,6 @@
         }
 
         function subReportDisplaySwitch() {
-            // console.log(document.getElementById('get_days').value);
             if (subReportCategories[0].checked) { // 終日休
                 halfDateLabel.style.display = "";
                 startDateForm.style.display = "";
@@ -366,6 +380,7 @@
                 startDateLabel.style.display = "";
                 startDateForm.style.display = "";
                 endDateForm.style.display = "";
+                holidayAlert.style.display = "none";
             }
             if (subReportCategories[2].checked) { // 半日休
                 halfDateLabel.style.display = "";
@@ -703,7 +718,7 @@
                 getDays = diffDays - dayOffs;
             }
 
-            let holidayAlert = document.getElementById('holiday_alert');
+            // let holidayAlert = document.getElementById('holiday_alert');
             if (subReportCategories[0].checked) { // 終日休
                 holidayCheck(1.0);
             }
@@ -734,9 +749,7 @@
                     getDays = 0.0; // 祝祭日
                     holidayAlert.style.display = '';
                 }
-console.log(holidayCheck);
                 if (holidayCheck == false) {
-
                     // 休憩挟む
                     if (startTimeVal < lunchTimeStart && endTimeVal >= lunchTimeStart && endTimeVal < lunchTimeEnd) {
                         getDays = ((endTimeVal - startTimeVal - (endTimeVal - lunchTimeStart)) / 60000) / 60 * 1 / 8;
@@ -764,10 +777,6 @@ console.log(holidayCheck);
 
             // get_days書き出し
             document.getElementById('get_days').setAttribute('value', getDays);
-
-            // 申請済みか確認
-            const myReports = @json($my_reports);
-            // console.log(myReports);
 
             // get時間&get日数作成&書き出し
             function orgRound(value, base) { // 小数点以下を丸める関数

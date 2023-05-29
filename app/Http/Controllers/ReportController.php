@@ -28,7 +28,9 @@ class ReportController extends Controller
      */
     public function index()
     {
-        $reports = Report::all()->where('user_id', Auth::user()->id)->sortBy('report_date');
+        $reports = Report::all()
+            ->where('user_id', Auth::user()->id)
+            ->sortBy('report_date');
         return view('reports.index')->with(compact('reports'));
     }
 
@@ -39,11 +41,28 @@ class ReportController extends Controller
      */
     public function create()
     {
-        $report_categories = ReportCategory::all();
+        // $report_categories = ReportCategory::all();
         $sub_report_categories = SubReportCategory::all();
         $reasons = ReasonCategory::all();
         $my_remainings = Auth::user()->remainings;
         $my_reports = Auth::user()->reports;
+
+        $report_categories = ReportCategory::whereHas('remainings', function (
+            $query
+        ) {
+            $query
+                ->where('remaining', '!=', 0)
+                ->where('user_id', Auth::user()->id);
+        })
+            ->orWhere(function ($query) {
+                $query->where('id', 12)
+                    ->orWhere('id', 13)
+                    ->orWhere('id', 14)
+                    ->orWhere('id', 15)
+                    ->orWhere('id', 17)
+                    ->orWhere('id', 18);
+            })
+            ->get();
 
         return view('reports.create')->with(
             compact(
@@ -77,10 +96,16 @@ class ReportController extends Controller
             ]);
             if ($request->sub_report_id == 1) {
                 # 終日休暇
-                $request->validate([
-                    'start_date' => 'required|date|after_or_equal:report_date',
-                    'get_days' => 'required|integer',
-                ]);
+                $request->validate(
+                    [
+                        'start_date' =>
+                            'required|date|after_or_equal:report_date',
+                        'get_days' => 'required|integer|min:1',
+                    ],
+                    [
+                        'get_days.min' => '取得日数は1日以上です。',
+                    ]
+                );
             }
             if ($request->sub_report_id == 2) {
                 # 連休
