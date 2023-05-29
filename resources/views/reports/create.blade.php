@@ -1,6 +1,6 @@
 <x-app-layout>
-{{-- //TODO:取得可能0になったら選択から除外 --}}
-{{-- //TODO:重複申請防止 --}}
+    {{-- //TODO:取得可能0になったら選択から除外 --}}
+    {{-- //TODO:重複申請防止 --}}
     <section class="text-gray-600 body-font">
         <div class="container max-w-2xl min-w-max w-full md:w-4/5 lg:w-2/3 px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-12">
@@ -29,7 +29,8 @@
                         <label for="report_id" class="block mb-2 text-sm font-medium text-gray-900">
                             届出内容
                         </label>
-                        <x-select name="report_id" id="report_id" onchange="reportChange();" class="block mt-1 w-full" required autofocus>
+                        <x-select name="report_id" id="report_id" onchange="reportChange();" class="block mt-1 w-full"
+                            required autofocus>
                             @foreach ($report_categories as $report_category)
                                 <option value="{{ $report_category->id }}"
                                     @if ($report_category->id === (int) old('report_id')) selected @endif>
@@ -61,7 +62,8 @@
                         <label for="reason_id" class="block mb-2 text-sm font-medium text-gray-900">
                             理由
                         </label>
-                        <x-select name="reason_id" id="reason_id" onchange="reasonChange();" class="block mt-1 w-full" required>
+                        <x-select name="reason_id" id="reason_id" onchange="reasonChange();" class="block mt-1 w-full"
+                            required>
                             @foreach ($reasons as $reason)
                                 <option value="{{ $reason->id }}" @if ($reason->id === (int) old('reason_id')) selected @endif>
                                     {{ $reason->reason }}
@@ -74,20 +76,22 @@
                         <label for="reason_detail" class="block mb-2 text-sm font-medium text-gray-900">
                             理由を記入してください
                         </label>
-                        <x-input type="text" id="" name="reason_detail" class="block mt-1 w-full" :value="old('reason_detail')"/>
+                        <x-input type="text" id="" name="reason_detail" class="block mt-1 w-full"
+                            :value="old('reason_detail')" />
                     </div>
                     <div>
                         <label for="report_date" class="block mb-2 text-sm font-medium text-gray-900">
                             届出日
                         </label>
-                        <x-input type="date" id="report_date" name="report_date" class="block mt-1 w-full" :value="old('report_date')" required/>
+                        <x-input type="date" id="report_date" name="report_date" class="block mt-1 w-full"
+                            :value="old('report_date')" required />
                     </div>
                     <div>
                         <label for="user_id" class="block mb-2 text-sm font-medium text-gray-900">
                             氏名
                         </label>
                         <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
-                        <x-input type="text" id="user_id" class="block mt-1 w-full" :value="Auth::user()->name" readonly/>
+                        <x-input type="text" id="user_id" class="block mt-1 w-full" :value="Auth::user()->name" readonly />
                     </div>
 
                     <!-- 有給休暇 - start -->
@@ -101,13 +105,14 @@
                             休暇予定日
                         </label>
                         <x-input style="display: " type="date" id="start_date" name="start_date"
-                            onchange="countDays();" class="block mt-1 w-full" :value="old('start_date')" required/>
+                            onchange="countDays();" class="block mt-1 w-full" :value="old('start_date')" required />
                     </div>
                     <div style="display: " id="end_date_form">
                         <label for="end_date" class="block mb-2 text-sm font-medium text-gray-900">
                             何日まで
                         </label>
-                        <x-input type="date" id="end_date" name="end_date" onchange="countDays();" class="block mt-1 w-full" :value="old('end_date')"/>
+                        <x-input type="date" id="end_date" name="end_date" onchange="countDays();"
+                            class="block mt-1 w-full" :value="old('end_date')" />
                     </div>
                     <!-- 有給休暇 - end -->
 
@@ -132,14 +137,14 @@
                             何時から<span class="text-xs text-gray-600">&emsp;5分刻み</span>
                         </label>
                         <x-input type="time" id="start_time" name="start_time" step="300"
-                            onchange="countDays();" class="block mt-1 w-full" :value="old('start_time')"/>
+                            onchange="countDays();" class="block mt-1 w-full" :value="old('start_time')" />
                     </div>
                     <div style="display: none" id="end_time_form">
                         <label for="end_time" class="block mb-2 text-sm font-medium text-gray-900">
                             何時まで<span class="text-xs text-gray-600">&emsp;5分刻み</span>
                         </label>
                         <x-input type="time" id="end_time" name="end_time" step="300"
-                            onchange="countDays();" class="block mt-1 w-full" :value="old('end_time')"/>
+                            onchange="countDays();" class="block mt-1 w-full" :value="old('end_time')" />
                     </div>
                 </div>
                 <div style="display: none" id="time_form">
@@ -195,6 +200,10 @@
                 </div>
                 <!-- 外出 - end -->
 
+                <div id="holiday_alert" style="display: none">
+                    <p>選択中の休暇予定日は休日です</p>
+                </div>
+
                 <div class="flex mb-6">
                     <div class="mr-4">
                         <label for="get_days" class="block mb-2 text-sm font-medium text-gray-900">
@@ -204,18 +213,18 @@
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             value="{{ old('get_days') }}" readonly required>
                         <div class="flex items-center mb-1">
-                            <x-input type="number" id="get_days_only" name="get_days_only"
-                                class="block mt-1 w-20" :value="old('get_days_only')" readonly/>
+                            <x-input type="number" id="get_days_only" name="get_days_only" class="block mt-1 w-20"
+                                :value="old('get_days_only')" readonly />
                             <p class="ml-2">日</p>
                         </div>
                         <div class="flex items-center mb-1">
-                            <x-input type="number" id="get_hours" name="get_hours"
-                                class="block mt-1 w-20" :value="old('get_hours')" readonly/>
+                            <x-input type="number" id="get_hours" name="get_hours" class="block mt-1 w-20"
+                                :value="old('get_hours')" readonly />
                             <p class="ml-2">時間</p>
                         </div>
                         <div class="flex items-center">
-                            <x-input type="number" id="get_minutes" name="get_minutes"
-                                class="block mt-1 w-20" :value="old('get_minutes')" readonly/>
+                            <x-input type="number" id="get_minutes" name="get_minutes" class="block mt-1 w-20"
+                                :value="old('get_minutes')" readonly />
                             <p class="ml-2">分</p>
                         </div>
                     </div>
@@ -229,17 +238,17 @@
                             value="{{ old('remaining_days') }}" readonly required>
                         <div class="flex items-center mb-1">
                             <x-input type="number" id="remaining_days_only" name="remaining_days_only"
-                                class="block mt-1 w-20" :value="old('remaining_days_only')" readonly/>
+                                class="block mt-1 w-20" :value="old('remaining_days_only')" readonly />
                             <p class="ml-2">日</p>
                         </div>
                         <div class="flex items-center mb-1">
                             <x-input type="number" id="remaining_hours" name="remaining_hours"
-                                class="block mt-1 w-20" :value="old('remaining_hours')" readonly/>
+                                class="block mt-1 w-20" :value="old('remaining_hours')" readonly />
                             <p class="ml-2">時間</p>
                         </div>
                         <div class="flex items-center">
                             <x-input type="number" id="remaining_minutes" name="remaining_minutes"
-                                class="block mt-1 w-20" :value="old('remaining_minutes')" readonly/>
+                                class="block mt-1 w-20" :value="old('remaining_minutes')" readonly />
                             <p class="ml-2">分</p>
                         </div>
                     </div>
@@ -331,7 +340,7 @@
         }
 
         function subReportDisplaySwitch() {
-            console.log(document.getElementById('get_days').value);
+            // console.log(document.getElementById('get_days').value);
             if (subReportCategories[0].checked) { // 終日休
                 halfDateLabel.style.display = "";
                 startDateForm.style.display = "";
@@ -612,7 +621,6 @@
         let startTime = document.getElementById('start_time');
         let endTime = document.getElementById('end_time');
 
-
         function countDays() {
             // get_daysリセット
             document.getElementById('get_days').setAttribute('value', 0);
@@ -628,6 +636,8 @@
             const endVal = new Date(endDate.value);
             const startTimeVal = new Date(startDate.value + ' ' + startTime.value);
             const endTimeVal = new Date(startDate.value + ' ' + endTime.value);
+            const lunchTimeStart = new Date(startDate.value + ' ' + '12:00:00');
+            const lunchTimeEnd = new Date(startDate.value + ' ' + '13:00:00');
             let reportId = reportCategory.value;
             let diffDays = (endVal - startVal) / 86400000 + 1; // 単純な差
             let getDays = 0;
@@ -643,21 +653,13 @@
                 }
             }
 
-            // 土曜日の営業日をdayOffsから減算
+            // 土曜日の営業日
             const saturday = [ //土曜日の営業日を配列
                 '20230819',
                 '20240309',
             ];
-            for (let d = new Date(startDate.value); d <= endVal; d.setDate(d.getDate() + 1)) {
-                let startYMD = d.getFullYear() + ('0' + (d.getMonth() + 1)).slice(-2) + ('0' + d
-                    .getDate()).slice(-2);
-                if (saturday.indexOf(startYMD) != -1) {
-                    dayOffs--; // 土曜日の営業日は休日数から減算
-                    // console.log(startYMD);
-                }
-            }
 
-            // 祝祭日等の休業日をdayOffsに加算
+            // 祝祭日等
             const holiday = [ // 土日以外の休業日を配列で記載
                 '20230503',
                 '20230504',
@@ -669,12 +671,19 @@
                 '20240102',
                 '20240103',
             ];
-            for (let d = new Date(startDate.value); d <= endVal; d.setDate(d.getDate() + 1)) {
-                let startYMD = d.getFullYear() + ('0' + (d.getMonth() + 1)).slice(-2) + ('0' + d
-                    .getDate()).slice(-2);
-                if (holiday.indexOf(startYMD) != -1) {
-                    dayOffs++; // 土曜日の営業日は休日数から減算
-                    // console.log(startYMD);
+
+            if (endVal) {
+                for (startVal; startVal <= endVal; startVal.setDate(startVal.getDate() + 1)) {
+                    let startYMD = startVal.getFullYear() + ('0' + (startVal.getMonth() + 1)).slice(-2) + ('0' + startVal
+                        .getDate()).slice(-2);
+                    // 土曜日の営業日をdayOffsから減算
+                    if (saturday.indexOf(startYMD) != -1) {
+                        dayOffs--; // 土曜日の営業日は休日数から減算
+                    }
+                    // 祝祭日等の休業日をdayOffsに加算
+                    if (holiday.indexOf(startYMD) != -1) {
+                        dayOffs++; // 祝日は休日数に加算
+                    }
                 }
             }
 
@@ -693,28 +702,72 @@
                 reportCategory.value == 18) { // パパ育休
                 getDays = diffDays - dayOffs;
             }
+
+            let holidayAlert = document.getElementById('holiday_alert');
             if (subReportCategories[0].checked) { // 終日休
-                getDays = 1.0;
+                holidayCheck(1.0);
             }
             if (subReportCategories[2].checked) { // 半日休
-                getDays = 0.5;
+                holidayCheck(0.5);
             }
             if (subReportCategories[3].checked ||
                 reportCategory.value == 13 || // 遅刻
                 reportCategory.value == 14 || // 早退
                 reportCategory.value == 15) { // 外出
-                // FIXME:お昼挟無場合、休憩時間考慮されない
-                getDays = ((endTimeVal - startTimeVal) / 60000) / 60 * 1 / 8;
+
+                // 土日
+                let holidayCheck = false;
+                if (startWeek + i == 0 || startWeek + i == 6 || startWeek + i == 7) {
+                    holidayCheck = true;
+                    getDays = 0; // 土曜日6,日曜日0,7は休日
+                    holidayAlert.style.display = '';
+                }
+                // 土営業日
+                let startYMD = startVal.getFullYear() + ('0' + (startVal.getMonth() + 1)).slice(-2) + ('0' + startVal
+                    .getDate()).slice(-2);
+                if (saturday.indexOf(startYMD) != -1) { // -1 == false
+                    holidayCheck = false;
+                }
+                // 祝祭日等の休業日をdayOffsに加算
+                if (holiday.indexOf(startYMD) != -1) {
+                    holidayCheck = true;
+                    getDays = 0.0; // 祝祭日
+                    holidayAlert.style.display = '';
+                }
+console.log(holidayCheck);
+                if (holidayCheck == false) {
+
+                    // 休憩挟む
+                    if (startTimeVal < lunchTimeStart && endTimeVal >= lunchTimeStart && endTimeVal < lunchTimeEnd) {
+                        getDays = ((endTimeVal - startTimeVal - (endTimeVal - lunchTimeStart)) / 60000) / 60 * 1 / 8;
+                    }
+                    if (startTimeVal < lunchTimeStart && endTimeVal >= lunchTimeEnd) {
+                        getDays = ((endTimeVal - startTimeVal - (lunchTimeEnd - lunchTimeStart)) / 60000) / 60 * 1 / 8;
+                    }
+                    if (startTimeVal >= lunchTimeStart && startTimeVal < lunchTimeEnd && endTimeVal > lunchTimeEnd) {
+                        getDays = ((endTimeVal - startTimeVal - (lunchTimeEnd - startTimeVal)) / 60000) / 60 * 1 / 8;
+                    }
+                    // 通常
+                    if (startTimeVal <= lunchTimeStart && endTimeVal <= lunchTimeStart) {
+                        getDays = ((endTimeVal - startTimeVal) / 60000) / 60 * 1 / 8;
+                    }
+                    if (startTimeVal >= lunchTimeEnd && endTimeVal >= lunchTimeEnd) {
+                        getDays = ((endTimeVal - startTimeVal) / 60000) / 60 * 1 / 8;
+                    }
+                }
                 // 時間換算:8時間で1日 1時間=1/8日 0.125日
                 getDays = orgRound(getDays, 100000); // 小数点以下切り捨て
             }
-            // FIXME:入力日で算出するorフォームを修正
-            if (reportCategory.value == 2 || reportCategory.value == 12) {
-                getDays = 1.0;
+            if (reportCategory.value == 2 || reportCategory.value == 12) { // バースデイ休暇、欠勤
+                holidayCheck(1.0);
             }
 
             // get_days書き出し
             document.getElementById('get_days').setAttribute('value', getDays);
+
+            // 申請済みか確認
+            const myReports = @json($my_reports);
+            // console.log(myReports);
 
             // get時間&get日数作成&書き出し
             function orgRound(value, base) { // 小数点以下を丸める関数
@@ -771,6 +824,30 @@
             document.getElementById('remaining_days_only').setAttribute('value', remainingDaysOnly);
             document.getElementById('remaining_hours').setAttribute('value', remainingHoursOnly);
             document.getElementById('remaining_minutes').setAttribute('value', remainingMinutes);
+
+            // 休日確認関数
+            function holidayCheck(getday) {
+                // 土日
+                if (startWeek + i == 0 || startWeek + i == 6 || startWeek + i == 7) {
+                    getDays = 0; // 土曜日6,日曜日0,7は休日
+                    holidayAlert.style.display = '';
+                } else {
+                    getDays = getday;
+                    holidayAlert.style.display = 'none';
+                }
+                // 土営業日
+                let startYMD = startVal.getFullYear() + ('0' + (startVal.getMonth() + 1)).slice(-2) + ('0' + startVal
+                    .getDate()).slice(-2);
+                if (saturday.indexOf(startYMD) != -1) { // -1 == false
+                    getDays = getday; // 土曜日の営業日
+                    holidayAlert.style.display = 'none';
+                }
+                // 祝祭日等の休業日をdayOffsに加算
+                if (holiday.indexOf(startYMD) != -1) {
+                    getDays = 0.0; // 祝祭日
+                    holidayAlert.style.display = '';
+                }
+            }
         };
         /* 日数算出end */
     </script>

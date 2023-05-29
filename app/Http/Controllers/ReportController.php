@@ -42,14 +42,16 @@ class ReportController extends Controller
         $report_categories = ReportCategory::all();
         $sub_report_categories = SubReportCategory::all();
         $reasons = ReasonCategory::all();
-        $my_remainings = Remaining::all()->where('user_id', Auth::id());
+        $my_remainings = Auth::user()->remainings;
+        $my_reports = Auth::user()->reports;
 
         return view('reports.create')->with(
             compact(
                 'report_categories',
                 'sub_report_categories',
                 'reasons',
-                'my_remainings'
+                'my_remainings',
+                'my_reports'
             )
         );
     }

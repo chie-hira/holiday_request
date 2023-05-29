@@ -139,8 +139,8 @@ class User extends Authenticatable
     {
         # 取得日数集計
         $sum_get_days = $this->reports
-            ->where('approval1', '=', 1)
-            ->where('approval2', '=', 1)
+            ->where('approved', 1)
+            ->where('cancel', 0)
             ->groupBy('report_id')
             ->map(function ($report_id) {
                 return $report_id->sum('get_days');
