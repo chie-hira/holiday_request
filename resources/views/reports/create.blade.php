@@ -768,6 +768,8 @@
 
                 if (holidayCheck() == true) {
                     getDays = 0;
+                } else if (duplicationCheck() == true) {
+                    getDays = 0;
                 } else {
                     // 休憩挟む
                     if (startTimeVal < lunchTimeStart && endTimeVal >= lunchTimeStart && endTimeVal < lunchTimeEnd) {
@@ -891,13 +893,49 @@
                 console.log('duplicationCheck'); // 起動確認
                 const myReports = @json($my_reports);
                 let duplication = false;
-                console.log(amPmVal);
                 myReports.forEach(report => {
-                    if (report.am_pm == amPmVal && report.start_date == startY_M_D) {
+                    if (report.am_pm == null && report.start_time == null && report.start_date == startY_M_D) {
                         duplication = true;
                     }
-                    if (amPmVal == '' && report.start_date == startY_M_D) {
-                        duplication = true;
+                    if (report.start_time != null && report.start_date == startY_M_D) {
+                        for (let t = new Date(startDate.value + ' ' + startTime.value); t <= endTimeVal; t.setTime(t
+                                .getTime() + 5 * 60 * 1000)) {
+                            if (report.start_time == convertTime(t.getTime())) {
+                                duplication = true;
+                            }
+                            if (report.end_time == convertTime(t.getTime())) {
+                                duplication = true;
+                            }
+                            if (report.start_time <= convertTime(t.getTime()) && report.end_time >= convertTime(t.getTime())) {
+                                duplication = true;
+                            }
+                        }
+                    }
+                    if (report.am_pm != null && report.start_date == startY_M_D) {
+                        if (subReportCategories[2].checked) {
+                            duplication = true;
+                        }
+                        if (report.am_pm == 1) {
+                            var sTime = '08:00:00';
+                            var eTime = '12:00:00';
+                        }
+                        if (report.am_pm == 2) {
+                            var sTime = '13:00:00';
+                            var eTime = '17:00:00';
+                        }
+                        for (let t = new Date(startDate.value + ' ' + startTime.value); t <= endTimeVal; t.setTime(t
+                                .getTime() + 5 * 60 * 1000)) {
+                            if (sTime == convertTime(t.getTime())) {
+                                duplication = true;
+                            }
+                            if (eTime == convertTime(t.getTime())) {
+                                duplication = true;
+                            }
+                            if (sTime <= convertTime(t.getTime()) && eTime >= convertTime(t.getTime())) {
+                                duplication = true;
+                            }
+                        }
+                        // console.log(eTime);
                     }
                 });
                 if (duplication == true) {
@@ -912,6 +950,12 @@
                             if (report.start_date == Y_M_D) {
                                 duplication = true;
                             }
+                            if (report.end_date == Y_M_D) {
+                                duplication = true;
+                            }
+                            if (report.start_date <= Y_M_D && report.end_date >= Y_M_D) {
+                                duplication = true;
+                            }
                         });
                         if (duplication == true) {
                             duplicationAlert.style.display = '';
@@ -921,6 +965,31 @@
                 }
                 duplicationAlert.style.display = 'none';
                 return false;
+            }
+
+            function convertTime(milliseconds) {
+                // タイムゾーンオフセット（日本時間の場合は9時間）
+                var timeZoneOffset = 9 * 60 * 60 * 1000;
+                // 日本時間に補正
+                var japanTimeInMilliseconds = milliseconds + timeZoneOffset;
+
+                var totalSeconds = Math.floor(japanTimeInMilliseconds / 1000);
+                var seconds = totalSeconds % 60;
+                var totalMinutes = Math.floor(totalSeconds / 60);
+                var minutes = totalMinutes % 60;
+                var totalHours = Math.floor(totalMinutes / 60);
+                var hours = totalHours % 24;
+
+                // ゼロ埋め
+                var hh = padZero(hours);
+                var mm = padZero(minutes);
+                var ss = padZero(seconds);
+
+                return hh + ":" + mm + ":" + ss;
+            }
+
+            function padZero(num) {
+                return num.toString().padStart(2, "0");
             }
         };
         /* 日数算出end */
