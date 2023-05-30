@@ -200,7 +200,7 @@
                 </div>
                 <!-- 外出 - end -->
 
-                <!-- 休日 - start -->
+                <!-- 休日アラート - start -->
                 <div id="holiday_alert" style="display: none">
                     <div class="flex h-8 leading-8 items-center text-center">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
@@ -216,7 +216,25 @@
                         </div>
                     </div>
                 </div>
-                <!-- 休日 - end -->
+                <!-- 休日アラート - end -->
+
+                <!-- 重複アラート - start -->
+                <div id="duplication_alert" style="display: none">
+                    <div class="flex h-8 leading-8 items-center text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="w-5 h-5 mr-2 text-sky-600">
+                            <path fill-rule="evenodd"
+                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                                clip-rule="evenodd" fill="" />
+                        </svg>
+                        <div class="items-center text-center">
+                            選択中の休暇予定日は
+                            <span class="font-semibold text-red-500">届出済み</span>
+                            です
+                        </div>
+                    </div>
+                </div>
+                <!-- 重複アラート - end -->
 
                 <div class="flex my-6">
                     <div class="mr-4">
@@ -302,7 +320,6 @@
         let halfDateLabel = document.getElementById('half_date_label');
         let amPmForm = document.getElementById('am_pm_form');
         let amPm = document.getElementById('am_pm');
-        let holidayAlert = document.getElementById('holiday_alert');
         const reasons = @json($reasons);
 
         // リダイレクト時の表示切替
@@ -630,11 +647,12 @@
         /* 表示切替end */
 
         /* 日数算出start */
-        // let button = document.getElementById('button');
         let startDate = document.getElementById('start_date');
         let endDate = document.getElementById('end_date');
         let startTime = document.getElementById('start_time');
         let endTime = document.getElementById('end_time');
+        let holidayAlert = document.getElementById('holiday_alert');
+        let duplicationAlert = document.getElementById('duplication_alert');
 
         function countDays() {
             // get_daysリセット
@@ -655,27 +673,26 @@
             const lunchTimeEnd = new Date(startDate.value + ' ' + '13:00:00');
             let reportId = reportCategory.value;
             let diffDays = (endVal - startVal) / 86400000 + 1; // 単純な差
+            let startYMD = startVal.getFullYear() +
+                ('0' + (startVal.getMonth() + 1)).slice(-2) +
+                ('0' + startVal.getDate()).slice(-2);
+            let startY_M_D = startVal.getFullYear() +
+                '-' + ('0' + (startVal.getMonth() + 1)).slice(-2) +
+                '-' + ('0' + startVal.getDate()).slice(-2);
+            let endY_M_D = endVal.getFullYear() +
+                '-' + ('0' + (endVal.getMonth() + 1)).slice(-2) +
+                '-' + ('0' + endVal.getDate()).slice(-2);
             let getDays = 0;
             let dayOffs = 0;
 
-            //土曜日、日曜日は基本休業日でdayOffsに加算
-            let remainderDays = diffDays % 7
-            let startWeek = startVal.getDay(); //0~6の曜日数値
-            dayOffs = (diffDays - remainderDays) / 7 * 2;
-            for (var i = 0; i < remainderDays; i++) {
-                if (startWeek + i == 0 || startWeek + i == 6 || startWeek + i == 7) {
-                    dayOffs++; // 土曜日6,日曜日0,7は休日数に加算
-                }
-            }
-
             // 土曜日の営業日
-            const saturday = [ //土曜日の営業日を配列
+            const saturdays = [ //土曜日の営業日を配列
                 '20230819',
                 '20240309',
             ];
 
             // 祝祭日等
-            const holiday = [ // 土日以外の休業日を配列で記載
+            const holidays = [ // 土日以外の休業日を配列で記載
                 '20230503',
                 '20230504',
                 '20230505',
@@ -687,18 +704,24 @@
                 '20240103',
             ];
 
-            if (endVal) {
-                for (startVal; startVal <= endVal; startVal.setDate(startVal.getDate() + 1)) {
-                    let startYMD = startVal.getFullYear() + ('0' + (startVal.getMonth() + 1)).slice(-2) + ('0' + startVal
-                        .getDate()).slice(-2);
-                    // 土曜日の営業日をdayOffsから減算
-                    if (saturday.indexOf(startYMD) != -1) {
-                        dayOffs--; // 土曜日の営業日は休日数から減算
-                    }
-                    // 祝祭日等の休業日をdayOffsに加算
-                    if (holiday.indexOf(startYMD) != -1) {
-                        dayOffs++; // 祝日は休日数に加算
-                    }
+            //土曜日、日曜日はdayOffsに加算
+            let remainderDays = diffDays % 7
+            let startWeek = startVal.getDay(); //0~6の曜日数値
+            dayOffs = (diffDays - remainderDays) / 7 * 2;
+            for (var i = 0; i < remainderDays; i++) {
+                if (startWeek + i == 0 || startWeek + i == 6 || startWeek + i == 7) {
+                    dayOffs++; // 土曜日6,日曜日0,7は休日数に加算
+                }
+            }
+
+            for (startVal; startVal <= endVal; startVal.setDate(startVal.getDate() + 1)) {
+                // 土曜日の営業日をdayOffsから減算
+                if (saturdays.includes(startYMD)) {
+                    dayOffs--; // 土曜日の営業日は休日数から減算
+                }
+                // 祝祭日等の休業日をdayOffsに加算
+                if (holidays.indexOf(startYMD) != -1) {
+                    dayOffs++; // 祝日は休日数に加算
                 }
             }
 
@@ -715,41 +738,35 @@
                 reportCategory.value == 16 || // 介護休業
                 reportCategory.value == 17 || // 育児休業
                 reportCategory.value == 18) { // パパ育休
-                getDays = diffDays - dayOffs;
+                if (duplicationCheck() == true) {
+                    getDays = 0;
+                } else {
+                    getDays = diffDays - dayOffs;
+                }
             }
 
-            // let holidayAlert = document.getElementById('holiday_alert');
             if (subReportCategories[0].checked) { // 終日休
-                holidayCheck(1.0);
+                if (holidayCheck() == true) {
+                    getDays = 0;
+                } else {
+                    getDays = 1.0;
+                }
             }
             if (subReportCategories[2].checked) { // 半日休
-                holidayCheck(0.5);
+                if (holidayCheck() == true) {
+                    getDays = 0;
+                } else {
+                    getDays = 0.5;
+                }
             }
             if (subReportCategories[3].checked ||
                 reportCategory.value == 13 || // 遅刻
                 reportCategory.value == 14 || // 早退
                 reportCategory.value == 15) { // 外出
 
-                // 土日
-                let holidayCheck = false;
-                if (startWeek + i == 0 || startWeek + i == 6 || startWeek + i == 7) {
-                    holidayCheck = true;
-                    getDays = 0; // 土曜日6,日曜日0,7は休日
-                    holidayAlert.style.display = '';
-                }
-                // 土営業日
-                let startYMD = startVal.getFullYear() + ('0' + (startVal.getMonth() + 1)).slice(-2) + ('0' + startVal
-                    .getDate()).slice(-2);
-                if (saturday.indexOf(startYMD) != -1) { // -1 == false
-                    holidayCheck = false;
-                }
-                // 祝祭日等の休業日をdayOffsに加算
-                if (holiday.indexOf(startYMD) != -1) {
-                    holidayCheck = true;
-                    getDays = 0.0; // 祝祭日
-                    holidayAlert.style.display = '';
-                }
-                if (holidayCheck == false) {
+                if (holidayCheck() == true) {
+                    getDays = 0;
+                } else {
                     // 休憩挟む
                     if (startTimeVal < lunchTimeStart && endTimeVal >= lunchTimeStart && endTimeVal < lunchTimeEnd) {
                         getDays = ((endTimeVal - startTimeVal - (endTimeVal - lunchTimeStart)) / 60000) / 60 * 1 / 8;
@@ -768,11 +785,22 @@
                         getDays = ((endTimeVal - startTimeVal) / 60000) / 60 * 1 / 8;
                     }
                 }
+
                 // 時間換算:8時間で1日 1時間=1/8日 0.125日
                 getDays = orgRound(getDays, 100000); // 小数点以下切り捨て
             }
             if (reportCategory.value == 2 || reportCategory.value == 12) { // バースデイ休暇、欠勤
-                holidayCheck(1.0);
+                if (holidayCheck() == true) {
+                    getDays = 0;
+                } else {
+                    getDays = 1.0;
+                }
+
+                if (duplicationCheck() == true) {
+                    getDays = 0;
+                } else {
+                    getDays = 1.0;
+                }
             }
 
             // get_days書き出し
@@ -835,27 +863,58 @@
             document.getElementById('remaining_minutes').setAttribute('value', remainingMinutes);
 
             // 休日確認関数
-            function holidayCheck(getday) {
-                // 土日
-                if (startWeek + i == 0 || startWeek + i == 6 || startWeek + i == 7) {
-                    getDays = 0; // 土曜日6,日曜日0,7は休日
-                    holidayAlert.style.display = '';
+            function holidayCheck() {
+                console.log('holidayCheck'); // 起動確認
+                let holiday = false;
+                if (saturdays.includes(startYMD)) {
+                    holiday = false;
+                } else if (startWeek + i == 0 || startWeek + i == 6 || startWeek + i == 7) {
+                    holiday = true;
+                } else if (holidays.includes(startYMD)) {
+                    holiday = true;
                 } else {
-                    getDays = getday;
-                    holidayAlert.style.display = 'none';
+                    holiday = false;
                 }
-                // 土営業日
-                let startYMD = startVal.getFullYear() + ('0' + (startVal.getMonth() + 1)).slice(-2) + ('0' + startVal
-                    .getDate()).slice(-2);
-                if (saturday.indexOf(startYMD) != -1) { // -1 == false
-                    getDays = getday; // 土曜日の営業日
-                    holidayAlert.style.display = 'none';
-                }
-                // 祝祭日等の休業日をdayOffsに加算
-                if (holiday.indexOf(startYMD) != -1) {
-                    getDays = 0.0; // 祝祭日
+
+                if (holiday == true) {
                     holidayAlert.style.display = '';
+                    return true;
+                } else {
+                    holidayAlert.style.display = 'none';
+                    return false;
                 }
+            }
+            // 重複確認関数
+            function duplicationCheck() {
+                console.log('duplicationCheck'); // 起動確認
+                const myReports = @json($my_reports);
+                let duplication = false;
+                myReports.forEach(report => {
+                    if (report.start_date == startY_M_D) {
+                        duplication = true;
+                    }
+                });
+                if (duplication == true) {
+                    duplicationAlert.style.display = '';
+                    return true;
+                } else {
+                    for (let d = new Date(startDate.value); d <= endVal; d.setDate(d.getDate() + 1)) {
+                        const Y_M_D = d.getFullYear() +
+                            '-' + ('0' + (d.getMonth() + 1)).slice(-2) +
+                            '-' + ('0' + d.getDate()).slice(-2);
+                        myReports.forEach(report => {
+                            if (report.start_date == Y_M_D) {
+                                duplication = true;
+                            }
+                        });
+                        if (duplication == true) {
+                            duplicationAlert.style.display = '';
+                            return true;
+                        }
+                    }
+                }
+                duplicationAlert.style.display = 'none';
+                return false;
             }
         };
         /* 日数算出end */
