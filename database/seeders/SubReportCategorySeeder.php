@@ -17,7 +17,7 @@ class SubReportCategorySeeder extends Seeder
         $param = [
             ['sub_report_name' => '終日休'],
             ['sub_report_name' => '連休'],
-            ['sub_report_name' => '半日有休'],
+            ['sub_report_name' => '半日休'],
             ['sub_report_name' => '時間休'],
         ];
         DB::table('sub_report_categories')->insert($param);

@@ -671,6 +671,7 @@
             const endTimeVal = new Date(startDate.value + ' ' + endTime.value);
             const lunchTimeStart = new Date(startDate.value + ' ' + '12:00:00');
             const lunchTimeEnd = new Date(startDate.value + ' ' + '13:00:00');
+            const amPmVal = amPm.value;
             let reportId = reportCategory.value;
             let diffDays = (endVal - startVal) / 86400000 + 1; // 単純な差
             let startYMD = startVal.getFullYear() +
@@ -679,9 +680,6 @@
             let startY_M_D = startVal.getFullYear() +
                 '-' + ('0' + (startVal.getMonth() + 1)).slice(-2) +
                 '-' + ('0' + startVal.getDate()).slice(-2);
-            let endY_M_D = endVal.getFullYear() +
-                '-' + ('0' + (endVal.getMonth() + 1)).slice(-2) +
-                '-' + ('0' + endVal.getDate()).slice(-2);
             let getDays = 0;
             let dayOffs = 0;
 
@@ -748,12 +746,16 @@
             if (subReportCategories[0].checked) { // 終日休
                 if (holidayCheck() == true) {
                     getDays = 0;
+                } else if (duplicationCheck() == true) {
+                    getDays = 0;
                 } else {
                     getDays = 1.0;
                 }
             }
             if (subReportCategories[2].checked) { // 半日休
                 if (holidayCheck() == true) {
+                    getDays = 0;
+                } else if (duplicationCheck() == true) {
                     getDays = 0;
                 } else {
                     getDays = 0.5;
@@ -889,8 +891,12 @@
                 console.log('duplicationCheck'); // 起動確認
                 const myReports = @json($my_reports);
                 let duplication = false;
+                console.log(amPmVal);
                 myReports.forEach(report => {
-                    if (report.start_date == startY_M_D) {
+                    if (report.am_pm == amPmVal && report.start_date == startY_M_D) {
+                        duplication = true;
+                    }
+                    if (amPmVal == '' && report.start_date == startY_M_D) {
                         duplication = true;
                     }
                 });
