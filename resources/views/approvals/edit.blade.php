@@ -14,7 +14,8 @@
                             </svg>
                         </p>
                         <p class="text-sm">
-                            <span class="font-bold">会社承認権限</span>は管轄工場、管轄課、管轄グループの選択に関わらず、すべての届けの承認権です。
+                            <span class="font-bold">管理者権限</span>は管轄工場ごとに各種設定ができる権限です。
+                            <span class="font-bold">管轄工場を選択</span>し、管轄課と管轄グループは<span class="font-bold">全課、全グループ</span>を選択してください。
                         </p>
                     </div>
                     <div class="flex text-left leading-relaxed text-sm mb-1">
@@ -27,7 +28,8 @@
                             </svg>
                         </p>
                         <p class="text-sm">
-                            <span class="font-bold">管理者権限</span>は管轄工場ごとに各種設定ができる権限です。全課、全グループを選択してください。
+                            <span class="font-bold">上長承認権限</span>は総務部または工場に対して設定できます。
+                            <span class="font-bold">総務部</span>の場合は<span class="font-bold">一関本社、総務部</span>を選択してください。<span class="font-bold">工場長</span>の場合は<span class="font-bold">管轄工場</span>を選択してください。
                         </p>
                     </div>
                     <div class="flex text-left leading-relaxed text-sm mb-1">

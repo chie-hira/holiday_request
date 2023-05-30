@@ -11,6 +11,8 @@ use App\Models\FactoryCategory;
 use App\Models\DepartmentCategory;
 use App\Models\GroupCategory;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Collection;
 
 class ApprovalController extends Controller
 {
@@ -21,7 +23,21 @@ class ApprovalController extends Controller
      */
     public function index()
     {
-        $approvals = Approval::all();
+        // $approvals = Approval::all();
+        $admin_approvals = Auth::user()->approvals->where('approval_id', 1);
+
+        # 工場単位で一覧作成
+        $approvals = new Collection();
+        foreach ($admin_approvals as $approval) {
+            $extractions = Approval::with('user')
+                            ->where('factory_id', $approval->factory_id)
+                            ->get();
+
+            $extractions->each(function ($extraction) use ($approvals) {
+                $approvals->add($extraction);
+            });
+        }
+
         return view('approvals.index')->with(compact('approvals'));
     }
 

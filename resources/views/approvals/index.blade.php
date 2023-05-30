@@ -84,9 +84,9 @@
                                                 </td>
                                                 <td
                                                     class="pl-1 pr-4 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                                                    <x-show-a-button href="{{ route('approvals.edit', $approval) }}" class="px-3 py-1">
+                                                    <x-edit-a-button href="{{ route('approvals.edit', $approval) }}" class="px-3 py-1">
                                                         {{ __('Setting') }}
-                                                    </x-shos-a-button>
+                                                    </x-edit-a-button>
                                                 </td>
                                             </tr>
                                         @endforeach
