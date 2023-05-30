@@ -18,10 +18,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-# メニュー画面
-// Route::get('/', function () {
-//     return view('menu.index');
-// })->name('menu');
 
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
@@ -97,8 +93,5 @@ Route::delete('/reports/approved/{report}/cancel', [
 # エクスポート
 Route::get('/export', [ReportController::class, 'export'])
     ->name('reports.export');
-// Route::get('/reports/export', [ReportController::class, 'export'])
-//     ->name('reports.export');
-
 
 require __DIR__ . '/auth.php';

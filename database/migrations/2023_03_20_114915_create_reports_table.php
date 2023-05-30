@@ -45,6 +45,9 @@ class CreateReportsTable extends Migration
             $table->boolean('approved')->default(0);
             $table->boolean('cancel')->default(0);
             $table->timestamps();
+
+            // 論理削除
+            $table->softDeletes();
         });
     }
 

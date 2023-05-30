@@ -11,7 +11,6 @@ use App\Models\FactoryCategory;
 use App\Models\DepartmentCategory;
 use App\Models\GroupCategory;
 use App\Models\User;
-use Illuminate\Http\Request;
 
 class ApprovalController extends Controller
 {
@@ -47,12 +46,11 @@ class ApprovalController extends Controller
      * @param  \App\Http\Requests\StoreApprovalRequest  $request
      * @return \Illuminate\Http\Response
      */
-    // FIXME:StoreApprovalRequest通らない useから書き直しで通った
+    // fixme:StoreApprovalRequest通らない useから書き直しで通った
     public function store(StoreApprovalRequest $request)
     {
         $approval = new Approval();
         $approval->fill($request->all());
-        // dd($approval);
 
         try {
             $approval->save();

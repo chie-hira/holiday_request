@@ -121,10 +121,6 @@
                                                     </x-select>
                                                 </td>
                                                 <td class="px-1 py-4 whitespace-nowrap text-sm text-gray-800">
-                                                    {{-- <button type="submit"
-                                                        class="px-3 py-1 text-sm text-blue-500 rounded-full bg-blue-100/60 hover:text-white hover:bg-blue-500">
-                                                        所属更新
-                                                    </button> --}}
                                                     <x-edit-button >
                                                         {{ __('Update') }}
                                                     </x-edit-button>
@@ -134,9 +130,6 @@
                                                 <form action="{{ route('users.destroy', $user) }}" method="POST">
                                                     @csrf
                                                     @method('DELETE')
-                                                    {{-- <input type="submit" value="ユーザー削除"
-                                                        onclick="if(!confirm('ユーザー情報を削除しますか？この操作は取り消せません。削除したユーザーは、アプリを使用できなくなります。')){return false};"
-                                                        class="px-3 py-1 text-sm text-pink-500 rounded-full bg-pink-100/60 hover:text-white hover:bg-pink-500"> --}}
                                                     <x-delete-input-button value="ユーザー削除" onclick="if(!confirm('ユーザー情報を削除しますか？この操作は取り消せません。削除したユーザーは、アプリを使用できなくなります。')){return false};"/>
                                                 </form>
                                             </td>

@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\App;
-
 return [
 
     /*
@@ -208,7 +206,6 @@ return [
         'Eloquent' => Illuminate\Database\Eloquent\Model::class,
         'Event' => Illuminate\Support\Facades\Event::class,
         'File' => Illuminate\Support\Facades\File::class,
-        'Functions' => App\Library\Functions::class,
         'Gate' => Illuminate\Support\Facades\Gate::class,
         'Hash' => Illuminate\Support\Facades\Hash::class,
         'Http' => Illuminate\Support\Facades\Http::class,
