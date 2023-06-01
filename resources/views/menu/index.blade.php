@@ -1,8 +1,10 @@
 <x-app-layout>
+{{-- //TODO:バースデイ休暇は取得期間だけ取得可能にする --}}
+{{-- //TODO:バースデイ休暇の取得期間を表示 --}}
     <!-- Page Heading -->
     <header class="text-xs sm:text-sm bg-sky-50 border-b-2 border-gray-400">
         <!-- 有休残日数 -->
-        <p class="flex items-center py-2 px-6 text-gray-700 text-xl">
+        <p class="flex items-center py-1 px-6 text-gray-700 text-xl">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                 class="w-6 h-6 mr-3 text-sky-600">
                 <path fill-rule="evenodd"
@@ -20,22 +22,23 @@
                     &ensp;{{ $paid_holidays->remaining_hours }}
                 </span> 時間
             @endif
+            <span class="text-sm text-blue-500">&emsp;有給休暇取得推進日を除く</span>
         </p>
         <!-- バースデイ休暇notice -->
         @if (now()->addMonth(-3) <= $birthday && now()->addMonth(3) >= $birthday)
-            <p class="flex items-center py-2 px-6 text-gray-700 text-xl">
+            <p class="flex items-center py-1 px-6 text-gray-700 text-xl">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                     class="w-6 h-6 mr-3 text-sky-600">
                     <path fill-rule="evenodd"
                         d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
                         clip-rule="evenodd" fill="" />
                 </svg>
-                バースデイ休暇が取得可能です。
+                バースデイ休暇の取得期間です。期間内に必ず習得しましょう！
             </p>
         @endif
         <!-- ハッピーバースデイ -->
         @if (now()->format('Y-m-d') === $birthday->format('Y-m-d'))
-            <p class="flex items-center py-2 px-6 text-gray-700 text-xl">
+            <p class="flex items-center py-1 px-6 text-gray-700 text-xl">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                     class="w-6 h-6 mr-3 text-fuchsia-400">
                     <path
@@ -48,7 +51,7 @@
         @endif
         <!-- バースデイ休暇失効alert -->
         @if (now()->addDay(14)->addMonth(-3) >= $birthday)
-            <p class="flex items-center py-2 px-6 text-gray-700 text-xl">
+            <p class="flex items-center py-1 px-6 text-gray-700 text-xl">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                     class="w-6 h-6 mr-2 text-red-700">
                     <path
@@ -64,7 +67,7 @@
         @endif
         <!-- 有休失効alert -->
         @if (now()->addMonth(1) >= $year_end && $lost_days > 0)
-            <p class="flex items-center py-2 px-6 text-gray-700 text-xl">
+            <p class="flex items-center py-1 px-6 text-gray-700 text-xl">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                     class="w-6 h-6 mr-2 text-red-700">
                     <path
@@ -81,7 +84,7 @@
             </p>
         @endif
         @if (now()->addMonth(1) >= $year_end && $get_days_only < 5)
-            <p class="flex items-center py-2 px-6 text-gray-700 text-xl">
+            <p class="flex items-center py-1 px-6 text-gray-700 text-xl">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                     class="w-6 h-6 mr-2 text-red-700">
                     <path

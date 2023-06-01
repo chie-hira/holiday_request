@@ -101,7 +101,6 @@ class RemainingController extends Controller
 
         $remaining->remaining = $remaining_days * 1 + $remaining_hours * 0.125;
 
-        // FIXME:弔事は上限日数があるのでバリデーション設定したほうがいい。介護休暇はバリデーションなし
         try {
             $remaining->save();
             return redirect()
@@ -184,6 +183,7 @@ class RemainingController extends Controller
 
     public function addRemainings(Request $request)
     {
+        // TODO:取得推進日の3日間をマイナス
         // TODO:更新前にエクセルファイル出力
         $request->validate([
             'update_date' => 'required',

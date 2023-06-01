@@ -1491,7 +1491,6 @@ class ReportController extends Controller
                     break;
 
                 case 1: # 承認済みの届の場合
-                    // FIXME:
                     // self::approvedDelete($report); これだとredirectで迷子
                     $remaining = Remaining::all()
                         ->where('report_id', '=', $report->report_id)
@@ -1553,6 +1552,7 @@ class ReportController extends Controller
         // $year_end = new Carbon('2023-06-06');
 
         /** 承認待ち件数 */
+        $reports = new Collection(); # 空箱用意
         # 課ごとの工場長承認:課長がいる工場
         if (
             $approvals
@@ -1560,7 +1560,7 @@ class ReportController extends Controller
                 ->where('department_id', '!=', 1) # 課ごと
                 ->first()
         ) {
-            $reports = new Collection(); # 空箱用意
+            // $reports = new Collection(); # 空箱用意
             $factory_approvals = $approvals
                 ->where('approval_id', 2)
                 ->where('department_id', '!=', 1);
@@ -1605,7 +1605,7 @@ class ReportController extends Controller
                 ->where('department_id', 1) # 全課
                 ->first()
         ) {
-            $reports = new Collection(); # 空箱用意
+            // $reports = new Collection(); # 空箱用意
             $factory_approvals = $approvals
                 ->where('approval_id', 2)
                 ->where('department_id', 1);
@@ -1643,7 +1643,6 @@ class ReportController extends Controller
 
         # 課長承認
         if ($approvals->contains('approval_id', 3)) {
-            $reports = new Collection(); # 空箱用意
             $department_approvals = $approvals->where('approval_id', 3);
             foreach ($department_approvals as $approval) {
                 # 管轄内のreportsを取得
@@ -1679,10 +1678,9 @@ class ReportController extends Controller
             }
         }
 
-        // FIXME:課長権限とGL権限の両方を持つと$reportsが上書きされる
         # GL承認
         if ($approvals->contains('approval_id', 4)) {
-            $reports = new Collection(); # 空箱用意
+            // $reports = new Collection(); # 空箱用意
             $group_approvals = $approvals->where('approval_id', 4);
             foreach ($group_approvals as $approval) {
                 # 管轄内のreportsを取得
@@ -1717,6 +1715,7 @@ class ReportController extends Controller
             }
         }
 
+        $reports = $reports->unique(); # 重複削除
         # 承認待ち件数count
         if (!empty($reports)) {
             $pending = count($reports);
@@ -1726,6 +1725,7 @@ class ReportController extends Controller
         }
 
         /** 承認済みの取消確認件数 */
+        $reports = new Collection(); # 空箱用意
         # 課ごとの工場長承認:課長がいる工場
         if (
             $approvals
@@ -1733,7 +1733,7 @@ class ReportController extends Controller
                 ->where('department_id', '!=', 1) # 課ごと
                 ->first()
         ) {
-            $reports = new Collection(); # 空箱用意
+            // $reports = new Collection(); # 空箱用意
             $factory_approvals = $approvals
                 ->where('approval_id', 2)
                 ->where('department_id', '!=', 1);
@@ -1771,7 +1771,7 @@ class ReportController extends Controller
                 ->where('department_id', 1) # 全課
                 ->first()
         ) {
-            $reports = new Collection(); # 空箱用意
+            // $reports = new Collection(); # 空箱用意
             $factory_approvals = $approvals
                 ->where('approval_id', 2)
                 ->where('department_id', 1);
@@ -1803,10 +1803,35 @@ class ReportController extends Controller
         }
 
         # 課長承認
+        if ($approvals->contains('approval_id', 3)) {
+            foreach ($group_approvals as $approval) {
+                # 管轄内のreportsを取得
+                $group_reports = Report::whereHas('user', function (
+                    $query
+                ) use ($approval) {
+                    $query
+                        ->where('factory_id', $approval->factory_id)
+                        ->where('department_id', $approval->department_id);
+                })
+                    # 未確認を取得
+                    ->where(function ($query) {
+                        $query
+                            ->where('cancel', 1)
+                            ->where('approved', 1)
+                            ->where('approval2', 1);
+                    })
+                    ->get();
+
+                # 箱に対象reportを入れる
+                $group_reports->each(function ($group_report) use ($reports) {
+                    $reports->add($group_report);
+                });
+            }
+        }
 
         # GL承認
         if ($approvals->contains('approval_id', 4)) {
-            $reports = new Collection(); # 空箱用意
+            // $reports = new Collection(); # 空箱用意
             foreach ($group_approvals as $approval) {
                 # 管轄内のreportsを取得
                 $group_reports = Report::whereHas('user', function (
@@ -1833,6 +1858,7 @@ class ReportController extends Controller
             }
         }
 
+        $reports = $reports->unique(); # 重複削除
         # 承認済みの取消確認件数count
         if (!empty($reports)) {
             $approved = count($reports);
