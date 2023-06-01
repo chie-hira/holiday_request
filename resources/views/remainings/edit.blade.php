@@ -12,7 +12,7 @@
                                 clip-rule="evenodd" fill="" />
                         </svg>
                         <span class="font-semibold">
-                            有給休暇
+                            {{ $remaining->report_category->report_name }}
                         </span>
                         の取得可能日数を変更できます。
                     </p>
@@ -53,8 +53,26 @@
                                                 @csrf
                                                 @method('PUT')
                                                 <td class="px-6 py-3 whitespace-nowrap text-center text-sm font-medium">
-                                                    <x-input name="remaining_days" type="number" max="40" min="0"
-                                                        class="inline h-8 mt-1 w-20" :value="old('remaining_days', $remaining->remaining_days)" />日
+                                                    @if ($remaining->report_id == 1) {{-- 有給休暇 --}}
+                                                        <x-input name="remaining_days" type="number" max="40" min="0"
+                                                            class="inline h-8 mt-1 w-20" :value="old('remaining_days', $remaining->remaining_days)" />日
+                                                    @endif
+                                                    @if ($remaining->report_id == 4) {{-- 特別休暇(弔事・配偶者等) --}}
+                                                        <x-input name="remaining_days" type="number" max="3" min="0"
+                                                            class="inline h-8 mt-1 w-20" :value="old('remaining_days', $remaining->remaining_days)" />日
+                                                    @endif
+                                                    @if ($remaining->report_id == 5) {{-- 特別休暇(弔事・同居の義父母) --}}
+                                                        <x-input name="remaining_days" type="number" max="2" min="0"
+                                                            class="inline h-8 mt-1 w-20" :value="old('remaining_days', $remaining->remaining_days)" />日
+                                                    @endif
+                                                    @if ($remaining->report_id == 6) {{-- 特別休暇(弔事・別居父母等) --}}
+                                                        <x-input name="remaining_days" type="number" max="1" min="0"
+                                                            class="inline h-8 mt-1 w-20" :value="old('remaining_days', $remaining->remaining_days)" />日
+                                                    @endif
+                                                    @if ($remaining->report_id == 16) {{-- 介護休業 --}}
+                                                        <x-input name="remaining_days" type="number" max="186" min="0"
+                                                            class="inline h-8 mt-1 w-20" :value="old('remaining_days', $remaining->remaining_days)" />日
+                                                    @endif
                                                     <x-input name="remaining_hours" type="number" max="7" min="0"
                                                         class="inline h-8 mt-1 w-20" :value="old('remaining_hours', $remaining->remaining_hours)" />時間
                                                 </td>

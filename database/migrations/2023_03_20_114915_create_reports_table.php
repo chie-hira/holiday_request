@@ -13,6 +13,7 @@ class CreateReportsTable extends Migration
      */
     public function up()
     {
+        // TODO:シフトテーブル、カラム追加
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
             $table->date('report_date');
@@ -42,6 +43,7 @@ class CreateReportsTable extends Migration
             $table->integer('am_pm')->nullable()->default(null);
             $table->boolean('approval1')->default(0);
             $table->boolean('approval2')->default(0);
+            $table->boolean('approval3')->default(0);
             $table->boolean('approved')->default(0);
             $table->boolean('cancel')->default(0);
             $table->timestamps();

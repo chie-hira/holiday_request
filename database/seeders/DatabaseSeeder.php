@@ -23,5 +23,6 @@ class DatabaseSeeder extends Seeder
         $this->call(SubReportCategorySeeder::class);
         $this->call(ReasonCategorySeeder::class);
         $this->call(RemainingSeeder::class);
+        // シフトseeder作成追加
     }
 }

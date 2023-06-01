@@ -17,7 +17,8 @@ class ApprovalCategorySeeder extends Seeder
         $param = [
             # 承認権限は閲覧含む
             ['approval_name' => '管理者'], # 各種設定権限
-            ['approval_name' => '上長承認'], # 工場長承認
+            ['approval_name' => '工場長承認'], # 工場長承認(総務部長)
+            ['approval_name' => '課長承認'], # 課長承認
             ['approval_name' => 'GL承認'], # GL承認
             ['approval_name' => '閲覧'],
         ];

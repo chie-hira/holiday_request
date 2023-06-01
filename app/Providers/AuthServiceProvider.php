@@ -30,22 +30,22 @@ class AuthServiceProvider extends ServiceProvider
             return !empty($user->approvals->where('approval_id', 1)->first());
         });
 
-        // 上長承認だけ
+        // 工場長承認だけ
         Gate::define('general_only', function ($user) {
             return !empty($user->approvals->where('approval_id', 2)->first());
         });
 
         // 閲覧
         Gate::define('reader', function ($user) {
-            return !empty($user->approvals->where('approval_id', 4)->first());
+            return !empty($user->approvals->where('approval_id', 5)->first());
         });
 
-        // 上長承認とGL承認に適用
-        Gate::define('general_and_gl', function ($user) {
-            return !empty(
-                $user->approvals->where('approval_id', 2)->first()
-            ) ||
-                !empty($user->approvals->where('approval_id', '=', 3)->first());
+        // 承認者に適用
+        Gate::define('general_manager_gl', function ($user) {
+            return 
+                !empty($user->approvals->where('approval_id', 2)->first()) ||
+                !empty($user->approvals->where('approval_id', 3)->first()) ||
+                !empty($user->approvals->where('approval_id', 4)->first());
         });
 
         // 上長承認,GL承認,閲覧に適用

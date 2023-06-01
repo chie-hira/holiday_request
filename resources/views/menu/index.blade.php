@@ -1,8 +1,10 @@
 <x-app-layout>
+{{-- //TODO:バースデイ休暇は取得期間だけ取得可能にする --}}
+{{-- //TODO:バースデイ休暇の取得期間を表示 --}}
     <!-- Page Heading -->
     <header class="text-xs sm:text-sm bg-sky-50 border-b-2 border-gray-400">
         <!-- 有休残日数 -->
-        <p class="flex items-center py-2 px-6 text-gray-700 text-xl">
+        <p class="flex items-center py-1 px-6 text-gray-700 text-xl">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                 class="w-6 h-6 mr-3 text-sky-600">
                 <path fill-rule="evenodd"
@@ -20,22 +22,23 @@
                     &ensp;{{ $paid_holidays->remaining_hours }}
                 </span> 時間
             @endif
+            <span class="text-sm text-blue-500">&emsp;有給休暇取得推進日を除く</span>
         </p>
         <!-- バースデイ休暇notice -->
         @if (now()->addMonth(-3) <= $birthday && now()->addMonth(3) >= $birthday)
-            <p class="flex items-center py-2 px-6 text-gray-700 text-xl">
+            <p class="flex items-center py-1 px-6 text-gray-700 text-xl">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                     class="w-6 h-6 mr-3 text-sky-600">
                     <path fill-rule="evenodd"
                         d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
                         clip-rule="evenodd" fill="" />
                 </svg>
-                バースデイ休暇が取得可能です。
+                バースデイ休暇の取得期間です。期間内に必ず習得しましょう！
             </p>
         @endif
         <!-- ハッピーバースデイ -->
         @if (now()->format('Y-m-d') === $birthday->format('Y-m-d'))
-            <p class="flex items-center py-2 px-6 text-gray-700 text-xl">
+            <p class="flex items-center py-1 px-6 text-gray-700 text-xl">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                     class="w-6 h-6 mr-3 text-fuchsia-400">
                     <path
@@ -48,7 +51,7 @@
         @endif
         <!-- バースデイ休暇失効alert -->
         @if (now()->addDay(14)->addMonth(-3) >= $birthday)
-            <p class="flex items-center py-2 px-6 text-gray-700 text-xl">
+            <p class="flex items-center py-1 px-6 text-gray-700 text-xl">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                     class="w-6 h-6 mr-2 text-red-700">
                     <path
@@ -64,7 +67,7 @@
         @endif
         <!-- 有休失効alert -->
         @if (now()->addMonth(1) >= $year_end && $lost_days > 0)
-            <p class="flex items-center py-2 px-6 text-gray-700 text-xl">
+            <p class="flex items-center py-1 px-6 text-gray-700 text-xl">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                     class="w-6 h-6 mr-2 text-red-700">
                     <path
@@ -81,7 +84,7 @@
             </p>
         @endif
         @if (now()->addMonth(1) >= $year_end && $get_days_only < 5)
-            <p class="flex items-center py-2 px-6 text-gray-700 text-xl">
+            <p class="flex items-center py-1 px-6 text-gray-700 text-xl">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                     class="w-6 h-6 mr-2 text-red-700">
                     <path
@@ -97,7 +100,7 @@
         @endif
     </header>
     <!-- 通知機能 閲覧権限以上 start -->
-    @can('general_and_gl')
+    @can('general_manager_gl')
         @empty(!($pending || $approved))
             <ul class="px-6 py-4 mb-2 text-md sm:text-lg text-red-700 border-l-4 border-b border-red-600 bg-red-50"
                 role="alert">
@@ -136,7 +139,7 @@
         <div class="container w-3/4 py-10 mx-auto">
             @auth
                 <div class="max-w-md mx-auto grid grid-cols-1 mb-10">
-                    <!-- 基本機能 atart -->
+                    <!-- 基本機能 start -->
                     <a href={{ route('reports.create') }}
                         class="block text-center items-center p-3 my-2 text-white rounded-xl border-2 border-gray-500 bg-cyan-500 hover:text-gray-600 hover:font-semibold hover:bg-white focus:text-cyan-500 ">
                         <div class="flex justify-center items-center text-2xl">
@@ -317,14 +320,8 @@
                                             clip-rule="evenodd" fill="" />
                                     </svg>
                                 </span>
-                                <!-- GL -->
-                                @if ($approval->approval_id == 3)
-                                    {{ Auth::user()->getApprovalDepartment($approval->department_id) }}
-                                    ・{{ Auth::user()->getApprovalGroup($approval->group_id) }}
-                                    ・{{ Auth::user()->getApprovalName($approval->approval_id) }}
-                                @endif
                                 <!-- 閲覧 -->
-                                @if ($approval->approval_id == 4)
+                                @if ($approval->approval_id == 5)
                                     {{ Auth::user()->getApprovalFactory($approval->factory_id) }}
                                     @if ($approval->department_id == 1)
                                         ・{{ Auth::user()->getApprovalName($approval->approval_id) }}
@@ -334,14 +331,26 @@
                                         ・{{ Auth::user()->getApprovalName($approval->approval_id) }}
                                     @endif
                                 @endif
-                                <!-- 上長承認 -->
-                                @if ($approval->approval_id == 2)
+                                <!-- GL -->
+                                @if ($approval->approval_id == 4)
+                                    {{ Auth::user()->getApprovalDepartment($approval->department_id) }}
+                                    ・{{ Auth::user()->getApprovalGroup($approval->group_id) }}
+                                    ・{{ __('Leader') }}
+                                @endif
+                                <!-- 課長 -->
+                                @if ($approval->approval_id == 3)
+                                    {{ Auth::user()->getApprovalDepartment($approval->department_id) }}
+                                    ・{{ __('Manager') }}
+                                @endif
+                                <!-- 工場長承認:課ごと -->
+                                @if ($approval->approval_id == 2 && $approval->department_id != 1)
                                     {{ Auth::user()->getApprovalFactory($approval->factory_id) }}
-                                    @if ($approval->department_id == 7)
-                                        ・{{ Auth::user()->getApprovalDepartment($approval->department_id) . __('長') }}
-                                    @else
-                                        ・{{ __('工場長承認') }}
-                                    @endif
+                                    ・{{ Auth::user()->getApprovalDepartment($approval->department_id) . __('長') }}
+                                @endif
+                                <!-- 工場長承認:包括 -->
+                                @if ($approval->approval_id == 2 && $approval->department_id == 1)
+                                    {{ Auth::user()->getApprovalFactory($approval->factory_id) }}
+                                    ・{{ __('工場長') }}
                                 @endif
                                 <!-- 管理者 -->
                                 @if ($approval->approval_id == 1)
