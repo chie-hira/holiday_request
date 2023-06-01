@@ -1,6 +1,6 @@
 <x-app-layout>
-{{-- //TODO:届出順にorder --}}
-{{-- //TODO:工場、部所で検索 --}}
+    {{-- //TODO:届出順にorder --}}
+    {{-- //TODO:工場、部所で検索 --}}
     <section class="text-gray-600 body-font">
         <div class="container px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-10">
@@ -49,6 +49,10 @@
                                             <th scope="col"
                                                 class="pl-2 pr-1 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Approver') }}
+                                            </th>
+                                            <th scope="col"
+                                                class="pl-2 pr-1 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                {{ __('Manager') }}
                                             </th>
                                             <th scope="col"
                                                 class="pl-1 pr-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
@@ -119,7 +123,7 @@
                                                     @endif
                                                 </td>
                                                 @if ($report->cancel == 0)
-                                                    <td class="pl-4 pr-1 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                    <td class="pl-6 pr-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                         @if ($report->approval1 == 1)
                                                             <span class="text-blue-500">
                                                                 <svg xmlns="http://www.w3.org/2000/svg"
@@ -132,8 +136,21 @@
                                                             </span>
                                                         @endif
                                                     </td>
-                                                    <td class="pl-1 pr-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                         @if ($report->approval2 == 1)
+                                                            <span class="text-blue-500">
+                                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                                    viewBox="0 0 24 24" fill="currentColor"
+                                                                    class="w-4 h-4 mx-auto">
+                                                                    <path fill-rule="evenodd"
+                                                                        d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
+                                                                        clip-rule="evenodd" />
+                                                                </svg>
+                                                            </span>
+                                                        @endif
+                                                    </td>
+                                                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                        @if ($report->approval3 == 1)
                                                             <span class="text-blue-500">
                                                                 <svg xmlns="http://www.w3.org/2000/svg"
                                                                     viewBox="0 0 24 24" fill="currentColor"
@@ -157,8 +174,30 @@
                                                         class="px-3 py-1">
                                                         {{ __('Show') }}
                                                     </x-show-a-button>
-                                                    @if (Auth::user()->approvals->where('department_id', '!=', 7)->where('approval_id', 2)->first())
-                                                        @foreach (Auth::user()->approvals->where('department_id', '!=', 7)->where('approval_id', 2) as $approval)
+                                                    <!-- 工場長:課ごとチェックマーク start -->
+                                                    @if (Auth::user()->approvals->where('approval_id', 2)->where('department_id', $report->department_id)->first())
+                                                        @foreach (Auth::user()->approvals->where('approval_id', 2)->where('factory_id', $report->factory_id)->where('department_id', $report->department_id) as $approval)
+                                                            @if (
+                                                                $report->user->factory_id == $approval->factory_id &&
+                                                                $report->user->department_id == $approval->department_id &&
+                                                                $report->approval1 == 0 &&
+                                                                $report->cancel == 0
+                                                                )
+                                                                <div class="mt-2 -ml-3">
+                                                                    <x-check-mark />
+                                                                </div>
+                                                            @endif
+                                                            @if ($report->user->factory_id == $approval->factory_id && $report->approval1 == 1 && $report->cancel == 1)
+                                                                <div class="mt-2 -ml-3">
+                                                                    <x-check-mark />
+                                                                </div>
+                                                            @endif
+                                                        @endforeach
+                                                    @endif
+                                                    <!-- 工場長:課ごとチェックマーク end -->
+                                                    <!-- 工場長:包括チェックマーク start -->
+                                                    @if (Auth::user()->approvals->where('approval_id', 2)->where('department_id', 1)->first())
+                                                        @foreach (Auth::user()->approvals->where('approval_id', 2)->where('factory_id', $report->user->factory_id) as $approval)
                                                             @if ($report->user->factory_id == $approval->factory_id && $report->approval1 == 0 && $report->cancel == 0)
                                                                 <div class="mt-2 -ml-3">
                                                                     <x-check-mark />
@@ -171,26 +210,13 @@
                                                             @endif
                                                         @endforeach
                                                     @endif
-                                                    @if (Auth::user()->approvals->where('department_id', 7)->where('approval_id', 2)->first())
-                                                        @foreach (Auth::user()->approvals->where('department_id', 7)->where('approval_id', 2) as $approval)
-                                                            @if ($report->user->department_id == $approval->department_id && $report->approval1 == 0 && $report->cancel == 0)
-                                                                <div class="mt-2 -ml-3">
-                                                                    <x-check-mark />
-                                                                </div>
-                                                            @endif
-                                                            @if ($report->user->department_id == $approval->department_id && $report->approval1 == 1 && $report->cancel == 1)
-                                                                <div class="mt-2 -ml-3">
-                                                                    <x-check-mark />
-                                                                </div>
-                                                            @endif
-                                                        @endforeach
-                                                    @endif
+                                                    <!-- 工場長:包括チェックマーク end -->
+                                                    <!-- 課長チェックマーク start -->
                                                     @if (Auth::user()->approvals->where('approval_id', 3)->first())
-                                                        @foreach (Auth::user()->approvals->where('approval_id', 3) as $approval)
+                                                        @foreach (Auth::user()->approvals->where('approval_id', 3)->where('factory_id', $report->user->factory_id) as $approval)
                                                             @if (
                                                                 $report->user->factory_id == $approval->factory_id &&
                                                                     $report->user->department_id == $approval->department_id &&
-                                                                    $report->user->group_id == $approval->group_id &&
                                                                     $report->approval2 == 0 &&
                                                                     $report->cancel == 0)
                                                                 <div class="mt-2 -ml-3">
@@ -201,7 +227,7 @@
                                                                 $report->user->factory_id == $approval->factory_id &&
                                                                     $report->user->department_id == $approval->department_id &&
                                                                     $report->user->group_id == $approval->group_id &&
-                                                                    $report->approval2 == 1 &&
+                                                                    $report->approval3 == 1 &&
                                                                     $report->cancel == 1)
                                                                 <div class="mt-2 -ml-3">
                                                                     <x-check-mark />
@@ -209,6 +235,33 @@
                                                             @endif
                                                         @endforeach
                                                     @endif
+                                                    <!-- 課長チェックマーク end -->
+                                                    <!-- GLチェックマーク start -->
+                                                    @if (Auth::user()->approvals->where('approval_id', 4)->first())
+                                                        @foreach (Auth::user()->approvals->where('approval_id', 4) as $approval)
+                                                            @if (
+                                                                $report->user->factory_id == $approval->factory_id &&
+                                                                    $report->user->department_id == $approval->department_id &&
+                                                                    $report->user->group_id == $approval->group_id &&
+                                                                    $report->approval3 == 0 &&
+                                                                    $report->cancel == 0)
+                                                                <div class="mt-2 -ml-3">
+                                                                    <x-check-mark />
+                                                                </div>
+                                                            @endif
+                                                            @if (
+                                                                $report->user->factory_id == $approval->factory_id &&
+                                                                    $report->user->department_id == $approval->department_id &&
+                                                                    $report->user->group_id == $approval->group_id &&
+                                                                    $report->approval3 == 1 &&
+                                                                    $report->cancel == 1)
+                                                                <div class="mt-2 -ml-3">
+                                                                    <x-check-mark />
+                                                                </div>
+                                                            @endif
+                                                        @endforeach
+                                                    @endif
+                                                    <!-- GLチェックマーク end -->
                                                 </td>
                                             </tr>
                                         @endforeach

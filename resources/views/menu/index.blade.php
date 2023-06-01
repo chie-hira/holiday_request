@@ -97,7 +97,7 @@
         @endif
     </header>
     <!-- 通知機能 閲覧権限以上 start -->
-    @can('general_and_gl')
+    @can('general_manager_gl')
         @empty(!($pending || $approved))
             <ul class="px-6 py-4 mb-2 text-md sm:text-lg text-red-700 border-l-4 border-b border-red-600 bg-red-50"
                 role="alert">
@@ -136,7 +136,7 @@
         <div class="container w-3/4 py-10 mx-auto">
             @auth
                 <div class="max-w-md mx-auto grid grid-cols-1 mb-10">
-                    <!-- 基本機能 atart -->
+                    <!-- 基本機能 start -->
                     <a href={{ route('reports.create') }}
                         class="block text-center items-center p-3 my-2 text-white rounded-xl border-2 border-gray-500 bg-cyan-500 hover:text-gray-600 hover:font-semibold hover:bg-white focus:text-cyan-500 ">
                         <div class="flex justify-center items-center text-2xl">
@@ -317,14 +317,8 @@
                                             clip-rule="evenodd" fill="" />
                                     </svg>
                                 </span>
-                                <!-- GL -->
-                                @if ($approval->approval_id == 3)
-                                    {{ Auth::user()->getApprovalDepartment($approval->department_id) }}
-                                    ・{{ Auth::user()->getApprovalGroup($approval->group_id) }}
-                                    ・{{ Auth::user()->getApprovalName($approval->approval_id) }}
-                                @endif
                                 <!-- 閲覧 -->
-                                @if ($approval->approval_id == 4)
+                                @if ($approval->approval_id == 5)
                                     {{ Auth::user()->getApprovalFactory($approval->factory_id) }}
                                     @if ($approval->department_id == 1)
                                         ・{{ Auth::user()->getApprovalName($approval->approval_id) }}
@@ -334,14 +328,26 @@
                                         ・{{ Auth::user()->getApprovalName($approval->approval_id) }}
                                     @endif
                                 @endif
-                                <!-- 上長承認 -->
-                                @if ($approval->approval_id == 2)
+                                <!-- GL -->
+                                @if ($approval->approval_id == 4)
+                                    {{ Auth::user()->getApprovalDepartment($approval->department_id) }}
+                                    ・{{ Auth::user()->getApprovalGroup($approval->group_id) }}
+                                    ・{{ __('Leader') }}
+                                @endif
+                                <!-- 課長 -->
+                                @if ($approval->approval_id == 3)
+                                    {{ Auth::user()->getApprovalDepartment($approval->department_id) }}
+                                    ・{{ __('Manager') }}
+                                @endif
+                                <!-- 工場長承認:課ごと -->
+                                @if ($approval->approval_id == 2 && $approval->department_id != 1)
                                     {{ Auth::user()->getApprovalFactory($approval->factory_id) }}
-                                    @if ($approval->department_id == 7)
-                                        ・{{ Auth::user()->getApprovalDepartment($approval->department_id) . __('長') }}
-                                    @else
-                                        ・{{ __('工場長承認') }}
-                                    @endif
+                                    ・{{ Auth::user()->getApprovalDepartment($approval->department_id) . __('長') }}
+                                @endif
+                                <!-- 工場長承認:包括 -->
+                                @if ($approval->approval_id == 2 && $approval->department_id == 1)
+                                    {{ Auth::user()->getApprovalFactory($approval->factory_id) }}
+                                    ・{{ __('工場長') }}
                                 @endif
                                 <!-- 管理者 -->
                                 @if ($approval->approval_id == 1)

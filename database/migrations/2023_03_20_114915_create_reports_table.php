@@ -42,6 +42,7 @@ class CreateReportsTable extends Migration
             $table->integer('am_pm')->nullable()->default(null);
             $table->boolean('approval1')->default(0);
             $table->boolean('approval2')->default(0);
+            $table->boolean('approval3')->default(0);
             $table->boolean('approved')->default(0);
             $table->boolean('cancel')->default(0);
             $table->timestamps();
