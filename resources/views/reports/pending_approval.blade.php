@@ -1,5 +1,4 @@
 <x-app-layout>
-    {{-- //TODO:届出順にorder --}}
     {{-- //TODO:工場、部所で検索 --}}
     <section class="text-gray-600 body-font">
         <div class="container px-5 py-24 mx-auto">

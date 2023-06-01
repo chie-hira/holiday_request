@@ -826,7 +826,6 @@ class ReportController extends Controller
     {
         $approvals = Auth::user()->approvals;
         $reports = new Collection();
-        // FIXME:reportsが重複する可能性あり
 
         # 閲覧
         if ($approvals->contains('approval_id', 5)) {
@@ -1000,7 +999,8 @@ class ReportController extends Controller
             }
         }
         
-        $reports = $reports->unique();
+        # 重複削除&並べ替え
+        $reports = $reports->unique()->sortBy('report_date')->sortBy('user.factory_id')->sortBy('user.department_id');
 
         return view('reports.pending_approval')->with(compact('reports'));
     }
@@ -1010,7 +1010,6 @@ class ReportController extends Controller
     {
         $approvals = Auth::user()->approvals;
         $reports = new Collection();
-        // FIXME:reportsが重複する可能性あり
 
         # 閲覧
         if ($approvals->contains('approval_id', 5)) {
@@ -1184,7 +1183,8 @@ class ReportController extends Controller
             }
         }
 
-        $reports = $reports->unique();
+        # 重複削除&並べ替え
+        $reports = $reports->unique()->sortBy('report_date')->sortBy('user.factory_id')->sortBy('user.department_id');
 
         return view('reports.approved')->with(compact('reports'));
     }
@@ -1192,6 +1192,7 @@ class ReportController extends Controller
     public function getAndRemaining()
     {
         $approvals = Auth::user()->approvals;
+        $users = '';
 
         # 工場承認
         if ($approvals->contains('approval_id', 2)) {
@@ -1205,9 +1206,24 @@ class ReportController extends Controller
                 ->get();
         }
 
-        # GL承認
+        # 課長承認
         if ($approvals->contains('approval_id', 3)) {
-            $group_apps = $approvals->where('approval_id', 3);
+            $department_apps = $approvals->where('approval_id', 3);
+            $users = User::with(['reports', 'remainings'])
+                ->where(function ($query) use ($department_apps) {
+                    foreach ($department_apps as $approval) {
+                        $query->orWhere([
+                            ['factory_id', $approval->factory_id],
+                            ['department_id', $approval->department_id],
+                        ]);
+                    }
+                })
+                ->get();
+        }
+
+        # GL承認
+        if ($approvals->contains('approval_id', 4)) {
+            $group_apps = $approvals->where('approval_id', 4);
             $users = User::with(['reports', 'remainings'])
                 ->where(function ($query) use ($group_apps) {
                     foreach ($group_apps as $approval) {
@@ -1222,8 +1238,8 @@ class ReportController extends Controller
         }
 
         # 閲覧
-        if ($approvals->contains('approval_id', 4)) {
-            $reader_apps = $approvals->where('approval_id', 4);
+        if ($approvals->contains('approval_id', 5)) {
+            $reader_apps = $approvals->where('approval_id', 5);
 
             # 工場全体閲覧
             if ($reader_apps->contains('department_id', 1)) {

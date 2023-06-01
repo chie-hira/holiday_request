@@ -30,7 +30,7 @@
                 </p>
             </div>
 
-            <div class="max-w-xl w-full mx-auto">
+            <div class="max-w-3xl w-full mx-auto">
                 <x-notice :notice="session('notice')" />
             </div>
 
@@ -54,10 +54,6 @@
                                                 class="w-24 px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                                                 氏 名
                                             </th>
-                                            {{-- <th
-                                                class="w-24 px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                残日数
-                                            </th> --}}
                                             <th id="remaining_title" style="display: "
                                                 class="w-24 px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 残日数
@@ -164,8 +160,6 @@
         let reportName16 = document.getElementById('report_name-16');
         let remainingTitle = document.getElementById('remaining_title');
         let remainingData = document.getElementById('remaining_data');
-        let edit1 = document.getElementById('edit-1');
-        let edit4 = document.getElementById('edit-4');
         const users = @json($users);
 
         function reportChange1() {
@@ -183,16 +177,19 @@
         function reportChange5() {
             reportNameRemainingOn(reportName5);
             reportDataRemainingOn(5);
+            editSwitch(5);
         }
 
         function reportChange6() {
             reportNameRemainingOn(reportName6);
             reportDataRemainingOn(6);
+            editSwitch(6);
         }
 
         function reportChange16() {
             reportNameRemainingOn(reportName16);
             reportDataRemainingOn(16);
+            editSwitch(16);
         }
 
         function reportDataRemainingOn(repoortCategoryId) {

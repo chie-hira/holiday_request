@@ -20,6 +20,7 @@ class ApprovalSeeder extends Seeder
             ['user_id' => 48, 'factory_id' => 2, 'department_id' => 1, 'group_id' => 1, 'approval_id' => 1], # 366 前沢工場管理者
             ['user_id' => 48, 'factory_id' => 1, 'department_id' => 7, 'group_id' => 1, 'approval_id' => 2], # 366 一関工場総務部 部長
             ['user_id' => 48, 'factory_id' => 1, 'department_id' => 1, 'group_id' => 1, 'approval_id' => 5], # 366 一関工場閲覧
+            ['user_id' => 48, 'factory_id' => 2, 'department_id' => 1, 'group_id' => 1, 'approval_id' => 5], # 366 前沢工場閲覧
             ['user_id' => 49, 'factory_id' => 1, 'department_id' => 1, 'group_id' => 1, 'approval_id' => 5], # 201 一関工場閲覧
             ['user_id' => 49, 'factory_id' => 2, 'department_id' => 1, 'group_id' => 1, 'approval_id' => 5], # 201 前沢工場閲覧
             ['user_id' => 50, 'factory_id' => 1, 'department_id' => 1, 'group_id' => 1, 'approval_id' => 5], # 214 一関工場閲覧
