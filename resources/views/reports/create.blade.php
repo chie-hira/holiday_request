@@ -2,10 +2,8 @@
     {{-- //TODO:重複申請防止 --}}
     {{-- //TODO:バースデイ休暇は取得期間だけ --}}
     {{-- //TODO:時間有給は取得義務5日間に入らない:別カウント必要 --}}
-    {{-- //FIXME:半日休み午前、午後取得OK --}}
     {{-- //FIXME:長期休暇は月をまたがないようにバリデーション --}}
     {{-- //TODO:メール機能届出の提出、更新、削除で通知、承認で通知 --}}
-    {{-- //TODO:シフト選択追加 --}}
     <section class="text-gray-600 body-font">
         <div class="container max-w-2xl min-w-max w-full md:w-4/5 lg:w-2/3 px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-12">
@@ -46,12 +44,13 @@
                     </div>
                     <div>
                         <label for="shift_id" class="block mb-2 text-sm font-medium text-gray-900">
-                            シフト
+                            休暇予定日のシフト
                         </label>
-                        <x-select name="shift_id" id="shift_id" class="block mt-1 w-full" required>
+                        <x-select name="shift_id" id="shift_id" class="block mt-1 w-full" onchange="countDays();"
+                            required>
                             @foreach ($shifts as $shift)
                                 <option value="{{ $shift->id }}" @if ($shift->id === (int) old('shift_id')) selected @endif>
-                                    シフトコード{{ $shift->shift_code }}&emsp;{{ $shift->start_time }}~{{ $shift->end_time }}
+                                    シフトコード{{ $shift->shift_code }}&emsp;{{ $shift->start_time_hm }}~{{ $shift->end_time_hm }}
                                 </option>
                             @endforeach
                         </x-select>
@@ -254,6 +253,60 @@
                 </div>
                 <!-- 重複アラート - end -->
 
+                <!-- 勤務時間アラート - start -->
+                <div id="working_alert" style="display: none">
+                    <div class="flex h-8 leading-8 items-center text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="w-5 h-5 mr-2 text-sky-600">
+                            <path fill-rule="evenodd"
+                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                                clip-rule="evenodd" fill="" />
+                        </svg>
+                        <div class="items-center text-center">
+                            選択中の休暇予定時刻は
+                            <span class="font-semibold text-red-500">勤務時間外</span>
+                            です。シフトを確認してください。
+                        </div>
+                    </div>
+                </div>
+                <!-- 勤務時間アラート - end -->
+
+                <!-- 遅刻アラート - start -->
+                <div id="late_alert" style="display: none">
+                    <div class="flex h-8 leading-8 items-center text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="w-5 h-5 mr-2 text-sky-600">
+                            <path fill-rule="evenodd"
+                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                                clip-rule="evenodd" fill="" />
+                        </svg>
+                        <div class="items-center text-center">
+                            選択中の休暇予定時刻は
+                            <span class="font-semibold text-red-500">遅刻</span>
+                            です。内容は遅刻で提出してください。
+                        </div>
+                    </div>
+                </div>
+                <!-- 遅刻アラート - end -->
+
+                <!-- 外出アラート - start -->
+                <div id="go_out_alert" style="display: none">
+                    <div class="flex h-8 leading-8 items-center text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="w-5 h-5 mr-2 text-sky-600">
+                            <path fill-rule="evenodd"
+                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                                clip-rule="evenodd" fill="" />
+                        </svg>
+                        <div class="items-center text-center">
+                            選択中の休暇予定時刻は
+                            <span class="font-semibold text-red-500">外出</span>
+                            です。内容は外出で提出してください。
+                        </div>
+                    </div>
+                </div>
+                <!-- 外出アラート - end -->
+
                 <div class="flex my-6">
                     <div class="mr-4">
                         <label for="get_days" class="block mb-2 text-sm font-medium text-gray-900">
@@ -359,11 +412,19 @@
             subReportCategories[3].checked = false;
             timeReset(); // end_date,start_time,end_timeリセット
             dateChange(); // get_daysリセット
+            alertReset(); // アラートリセット
 
             if (reportCategory.value == "2" ||
                 reportCategory.value == "12") {
                 countDays();
             }
+        }
+
+        // アラートリセット関数
+        function alertReset() {
+            workingAlert.style.display = 'none';
+            lateAlert.style.display = 'none';
+            goOutAlert.style.display = 'none';
         }
 
         // get_daysリセット関数
@@ -671,8 +732,12 @@
         let endTime = document.getElementById('end_time');
         let holidayAlert = document.getElementById('holiday_alert');
         let duplicationAlert = document.getElementById('duplication_alert');
+        let workingAlert = document.getElementById('working_alert');
+        let lateAlert = document.getElementById('late_alert');
+        let goOutAlert = document.getElementById('go_out_alert');
         let shiftCategory = document.getElementById('shift_id');
 
+        /* --日数カウント-- */
         function countDays() {
             // get_daysリセット
             document.getElementById('get_days').setAttribute('value', 0);
@@ -683,7 +748,6 @@
             document.getElementById('remaining_hours').setAttribute('value', 0);
             document.getElementById('remaining_minutes').setAttribute('value', 0);
 
-            // 取得日数
             const startVal = new Date(startDate.value);
             const endVal = new Date(endDate.value);
             const startTimeVal = new Date(startDate.value + ' ' + startTime.value);
@@ -692,15 +756,6 @@
             const reportId = reportCategory.value;
             const shiftId = shiftCategory.value;
             const shifts = @json($shifts);
-            let lunchTimeStart = ''; // シフトごとに変わる
-            let lunchTimeEnd = ''; // シフトごとに変わる
-            for (let i = 0; i < shifts.length; i++) {
-                const shift = shifts[i];
-                if (shift.id == shiftId) {
-                    lunchTimeStart = new Date(startDate.value + ' ' + shift.lunch_start_time);
-                    lunchTimeEnd = new Date(startDate.value + ' ' + shift.lunch_end_time);
-                }
-            }
             let diffDays = (endVal - startVal) / 86400000 + 1; // 単純な差
             let startYMD = startVal.getFullYear() +
                 ('0' + (startVal.getMonth() + 1)).slice(-2) +
@@ -712,13 +767,13 @@
             let dayOffs = 0;
 
             // 土曜日の営業日
-            const saturdays = [ //土曜日の営業日を配列
+            const saturdays = [
                 '20230819',
                 '20240309',
             ];
 
-            // 祝祭日等
-            const holidays = [ // 土日以外の休業日(休暇取得推進日含む)を配列で記載
+            // 祝祭日等(休暇取得推進日含む)
+            const holidays = [
                 '20230503',
                 '20230504',
                 '20230505',
@@ -733,7 +788,7 @@
                 '20240223',
             ];
 
-            //土曜日、日曜日はdayOffsに加算
+            //土曜日、日曜日をdayOffsに集計
             let remainderDays = diffDays % 7
             let startWeek = startVal.getDay(); //0~6の曜日数値
             dayOffs = (diffDays - remainderDays) / 7 * 2;
@@ -743,14 +798,44 @@
                 }
             }
 
-            for (startVal; startVal <= endVal; startVal.setDate(startVal.getDate() + 1)) {
+            //祝日等と土曜営業日をdayOffsに集計
+            for (let d = new Date(startDate.value); d <= endVal; d.setDate(d.getDate() + 1)) {
+                let dYMD = d.getFullYear() + ('0' + (d.getMonth() + 1)).slice(-2) + ('0' + d
+                    .getDate()).slice(-2);
                 // 土曜日の営業日をdayOffsから減算
-                if (saturdays.includes(startYMD)) {
-                    dayOffs--; // 土曜日の営業日は休日数から減算
+                if (saturdays.includes(dYMD)) {
+                    dayOffs--;
                 }
                 // 祝祭日等の休業日をdayOffsに加算
-                if (holidays.indexOf(startYMD) != -1) {
-                    dayOffs++; // 祝日は休日数に加算
+                if (holidays.indexOf(dYMD) != -1) {
+                    dayOffs++;
+                }
+            }
+
+            // シフトごとに変わる時間を定義
+            let workTimeStart = '';
+            let workTimeEnd = '';
+            let rest1TimeStart = '';
+            let rest2TimeStart = '';
+            let rest3TimeStart = '';
+            let rest1TimeEnd = '';
+            let rest2TimeEnd = '';
+            let rest3TimeEnd = '';
+            let lunchTimeStart = '';
+            let lunchTimeEnd = '';
+            for (let i = 0; i < shifts.length; i++) {
+                const shift = shifts[i];
+                if (shift.id == shiftId) {
+                    workTimeStart = new Date(startDate.value + ' ' + shift.start_time);
+                    workTimeEnd = new Date(startDate.value + ' ' + shift.end_time);
+                    rest1TimeStart = new Date(startDate.value + ' ' + shift.rest1_start_time);
+                    rest1TimeEnd = new Date(startDate.value + ' ' + shift.rest1_end_time);
+                    rest2TimeStart = new Date(startDate.value + ' ' + shift.rest2_start_time);
+                    rest2TimeEnd = new Date(startDate.value + ' ' + shift.rest2_end_time);
+                    rest3TimeStart = new Date(startDate.value + ' ' + shift.rest3_start_time);
+                    rest3TimeEnd = new Date(startDate.value + ' ' + shift.rest3_end_time);
+                    lunchTimeStart = new Date(startDate.value + ' ' + shift.lunch_start_time);
+                    lunchTimeEnd = new Date(startDate.value + ' ' + shift.lunch_end_time);
                 }
             }
 
@@ -792,6 +877,7 @@
                     getDays = 0.5;
                 }
             }
+
             if (subReportCategories[3].checked ||
                 reportCategory.value == 13 || // 遅刻
                 reportCategory.value == 14 || // 早退
@@ -801,8 +887,16 @@
                     getDays = 0;
                 } else if (duplicationCheck() == true) {
                     getDays = 0;
+                } else if (workingTimeCheck() == true && subReportCategories[3].checked) {
+                    getDays = 0;
+                } else if (workingTimeCheck() == true && reportCategory.value == 14) {
+                    getDays = 0;
+                } else if (lateTimeCheck() == true && reportCategory.value == 15) {
+                    getDays = 0;
+                } else if (goOutTimeCheck() == true && reportCategory.value == 13) {
+                    getDays = 0;
                 } else {
-                    // ランチタイムを考慮
+                    // ランチタイムを挟む場合
                     if (startTimeVal < lunchTimeStart && endTimeVal >= lunchTimeStart && endTimeVal < lunchTimeEnd) {
                         getDays = ((endTimeVal - startTimeVal - (endTimeVal - lunchTimeStart)) / 60000) / 60 * 1 / 8;
                     }
@@ -812,7 +906,7 @@
                     if (startTimeVal >= lunchTimeStart && startTimeVal < lunchTimeEnd && endTimeVal > lunchTimeEnd) {
                         getDays = ((endTimeVal - startTimeVal - (lunchTimeEnd - startTimeVal)) / 60000) / 60 * 1 / 8;
                     }
-                    // 通常
+                    // ランチタイムを挟まない場合
                     if (startTimeVal <= lunchTimeStart && endTimeVal <= lunchTimeStart) {
                         getDays = ((endTimeVal - startTimeVal) / 60000) / 60 * 1 / 8;
                     }
@@ -897,6 +991,7 @@
             document.getElementById('remaining_hours').setAttribute('value', remainingHoursOnly);
             document.getElementById('remaining_minutes').setAttribute('value', remainingMinutes);
 
+            /* --functions-- */
             // 休日確認関数
             function holidayCheck() {
                 console.log('holidayCheck'); // 起動確認
@@ -919,6 +1014,65 @@
                     return false;
                 }
             }
+
+            // 遅刻確認関数
+            function lateTimeCheck() {
+                console.log('lateTimeCheck'); // 起動確認
+                let lateTime = false; // 遅刻判定
+                if (startTime.value != '' && workTimeStart >= startTimeVal && reportCategory.value == 15) {
+                    lateTime = true;
+                }
+
+                if (lateTime == true) {
+                    lateAlert.style.display = '';
+                    return true;
+                } else {
+                    lateAlert.style.display = 'none';
+                    return false;
+                }
+            }
+
+            // 勤務確認関数
+            function workingTimeCheck() {
+                console.log('workingTimeCheck'); // 起動確認
+                console.log(workTimeEnd);
+                let workingTime = false; // 勤務時間判定
+                if (subReportCategories[3].checked) {
+                    if (startTime.value != '' && workTimeStart > startTimeVal) {
+                        workingTime = true;
+                    } else if (startTime.value != '' && workTimeEnd <= startTimeVal) {
+                        workingTime = true;
+                    } else if (endTime.value != '' && workTimeEnd < endTimeVal) {
+                        workingTime = true;
+                    }
+                }
+
+                if (workingTime == true) {
+                    workingAlert.style.display = '';
+                    return true;
+                } else {
+                    workingAlert.style.display = 'none';
+                    return false;
+                }
+            }
+
+            // 外出確認関数
+            function goOutTimeCheck() {
+                console.log('goOutTimeCheck'); // 起動確認
+                let goOutTime = false; // 外出判定
+                if (startTime.value != '' && workTimeStart < startTimeVal && reportCategory.value == 13) {
+                    goOutTime = true;
+                }
+
+                if (goOutTime == true) {
+                    goOutAlert.style.display = '';
+                    return true;
+                } else {
+                    goOutAlert.style.display = 'none';
+                    return false;
+                }
+            }
+
             // 重複確認関数
             function duplicationCheck() {
                 console.log('duplicationCheck'); // 起動確認
@@ -946,25 +1100,27 @@
                         }
                     }
                     // 半日休み
-                    // FIXME:シフトで時間が変わる
                     if (report.am_pm != null && report.start_date == startY_M_D) {
+                        if (report.am_pm == amPmVal) {
+                            duplication = true;
+                        }
                         if (report.am_pm == 1) {
-                            var sTime = '08:00:00';
-                            var eTime = '12:00:00';
+                            var sTime = workTimeStart;
+                            var eTime = lunchTimeStart;
                         }
                         if (report.am_pm == 2) {
-                            var sTime = '13:00:00';
-                            var eTime = '17:00:00';
+                            var sTime = lunchTimeEnd;
+                            var eTime = workTimeEnd;
                         }
                         for (let t = new Date(startDate.value + ' ' + startTime.value); t <= endTimeVal; t.setTime(t
                                 .getTime() + 5 * 60 * 1000)) {
-                            if (sTime == convertTime(t.getTime())) {
+                            if (sTime == t) {
                                 duplication = true;
                             }
-                            if (eTime == convertTime(t.getTime())) {
+                            if (eTime == t) {
                                 duplication = true;
                             }
-                            if (sTime <= convertTime(t.getTime()) && eTime >= convertTime(t.getTime())) {
+                            if (sTime <= t && eTime >= t) {
                                 duplication = true;
                             }
                         }

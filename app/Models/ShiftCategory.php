@@ -32,4 +32,18 @@ class ShiftCategory extends Model
     {
         return $this->hasMany(Report::class, 'shift_id', 'id');
     }
+
+    // アクセサ
+    public function getStartTimeHmAttribute()
+    {
+        $start_time = $this->start_time;
+
+        return substr($start_time, 0, 5);
+    }
+    public function getEndTimeHmAttribute()
+    {
+        $end_time = $this->end_time;
+
+        return substr($end_time, 0, 5);
+    }
 }
