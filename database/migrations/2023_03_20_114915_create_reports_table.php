@@ -35,6 +35,10 @@ class CreateReportsTable extends Migration
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
             $table->string('reason_detail')->nullable();
+            $table->foreignId('shift_id')
+                ->constrained('shift_categories')
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->time('start_time')->nullable();

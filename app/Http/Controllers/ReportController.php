@@ -9,6 +9,7 @@ use App\Models\Remaining;
 use App\Models\Report;
 use App\Models\ReportCategory;
 use App\Models\SubReportCategory;
+use App\Models\ShiftCategory;
 use App\Models\User;
 use App\Models\Approval;
 use Carbon\Carbon;
@@ -45,6 +46,7 @@ class ReportController extends Controller
         // $report_categories = ReportCategory::all();
         $sub_report_categories = SubReportCategory::all();
         $reasons = ReasonCategory::all();
+        $shifts = ShiftCategory::all();
         $my_remainings = Auth::user()->remainings;
         $my_reports = Auth::user()->reports;
 
@@ -71,6 +73,7 @@ class ReportController extends Controller
                 'report_categories',
                 'sub_report_categories',
                 'reasons',
+                'shifts',
                 'my_remainings',
                 'my_reports'
             )
@@ -315,9 +318,8 @@ class ReportController extends Controller
             );
         }
 
-        $report_id = $request->report_id; // 説明変数
         $remaining = Remaining::where('user_id', '=', Auth::user()->id)
-            ->where('report_id', '=', $report_id)
+            ->where('report_id', $request->report_id)
             ->first('remaining');
         if (!empty($remaining->remaining)) {
             $result = $remaining->remaining - $request->get_days; // 説明変数

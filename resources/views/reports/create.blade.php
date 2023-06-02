@@ -31,6 +31,33 @@
                 @csrf
                 <div class="grid gap-6 mb-6 md:grid-cols-2">
                     <div>
+                        <label for="report_date" class="block mb-2 text-sm font-medium text-gray-900">
+                            届出日
+                        </label>
+                        <x-input type="date" id="report_date" name="report_date" class="block mt-1 w-full"
+                            :value="old('report_date')" required />
+                    </div>
+                    <div>
+                        <label for="user_id" class="block mb-2 text-sm font-medium text-gray-900">
+                            氏名
+                        </label>
+                        <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
+                        <x-input type="text" id="user_id" class="block mt-1 w-full" :value="Auth::user()->name" readonly />
+                    </div>
+                    <div>
+                        <label for="shift_id" class="block mb-2 text-sm font-medium text-gray-900">
+                            シフト
+                        </label>
+                        <x-select name="shift_id" id="shift_id" class="block mt-1 w-full" required>
+                            @foreach ($shifts as $shift)
+                                <option value="{{ $shift->id }}" @if ($shift->id === (int) old('shift_id')) selected @endif>
+                                    シフトコード{{ $shift->shift_code }}&emsp;{{ $shift->start_time }}~{{ $shift->end_time }}
+                                </option>
+                            @endforeach
+                        </x-select>
+                    </div>
+                    <div></div>
+                    <div>
                         <label for="report_id" class="block mb-2 text-sm font-medium text-gray-900">
                             届出内容
                         </label>
@@ -84,20 +111,6 @@
                         <x-input type="text" id="" name="reason_detail" class="block mt-1 w-full"
                             :value="old('reason_detail')" />
                     </div>
-                    <div>
-                        <label for="report_date" class="block mb-2 text-sm font-medium text-gray-900">
-                            届出日
-                        </label>
-                        <x-input type="date" id="report_date" name="report_date" class="block mt-1 w-full"
-                            :value="old('report_date')" required />
-                    </div>
-                    <div>
-                        <label for="user_id" class="block mb-2 text-sm font-medium text-gray-900">
-                            氏名
-                        </label>
-                        <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
-                        <x-input type="text" id="user_id" class="block mt-1 w-full" :value="Auth::user()->name" readonly />
-                    </div>
 
                     <!-- 有給休暇 - start -->
                     <div>
@@ -124,12 +137,12 @@
                     <!-- 半日有給 - start -->
                     <div style="display: none" id="am_pm_form">
                         <label for="am_pm" class="block mb-2 text-sm font-medium text-gray-900">
-                            午前・午後
+                            前半・後半
                         </label>
                         <x-select name="am_pm" id="am_pm" class="block mt-1 w-full" onchange="countDays();">
                             <option value="">選択してください</option>
-                            <option value="1" @if (1 === (int) old('am_pm')) selected @endif>午前</option>
-                            <option value="2" @if (2 === (int) old('am_pm')) selected @endif>午後</option>
+                            <option value="1" @if (1 === (int) old('am_pm')) selected @endif>前半</option>
+                            <option value="2" @if (2 === (int) old('am_pm')) selected @endif>後半</option>
                         </x-select>
                     </div>
                     <!-- 半日有給 - end -->
@@ -658,6 +671,7 @@
         let endTime = document.getElementById('end_time');
         let holidayAlert = document.getElementById('holiday_alert');
         let duplicationAlert = document.getElementById('duplication_alert');
+        let shiftCategory = document.getElementById('shift_id');
 
         function countDays() {
             // get_daysリセット
@@ -674,10 +688,19 @@
             const endVal = new Date(endDate.value);
             const startTimeVal = new Date(startDate.value + ' ' + startTime.value);
             const endTimeVal = new Date(startDate.value + ' ' + endTime.value);
-            const lunchTimeStart = new Date(startDate.value + ' ' + '12:00:00');
-            const lunchTimeEnd = new Date(startDate.value + ' ' + '13:00:00');
             const amPmVal = amPm.value;
-            let reportId = reportCategory.value;
+            const reportId = reportCategory.value;
+            const shiftId = shiftCategory.value;
+            const shifts = @json($shifts);
+            let lunchTimeStart = ''; // シフトごとに変わる
+            let lunchTimeEnd = ''; // シフトごとに変わる
+            for (let i = 0; i < shifts.length; i++) {
+                const shift = shifts[i];
+                if (shift.id == shiftId) {
+                    lunchTimeStart = new Date(startDate.value + ' ' + shift.lunch_start_time);
+                    lunchTimeEnd = new Date(startDate.value + ' ' + shift.lunch_end_time);
+                }
+            }
             let diffDays = (endVal - startVal) / 86400000 + 1; // 単純な差
             let startYMD = startVal.getFullYear() +
                 ('0' + (startVal.getMonth() + 1)).slice(-2) +
@@ -695,7 +718,7 @@
             ];
 
             // 祝祭日等
-            const holidays = [ // 土日以外の休業日を配列で記載
+            const holidays = [ // 土日以外の休業日(休暇取得推進日含む)を配列で記載
                 '20230503',
                 '20230504',
                 '20230505',
@@ -779,7 +802,7 @@
                 } else if (duplicationCheck() == true) {
                     getDays = 0;
                 } else {
-                    // 休憩挟む
+                    // ランチタイムを考慮
                     if (startTimeVal < lunchTimeStart && endTimeVal >= lunchTimeStart && endTimeVal < lunchTimeEnd) {
                         getDays = ((endTimeVal - startTimeVal - (endTimeVal - lunchTimeStart)) / 60000) / 60 * 1 / 8;
                     }
@@ -902,9 +925,11 @@
                 const myReports = @json($my_reports);
                 let duplication = false;
                 myReports.forEach(report => {
+                    // 終日休み
                     if (report.am_pm == null && report.start_time == null && report.start_date == startY_M_D) {
                         duplication = true;
                     }
+                    // 時間休み
                     if (report.start_time != null && report.start_date == startY_M_D) {
                         for (let t = new Date(startDate.value + ' ' + startTime.value); t <= endTimeVal; t.setTime(t
                                 .getTime() + 5 * 60 * 1000)) {
@@ -914,15 +939,15 @@
                             if (report.end_time == convertTime(t.getTime())) {
                                 duplication = true;
                             }
-                            if (report.start_time <= convertTime(t.getTime()) && report.end_time >= convertTime(t.getTime())) {
+                            if (report.start_time <= convertTime(t.getTime()) && report.end_time >= convertTime(t
+                                    .getTime())) {
                                 duplication = true;
                             }
                         }
                     }
+                    // 半日休み
+                    // FIXME:シフトで時間が変わる
                     if (report.am_pm != null && report.start_date == startY_M_D) {
-                        if (subReportCategories[2].checked) {
-                            duplication = true;
-                        }
                         if (report.am_pm == 1) {
                             var sTime = '08:00:00';
                             var eTime = '12:00:00';
@@ -943,7 +968,6 @@
                                 duplication = true;
                             }
                         }
-                        // console.log(eTime);
                     }
                 });
                 if (duplication == true) {

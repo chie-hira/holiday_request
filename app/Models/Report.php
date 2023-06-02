@@ -18,6 +18,7 @@ class Report extends Model
         'sub_report_id',
         'reason_id',
         'reason_detail',
+        'shift_id',
         'start_date',
         'end_date',
         'start_time',
@@ -67,6 +68,16 @@ class Report extends Model
     public function reason_category()
     {
         return $this->belongsTo(ReasonCategory::class, 'reason_id', 'id');
+    }
+
+    /**
+     * Get the shift_category that owns the Report
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function shift_category()
+    {
+        return $this->belongsTo(ShiftCategory::class, 'shift_id', 'id');
     }
 
     # アクセサ
