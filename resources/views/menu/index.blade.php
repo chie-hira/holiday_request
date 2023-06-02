@@ -1,75 +1,104 @@
 <x-app-layout>
-{{-- //TODO:バースデイ休暇は取得期間だけ取得可能にする --}}
-{{-- //TODO:バースデイ休暇の取得期間を表示 --}}
     <!-- Page Heading -->
     <header class="text-xs sm:text-sm bg-sky-50 border-b-2 border-gray-400">
         <!-- 有休残日数 -->
-        <p class="flex items-center py-1 px-6 text-gray-700 text-xl">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                class="w-6 h-6 mr-3 text-sky-600">
-                <path fill-rule="evenodd"
-                    d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                    clip-rule="evenodd" fill="" />
-            </svg>
-            有休残日数&ensp;:&ensp;
-            @if (!empty($paid_holidays->remaining_days))
-                <span class="font-bold">
-                    {{ $paid_holidays->remaining_days }}
-                </span> 日
-            @endif
-            @if (!empty($paid_holidays->remaining_hours))
-                <span class="font-bold">
-                    &ensp;{{ $paid_holidays->remaining_hours }}
-                </span> 時間
-            @endif
-            <span class="text-sm text-blue-500">&emsp;有給休暇取得推進日を除く</span>
-        </p>
-        <!-- バースデイ休暇notice -->
-        @if (now()->addMonth(-3) <= $birthday && now()->addMonth(3) >= $birthday)
-            <p class="flex items-center py-1 px-6 text-gray-700 text-xl">
+        <div class="flex items-center py-1 px-6 text-gray-700 text-lg">
+            <p>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                    class="w-6 h-6 mr-3 text-sky-600">
+                    class="w-5 h-5 mr-2 text-sky-600">
                     <path fill-rule="evenodd"
                         d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
                         clip-rule="evenodd" fill="" />
                 </svg>
-                バースデイ休暇の取得期間です。期間内に必ず習得しましょう！
             </p>
+            <p>
+                有休残日数&ensp;:&ensp;
+                @if (!empty($paid_holidays->remaining_days))
+                    <span class="font-bold">
+                        {{ $paid_holidays->remaining_days }}
+                    </span> 日
+                @endif
+                @if (!empty($paid_holidays->remaining_hours))
+                    <span class="font-bold">
+                        &ensp;{{ $paid_holidays->remaining_hours }}
+                    </span> 時間
+                @endif
+            </p>
+        </div>
+        <div class="px-14 -mt-1 mb-1">
+            <span class="text-sm text-blue-500">有給休暇取得推進日を除く</span>
+        </div>
+        <!-- バースデイ休暇notice -->
+        @if (now()->addMonth(-3) <= $birthday && now()->addMonth(3) >= $birthday)
+            <div class="flex items-center py-1 px-6 text-gray-700 text-lg">
+                <p>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                        class="w-5 h-5 mr-2 text-sky-600">
+                        <path fill-rule="evenodd"
+                            d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                            clip-rule="evenodd" fill="" />
+                    </svg>
+                </p>
+                <p>
+                    バースデイ休暇取得期間です
+                </p>
+            </div>
+            <div class="px-14 -mt-1 mb-1">
+                <span class="text-sm text-blue-500">
+                    {{ $birthday->copy()->subMonth(3)->year }}年
+                    {{ $birthday->copy()->subMonth(3)->month }}月
+                    {{ $birthday->copy()->subMonth(3)->day }}日
+                    ~
+                    {{ $birthday->copy()->addMonth(3)->year }}年
+                    {{ $birthday->copy()->addMonth(3)->month }}月
+                    {{ $birthday->copy()->addMonth(3)->day }}日
+                </span>
+            </div>
         @endif
         <!-- ハッピーバースデイ -->
         @if (now()->format('Y-m-d') === $birthday->format('Y-m-d'))
-            <p class="flex items-center py-1 px-6 text-gray-700 text-xl">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                    class="w-6 h-6 mr-3 text-fuchsia-400">
-                    <path
-                        d="M15 1.784l-.796.796a1.125 1.125 0 101.591 0L15 1.784zM12 1.784l-.796.796a1.125 1.125 0 101.591 0L12 1.784zM9 1.784l-.796.796a1.125 1.125 0 101.591 0L9 1.784zM9.75 7.547c.498-.02.998-.035 1.5-.042V6.75a.75.75 0 011.5 0v.755c.502.007 1.002.021 1.5.042V6.75a.75.75 0 011.5 0v.88l.307.022c1.55.117 2.693 1.427 2.693 2.946v1.018a62.182 62.182 0 00-13.5 0v-1.018c0-1.519 1.143-2.829 2.693-2.946l.307-.022v-.88a.75.75 0 011.5 0v.797zM12 12.75c-2.472 0-4.9.184-7.274.54-1.454.217-2.476 1.482-2.476 2.916v.384a4.104 4.104 0 012.585.364 2.605 2.605 0 002.33 0 4.104 4.104 0 013.67 0 2.605 2.605 0 002.33 0 4.104 4.104 0 013.67 0 2.605 2.605 0 002.33 0 4.104 4.104 0 012.585-.364v-.384c0-1.434-1.022-2.7-2.476-2.917A49.138 49.138 0 0012 12.75zM21.75 18.131a2.604 2.604 0 00-1.915.165 4.104 4.104 0 01-3.67 0 2.604 2.604 0 00-2.33 0 4.104 4.104 0 01-3.67 0 2.604 2.604 0 00-2.33 0 4.104 4.104 0 01-3.67 0 2.604 2.604 0 00-1.915-.165v2.494c0 1.036.84 1.875 1.875 1.875h15.75c1.035 0 1.875-.84 1.875-1.875v-2.494z" />
-                </svg>
-                <span class="Courgette">
-                    happy birthday
-                </span>
-            </p>
+            <div class="flex items-center py-1 px-6 text-gray-700 text-lg">
+                <p>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                        class="w-5 h-5 mr-2 text-fuchsia-400">
+                        <path
+                            d="M15 1.784l-.796.796a1.125 1.125 0 101.591 0L15 1.784zM12 1.784l-.796.796a1.125 1.125 0 101.591 0L12 1.784zM9 1.784l-.796.796a1.125 1.125 0 101.591 0L9 1.784zM9.75 7.547c.498-.02.998-.035 1.5-.042V6.75a.75.75 0 011.5 0v.755c.502.007 1.002.021 1.5.042V6.75a.75.75 0 011.5 0v.88l.307.022c1.55.117 2.693 1.427 2.693 2.946v1.018a62.182 62.182 0 00-13.5 0v-1.018c0-1.519 1.143-2.829 2.693-2.946l.307-.022v-.88a.75.75 0 011.5 0v.797zM12 12.75c-2.472 0-4.9.184-7.274.54-1.454.217-2.476 1.482-2.476 2.916v.384a4.104 4.104 0 012.585.364 2.605 2.605 0 002.33 0 4.104 4.104 0 013.67 0 2.605 2.605 0 002.33 0 4.104 4.104 0 013.67 0 2.605 2.605 0 002.33 0 4.104 4.104 0 012.585-.364v-.384c0-1.434-1.022-2.7-2.476-2.917A49.138 49.138 0 0012 12.75zM21.75 18.131a2.604 2.604 0 00-1.915.165 4.104 4.104 0 01-3.67 0 2.604 2.604 0 00-2.33 0 4.104 4.104 0 01-3.67 0 2.604 2.604 0 00-2.33 0 4.104 4.104 0 01-3.67 0 2.604 2.604 0 00-1.915-.165v2.494c0 1.036.84 1.875 1.875 1.875h15.75c1.035 0 1.875-.84 1.875-1.875v-2.494z" />
+                    </svg>
+                </p>
+                <p>
+                    <span class="Courgette">
+                        happy birthday
+                    </span>
+                </p>
+            </div>
         @endif
         <!-- バースデイ休暇失効alert -->
-        @if (now()->addDay(14)->addMonth(-3) >= $birthday)
-            <p class="flex items-center py-1 px-6 text-gray-700 text-xl">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                    class="w-6 h-6 mr-2 text-red-700">
-                    <path
-                        d="M5.85 3.5a.75.75 0 00-1.117-1 9.719 9.719 0 00-2.348 4.876.75.75 0 001.479.248A8.219 8.219 0 015.85 3.5zM19.267 2.5a.75.75 0 10-1.118 1 8.22 8.22 0 011.987 4.124.75.75 0 001.48-.248A9.72 9.72 0 0019.266 2.5z" />
-                    <path fill-rule="evenodd"
-                        d="M12 2.25A6.75 6.75 0 005.25 9v.75a8.217 8.217 0 01-2.119 5.52.75.75 0 00.298 1.206c1.544.57 3.16.99 4.831 1.243a3.75 3.75 0 107.48 0 24.583 24.583 0 004.83-1.244.75.75 0 00.298-1.205 8.217 8.217 0 01-2.118-5.52V9A6.75 6.75 0 0012 2.25zM9.75 18c0-.034 0-.067.002-.1a25.05 25.05 0 004.496 0l.002.1a2.25 2.25 0 11-4.5 0z"
-                        clip-rule="evenodd" />
-                </svg>
-                あと
-                {{ now()->addMonth(-3)->diff($birthday)->days }}
-                日でバースデイ休暇が失効します。
-            </p>
+        @if (now()->addDay(14)->addMonth(-3) >= $birthday && now() <= $birthday->copy()->addMonth(3))
+            <div class="flex items-center py-1 px-6 text-gray-700 text-lg">
+                <p>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                        class="w-5 h-5 mr-2 text-red-700">
+                        <path
+                            d="M5.85 3.5a.75.75 0 00-1.117-1 9.719 9.719 0 00-2.348 4.876.75.75 0 001.479.248A8.219 8.219 0 015.85 3.5zM19.267 2.5a.75.75 0 10-1.118 1 8.22 8.22 0 011.987 4.124.75.75 0 001.48-.248A9.72 9.72 0 0019.266 2.5z" />
+                        <path fill-rule="evenodd"
+                            d="M12 2.25A6.75 6.75 0 005.25 9v.75a8.217 8.217 0 01-2.119 5.52.75.75 0 00.298 1.206c1.544.57 3.16.99 4.831 1.243a3.75 3.75 0 107.48 0 24.583 24.583 0 004.83-1.244.75.75 0 00.298-1.205 8.217 8.217 0 01-2.118-5.52V9A6.75 6.75 0 0012 2.25zM9.75 18c0-.034 0-.067.002-.1a25.05 25.05 0 004.496 0l.002.1a2.25 2.25 0 11-4.5 0z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </p>
+                <p>
+                    バースデイ休暇が失効します
+                </p>
+            </div>
+            <div class="px-14 -mt-1 mb-1">
+                <span class="text-sm text-blue-500">失効まであと</span>
+                <span class="font-bold text-red-600">{{ now()->addMonth(-3)->diff($birthday)->days }}日</span>
+            </div>
         @endif
         <!-- 有休失効alert -->
         @if (now()->addMonth(1) >= $year_end && $lost_days > 0)
-            <p class="flex items-center py-1 px-6 text-gray-700 text-xl">
+            <p class="flex items-center py-1 px-6 text-gray-700 text-lg">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                    class="w-6 h-6 mr-2 text-red-700">
+                    class="w-5 h-5 mr-2 text-red-700">
                     <path
                         d="M5.85 3.5a.75.75 0 00-1.117-1 9.719 9.719 0 00-2.348 4.876.75.75 0 001.479.248A8.219 8.219 0 015.85 3.5zM19.267 2.5a.75.75 0 10-1.118 1 8.22 8.22 0 011.987 4.124.75.75 0 001.48-.248A9.72 9.72 0 0019.266 2.5z" />
                     <path fill-rule="evenodd"
@@ -84,9 +113,9 @@
             </p>
         @endif
         @if (now()->addMonth(1) >= $year_end && $get_days_only < 5)
-            <p class="flex items-center py-1 px-6 text-gray-700 text-xl">
+            <p class="flex items-center py-1 px-6 text-gray-700 text-lg">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                    class="w-6 h-6 mr-2 text-red-700">
+                    class="w-5 h-5 mr-2 text-red-700">
                     <path
                         d="M5.85 3.5a.75.75 0 00-1.117-1 9.719 9.719 0 00-2.348 4.876.75.75 0 001.479.248A8.219 8.219 0 015.85 3.5zM19.267 2.5a.75.75 0 10-1.118 1 8.22 8.22 0 011.987 4.124.75.75 0 001.48-.248A9.72 9.72 0 0019.266 2.5z" />
                     <path fill-rule="evenodd"
@@ -157,7 +186,8 @@
                     <a href={{ route('remainings.my_index') }}
                         class="block text-center items-center p-3 my-2 text-base text-white rounded-xl border-2 border-gray-500 bg-fuchsia-400 hover:text-gray-600 hover:font-semibold hover:bg-white focus:text-fuchsia-400 ">
                         <div class="flex justify-center items-center text-2xl">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                class="w-6 h-6">
                                 <path fill-rule="evenodd"
                                     d="M9 1.5H5.625c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V12.75A3.75 3.75 0 0016.5 9h-1.875a1.875 1.875 0 01-1.875-1.875V5.25A3.75 3.75 0 009 1.5zm6.61 10.936a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 14.47a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
                                     clip-rule="evenodd" />

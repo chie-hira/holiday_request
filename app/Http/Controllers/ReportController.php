@@ -67,6 +67,13 @@ class ReportController extends Controller
                     ->orWhere('id', 18);
             })
             ->get();
+        
+        $birthday = new Carbon(
+            Carbon::now()->year . '-' . Auth::user()->birthday
+        ); # 誕生日
+        if (now()->addMonth(-3) > $birthday || now()->addMonth(3) < $birthday) {
+            $report_categories = $report_categories->where('id', '!=', 2);
+        }
 
         return view('reports.create')->with(
             compact(
