@@ -152,6 +152,7 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'sameMonth' => '2つ以上の月に及ぶ休暇を取得する場合は、月ごとに届出を提出してください。',
     ],
 
     'attributes' => [
@@ -161,5 +162,6 @@ return [
         'sub_report_id' => '取得形態',
         'start_time' => '開始時間',
         'end_time' => '終了時間',
+        'today' => '今日',
     ],
 ];

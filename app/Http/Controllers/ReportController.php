@@ -125,7 +125,7 @@ class ReportController extends Controller
                     [
                         'start_date' =>
                             'required|date|after:today|after_or_equal:report_date',
-                        'end_date' => 'required|date|after_or_equal:start_date',
+                        'end_date' => 'required|date|after_or_equal:start_date|sameMonth:start_date',
                         'get_days' => 'required|integer|min:2',
                     ],
                     [
