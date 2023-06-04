@@ -1947,11 +1947,9 @@ class ReportController extends Controller
         }
 
         /** 有休取得日数 */
-        $get_days_only = 0;
-        $get_days_hours = 0;
+        $get_paid_holidays = 0;
         if (Auth::user()->sum_get_days->first()) {
-            $get_days_only = Auth::user()->sum_get_days_only; # 有給休暇id=1
-            $get_days_hours = Auth::user()->sum_paid_holiday_hours; # 有給休暇id=1
+            $get_paid_holidays = Auth::user()->sum_get_paid_holidays;
         }
 
         return view('menu.index')->with(
@@ -1962,8 +1960,7 @@ class ReportController extends Controller
                 'birthday',
                 'year_end',
                 'lost_days',
-                'get_days_only',
-                'get_days_hours'
+                'get_paid_holidays'
             )
         );
     }

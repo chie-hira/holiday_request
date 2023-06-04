@@ -1,7 +1,5 @@
 <x-app-layout>
     {{-- //TODO:重複申請防止 --}}
-    {{-- //TODO:時間有給は取得義務5日間に入らない:別カウント必要 --}}
-    {{-- //FIXME:長期休暇は月をまたがないようにバリデーション --}}
     {{-- //TODO:メール機能届出の提出、更新、削除で通知、承認で通知 --}}
     <section class="text-gray-600 body-font">
         <div class="container max-w-2xl min-w-max w-full md:w-4/5 lg:w-2/3 px-5 py-24 mx-auto">
