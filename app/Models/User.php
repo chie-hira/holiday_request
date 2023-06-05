@@ -149,38 +149,17 @@ class User extends Authenticatable
         return $sum_get_days;
     }
 
-    public function getSumPaidHolidayDaysAttribute()
+    public function getSumGetPaidHolidaysAttribute()
     {
-        # 有給日数だけ
-        $sum_get_days = $this->sum_get_days;
-        if ($sum_get_days->has(1)) {
-            # keyの存在確認
-            $exp = explode('.', $sum_get_days[1]);
-            return $exp[0];
-        } else {
-            return 0;
-        }
-    }
+        # 取得日数集計
+        $sum_get_days = $this->reports
+            ->where('report_id', 1)
+            ->where('sub_report_id', '!=', 4) # 時間休み以外をカウント
+            ->where('approved', 1)
+            ->where('cancel', 0)
+            ->sum('get_days');
 
-    public function getSumPaidHolidayHoursAttribute()
-    {
-        # 有給時間だけ
-        $sum_get_days = $this->sum_get_days;
-        if ($sum_get_days->has(1)) {
-            # keyの存在確認
-            $exp = explode('.', $sum_get_days[1]);
-        } else {
-            return 0;
-        }
-
-        if (array_key_exists(1, $exp)) {
-            # 小数点以下あり(1日未満)
-            $decimal_p = '0.' . $exp[1];
-            $exp_hour = explode('.', $decimal_p * 8); # 8時間で1日
-            return $exp_hour[0];
-        } else {
-            return 0;
-        }
+        return $sum_get_days;
     }
 
     // メソッド(関数)

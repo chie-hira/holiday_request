@@ -9,6 +9,7 @@ use App\Models\Remaining;
 use App\Models\Report;
 use App\Models\ReportCategory;
 use App\Models\SubReportCategory;
+use App\Models\ShiftCategory;
 use App\Models\User;
 use App\Models\Approval;
 use Carbon\Carbon;
@@ -45,6 +46,7 @@ class ReportController extends Controller
         // $report_categories = ReportCategory::all();
         $sub_report_categories = SubReportCategory::all();
         $reasons = ReasonCategory::all();
+        $shifts = ShiftCategory::all();
         $my_remainings = Auth::user()->remainings;
         $my_reports = Auth::user()->reports;
 
@@ -65,12 +67,20 @@ class ReportController extends Controller
                     ->orWhere('id', 18);
             })
             ->get();
+        
+        $birthday = new Carbon(
+            Carbon::now()->year . '-' . Auth::user()->birthday
+        ); # 誕生日
+        if (now()->addMonth(-3) > $birthday || now()->addMonth(3) < $birthday) {
+            $report_categories = $report_categories->where('id', '!=', 2);
+        }
 
         return view('reports.create')->with(
             compact(
                 'report_categories',
                 'sub_report_categories',
                 'reasons',
+                'shifts',
                 'my_remainings',
                 'my_reports'
             )
@@ -115,7 +125,7 @@ class ReportController extends Controller
                     [
                         'start_date' =>
                             'required|date|after:today|after_or_equal:report_date',
-                        'end_date' => 'required|date|after_or_equal:start_date',
+                        'end_date' => 'required|date|after_or_equal:start_date|sameMonth:start_date',
                         'get_days' => 'required|integer|min:2',
                     ],
                     [
@@ -315,9 +325,8 @@ class ReportController extends Controller
             );
         }
 
-        $report_id = $request->report_id; // 説明変数
         $remaining = Remaining::where('user_id', '=', Auth::user()->id)
-            ->where('report_id', '=', $report_id)
+            ->where('report_id', $request->report_id)
             ->first('remaining');
         if (!empty($remaining->remaining)) {
             $result = $remaining->remaining - $request->get_days; // 説明変数
@@ -1938,11 +1947,9 @@ class ReportController extends Controller
         }
 
         /** 有休取得日数 */
-        $get_days_only = 0;
-        $get_days_hours = 0;
+        $get_paid_holidays = 0;
         if (Auth::user()->sum_get_days->first()) {
-            $get_days_only = Auth::user()->sum_get_days_only; # 有給休暇id=1
-            $get_days_hours = Auth::user()->sum_paid_holiday_hours; # 有給休暇id=1
+            $get_paid_holidays = Auth::user()->sum_get_paid_holidays;
         }
 
         return view('menu.index')->with(
@@ -1953,8 +1960,7 @@ class ReportController extends Controller
                 'birthday',
                 'year_end',
                 'lost_days',
-                'get_days_only',
-                'get_days_hours'
+                'get_paid_holidays'
             )
         );
     }
