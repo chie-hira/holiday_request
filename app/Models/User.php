@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Notifications\Registered;
 use App\Notifications\Approved;
+use App\Notifications\StoreReport;
 
 class User extends Authenticatable
 {
@@ -302,8 +304,22 @@ class User extends Authenticatable
             ->first();
     }
 
-    public function approved($val)
+    // メール通知
+    # 新規ユーザー登録
+    public function registered($val)
     {
-        $this->notify(new Approved($val));
+        $this->notify(new Registered($val));
+    }
+
+    # 承認
+    public function approved($report)
+    {
+        $this->notify(new Approved($report));
+    }
+
+    # 届出提出
+    public function storeReport($report)
+    {
+        $this->notify(new StoreReport($report));
     }
 }

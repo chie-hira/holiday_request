@@ -67,7 +67,7 @@ class ReportController extends Controller
                     ->orWhere('id', 18);
             })
             ->get();
-        
+
         $birthday = new Carbon(
             Carbon::now()->year . '-' . Auth::user()->birthday
         ); # 誕生日
@@ -125,7 +125,8 @@ class ReportController extends Controller
                     [
                         'start_date' =>
                             'required|date|after:today|after_or_equal:report_date',
-                        'end_date' => 'required|date|after_or_equal:start_date|sameMonth:start_date',
+                        'end_date' =>
+                            'required|date|after_or_equal:start_date|sameMonth:start_date',
                         'get_days' => 'required|integer|min:2',
                     ],
                     [
@@ -390,6 +391,70 @@ class ReportController extends Controller
 
         try {
             $report->save();
+            $user = $report->user()->first();
+            // $user->approved($report); # 届出作成者に通知
+
+            // $reportのユーザーを承認するユーザー
+            // FIXME:工場長の場合を追加
+            $approver = User::whereHas('approvals', function ($query) use (
+                $report
+            ) {
+                $query
+                    ->where('approval_id', 2)
+                    ->where('factory_id', $report->user->factory_id);
+            })->get();
+            if ($approver->contains('department_id', 1)) {
+                $general_approver = User::whereHas('approvals', function (
+                    $query
+                ) use ($report) {
+                    $query
+                        ->where('approval_id', 2)
+                        ->where('factory_id', $report->user->factory_id);
+                })->first();
+                if ($general_approver) {
+                    $general_approver->storeReport($report);
+                }
+            } else {
+                $general_approver = User::whereHas('approvals', function (
+                    $query
+                ) use ($report) {
+                    $query
+                        ->where('approval_id', 2)
+                        ->where('factory_id', $report->user->factory_id)
+                        ->where('department_id', $report->user->department_id);
+                })->first();
+                if ($general_approver) {
+                    $general_approver->storeReport($report);
+                }
+            }
+
+            $manager_approver = User::whereHas('approvals', function (
+                $query
+            ) use ($report) {
+                $query
+                    ->where('approval_id', 3)
+                    ->where('factory_id', $report->user->factory_id)
+                    ->where('department_id', $report->user->department_id);
+            })->first();
+            if ($manager_approver) {
+                $manager_approver->storeReport($report);
+            }
+
+            $group_approvers = User::whereHas('approvals', function (
+                $query
+            ) use ($report) {
+                $query
+                    ->where('approval_id', 4)
+                    ->where('factory_id', $report->user->factory_id)
+                    ->where('department_id', $report->user->department_id)
+                    ->where('group_id', $report->user->group_id);
+            })->get();
+            if ($group_approvers) {
+                foreach ($group_approvers as $group_approver) {
+                    $group_approver->storeReport($report);
+                }
+            }
+
             return redirect(route('reports.show', $report))->with(
                 'notice',
                 '届出を提出しました'
@@ -845,8 +910,7 @@ class ReportController extends Controller
                     $extractions = Report::whereHas('user', function (
                         $query
                     ) use ($approval) {
-                        $query
-                            ->where('factory_id', $approval->factory_id);
+                        $query->where('factory_id', $approval->factory_id);
                     })
                         ->where(function ($query) {
                             $query->where('approved', 0);
@@ -994,8 +1058,7 @@ class ReportController extends Controller
                 $extractions = Report::whereHas('user', function ($query) use (
                     $approval
                 ) {
-                    $query
-                        ->where('factory_id', $approval->factory_id);
+                    $query->where('factory_id', $approval->factory_id);
                 })
                     ->where(function ($query) {
                         $query->where('approved', 0);
@@ -1007,9 +1070,13 @@ class ReportController extends Controller
                 });
             }
         }
-        
+
         # 重複削除&並べ替え
-        $reports = $reports->unique()->sortBy('report_date')->sortBy('user.factory_id')->sortBy('user.department_id');
+        $reports = $reports
+            ->unique()
+            ->sortBy('report_date')
+            ->sortBy('user.factory_id')
+            ->sortBy('user.department_id');
 
         return view('reports.pending_approval')->with(compact('reports'));
     }
@@ -1029,8 +1096,7 @@ class ReportController extends Controller
                     $extractions = Report::whereHas('user', function (
                         $query
                     ) use ($approval) {
-                        $query
-                            ->where('factory_id', $approval->factory_id);
+                        $query->where('factory_id', $approval->factory_id);
                     })
                         ->where(function ($query) {
                             $query->where('approved', 1);
@@ -1178,8 +1244,7 @@ class ReportController extends Controller
                 $extractions = Report::whereHas('user', function ($query) use (
                     $approval
                 ) {
-                    $query
-                        ->where('factory_id', $approval->factory_id);
+                    $query->where('factory_id', $approval->factory_id);
                 })
                     ->where(function ($query) {
                         $query->where('approved', 1);
@@ -1193,7 +1258,11 @@ class ReportController extends Controller
         }
 
         # 重複削除&並べ替え
-        $reports = $reports->unique()->sortBy('report_date')->sortBy('user.factory_id')->sortBy('user.department_id');
+        $reports = $reports
+            ->unique()
+            ->sortBy('report_date')
+            ->sortBy('user.factory_id')
+            ->sortBy('user.department_id');
 
         return view('reports.approved')->with(compact('reports'));
     }
@@ -1372,9 +1441,12 @@ class ReportController extends Controller
                 ->where('factory_id', $report->user->factory_id)
                 ->where('approval_id', 2)
                 ->first() &&
-            empty(Approval::where('factory_id', $report->user->factory_id)
-                ->where('department_id', $report->user->department_id)
-                ->where('group_id', $report->user->group_id)->first()) # GLがいない
+            empty(
+                Approval::where('factory_id', $report->user->factory_id)
+                    ->where('department_id', $report->user->department_id)
+                    ->where('group_id', $report->user->group_id)
+                    ->first()
+            ) # GLがいない
         ) {
             $report->approval1 = 1;
             $report->approval3 = 1;
@@ -1396,9 +1468,12 @@ class ReportController extends Controller
                 ->where('factory_id', $report->user->factory_id)
                 ->where('approval_id', 3)
                 ->first() &&
-            empty(Approval::where('factory_id', $report->user->factory_id)
-                ->where('department_id', $report->user->department_id)
-                ->where('group_id', $report->user->group_id)->first()) # GLがいない
+            empty(
+                Approval::where('factory_id', $report->user->factory_id)
+                    ->where('department_id', $report->user->department_id)
+                    ->where('group_id', $report->user->group_id)
+                    ->first()
+            ) # GLがいない
         ) {
             $report->approval2 = 1;
             $report->approval3 = 1;
@@ -1424,9 +1499,13 @@ class ReportController extends Controller
                     $remaining->save(); # 残日数を保存
                 }
                 DB::commit(); # トランザクション成功終了
+
+                $user = $report->user()->first();
+                $user->approved($report); # 届出作成者に通知
+
                 return redirect()
                     ->route('reports.show', $report)
-                    ->with('msg', '承認しました');
+                    ->with('msg', '届出が承認されました');
             } catch (\Exception $e) {
                 DB::rollBack(); # トランザクション失敗終了
                 return back()

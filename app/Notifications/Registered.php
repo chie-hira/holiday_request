@@ -6,24 +6,22 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use App\Models\Report;
 
-class Approved extends Notification
+class Registered extends Notification
 {
     use Queueable;
     public $user_name;
-    public $report_id;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Report $report)
+    public function __construct($user)
     {
-        $this->user_name = $report->user->name;
-        $this->report_id = $report->id;
+        $this->user_name = $user;
     }
+
 
     /**
      * Get the notification's delivery channels.
@@ -44,16 +42,10 @@ class Approved extends Notification
      */
     public function toMail($notifiable)
     {
-        $url = route('reports.show', $this->report_id);
-        // dd($url);
-        return (new MailMessage())->markdown('mail.approved', [
+        // return (new MailMessage)->markdown('mail.registered');
+        return (new MailMessage())->markdown('mail.registered', [
             'user_name' => $this->user_name,
-            'url' => $url,
         ]);
-        // return (new MailMessage())
-        //     ->line('The introduction to the notification.')
-        //     ->action('Notification Action', url('/'))
-        //     ->line('Thank you for using our application!');
     }
 
     /**
@@ -65,7 +57,7 @@ class Approved extends Notification
     public function toArray($notifiable)
     {
         return [
-                //
-            ];
+            //
+        ];
     }
 }
