@@ -16,7 +16,7 @@ class SendBirthdayGreetings extends Command
      *
      * @var string
      */
-    protected $description = 'greetingMail sending';
+    protected $description = 'birthdayGreetingMail sending';
 
     public function handle()
     {
