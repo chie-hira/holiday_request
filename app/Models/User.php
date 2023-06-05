@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Notifications\Approved;
 
 class User extends Authenticatable
 {
@@ -299,5 +300,10 @@ class User extends Authenticatable
         return $remainings
             ->where('report_id', '=', $report_category_id)
             ->first();
+    }
+
+    public function approved($val)
+    {
+        $this->notify(new Approved($val));
     }
 }
