@@ -1499,10 +1499,8 @@ class ReportController extends Controller
                     $remaining->save(); # 残日数を保存
                 }
                 DB::commit(); # トランザクション成功終了
-
                 $user = $report->user()->first();
-                $user->approved($report); # 届出作成者に通知
-
+                $user->approved($report); # 届出作成者に承認を通知
                 return redirect()
                     ->route('reports.show', $report)
                     ->with('msg', '届出が承認されました');
