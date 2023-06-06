@@ -29,7 +29,7 @@
             <span class="text-sm text-blue-500">有給休暇取得推進日を除く</span>
         </div>
         <!-- バースデイ休暇notice -->
-        @if (now()->addMonth(-3) <= $birthday && now()->addMonth(3) >= $birthday)
+        @if (now()->subMonths(3) <= $birthday && now()->addMonths(3) >= $birthday)
             <div class="flex items-center py-1 px-2 sm:px-6 text-gray-700 text-lg">
                 <p>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
@@ -45,13 +45,13 @@
             </div>
             <div class="pl-8 pr-4 -mt-1 mb-1">
                 <span class="text-sm text-blue-500">
-                    {{ $birthday->copy()->subMonth(3)->year }}年
-                    {{ $birthday->copy()->subMonth(3)->month }}月
-                    {{ $birthday->copy()->subMonth(3)->day }}日
+                    {{ $birthday->copy()->subMonths(3)->year }}年
+                    {{ $birthday->copy()->subMonths(3)->month }}月
+                    {{ $birthday->copy()->subMonths(3)->day }}日
                     ~
-                    {{ $birthday->copy()->addMonth(3)->year }}年
-                    {{ $birthday->copy()->addMonth(3)->month }}月
-                    {{ $birthday->copy()->addMonth(3)->day }}日
+                    {{ $birthday->copy()->addMonths(3)->year }}年
+                    {{ $birthday->copy()->addMonths(3)->month }}月
+                    {{ $birthday->copy()->addMonths(3)->day }}日
                 </span>
             </div>
         @endif
@@ -73,7 +73,7 @@
             </div>
         @endif
         <!-- バースデイ休暇失効alert -->
-        @if (now()->addDay(14)->addMonth(-3) >= $birthday && now() <= $birthday->copy()->addMonth(3))
+        @if (now()->addDays(14)->subMonths(3) >= $birthday && now() <= $birthday->copy()->addMonths(3))
             <div class="flex items-center py-1 px-2 sm:px-6 text-gray-700 text-lg">
                 <p>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
@@ -91,11 +91,11 @@
             </div>
             <div class="pl-8 pr-4 -mt-1 mb-1">
                 <span class="text-sm text-blue-500">失効まであと</span>
-                <span class="font-bold text-red-600">{{ now()->addMonth(-3)->diff($birthday)->days }}日</span>
+                <span class="font-bold text-red-600">{{ now()->subMonths(3)->diff($birthday)->days }}日</span>
             </div>
         @endif
-        <!-- 有休失効alert -->
-        @if (now()->addMonth(1) >= $year_end && $lost_days > 0)
+        <!-- 有給休暇失効alert -->
+        @if (now()->addMonth() >= $year_end && $lost_paid_holidays > 0)
             <div class="flex items-center py-1 px-2 sm:px-6 text-gray-700 text-lg">
                 <p>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
@@ -107,16 +107,17 @@
                             clip-rule="evenodd" />
                     </svg>
                 </p>
+                <p>
+                    有給休暇が失効します
+                </p>
             </div>
             <div class="pl-8 pr-4 -mt-1 mb-1">
-                あと
-                {{ now()->diff($year_end)->days }}
-                日で
-                {{ $lost_days }}
-                日間の有給休暇が失効します。
+                <span class="text-sm text-blue-500">失効まであと</span>
+                <span class="font-bold text-red-600">{{ now()->diff($year_end)->days }}日</span>
             </div>
         @endif
-        @if (now()->addMonth(1) >= $year_end && $get_paid_holidays < 5)
+        <!-- 有給休暇取得推進alert -->
+        @if (now()->addMonth() >= $year_end && $get_paid_holidays < 5)
             <div class="flex items-center py-1 px-2 sm:px-6 text-gray-700 text-lg">
                 <p>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"

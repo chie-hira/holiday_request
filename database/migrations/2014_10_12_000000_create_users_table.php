@@ -32,8 +32,8 @@ class CreateUsersTable extends Migration
                 ->constrained('group_categories')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
-            $table->date('adoption_date');
-            $table->string('birthday');
+            $table->date('adoption_date')->nullable();
+            $table->string('birthday')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

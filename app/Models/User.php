@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Notifications\Registered;
+use App\Notifications\Approved;
+use App\Notifications\StoreReport;
+use Carbon\Carbon;
 
 class User extends Authenticatable
 {
@@ -122,15 +126,16 @@ class User extends Authenticatable
     {
         if ($this->group->id != 1) {
             $team =
-                $this->department->department_name. ' '. $this->group->group_name;
-        } 
+                $this->department->department_name .
+                ' ' .
+                $this->group->group_name;
+        }
         if ($this->department->id != 1 && $this->group->id == 1) {
-            $team =
-                $this->department->department_name;
-        } 
+            $team = $this->department->department_name;
+        }
         if ($this->department->id == 1) {
             $team = '工場長';
-        } 
+        }
 
         return $team;
     }
@@ -160,6 +165,86 @@ class User extends Authenticatable
             ->sum('get_days');
 
         return $sum_get_days;
+    }
+
+    public function getLostPaidHolidaysAttribute()
+    {
+        # 年度末を年明け前後で同じ日付になるように定義
+        if (Carbon::now()->month >= 4) {
+            $year_end = new Carbon(Carbon::now()->addYear()->year . '-03-31'); # 年度末日
+        } else {
+            $year_end = new Carbon(Carbon::now()->year . '-03-31'); # 年度末日
+        }
+
+        # 有休残日数
+        $paid_holidays = $this->remainings->where('report_id', 1)->first();
+
+        /** 有休失効日数 */
+        $adoption_date_carbon = new Carbon($this->adoption_date); # 採用年月日
+        $diff = $adoption_date_carbon->diff($year_end); # 年度末-採用年月日
+        $length_of_service = floatval($diff->y . '.' . $diff->m); # 年度末の勤続年数
+        $remaining_now = $paid_holidays->remaining;
+
+        switch ($length_of_service) {
+            case $length_of_service < 1.5:
+                $lost_days = 0;
+                break;
+
+            case $length_of_service >= 1.5 && $length_of_service < 2.5:
+                $remaining_add = $remaining_now + 11;
+                if ($remaining_add > 21) {
+                    $lost_days = $remaining_add - 21;
+                } else {
+                    $lost_days = 0;
+                }
+                break;
+
+            case $length_of_service >= 2.5 && $length_of_service < 3.5:
+                $remaining_add = $remaining_now + 12;
+                if ($remaining_add > 23) {
+                    $lost_days = $remaining_add - 23;
+                } else {
+                    $lost_days = 0;
+                }
+                break;
+
+            case $length_of_service >= 3.5 && $length_of_service < 4.5:
+                $remaining_add = $remaining_now + 14;
+                if ($remaining_add > 26) {
+                    $lost_days = $remaining_add - 26;
+                } else {
+                    $lost_days = 0;
+                }
+                break;
+
+            case $length_of_service >= 4.5 && $length_of_service < 5.5:
+                $remaining_add = $remaining_now + 16;
+                if ($remaining_add > 30) {
+                    $lost_days = $remaining_add - 30;
+                } else {
+                    $lost_days = 0;
+                }
+                break;
+
+            case $length_of_service >= 5.5 && $length_of_service < 6.5:
+                $remaining_add = $remaining_now + 18;
+                if ($remaining_add > 32) {
+                    $lost_days = $remaining_add - 32;
+                } else {
+                    $lost_days = 0;
+                }
+                break;
+
+            case $length_of_service >= 6.5:
+                $remaining_add = $remaining_now + 20;
+                if ($remaining_add > 40) {
+                    $lost_days = $remaining_add - 40;
+                } else {
+                    $lost_days = 0;
+                }
+                break;
+        }
+        return $lost_days;
     }
 
     // メソッド(関数)
@@ -248,7 +333,6 @@ class User extends Authenticatable
         if ($remaining) {
             $exp = explode('.', $remaining->remaining);
             return $exp[0];
-
         } else {
             return 0;
         }
@@ -299,5 +383,24 @@ class User extends Authenticatable
         return $remainings
             ->where('report_id', '=', $report_category_id)
             ->first();
+    }
+
+    // メール通知
+    # 新規ユーザー登録
+    public function registered($val)
+    {
+        $this->notify(new Registered($val));
+    }
+
+    # 承認
+    public function approved($report)
+    {
+        $this->notify(new Approved($report));
+    }
+
+    # 届出提出
+    public function storeReport($report)
+    {
+        $this->notify(new StoreReport($report));
     }
 }

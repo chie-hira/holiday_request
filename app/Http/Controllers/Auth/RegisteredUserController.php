@@ -69,6 +69,8 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
+        $user->registered($request->name);
+
         $report_ids = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 16];
             foreach ($report_ids as $report_id) {
                 self::newRemaining($report_id, $user->id);

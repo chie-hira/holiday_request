@@ -8,7 +8,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Models\Report;
 
-class Approved extends Notification
+class StoreReport extends Notification
 {
     use Queueable;
     public $user_name;
@@ -45,15 +45,10 @@ class Approved extends Notification
     public function toMail($notifiable)
     {
         $url = route('reports.show', $this->report_id);
-        // dd($url);
-        return (new MailMessage())->markdown('mail.approved', [
+        return (new MailMessage())->markdown('mail.storeReport', [
             'user_name' => $this->user_name,
             'url' => $url,
         ]);
-        // return (new MailMessage())
-        //     ->line('The introduction to the notification.')
-        //     ->action('Notification Action', url('/'))
-        //     ->line('Thank you for using our application!');
     }
 
     /**
@@ -65,7 +60,7 @@ class Approved extends Notification
     public function toArray($notifiable)
     {
         return [
-                //
-            ];
+            //
+        ];
     }
 }
