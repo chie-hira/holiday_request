@@ -7,21 +7,22 @@ use Illuminate\Support\Facades\Mail;
 use App\Models\User;
 use Carbon\Carbon;
 
-class SendBirthdayHoliday extends Command
+class SendBirthdayHolidayLost extends Command
 {
-    protected $signature = 'send:birthday-holiday';
+    protected $signature = 'send:birthday-holiday-lost';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'birthdayHolidayMail sending';
+    protected $description = 'birthdayHolidayLostAlert sending';
 
     public function handle()
     {
         $reference_date = Carbon::now()
-            ->addMonths(3)
+            ->subMonths(3)
+            ->addDays(14)
             ->format('m-d');
 
         $users = User::whereRaw(
@@ -30,6 +31,7 @@ class SendBirthdayHoliday extends Command
             ->select('email', 'name', 'birthday')
             ->get();
 
+        // TODO:総務部長にも同じ通知を送る？
         foreach ($users as $user) {
             $birthday = new Carbon(Carbon::now()->year . '-' . $user->birthday);
             $start =
@@ -47,16 +49,16 @@ class SendBirthdayHoliday extends Command
                 $birthday->copy()->addMonths(3)->day .
                 '日';
             Mail::send(
-                'mail.birthdayHoliday',
+                'mail.birthdayHolidayLost',
                 ['name' => $user->name, 'start' => $start, 'end' => $end],
                 function ($message) use ($user) {
                     $message
                         ->to($user->email)
-                        ->subject('バースデイ休暇取得期間');
+                        ->subject('バースデイ休暇の失効予告');
                 }
             );
         }
 
-        $this->info('Birthday holiday notice sent successfully.');
+        $this->info('Birthday holiday lost sent successfully.');
     }
 }

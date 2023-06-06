@@ -18,6 +18,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
         $schedule->command('send:birthday-greetings')
         ->command('send:birthday-holiday')
+        ->command('send:birthday-holiday-lost')
         ->dailyAt('9:00');
     }
 

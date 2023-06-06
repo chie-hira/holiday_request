@@ -71,7 +71,7 @@ class ReportController extends Controller
         $birthday = new Carbon(
             Carbon::now()->year . '-' . Auth::user()->birthday
         ); # 誕生日
-        if (now()->addMonth(-3) > $birthday || now()->addMonth(3) < $birthday) {
+        if (now()->subMonths(3) > $birthday || now()->addMonths(3) < $birthday) {
             $report_categories = $report_categories->where('id', '!=', 2);
         }
 
@@ -1630,7 +1630,7 @@ class ReportController extends Controller
         $birthday = new Carbon(
             Carbon::now()->year . '-' . Auth::user()->birthday
         ); # 誕生日
-        $year_end = new Carbon(Carbon::now()->addYear(1)->year . '-03-31'); # 年度末日
+        $year_end = new Carbon(Carbon::now()->addYear()->year . '-03-31'); # 年度末日
         $reports = '';
         $pending = '';
         $approved = '';
