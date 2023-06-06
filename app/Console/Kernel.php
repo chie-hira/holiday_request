@@ -16,10 +16,11 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('send:birthday-greetings')
-        ->command('send:birthday-holiday')
-        ->command('send:birthday-holiday-lost')
-        ->dailyAt('9:00');
+        $schedule->command('send:birthday-greetings')->dailyAt('9:00');
+        $schedule->command('send:birthday-holiday')->dailyAt('9:00');
+        $schedule->command('send:birthday-holiday-lost')->dailyAt('9:00');
+        $schedule->command('send:paid-holiday-lost')->yearlyOn(3, 1, '09:00'); # 毎年3月1日に実行
+
     }
 
     /**
@@ -29,7 +30,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }

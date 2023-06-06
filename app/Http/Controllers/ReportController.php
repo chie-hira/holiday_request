@@ -71,7 +71,10 @@ class ReportController extends Controller
         $birthday = new Carbon(
             Carbon::now()->year . '-' . Auth::user()->birthday
         ); # 誕生日
-        if (now()->subMonths(3) > $birthday || now()->addMonths(3) < $birthday) {
+        if (
+            now()->subMonths(3) > $birthday ||
+            now()->addMonths(3) < $birthday
+        ) {
             $report_categories = $report_categories->where('id', '!=', 2);
         }
 
@@ -1630,7 +1633,11 @@ class ReportController extends Controller
         $birthday = new Carbon(
             Carbon::now()->year . '-' . Auth::user()->birthday
         ); # 誕生日
-        $year_end = new Carbon(Carbon::now()->addYear()->year . '-03-31'); # 年度末日
+        if (Carbon::now()->month >= 4) {
+            $year_end = new Carbon(Carbon::now()->addYear()->year . '-03-31'); # 年度末日
+        } else {
+            $year_end = new Carbon(Carbon::now()->year . '-03-31'); # 年度末日
+        } # 年度末を年明け前後で同じ日付になるように定義
         $reports = '';
         $pending = '';
         $approved = '';
@@ -1958,70 +1965,7 @@ class ReportController extends Controller
             ->first();
 
         /** 有休失効日数 */
-        $adoption_date_carbon = new Carbon(Auth::user()->adoption_date); # 採用年月日
-        $diff = $adoption_date_carbon->diff($year_end);
-        $length_of_service = floatval($diff->y . '.' . $diff->m); # 勤続年数
-        $remaining_now = $paid_holidays->remaining;
-
-        switch ($length_of_service) {
-            case $length_of_service < 1.5:
-                $lost_days = 0;
-                break;
-
-            case $length_of_service >= 1.5 && $length_of_service < 2.5:
-                $remaining_add = $remaining_now + 11;
-                if ($remaining_add > 21) {
-                    $lost_days = $remaining_add - 21;
-                } else {
-                    $lost_days = 0;
-                }
-                break;
-
-            case $length_of_service >= 2.5 && $length_of_service < 3.5:
-                $remaining_add = $remaining_now + 12;
-                if ($remaining_add > 23) {
-                    $lost_days = $remaining_add - 23;
-                } else {
-                    $lost_days = 0;
-                }
-                break;
-
-            case $length_of_service >= 3.5 && $length_of_service < 4.5:
-                $remaining_add = $remaining_now + 14;
-                if ($remaining_add > 26) {
-                    $lost_days = $remaining_add - 26;
-                } else {
-                    $lost_days = 0;
-                }
-                break;
-
-            case $length_of_service >= 4.5 && $length_of_service < 5.5:
-                $remaining_add = $remaining_now + 16;
-                if ($remaining_add > 30) {
-                    $lost_days = $remaining_add - 30;
-                } else {
-                    $lost_days = 0;
-                }
-                break;
-
-            case $length_of_service >= 5.5 && $length_of_service < 6.5:
-                $remaining_add = $remaining_now + 18;
-                if ($remaining_add > 32) {
-                    $lost_days = $remaining_add - 32;
-                } else {
-                    $lost_days = 0;
-                }
-                break;
-
-            case $length_of_service >= 6.5:
-                $remaining_add = $remaining_now + 20;
-                if ($remaining_add > 40) {
-                    $lost_days = $remaining_add - 40;
-                } else {
-                    $lost_days = 0;
-                }
-                break;
-        }
+        $lost_paid_holidays = Auth::user()->lost_paid_holidays;
 
         /** 有休取得日数 */
         $get_paid_holidays = 0;
@@ -2036,7 +1980,7 @@ class ReportController extends Controller
                 'paid_holidays',
                 'birthday',
                 'year_end',
-                'lost_days',
+                'lost_paid_holidays',
                 'get_paid_holidays'
             )
         );

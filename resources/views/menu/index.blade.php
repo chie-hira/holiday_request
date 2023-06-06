@@ -95,7 +95,7 @@
             </div>
         @endif
         <!-- 有給休暇失効alert -->
-        @if (now()->addMonth() >= $year_end && $lost_days > 0)
+        @if (now()->addMonth() >= $year_end && $lost_paid_holidays > 0)
             <div class="flex items-center py-1 px-2 sm:px-6 text-gray-700 text-lg">
                 <p>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
