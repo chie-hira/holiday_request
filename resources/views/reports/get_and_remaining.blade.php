@@ -2,11 +2,11 @@
     <!-- Page Heading -->
     <header class="text-xs sm:text-sm bg-sky-50 border-b-2 border-gray-400">
         <div class="flex max-w-7xl mx-auto py-1 px-4 sm:px-6 lg:px-8">
-            <button class="mx-2" onclick="reportChange1()">有給休暇</button>
-            <button class="mx-2" onclick="reportChange2()">バースデイ休暇</button>
-            <button class="mx-2" onclick="reportChange12()">欠 勤</button>
-            <button class="mx-2" onclick="reportChange13()">遅 刻</button>
-            <button class="mx-2" onclick="reportChange14()">早 退</button>
+            <button class="mx-2" onclick="reportChange1()">有給休暇</button><span class="text-gray-600">/</span>
+            <button class="mx-2" onclick="reportChange2()">バースデイ休暇</button><span class="text-gray-600">/</span>
+            <button class="mx-2" onclick="reportChange12()">欠 勤</button><span class="text-gray-600">/</span>
+            <button class="mx-2" onclick="reportChange13()">遅 刻</button><span class="text-gray-600">/</span>
+            <button class="mx-2" onclick="reportChange14()">早 退</button><span class="text-gray-600">/</span>
             <button class="mx-2" onclick="reportChange15()">外 出</button>
         </div>
     </header>

@@ -1,0 +1,239 @@
+<x-app-layout>
+    {{-- //TODO:工場、部所、月で指定できる --}}
+    <header class="px-4 text-xs sm:text-sm bg-sky-50 border-b-2 border-gray-400 flex">
+        <!-- 工場選択 - start -->
+        <div class="flex py-1 px-2">
+            <x-select name="factory_id" id="factory_id" class="block text-xs" onchange="search();">
+                <option value="99">全て</option>
+                @foreach ($factories as $factory)
+                    <option value="{{ $factory->id }}" @if ($factory->id === (int) old('factory_id')) selected @endif>
+                        {{ $factory->factory_name }}
+                    </option>
+                @endforeach
+            </x-select>
+        </div>
+        <!-- 工場選択 - end -->
+        <!-- 休暇種類選択 - start -->
+        <div class="flex py-1 px-2">
+            <x-select name="report_category_id" id="report_category_id" class="block text-xs" onchange="search();">
+                <option value="99">全て</option>
+                @foreach ($report_categories as $report_category)
+                    <option value="{{ $report_category->id }}" @if ($report_category->id === (int) old('report_category_id')) selected @endif>
+                        {{ $report_category->report_name }}
+                    </option>
+                @endforeach
+            </x-select>
+        </div>
+        <!-- 休暇種類選択 - end -->
+        <!-- 取得日選択 - start -->
+        <div class="flex py-1 px-2">
+            <x-input type="month" id="get_month" name="get_month" onchange="search();" class="block text-xs"
+                :value="old('month')" required />
+        </div>
+        <!-- 取得日選択 - end -->
+    </header>
+
+    <section class="text-gray-600 body-font">
+        <div class="container px-5 py-24 mx-auto">
+            <div class="flex flex-col text-center w-full mb-10">
+                <h1 class="sm:text-4xl text-3xl font-medium title-font text-gray-900">{{ __('出力内容') }}</h1>
+            </div>
+
+            <x-notice :notice="session('notice')" />
+
+            <div class="container bg-white w-full mx-auto border-2 rounded-lg">
+                <div class="flex flex-col p-6">
+                    <div class="-m-1.5 overflow-x-auto">
+                        <div class="p-1.5 min-w-full inline-block align-middle">
+                            <div class="overflow-hidden">
+                                <table class="min-w-full divide-y divide-gray-200 ">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"
+                                                class="pl-4 pr-1 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                {{ __('Team') }}
+                                            </th>
+                                            <th scope="col"
+                                                class="py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                {{ __('Employee') }}
+                                            </th>
+                                            <th scope="col"
+                                                class="pl-1 pr-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                {{ __('Name') }}
+                                            </th>
+                                            <th scope="col"
+                                                class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                休暇種類
+                                            </th>
+                                            <th scope="col" colspan="2"
+                                                class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                取得期間
+                                            </th>
+                                            <th scope="col"
+                                                class="px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                日数・時間
+                                            </th>
+                                            <th scope="col"
+                                                class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                シフト
+                                            </th>
+                                            <th scope="col"
+                                                class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                届出日
+                                            </th>
+                                            <th scope="col"
+                                                class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                理 由
+                                            </th>
+                                            <th scope="col"
+                                                class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200 ">
+                                        @foreach ($reports as $report)
+                                            <tr id="report_{{ $report->id }}" style="display:"
+                                                class="hover:bg-gray-100 ">
+                                                <td class="pl-4 pr-1 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                    {{ $report->user->team_all }}
+                                                </td>
+                                                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                    @if (Str::length($report->user->employee) == 1)
+                                                        &ensp;&ensp;
+                                                    @endif
+                                                    @if (Str::length($report->user->employee) == 2)
+                                                        &ensp;
+                                                    @endif
+                                                    {{ $report->user->employee }}
+                                                </td>
+                                                <td class="pl-1 pr-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                    {{ $report->user->name }}
+                                                </td>
+                                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                    <x-report-name :report="$report" />
+                                                </td>
+                                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                    @if ($report->start_date != null)
+                                                        {{ $report->start_date }}
+                                                    @else
+                                                        -
+                                                    @endif
+                                                    @if ($report->start_time != null)
+                                                        &emsp;{{ Str::substr($report->start_time, 0, 5) }}
+                                                    @endif
+                                                </td>
+                                                <td class="pr-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                    @if ($report->end_date != null)
+                                                        ~&emsp;&emsp;{{ $report->end_date }}
+                                                    @endif
+                                                    @if ($report->end_time != null)
+                                                        ~&emsp;&emsp;{{ Str::substr($report->end_time, 0, 5) }}
+                                                    @endif
+                                                    @if ($report->am_pm != null)
+                                                        {{ $report->am_pm == 1 ? '午 前' : '午 後' }}
+                                                    @endif
+                                                </td>
+                                                <td
+                                                    class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-800 ">
+                                                    @if ($report->get_days_only != 0)
+                                                        {{ $report->get_days_only }} 日&emsp;
+                                                    @endif
+                                                    @if ($report->get_hours != 0)
+                                                        {{ $report->get_hours }} 時間
+                                                    @endif
+                                                    @if ($report->get_minutes != 0)
+                                                        {{ $report->get_minutes }} 分
+                                                    @endif
+                                                </td>
+                                                <td
+                                                    class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-800 ">
+                                                    ナンバー{{ $report->shift_category->shift_code }}
+                                                </td>
+                                                <td
+                                                    class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">
+                                                    {{ $report->report_date }}
+                                                </td>
+                                                <td
+                                                    class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">
+                                                    {{ $report->reason_category->reason }}
+                                                </td>
+                                                <td
+                                                    class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">
+                                                    {{ $report->reason_detail }}
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-full mx-auto mt-10 grid grid-cols-1 gap-2">
+                <div class="flex justify-end">
+                    {{-- FIXME:条件をcontrollerに渡して、条件に合うものだけエクスポート --}}
+                    <a href={{ route('reports.export') }}
+                        class="w-30 flex items-center justify-center text-center px-3 py-1 text-sm text-sky-600 border-2 border-gray-400 rounded-full bg-sky-100/60 hover:text-white hover:font-semibold hover:bg-sky-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="w-5 h-5 mr-2 leading-6">
+                            <path fill-rule="evenodd"
+                                d="M5.625 1.5H9a3.75 3.75 0 013.75 3.75v1.875c0 1.036.84 1.875 1.875 1.875H16.5a3.75 3.75 0 013.75 3.75v7.875c0 1.035-.84 1.875-1.875 1.875H5.625a1.875 1.875 0 01-1.875-1.875V3.375c0-1.036.84-1.875 1.875-1.875zm5.845 17.03a.75.75 0 001.06 0l3-3a.75.75 0 10-1.06-1.06l-1.72 1.72V12a.75.75 0 00-1.5 0v4.19l-1.72-1.72a.75.75 0 00-1.06 1.06l3 3z"
+                                clip-rule="evenodd" />
+                            <path
+                                d="M14.25 5.25a5.23 5.23 0 00-1.279-3.434 9.768 9.768 0 016.963 6.963A5.23 5.23 0 0016.5 7.5h-1.875a.375.375 0 01-.375-.375V5.25z" />
+                        </svg>
+                        エクスポート
+                    </a>
+                </div>
+                <div class="flex justify-end">
+                    <x-back-home-button class="w-30" href="{{ route('menu') }}">
+                        {{ __('Back') }}
+                    </x-back-home-button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        let selectFactory = document.getElementById('factory_id');
+        let selectReport = document.getElementById('report_category_id');
+        let selectMonth = document.getElementById('get_month');
+        const reports = @json($reports);
+
+        function search() {
+            let selectFactoryId = selectFactory.value;
+            let selectReportId = selectReport.value;
+            let selectGetMonth = selectMonth.value;
+            console.log('search'); // 起動確認
+            reportDataChange(selectFactoryId, selectReportId, selectGetMonth);
+        }
+
+        function reportDataChange(selectFactoryId, selectReportId, selectGetMonth) {
+            Object.keys(reports).forEach(key => {
+                const value = reports[key];
+                let reportFactoryId = value.user.factory_id;
+                let reportCartegoryId = value.report_id;
+                let reportGetMonth = value.start_date.substr( 0, 7 );
+                let reportId = document.getElementById('report_' + value.id);
+                console.log(key, value);
+
+                // 選択された値と一致する場合は表示、そうでなければ非表示
+                if (selectFactoryId == reportFactoryId && selectReportId == reportCartegoryId && selectGetMonth == reportGetMonth ||
+                    selectFactoryId == reportFactoryId && selectReportId == reportCartegoryId && selectGetMonth == '' ||
+                    selectFactoryId == reportFactoryId && selectReportId == 99 && selectGetMonth == reportGetMonth ||
+                    selectFactoryId == reportFactoryId && selectReportId == 99 && selectGetMonth == '' ||
+                    selectFactoryId == 99 && selectReportId == reportCartegoryId && selectGetMonth == reportGetMonth ||
+                    selectFactoryId == 99 && selectReportId == reportCartegoryId && selectGetMonth == '' ||
+                    selectFactoryId == 99 && selectReportId == 99 && selectGetMonth == reportGetMonth ||
+                    selectFactoryId == 99 && selectReportId == 99 && selectGetMonth == ''
+                ) {
+                    reportId.style.display = '';
+                } else {
+                    reportId.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</x-app-layout>

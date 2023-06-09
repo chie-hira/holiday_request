@@ -2,10 +2,10 @@
     <!-- Page Heading -->
     <header class="text-xs sm:text-sm bg-sky-50 border-b-2 border-gray-400">
         <div class="flex max-w-7xl mx-auto py-1 px-4 sm:px-6 lg:px-8">
-            <button class="mx-2" onclick="reportChange1()">{{ $report_categories[0]->report_name }}</button>
-            <button class="mx-2" onclick="reportChange4()">{{ $report_categories[3]->report_name }}</button>
-            <button class="mx-2" onclick="reportChange5()">{{ $report_categories[4]->report_name }}</button>
-            <button class="mx-2" onclick="reportChange6()">{{ $report_categories[5]->report_name }}</button>
+            <button class="mx-2" onclick="reportChange1()">{{ $report_categories[0]->report_name }}</button><span class="text-gray-600">/</span>
+            <button class="mx-2" onclick="reportChange4()">{{ $report_categories[3]->report_name }}</button><span class="text-gray-600">/</span>
+            <button class="mx-2" onclick="reportChange5()">{{ $report_categories[4]->report_name }}</button><span class="text-gray-600">/</span>
+            <button class="mx-2" onclick="reportChange6()">{{ $report_categories[5]->report_name }}</button><span class="text-gray-600">/</span>
             <button class="mx-2" onclick="reportChange16()">{{ $report_categories[15]->report_name }}</button>
         </div>
     </header>

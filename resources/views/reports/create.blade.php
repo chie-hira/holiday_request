@@ -68,17 +68,17 @@
                     </div>
                     <div style="display: " id="empty_field_form"></div>
                     <div style="display: none" id="sub_category_form">
-                        <label for="sub_report_category" class="block mb-2 text-sm font-medium text-gray-900">
+                        <p class="block mb-2 text-sm font-medium text-gray-900">
                             取得形態
-                        </label>
+                        </p>
                         <div class="flex gap-x-6">
                             <div class="flex mt-2">
                                 @foreach ($sub_report_categories as $sub_category)
-                                    <input type="radio" name="sub_report_id" id="sub_report_id"
-                                        onclick="subReportChange()" value="{{ $sub_category->id }}"
-                                        @if ($sub_category->id === (int) old('sub_report_id')) checked @endif
+                                    <input type="radio" name="sub_report_id"
+                                        id="sub_report_id_{{ $sub_category->id }}" onclick="subReportChange()"
+                                        value="{{ $sub_category->id }}" @if ($sub_category->id === (int) old('sub_report_id')) checked @endif
                                         class="shrink-0 mt-0.5 border-gray-200 rounded-full text-sky-600 focus:ring-sky-300 ">
-                                    <label for="sub_report_id" name="sub_report_name"
+                                    <label for="sub_report_id_{{ $sub_category->id }}" name="sub_report_name"
                                         class="mr-2 text-sm text-gray-500 ml-2 ">
                                         {{ $sub_category->sub_report_name }}
                                     </label>
@@ -100,11 +100,11 @@
                         </x-select>
                     </div>
                     <div></div>
-                    <div style="display: none" class="col-span-2" id="reason_detail">
+                    <div style="display: none" class="col-span-2" id="reason_detail_form">
                         <label for="reason_detail" class="block mb-2 text-sm font-medium text-gray-900">
                             理由を記入してください
                         </label>
-                        <x-input type="text" id="" name="reason_detail" class="block mt-1 w-full"
+                        <x-input type="text" id="reason_detail" name="reason_detail" class="block mt-1 w-full"
                             :value="old('reason_detail')" />
                     </div>
 
@@ -306,9 +306,9 @@
 
                 <div class="flex my-6">
                     <div class="mr-4">
-                        <label for="get_days" class="block mb-2 text-sm font-medium text-gray-900">
+                        <p class="block mb-2 text-sm font-medium text-gray-900">
                             取得日数
-                        </label>
+                        </p>
                         <input type="hidden" id="get_days" name="get_days"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             value="{{ old('get_days') }}" readonly required>
@@ -330,9 +330,9 @@
                     </div>
 
                     <div>
-                        <label for="remaining_days" class="block mb-2 text-sm font-medium text-gray-900">
+                        <p class="block mb-2 text-sm font-medium text-gray-900">
                             残日数
-                        </label>
+                        </p>
                         <input type="hidden" id="remaining_days" name="remaining"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             value="{{ old('remaining_days') }}" readonly required>
@@ -375,7 +375,7 @@
         let reasonCategory = document.getElementById('reason_id');
         let subCategoryForm = document.getElementById('sub_category_form');
         let emptyFieldForm = document.getElementById('empty_field_form');
-        let reasonDetail = document.getElementById('reason_detail');
+        let reasonDetail = document.getElementById('reason_detail_form');
         let startDateLabel = document.getElementById('start_date_label');
         let startDateForm = document.getElementById('start_date');
         let endDateForm = document.getElementById('end_date_form');
@@ -403,10 +403,15 @@
             reportDisplaySwitch(); // reportでform表示切替
             reportReasonSwitch(); // reportでreason種類切替
             reasonDisplaySwitch(); // reasonで理由:その他表示切替
-            subReportCategories[0].checked = false;
-            subReportCategories[1].checked = false;
-            subReportCategories[2].checked = false;
-            subReportCategories[3].checked = false;
+            let subReportCategory = document.querySelector('input[name=sub_report_id]:checked');
+            if (subReportCategory) {
+                console.log(subReportCategory.value);
+                subReportCategory.checked = false;
+            }
+            // subReportCategories[0].checked = false;
+            // subReportCategories[1].checked = false;
+            // subReportCategories[2].checked = false;
+            // subReportCategories[3].checked = false;
             timeReset(); // end_date,start_time,end_timeリセット
             dateChange(); // get_daysリセット
             alertReset(); // アラートリセット
@@ -448,58 +453,66 @@
         }
 
         function subReportDisplaySwitch() {
-            if (subReportCategories[0].checked) { // 終日休
-                halfDateLabel.style.display = "";
-                startDateForm.style.display = "";
-                amPmForm.style.display = "none";
-                timeEmptyForm.style.display = "none";
-                timeForm.style.display = "none";
-                timeForm30.style.display = "none";
-                timeForm10.style.display = "none";
-                startTimeForm.style.display = "none";
-                endTimeForm.style.display = "none";
-                startDateLabel.style.display = "none";
-                endDateForm.style.display = "none";
-            }
-            if (subReportCategories[1].checked) { // 連休
-                halfDateLabel.style.display = "none";
-                amPmForm.style.display = "none";
-                timeEmptyForm.style.display = "none";
-                timeForm.style.display = "none";
-                timeForm30.style.display = "none";
-                timeForm10.style.display = "none";
-                startTimeForm.style.display = "none";
-                endTimeForm.style.display = "none";
-                startDateLabel.style.display = "";
-                startDateForm.style.display = "";
-                endDateForm.style.display = "";
-                holidayAlert.style.display = "none";
-            }
-            if (subReportCategories[2].checked) { // 半日休
-                halfDateLabel.style.display = "";
-                startDateForm.style.display = "";
-                amPmForm.style.display = "";
-                timeEmptyForm.style.display = "none";
-                timeForm.style.display = "none";
-                timeForm30.style.display = "none";
-                timeForm10.style.display = "none";
-                startTimeForm.style.display = "none";
-                endTimeForm.style.display = "none";
-                startDateLabel.style.display = "none";
-                endDateForm.style.display = "none";
-            }
-            if (subReportCategories[3].checked) { // 時間休
-                halfDateLabel.style.display = "";
-                startDateForm.style.display = "";
-                amPmForm.style.display = "none";
-                timeEmptyForm.style.display = "";
-                timeForm.style.display = "";
-                timeForm30.style.display = "none";
-                timeForm10.style.display = "none";
-                startTimeForm.style.display = "";
-                endTimeForm.style.display = "";
-                startDateLabel.style.display = "none";
-                endDateForm.style.display = "none";
+            let subReportCategory = document.querySelector('input[name=sub_report_id]:checked');
+            if (subReportCategory) {
+                let subReportCategoryValue = subReportCategory.value;
+                // if (subReportCategories[0].checked) { // 終日休
+                if (subReportCategoryValue == 1) { // 終日休
+                    halfDateLabel.style.display = "";
+                    startDateForm.style.display = "";
+                    amPmForm.style.display = "none";
+                    timeEmptyForm.style.display = "none";
+                    timeForm.style.display = "none";
+                    timeForm30.style.display = "none";
+                    timeForm10.style.display = "none";
+                    startTimeForm.style.display = "none";
+                    endTimeForm.style.display = "none";
+                    startDateLabel.style.display = "none";
+                    endDateForm.style.display = "none";
+                }
+                // if (subReportCategories[1].checked) { // 連休
+                if (subReportCategoryValue == 2) { // 連休
+                    halfDateLabel.style.display = "none";
+                    amPmForm.style.display = "none";
+                    timeEmptyForm.style.display = "none";
+                    timeForm.style.display = "none";
+                    timeForm30.style.display = "none";
+                    timeForm10.style.display = "none";
+                    startTimeForm.style.display = "none";
+                    endTimeForm.style.display = "none";
+                    startDateLabel.style.display = "";
+                    startDateForm.style.display = "";
+                    endDateForm.style.display = "";
+                    holidayAlert.style.display = "none";
+                }
+                // if (subReportCategories[2].checked) { // 半日休
+                if (subReportCategoryValue == 3) { // 半日休
+                    halfDateLabel.style.display = "";
+                    startDateForm.style.display = "";
+                    amPmForm.style.display = "";
+                    timeEmptyForm.style.display = "none";
+                    timeForm.style.display = "none";
+                    timeForm30.style.display = "none";
+                    timeForm10.style.display = "none";
+                    startTimeForm.style.display = "none";
+                    endTimeForm.style.display = "none";
+                    startDateLabel.style.display = "none";
+                    endDateForm.style.display = "none";
+                }
+                // if (subReportCategories[3].checked) { // 時間休
+                if (subReportCategoryValue == 4) { // 時間休
+                    halfDateLabel.style.display = "";
+                    startDateForm.style.display = "";
+                    amPmForm.style.display = "none";
+                    timeEmptyForm.style.display = "";
+                    timeForm.style.display = "";
+                    timeForm30.style.display = "none";
+                    timeForm10.style.display = "none";
+                    startTimeForm.style.display = "";
+                    endTimeForm.style.display = "";
+                    startDateLabel.style.display = "none";
+                    endDateForm.style.display = "none";
+                }
             }
         }
 

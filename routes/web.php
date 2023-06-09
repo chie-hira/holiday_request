@@ -91,7 +91,11 @@ Route::delete('/reports/approved/{report}/cancel', [
     ->middleware('auth');
 
 # エクスポート
+Route::get('/export_form', [ReportController::class, 'export_form'])
+    ->name('reports.export_form')
+    ->middleware('auth');
 Route::get('/export', [ReportController::class, 'export'])
-    ->name('reports.export');
+    ->name('reports.export')
+    ->middleware('auth');
 
 require __DIR__ . '/auth.php';

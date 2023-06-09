@@ -36,11 +36,11 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
+    {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
 </head>
 
 <body class="font-sans antialiased">
     <div class="min-h-screen bg-gray-50">
-        {{-- <div class="min-h-screen bg-sky-50"> --}}
         @include('layouts.navigation')
 
         <!-- Page Heading -->

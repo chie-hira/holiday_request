@@ -25,14 +25,3 @@ class ReportExport implements FromView
         return $this->view;
     }
 }
-
-// class ReportExport implements FromCollection
-// {
-//     /**
-//     * @return \Illuminate\Support\Collection
-//     */
-//     public function collection()
-//     {
-//         return Report::all();
-//     }
-// }
