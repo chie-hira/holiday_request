@@ -20,8 +20,8 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ReportExport;
-use App\Exports\ReportSourceExport;
 use App\Models\FactoryCategory;
+use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
@@ -2172,21 +2172,139 @@ class ReportController extends Controller
         $factories = FactoryCategory::all();
         $report_categories = ReportCategory::all();
 
-        return view('reports.export_form')->with(compact('reports', 'factories', 'report_categories'));
+        return view('reports.export_form')->with(
+            compact('reports', 'factories', 'report_categories')
+        );
     }
 
-    public function export()
+    public function export(Request $request)
     {
+        $factory_id = $request->factory_id;
+        $report_id = $request->report_category_id;
+        $month = $request->get_month;
+
+        # monthから月初め日、月終わり日を定義
+        if ($month) {
+            $carbon = new Carbon($month);
+            $start_date = $carbon->format('Y-m-d');
+            $end_date = $carbon->addMonth()->subDay()->format('Y-m-d');
+        }
+
         # 帳票出力
-        $reports = Report::with(
-            'user',
-            'report_category',
-            'sub_report_category',
-            'reason_category'
-        )
-            ->where('approved', 1)
-            ->where('cancel', 0)
-            ->get();
+        if ($factory_id == null && $report_id == null && $month == null) {
+            # 全て
+            $reports = Report::with(
+                'user',
+                'report_category',
+                'sub_report_category',
+                'reason_category'
+            )
+                ->where('approved', 1)
+                ->where('cancel', 0)
+                ->get();
+        } elseif ($factory_id == null && $report_id != null && $month == null) {
+            # 休暇種類だけ
+            $reports = Report::with(
+                'user',
+                'report_category',
+                'sub_report_category',
+                'reason_category'
+            )
+                ->where('report_id', $report_id)
+                ->where('approved', 1)
+                ->where('cancel', 0)
+                ->get();
+        } elseif ($factory_id == null && $report_id == null && $month != null) {
+            # 月だけ
+            $reports = Report::with(
+                'user',
+                'report_category',
+                'sub_report_category',
+                'reason_category'
+            )
+                ->where('start_date', '>=', $start_date)
+                ->where('start_date', '<=', $end_date)
+                ->where('approved', 1)
+                ->where('cancel', 0)
+                ->get();
+        } elseif ($factory_id != null && $report_id == null && $month == null) {
+            # 工場だけ
+            $reports = Report::with(
+                'user',
+                'report_category',
+                'sub_report_category',
+                'reason_category'
+            )
+                ->whereHas('user', function ($query) use ($factory_id) {
+                    $query->where('factory_id', $factory_id);
+                })
+                ->where('approved', 1)
+                ->where('cancel', 0)
+                ->get();
+        } elseif ($factory_id != null && $report_id != null && $month == null) {
+            # 工場、休暇種類
+            $reports = Report::with(
+                'user',
+                'report_category',
+                'sub_report_category',
+                'reason_category'
+            )
+                ->whereHas('user', function ($query) use ($factory_id) {
+                    $query->where('factory_id', $factory_id);
+                })
+                ->where('report_id', $report_id)
+                ->where('approved', 1)
+                ->where('cancel', 0)
+                ->get();
+        } elseif ($factory_id == null && $report_id != null && $month != null) {
+            # 休暇種類、月
+            $reports = Report::with(
+                'user',
+                'report_category',
+                'sub_report_category',
+                'reason_category'
+            )
+                ->where('report_id', $report_id)
+                ->where('start_date', '>=', $start_date)
+                ->where('start_date', '<=', $end_date)
+                ->where('approved', 1)
+                ->where('cancel', 0)
+                ->get();
+        } elseif ($factory_id != null && $report_id == null && $month != null) {
+            # 工場、月
+            $reports = Report::with(
+                'user',
+                'report_category',
+                'sub_report_category',
+                'reason_category'
+            )
+                ->whereHas('user', function ($query) use ($factory_id) {
+                    $query->where('factory_id', $factory_id);
+                })
+                ->where('start_date', '>=', $start_date)
+                ->where('start_date', '<=', $end_date)
+                ->where('approved', 1)
+                ->where('cancel', 0)
+                ->get();
+        } elseif ($factory_id != null && $report_id != null && $month != null) {
+            # 工場、休暇種類、月指定
+            $reports = Report::with(
+                'user',
+                'report_category',
+                'sub_report_category',
+                'reason_category'
+            )
+                ->whereHas('user', function ($query) use ($factory_id) {
+                    $query->where('factory_id', $factory_id);
+                })
+                ->where('start_date', '>=', $start_date)
+                ->where('start_date', '<=', $end_date)
+                ->where('report_id', $report_id)
+                ->where('approved', 1)
+                ->where('cancel', 0)
+                ->get();
+        }
+        // dd($reports);
         $view = view('reports.export')->with(compact('reports'));
         return Excel::download(new ReportExport($view), 'reports.xlsx');
     }

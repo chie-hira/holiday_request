@@ -3,10 +3,10 @@
     <header class="px-4 text-xs sm:text-sm bg-sky-50 border-b-2 border-gray-400 flex">
         <!-- 工場選択 - start -->
         <div class="flex py-1 px-2">
-            <x-select name="factory_id" id="factory_id" class="block text-xs" onchange="search();">
-                <option value="99">全て</option>
+            <x-select name="select_factory" id="select_factory" class="block text-xs" onchange="search();">
+                <option value=''>全て</option>
                 @foreach ($factories as $factory)
-                    <option value="{{ $factory->id }}" @if ($factory->id === (int) old('factory_id')) selected @endif>
+                    <option value="{{ $factory->id }}" @if ($factory->id === (int) old('select_factory')) selected @endif>
                         {{ $factory->factory_name }}
                     </option>
                 @endforeach
@@ -15,10 +15,10 @@
         <!-- 工場選択 - end -->
         <!-- 休暇種類選択 - start -->
         <div class="flex py-1 px-2">
-            <x-select name="report_category_id" id="report_category_id" class="block text-xs" onchange="search();">
-                <option value="99">全て</option>
+            <x-select name="select_report" id="select_report" class="block text-xs" onchange="search();">
+                <option value=''>全て</option>
                 @foreach ($report_categories as $report_category)
-                    <option value="{{ $report_category->id }}" @if ($report_category->id === (int) old('report_category_id')) selected @endif>
+                    <option value="{{ $report_category->id }}" @if ($report_category->id === (int) old('select_report')) selected @endif>
                         {{ $report_category->report_name }}
                     </option>
                 @endforeach
@@ -27,7 +27,7 @@
         <!-- 休暇種類選択 - end -->
         <!-- 取得日選択 - start -->
         <div class="flex py-1 px-2">
-            <x-input type="month" id="get_month" name="get_month" onchange="search();" class="block text-xs"
+            <x-input type="month" id="select_month" name="select_month" onchange="search();" class="block text-xs"
                 :value="old('month')" required />
         </div>
         <!-- 取得日選択 - end -->
@@ -171,21 +171,27 @@
                 </div>
             </div>
 
-            <div class="w-full mx-auto mt-10 grid grid-cols-1 gap-2">
-                <div class="flex justify-end">
-                    {{-- FIXME:条件をcontrollerに渡して、条件に合うものだけエクスポート --}}
-                    <a href={{ route('reports.export') }}
-                        class="w-30 flex items-center justify-center text-center px-3 py-1 text-sm text-sky-600 border-2 border-gray-400 rounded-full bg-sky-100/60 hover:text-white hover:font-semibold hover:bg-sky-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            class="w-5 h-5 mr-2 leading-6">
-                            <path fill-rule="evenodd"
-                                d="M5.625 1.5H9a3.75 3.75 0 013.75 3.75v1.875c0 1.036.84 1.875 1.875 1.875H16.5a3.75 3.75 0 013.75 3.75v7.875c0 1.035-.84 1.875-1.875 1.875H5.625a1.875 1.875 0 01-1.875-1.875V3.375c0-1.036.84-1.875 1.875-1.875zm5.845 17.03a.75.75 0 001.06 0l3-3a.75.75 0 10-1.06-1.06l-1.72 1.72V12a.75.75 0 00-1.5 0v4.19l-1.72-1.72a.75.75 0 00-1.06 1.06l3 3z"
-                                clip-rule="evenodd" />
-                            <path
-                                d="M14.25 5.25a5.23 5.23 0 00-1.279-3.434 9.768 9.768 0 016.963 6.963A5.23 5.23 0 0016.5 7.5h-1.875a.375.375 0 01-.375-.375V5.25z" />
-                        </svg>
-                        エクスポート
-                    </a>
+            <div class="w-full mx-auto mt-4 grid grid-cols-1 gap-2">
+                <div class="flex justify-end mb-4">
+                    <form action="{{ route('reports.export') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="factory_id" id="factory_id" value="">
+                        <input type="hidden" name="report_category_id" id="report_category_id" value="">
+                        <input type="hidden" name="get_month" id="get_month" value="">
+                        <div class="flex flex-row-reverse">
+                            <x-button class="w-full flex">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                    class="w-5 h-5 mr-2 leading-6">
+                                    <path fill-rule="evenodd"
+                                        d="M5.625 1.5H9a3.75 3.75 0 013.75 3.75v1.875c0 1.036.84 1.875 1.875 1.875H16.5a3.75 3.75 0 013.75 3.75v7.875c0 1.035-.84 1.875-1.875 1.875H5.625a1.875 1.875 0 01-1.875-1.875V3.375c0-1.036.84-1.875 1.875-1.875zm5.845 17.03a.75.75 0 001.06 0l3-3a.75.75 0 10-1.06-1.06l-1.72 1.72V12a.75.75 0 00-1.5 0v4.19l-1.72-1.72a.75.75 0 00-1.06 1.06l3 3z"
+                                        clip-rule="evenodd" />
+                                    <path
+                                        d="M14.25 5.25a5.23 5.23 0 00-1.279-3.434 9.768 9.768 0 016.963 6.963A5.23 5.23 0 0016.5 7.5h-1.875a.375.375 0 01-.375-.375V5.25z" />
+                                </svg>
+                                {{ __('エクスポート') }}
+                            </x-button>
+                        </div>
+                    </form>
                 </div>
                 <div class="flex justify-end">
                     <x-back-home-button class="w-30" href="{{ route('menu') }}">
@@ -197,9 +203,9 @@
     </section>
 
     <script>
-        let selectFactory = document.getElementById('factory_id');
-        let selectReport = document.getElementById('report_category_id');
-        let selectMonth = document.getElementById('get_month');
+        let selectFactory = document.getElementById('select_factory');
+        let selectReport = document.getElementById('select_report');
+        let selectMonth = document.getElementById('select_month');
         const reports = @json($reports);
 
         function search() {
@@ -207,6 +213,10 @@
             let selectReportId = selectReport.value;
             let selectGetMonth = selectMonth.value;
             console.log('search'); // 起動確認
+            // 条件書き出し
+            document.getElementById('factory_id').setAttribute('value', selectFactoryId);
+            document.getElementById('report_category_id').setAttribute('value', selectReportId);
+            document.getElementById('get_month').setAttribute('value', selectGetMonth);
             reportDataChange(selectFactoryId, selectReportId, selectGetMonth);
         }
 
@@ -215,19 +225,20 @@
                 const value = reports[key];
                 let reportFactoryId = value.user.factory_id;
                 let reportCartegoryId = value.report_id;
-                let reportGetMonth = value.start_date.substr( 0, 7 );
+                let reportGetMonth = value.start_date.substr(0, 7);
                 let reportId = document.getElementById('report_' + value.id);
                 console.log(key, value);
 
                 // 選択された値と一致する場合は表示、そうでなければ非表示
-                if (selectFactoryId == reportFactoryId && selectReportId == reportCartegoryId && selectGetMonth == reportGetMonth ||
-                    selectFactoryId == reportFactoryId && selectReportId == reportCartegoryId && selectGetMonth == '' ||
-                    selectFactoryId == reportFactoryId && selectReportId == 99 && selectGetMonth == reportGetMonth ||
-                    selectFactoryId == reportFactoryId && selectReportId == 99 && selectGetMonth == '' ||
-                    selectFactoryId == 99 && selectReportId == reportCartegoryId && selectGetMonth == reportGetMonth ||
-                    selectFactoryId == 99 && selectReportId == reportCartegoryId && selectGetMonth == '' ||
-                    selectFactoryId == 99 && selectReportId == 99 && selectGetMonth == reportGetMonth ||
-                    selectFactoryId == 99 && selectReportId == 99 && selectGetMonth == ''
+                if (selectFactoryId == reportFactoryId && selectReportId == reportCartegoryId && selectGetMonth ==
+                    reportGetMonth ||
+                    selectFactoryId == reportFactoryId && selectReportId == reportCartegoryId && !selectGetMonth ||
+                    selectFactoryId == reportFactoryId && !selectReportId && selectGetMonth == reportGetMonth ||
+                    selectFactoryId == reportFactoryId && !selectReportId && !selectGetMonth ||
+                    !selectFactoryId && selectReportId == reportCartegoryId && selectGetMonth == reportGetMonth ||
+                    !selectFactoryId && selectReportId == reportCartegoryId && !selectGetMonth ||
+                    !selectFactoryId && !selectReportId && selectGetMonth == reportGetMonth ||
+                    !selectFactoryId && !selectReportId && !selectGetMonth
                 ) {
                     reportId.style.display = '';
                 } else {
