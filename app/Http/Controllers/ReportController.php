@@ -45,7 +45,6 @@ class ReportController extends Controller
      */
     public function create()
     {
-        // $report_categories = ReportCategory::all();
         $sub_report_categories = SubReportCategory::all();
         $reasons = ReasonCategory::all();
         $shifts = ShiftCategory::all();
@@ -383,7 +382,7 @@ class ReportController extends Controller
                     ->withErrors($e->getMessage());
             }
         }
-        # GL
+        # 課長
         if (
             !empty(
                 Auth::user()
@@ -392,6 +391,16 @@ class ReportController extends Controller
             )
         ) {
             $report->approval2 = 1;
+        }
+        # GL
+        if (
+            !empty(
+                Auth::user()
+                    ->approvals->where('approval_id', 4)
+                    ->first()
+            )
+        ) {
+            $report->approval3 = 1;
         }
 
         try {
@@ -495,10 +504,39 @@ class ReportController extends Controller
      */
     public function edit(Report $report)
     {
-        $report_categories = ReportCategory::all();
         $sub_report_categories = SubReportCategory::all();
         $reasons = ReasonCategory::all();
-        $my_remainings = Remaining::all()->where('user_id', Auth::id());
+        $shifts = ShiftCategory::all();
+        $my_remainings = Auth::user()->remainings;
+        $my_reports = Auth::user()->reports->where('id', '!=', $report->id);
+
+        $report_categories = ReportCategory::whereHas('remainings', function (
+            $query
+        ) {
+            $query
+                ->where('remaining', '!=', 0)
+                ->where('user_id', Auth::user()->id);
+        })
+            ->orWhere(function ($query) {
+                $query
+                    ->where('id', 12)
+                    ->orWhere('id', 13)
+                    ->orWhere('id', 14)
+                    ->orWhere('id', 15)
+                    ->orWhere('id', 17)
+                    ->orWhere('id', 18);
+            })
+            ->get();
+
+        $birthday = new Carbon(
+            Carbon::now()->year . '-' . Auth::user()->birthday
+        ); # 誕生日
+        if (
+            now()->subMonths(3) > $birthday ||
+            now()->addMonths(3) < $birthday
+        ) {
+            $report_categories = $report_categories->where('id', '!=', 2);
+        }
 
         return view('reports.edit')->with(
             compact(
@@ -506,7 +544,9 @@ class ReportController extends Controller
                 'report_categories',
                 'sub_report_categories',
                 'reasons',
-                'my_remainings'
+                'shifts',
+                'my_remainings',
+                'my_reports'
             )
         );
     }
@@ -520,53 +560,67 @@ class ReportController extends Controller
      */
     public function update(UpdateReportRequest $request, Report $report)
     {
+        // バリデーション
         if (
             $request->report_id == 1 || # 有給
             $request->report_id == 7 || # 特別休暇(看護・対象1名)
             $request->report_id == 8 || # 特別休暇(看護・対象2名)
             $request->report_id == 9 || # 特別休暇(介護・対象1名)
-            $request->report_id == 10
+            $request->report_id == 10 # 特別休暇(介護・対象2名)
         ) {
-            # 特別休暇(介護・対象2名)
             $request->validate([
                 'sub_report_id' => 'required|integer',
             ]);
             if ($request->sub_report_id == 1) {
                 # 終日休暇
-                // dd($request);
                 $request->validate(
                     [
                         'start_date' =>
-                            'required|date|after_or_equal:report_date',
-                        'end_date' => 'required|date|after_or_equal:start_date',
+                            'required|date|after:today|after_or_equal:report_date',
                         'get_days' => 'required|integer|min:1',
                     ],
                     [
-                        'get_days.min' =>
-                            '取得日数は1日以上で取得可能です。日数算出ボタンを押してください。',
+                        'get_days.min' => '取得日数は1日以上です。',
                     ]
                 );
             }
             if ($request->sub_report_id == 2) {
+                # 連休
+                $request->validate(
+                    [
+                        'start_date' =>
+                            'required|date|after:today|after_or_equal:report_date',
+                        'end_date' =>
+                            'required|date|after_or_equal:start_date|sameMonth:start_date',
+                        'get_days' => 'required|integer|min:2',
+                    ],
+                    [
+                        'get_days.min' => '取得日数は2日以上です。',
+                    ]
+                );
+            }
+            if ($request->sub_report_id == 3) {
                 # 半日休暇
                 $request->validate(
                     [
                         'start_date' =>
-                            'required|date|after_or_equal:report_date',
+                            'required|date|after:today|after_or_equal:report_date',
                         'am_pm' => 'required|integer',
                         'get_days' => ['required', Rule::in(0.5)],
                     ],
                     [
-                        'get_days.in' => '日付算出ボタンを押してください。',
+                        'get_days.in' => '半日有休は4時間です。',
                         'am_pm.required' => '午前・午後を選択してください。',
                         'am_pm.integer' => '午前・午後を選択してください。',
                     ]
                 );
             }
-            if ($request->sub_report_id == 3) {
+            if ($request->sub_report_id == 4) {
                 # 時間休
                 $request->validate(
                     [
+                        'start_date' =>
+                            'required|date|after:today|after_or_equal:report_date',
                         'start_time' => 'required|date_format:H:i',
                         'end_time' =>
                             'required|date_format:H:i|after:start_time',
@@ -584,27 +638,25 @@ class ReportController extends Controller
                         ],
                     ],
                     [
-                        'get_days.in' =>
-                            '時間休は1時間単位で取得可能です。日数算出ボタンを押してください。',
+                        'get_days.in' => '時間休は1時間単位です。',
                     ]
                 );
             }
         }
         if (
             $request->report_id == 2 || # バースデイ
-            $request->report_id == 12
+            $request->report_id == 12 # 欠勤
         ) {
-            # 欠勤
             $request->validate(
                 [
-                    'start_date' => 'required|date|after_or_equal:report_date',
+                    'start_date' =>
+                        'required|date|after:today|after_or_equal:report_date',
                     'get_days' => ['required', Rule::in(1.0)],
                 ],
                 [
-                    'get_days.in' => '日付算出ボタンを押してください。',
+                    'get_days.in' => '1日単位です。',
                 ]
             );
-            $report->sub_report_id = null;
         }
         if (
             $request->report_id == 3 || # 特別休暇(慶事)
@@ -624,11 +676,9 @@ class ReportController extends Controller
                     'get_days' => 'required|integer|min:1',
                 ],
                 [
-                    'get_days.min' =>
-                        '取得日数は1日以上で取得可能です。日数算出ボタンを押してください。',
+                    'get_days.min' => '取得日数は1日以上です。',
                 ]
             );
-            $report->sub_report_id = null;
         }
         if (
             $request->report_id == 13 || # 遅刻
@@ -693,11 +743,9 @@ class ReportController extends Controller
                     ],
                 ],
                 [
-                    'get_days.in' =>
-                        '遅刻・早退は10分単位で取得可能です。日付算出ボタンを押してください。',
+                    'get_days.in' => '遅刻・早退は10分単位です。',
                 ]
             );
-            $report->sub_report_id = null;
         }
         if ($request->report_id == 15) {
             # 外出
@@ -727,13 +775,11 @@ class ReportController extends Controller
                     ],
                 ],
                 [
-                    'get_days.in' =>
-                        '外出は30分単位で取得可能です。日付算出ボタンを押してください。',
+                    'get_days.in' => '外出は30分単位です。',
                 ]
             );
-            $report->sub_report_id = null;
         }
-        if ($request->reason_id == 8) {
+        if ($request->reason_id == 9) {
             # 理由:その他
             $request->validate(
                 [
@@ -745,7 +791,7 @@ class ReportController extends Controller
             );
         }
 
-        $remaining = Remaining::where('user_id', Auth::user()->id)
+        $remaining = Remaining::where('user_id', '=', Auth::user()->id)
             ->where('report_id', $request->report_id)
             ->first('remaining');
         if (!empty($remaining->remaining)) {
@@ -763,8 +809,137 @@ class ReportController extends Controller
         $report->approval1 = 0;
         $report->approval2 = 0;
 
+        /** 自分の届出を自分で承認する場合 */
+        # 工場長
+        if (
+            !empty(
+                Auth::user()
+                    ->approvals->where('approval_id', 2)
+                    ->first()
+            )
+        ) {
+            $report->approval1 = 1;
+            $report->approval3 = 1;
+            $report->approved = 1;
+
+            DB::beginTransaction(); # トランザクション開始
+            try {
+                $report->save();
+                $remaining = Remaining::where('user_id', $report->user_id)
+                    ->where('report_id', $report->report_id)
+                    ->first();
+                if (!empty($remaining)) {
+                    $new_remaining = $remaining->remaining - $report->get_days;
+                    $remaining->remaining = $new_remaining;
+                    $remaining->save(); # 残日数を保存
+                }
+                DB::commit(); # トランザクション成功終了
+                return redirect()
+                    ->route('reports.show', $report)
+                    ->with('msg', '承認しました');
+            } catch (\Exception $e) {
+                DB::rollBack(); # トランザクション失敗終了
+                return back()
+                    ->withInput()
+                    ->withErrors($e->getMessage());
+            }
+        }
+        # 課長
+        if (
+            !empty(
+                Auth::user()
+                    ->approvals->where('approval_id', 3)
+                    ->first()
+            )
+        ) {
+            $report->approval2 = 1;
+        }
+        # GL
+        if (
+            !empty(
+                Auth::user()
+                    ->approvals->where('approval_id', 4)
+                    ->first()
+            )
+        ) {
+            $report->approval3 = 1;
+        }
+
         try {
             $report->save();
+            // $user = $report->user()->first();
+            // $user->approved($report); # 届出作成者に通知
+
+            /* 
+            * 届出作成者のapproverにメール通知
+            * 工場長、部長承認はdepartment分類の有無で分岐
+            **/
+            # 工場長、総務部長にメール通知
+            $approver = User::whereHas('approvals', function ($query) use (
+                $report
+            ) {
+                $query
+                    ->where('approval_id', 2)
+                    ->where('factory_id', $report->user->factory_id);
+            })->get();
+            if ($approver->contains('department_id', 1)) {
+                $general_approver = User::whereHas('approvals', function (
+                    $query
+                ) use ($report) {
+                    $query
+                        ->where('approval_id', 2)
+                        ->where('factory_id', $report->user->factory_id);
+                })->first();
+                if ($general_approver) {
+                // FIXME:updateReportを作成、更新をメール通知
+                    // $general_approver->storeReport($report);
+                }
+            } else {
+                $general_approver = User::whereHas('approvals', function (
+                    $query
+                ) use ($report) {
+                    $query
+                        ->where('approval_id', 2)
+                        ->where('factory_id', $report->user->factory_id)
+                        ->where('department_id', $report->user->department_id);
+                })->first();
+                if ($general_approver) {
+                // FIXME:updateReportを作成、更新をメール通知
+                    // $general_approver->storeReport($report);
+                }
+            }
+
+            # 課長にメール通知
+            $manager_approver = User::whereHas('approvals', function (
+                $query
+            ) use ($report) {
+                $query
+                    ->where('approval_id', 3)
+                    ->where('factory_id', $report->user->factory_id)
+                    ->where('department_id', $report->user->department_id);
+            })->first();
+            if ($manager_approver) {
+                // FIXME:updateReportを作成、更新をメール通知
+                // $manager_approver->storeReport($report);
+            }
+
+            # GLにメール通知
+            $group_approvers = User::whereHas('approvals', function (
+                $query
+            ) use ($report) {
+                $query
+                    ->where('approval_id', 4)
+                    ->where('factory_id', $report->user->factory_id)
+                    ->where('department_id', $report->user->department_id)
+                    ->where('group_id', $report->user->group_id);
+            })->get();
+            if ($group_approvers) {
+                foreach ($group_approvers as $group_approver) {
+                // FIXME:updateReportを作成、更新をメール通知
+                    // $group_approver->storeReport($report);
+                }
+            }
+
             return redirect(route('reports.show', $report))->with(
                 'notice',
                 '届出を更新しました'
@@ -774,6 +949,262 @@ class ReportController extends Controller
                 ->withErrors($th->getMessage())
                 ->withInput();
         }
+        
+
+        // if (
+        //     $request->report_id == 1 || # 有給
+        //     $request->report_id == 7 || # 特別休暇(看護・対象1名)
+        //     $request->report_id == 8 || # 特別休暇(看護・対象2名)
+        //     $request->report_id == 9 || # 特別休暇(介護・対象1名)
+        //     $request->report_id == 10
+        // ) {
+        //     # 特別休暇(介護・対象2名)
+        //     $request->validate([
+        //         'sub_report_id' => 'required|integer',
+        //     ]);
+        //     if ($request->sub_report_id == 1) {
+        //         # 終日休暇
+        //         // dd($request);
+        //         $request->validate(
+        //             [
+        //                 'start_date' =>
+        //                     'required|date|after_or_equal:report_date',
+        //                 'end_date' => 'required|date|after_or_equal:start_date',
+        //                 'get_days' => 'required|integer|min:1',
+        //             ],
+        //             [
+        //                 'get_days.min' =>
+        //                     '取得日数は1日以上で取得可能です。日数算出ボタンを押してください。',
+        //             ]
+        //         );
+        //     }
+        //     if ($request->sub_report_id == 2) {
+        //         # 半日休暇
+        //         $request->validate(
+        //             [
+        //                 'start_date' =>
+        //                     'required|date|after_or_equal:report_date',
+        //                 'am_pm' => 'required|integer',
+        //                 'get_days' => ['required', Rule::in(0.5)],
+        //             ],
+        //             [
+        //                 'get_days.in' => '日付算出ボタンを押してください。',
+        //                 'am_pm.required' => '午前・午後を選択してください。',
+        //                 'am_pm.integer' => '午前・午後を選択してください。',
+        //             ]
+        //         );
+        //     }
+        //     if ($request->sub_report_id == 3) {
+        //         # 時間休
+        //         $request->validate(
+        //             [
+        //                 'start_time' => 'required|date_format:H:i',
+        //                 'end_time' =>
+        //                     'required|date_format:H:i|after:start_time',
+        //                 'get_days' => [
+        //                     'required',
+        //                     Rule::in([
+        //                         0.125,
+        //                         0.25,
+        //                         0.375,
+        //                         0.5,
+        //                         0.625,
+        //                         0.75,
+        //                         0.825,
+        //                     ]),
+        //                 ],
+        //             ],
+        //             [
+        //                 'get_days.in' =>
+        //                     '時間休は1時間単位で取得可能です。日数算出ボタンを押してください。',
+        //             ]
+        //         );
+        //     }
+        // }
+        // if (
+        //     $request->report_id == 2 || # バースデイ
+        //     $request->report_id == 12
+        // ) {
+        //     # 欠勤
+        //     $request->validate(
+        //         [
+        //             'start_date' => 'required|date|after_or_equal:report_date',
+        //             'get_days' => ['required', Rule::in(1.0)],
+        //         ],
+        //         [
+        //             'get_days.in' => '日付算出ボタンを押してください。',
+        //         ]
+        //     );
+        //     $report->sub_report_id = null;
+        // }
+        // if (
+        //     $request->report_id == 3 || # 特別休暇(慶事)
+        //     $request->report_id == 4 || # 特別休暇(弔事)
+        //     $request->report_id == 5 || # 特別休暇(弔事)
+        //     $request->report_id == 6 || # 特別休暇(弔事)
+        //     $request->report_id == 11 || # 特別休暇(短期育休)
+        //     $request->report_id == 16 || # 介護休業
+        //     $request->report_id == 17 || # 育児休業
+        //     $request->report_id == 18
+        // ) {
+        //     # パパ育休
+        //     $request->validate(
+        //         [
+        //             'start_date' => 'required|date|after_or_equal:report_date',
+        //             'end_date' => 'required|date|after_or_equal:start_date',
+        //             'get_days' => 'required|integer|min:1',
+        //         ],
+        //         [
+        //             'get_days.min' =>
+        //                 '取得日数は1日以上で取得可能です。日数算出ボタンを押してください。',
+        //         ]
+        //     );
+        //     $report->sub_report_id = null;
+        // }
+        // if (
+        //     $request->report_id == 13 || # 遅刻
+        //     $request->report_id == 14
+        // ) {
+        //     # 早退
+        //     $request->validate(
+        //         [
+        //             'start_time' => 'required|date_format:H:i',
+        //             'end_time' => 'required|date_format:H:i|after:start_time',
+        //             'get_days' => [
+        //                 'required',
+        //                 Rule::in([
+        //                     0.02083,
+        //                     0.04167,
+        //                     0.0625,
+        //                     0.08333,
+        //                     0.10417,
+        //                     0.125,
+        //                     0.14583,
+        //                     0.16667,
+        //                     0.1875,
+        //                     0.20833,
+        //                     0.22917,
+        //                     0.25,
+        //                     0.27083,
+        //                     0.29167,
+        //                     0.3125,
+        //                     0.33333,
+        //                     0.35417,
+        //                     0.375,
+        //                     0.39583,
+        //                     0.41667,
+        //                     0.4375,
+        //                     0.45833,
+        //                     0.47917,
+        //                     0.5,
+        //                     0.52083,
+        //                     0.54167,
+        //                     0.5625,
+        //                     0.58333,
+        //                     0.60417,
+        //                     0.625,
+        //                     0.64583,
+        //                     0.66667,
+        //                     0.6875,
+        //                     0.70833,
+        //                     0.72917,
+        //                     0.75,
+        //                     0.77083,
+        //                     0.79167,
+        //                     0.8125,
+        //                     0.83333,
+        //                     0.85417,
+        //                     0.825,
+        //                     0.89583,
+        //                     0.91667,
+        //                     0.9375,
+        //                     0.95833,
+        //                     0.97917,
+        //                 ]),
+        //             ],
+        //         ],
+        //         [
+        //             'get_days.in' =>
+        //                 '遅刻・早退は10分単位で取得可能です。日付算出ボタンを押してください。',
+        //         ]
+        //     );
+        //     $report->sub_report_id = null;
+        // }
+        // if ($request->report_id == 15) {
+        //     # 外出
+        //     $request->validate(
+        //         [
+        //             'start_time' => 'required|date_format:H:i',
+        //             'end_time' => 'required|date_format:H:i|after:start_time',
+        //             'get_days' => [
+        //                 'required',
+        //                 Rule::in([
+        //                     0.0625,
+        //                     0.125,
+        //                     0.1875,
+        //                     0.25,
+        //                     0.3125,
+        //                     0.375,
+        //                     0.4375,
+        //                     0.5,
+        //                     0.5625,
+        //                     0.625,
+        //                     0.6875,
+        //                     0.75,
+        //                     0.8125,
+        //                     0.825,
+        //                     0.9375,
+        //                 ]),
+        //             ],
+        //         ],
+        //         [
+        //             'get_days.in' =>
+        //                 '外出は30分単位で取得可能です。日付算出ボタンを押してください。',
+        //         ]
+        //     );
+        //     $report->sub_report_id = null;
+        // }
+        // if ($request->reason_id == 8) {
+        //     # 理由:その他
+        //     $request->validate(
+        //         [
+        //             'reason_detail' => 'required|max:200',
+        //         ],
+        //         [
+        //             'reason_detail.required' => '理由は必須です。',
+        //         ]
+        //     );
+        // }
+
+        // $remaining = Remaining::where('user_id', Auth::user()->id)
+        //     ->where('report_id', $request->report_id)
+        //     ->first('remaining');
+        // if (!empty($remaining->remaining)) {
+        //     $result = $remaining->remaining - $request->get_days; // 説明変数
+
+        //     if ($result < 0) {
+        //         throw ValidationException::withMessages([
+        //             'get_days' => ['取得上限を超えています'],
+        //         ]);
+        //     }
+        // }
+
+        // # reportsレコード更新&承認リセット
+        // $report->fill($request->all());
+        // $report->approval1 = 0;
+        // $report->approval2 = 0;
+
+        // try {
+        //     $report->save();
+        //     return redirect(route('reports.show', $report))->with(
+        //         'notice',
+        //         '届出を更新しました'
+        //     );
+        // } catch (\Throwable $th) {
+        //     return back()
+        //         ->withErrors($th->getMessage())
+        //         ->withInput();
+        // }
     }
 
     /**

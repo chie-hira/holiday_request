@@ -78,7 +78,7 @@
                                         value="{{ $sub_category->id }}" @if ($sub_category->id === (int) old('sub_report_id')) checked @endif
                                         class="shrink-0 mt-0.5 border-gray-200 rounded-full text-sky-600 focus:ring-sky-300 ">
                                     <label for="sub_report_id_{{ $sub_category->id }}" name="sub_report_name"
-                                        class="mr-2 text-sm text-gray-500 ml-2 ">
+                                        class="mr-2 text-sm text-gray-500 ml-2">
                                         {{ $sub_category->sub_report_name }}
                                     </label>
                                 @endforeach
@@ -410,7 +410,6 @@
             timeReset(); // end_date,start_time,end_timeリセット
             dateChange(); // get_daysリセット
             alertReset(); // アラートリセット
-
             if (reportCategory.value == "2" ||
                 reportCategory.value == "12") {
                 countDays();
