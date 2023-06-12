@@ -1,16 +1,26 @@
 <x-app-layout>
-    <!-- Page Heading -->
-    <header class="text-xs sm:text-sm bg-sky-50 border-b-2 border-gray-400">
-        <div class="flex max-w-7xl mx-auto py-1 px-4 sm:px-6 lg:px-8">
-            <button class="mx-2" onclick="reportChange1()">{{ $report_categories[0]->report_name }}</button><span class="text-gray-600">/</span>
-            <button class="mx-2" onclick="reportChange4()">{{ $report_categories[3]->report_name }}</button><span class="text-gray-600">/</span>
-            <button class="mx-2" onclick="reportChange5()">{{ $report_categories[4]->report_name }}</button><span class="text-gray-600">/</span>
-            <button class="mx-2" onclick="reportChange6()">{{ $report_categories[5]->report_name }}</button><span class="text-gray-600">/</span>
-            <button class="mx-2" onclick="reportChange16()">{{ $report_categories[15]->report_name }}</button>
-        </div>
-    </header>
+    <!-- Page nav -->
+    <div class="border-b-2 border-gray-200">
+        <nav class="px-4 -mb-0.5 flex space-x-2">
+            <x-nav-button onclick="reportChange1()">
+                {{ $report_categories[0]->report_name }}
+            </x-nav-button>
+            <x-nav-button onclick="reportChange4()">
+                {{ $report_categories[3]->report_name }}
+            </x-nav-button>
+            <x-nav-button onclick="reportChange5()">
+                {{ $report_categories[4]->report_name }}
+            </x-nav-button>
+            <x-nav-button onclick="reportChange6()">
+                {{ $report_categories[5]->report_name }}
+            </x-nav-button>
+            <x-nav-button onclick="reportChange16()">
+                {{ $report_categories[15]->report_name }}
+            </x-nav-button>
+        </nav>
+    </div>
     <section class="text-gray-600 body-font">
-        <div class="container max-w-3xl px-5 py-24 mx-auto">
+        <div class="container max-w-3xl px-5 py-16 mx-auto">
             <div class="flex flex-col text-center w-full mb-6">
                 <h1 class="sm:text-4xl text-3xl font-medium title-font mb-4 text-gray-900">休暇可能日数</h1>
                 <h2 id="paid_holiday_update" style="display: " class=" text-right">
@@ -114,7 +124,8 @@
                                                         {{-- 介護休業 --}}
                                                     </div>
                                                 </td>
-                                                <td id="edit" class="pl-1 pr-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                <td id="edit"
+                                                    class="pl-1 pr-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                     <div id="edit-1_{{ $user->id }}" style="display: ">
                                                         <x-edit-a-button
                                                             href="{{ route('remainings.edit', $user->remaining(1)->id) }}">

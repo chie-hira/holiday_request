@@ -1,5 +1,4 @@
 <x-app-layout>
-    {{-- //TODO:重複申請防止 --}}
     {{-- //TODO:メール機能届出の提出、更新、削除で通知、承認で通知 --}}
     <section class="text-gray-600 body-font">
         <div class="container max-w-2xl min-w-max w-full md:w-4/5 lg:w-2/3 px-5 py-24 mx-auto">
@@ -408,10 +407,6 @@
                 console.log(subReportCategory.value);
                 subReportCategory.checked = false;
             }
-            // subReportCategories[0].checked = false;
-            // subReportCategories[1].checked = false;
-            // subReportCategories[2].checked = false;
-            // subReportCategories[3].checked = false;
             timeReset(); // end_date,start_time,end_timeリセット
             dateChange(); // get_daysリセット
             alertReset(); // アラートリセット
@@ -456,7 +451,6 @@
             let subReportCategory = document.querySelector('input[name=sub_report_id]:checked');
             if (subReportCategory) {
                 let subReportCategoryValue = subReportCategory.value;
-                // if (subReportCategories[0].checked) { // 終日休
                 if (subReportCategoryValue == 1) { // 終日休
                     halfDateLabel.style.display = "";
                     startDateForm.style.display = "";
@@ -470,7 +464,6 @@
                     startDateLabel.style.display = "none";
                     endDateForm.style.display = "none";
                 }
-                // if (subReportCategories[1].checked) { // 連休
                 if (subReportCategoryValue == 2) { // 連休
                     halfDateLabel.style.display = "none";
                     amPmForm.style.display = "none";
@@ -485,7 +478,6 @@
                     endDateForm.style.display = "";
                     holidayAlert.style.display = "none";
                 }
-                // if (subReportCategories[2].checked) { // 半日休
                 if (subReportCategoryValue == 3) { // 半日休
                     halfDateLabel.style.display = "";
                     startDateForm.style.display = "";
@@ -499,7 +491,6 @@
                     startDateLabel.style.display = "none";
                     endDateForm.style.display = "none";
                 }
-                // if (subReportCategories[3].checked) { // 時間休
                 if (subReportCategoryValue == 4) { // 時間休
                     halfDateLabel.style.display = "";
                     startDateForm.style.display = "";
@@ -547,7 +538,7 @@
                 reportCategory.value == "13" || // 遅刻
                 reportCategory.value == "14" || // 早退
                 reportCategory.value == "15") { // 外出
-                let reasonId = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+                let reasonId = [1, 2, 3, 4, 5, 6, 7, 9];
                 reasonId.forEach(e => {
                     let createId = reasons[e - 1].id;
                     let createReason = reasons[e - 1].reason;

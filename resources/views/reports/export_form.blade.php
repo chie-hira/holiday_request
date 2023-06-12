@@ -1,8 +1,7 @@
 <x-app-layout>
-    {{-- //TODO:工場、部所、月で指定できる --}}
-    <header class="px-4 text-xs sm:text-sm bg-sky-50 border-b-2 border-gray-400 flex">
-        <!-- 工場選択 - start -->
-        <div class="flex py-1 px-2">
+    <div class="border-b-2 border-gray-200 dark:border-gray-700">
+        <nav class="-mb-0.5 px-4 py-1 flex space-x-6">
+            <!-- 工場選択 - start -->
             <x-select name="select_factory" id="select_factory" class="block text-xs" onchange="search();">
                 <option value=''>全て</option>
                 @foreach ($factories as $factory)
@@ -11,10 +10,8 @@
                     </option>
                 @endforeach
             </x-select>
-        </div>
-        <!-- 工場選択 - end -->
-        <!-- 休暇種類選択 - start -->
-        <div class="flex py-1 px-2">
+            <!-- 工場選択 - end -->
+            <!-- 休暇種類選択 - start -->
             <x-select name="select_report" id="select_report" class="block text-xs" onchange="search();">
                 <option value=''>全て</option>
                 @foreach ($report_categories as $report_category)
@@ -23,18 +20,16 @@
                     </option>
                 @endforeach
             </x-select>
-        </div>
-        <!-- 休暇種類選択 - end -->
-        <!-- 取得日選択 - start -->
-        <div class="flex py-1 px-2">
+            <!-- 休暇種類選択 - end -->
+            <!-- 取得日選択 - start -->
             <x-input type="month" id="select_month" name="select_month" onchange="search();" class="block text-xs"
                 :value="old('month')" required />
-        </div>
-        <!-- 取得日選択 - end -->
-    </header>
+            <!-- 取得日選択 - end -->
+        </nav>
+    </div>
 
     <section class="text-gray-600 body-font">
-        <div class="container px-5 py-24 mx-auto">
+        <div class="container px-5 py-16 mx-auto">
             <div class="flex flex-col text-center w-full mb-10">
                 <h1 class="sm:text-4xl text-3xl font-medium title-font text-gray-900">{{ __('出力内容') }}</h1>
             </div>

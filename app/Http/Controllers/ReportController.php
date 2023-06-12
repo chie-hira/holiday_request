@@ -399,8 +399,11 @@ class ReportController extends Controller
             $user = $report->user()->first();
             // $user->approved($report); # 届出作成者に通知
 
-            // $reportのユーザーを承認するユーザー
-            // FIXME:工場長の場合を追加
+            /* 
+            * 届出作成者のapproverにメール通知
+            * 工場長、部長承認はdepartment分類の有無で分岐
+            **/
+            # 工場長、総務部長にメール通知
             $approver = User::whereHas('approvals', function ($query) use (
                 $report
             ) {
@@ -433,6 +436,7 @@ class ReportController extends Controller
                 }
             }
 
+            # 課長にメール通知
             $manager_approver = User::whereHas('approvals', function (
                 $query
             ) use ($report) {
@@ -445,6 +449,7 @@ class ReportController extends Controller
                 $manager_approver->storeReport($report);
             }
 
+            # GLにメール通知
             $group_approvers = User::whereHas('approvals', function (
                 $query
             ) use ($report) {
