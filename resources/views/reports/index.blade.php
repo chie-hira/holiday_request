@@ -188,9 +188,8 @@
                                                             method="POST">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <input type="submit" value="取消"
-                                                                onclick="if(!confirm('承認済みの届けを取消しますか？上長とGLの確認後に届けが削除されます。')){return false};"
-                                                                class="px-3 py-1 text-sm text-red-500 border-2 border-gray-400 rounded-full bg-red-100/60 hover:text-white hover:font-semibold hover:bg-red-500">
+                                                            <x-delete-input-button value="取消"
+                                                                onclick="if(!confirm('承認済みの届けを取消しますか？承認者の確認後に削除されます。')){return false};" />
                                                         </form>
                                                         {{-- @endcan --}}
                                                     @endif
