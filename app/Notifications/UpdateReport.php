@@ -6,19 +6,23 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use App\Models\Report;
 
 class UpdateReport extends Notification
 {
     use Queueable;
+    public $user_name;
+    public $report_id;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Report $report)
     {
-        //
+        $this->user_name = $report->user->name;
+        $this->report_id = $report->id;
     }
 
     /**
@@ -40,7 +44,11 @@ class UpdateReport extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)->markdown('mail.updateReport');
+        $url = route('reports.show', $this->report_id);
+        return (new MailMessage())->markdown('mail.updateReport', [
+            'user_name' => $this->user_name,
+            'url' => $url,
+        ]);
     }
 
     /**

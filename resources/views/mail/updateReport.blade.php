@@ -1,12 +1,13 @@
 @component('mail::message')
 # Introduction
 
-The body of your message.
+{{ $user_name }}さんが届出を更新しました。<br>
+承認してください。
+{{ $url }}
 
 @component('mail::button', ['url' => ''])
-Button Text
+{{ __('Open') }}
 @endcomponent
 
-Thanks,<br>
-{{ config('app.name') }}
+長島製作所<br>
 @endcomponent

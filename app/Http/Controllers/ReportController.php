@@ -12,16 +12,16 @@ use App\Models\SubReportCategory;
 use App\Models\ShiftCategory;
 use App\Models\User;
 use App\Models\Approval;
+use App\Models\FactoryCategory;
+use App\Exports\ReportExport;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\DB;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\ReportExport;
-use App\Models\FactoryCategory;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
 {
@@ -891,8 +891,7 @@ class ReportController extends Controller
                         ->where('factory_id', $report->user->factory_id);
                 })->first();
                 if ($general_approver) {
-                // FIXME:updateReportを作成、更新をメール通知
-                    // $general_approver->storeReport($report);
+                    $general_approver->updateReport($report);
                 }
             } else {
                 $general_approver = User::whereHas('approvals', function (
@@ -904,8 +903,7 @@ class ReportController extends Controller
                         ->where('department_id', $report->user->department_id);
                 })->first();
                 if ($general_approver) {
-                // FIXME:updateReportを作成、更新をメール通知
-                    // $general_approver->storeReport($report);
+                    $general_approver->updateReport($report);
                 }
             }
 
@@ -919,8 +917,7 @@ class ReportController extends Controller
                     ->where('department_id', $report->user->department_id);
             })->first();
             if ($manager_approver) {
-                // FIXME:updateReportを作成、更新をメール通知
-                // $manager_approver->storeReport($report);
+                $manager_approver->updateReport($report);
             }
 
             # GLにメール通知
@@ -935,8 +932,7 @@ class ReportController extends Controller
             })->get();
             if ($group_approvers) {
                 foreach ($group_approvers as $group_approver) {
-                // FIXME:updateReportを作成、更新をメール通知
-                    // $group_approver->storeReport($report);
+                    $group_approver->updateReport($report);
                 }
             }
 
