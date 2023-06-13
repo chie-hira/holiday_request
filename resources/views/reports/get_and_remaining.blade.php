@@ -1,17 +1,29 @@
 <x-app-layout>
-    <!-- Page Heading -->
-    <header class="text-xs sm:text-sm bg-sky-50 border-b-2 border-gray-400">
-        <div class="flex max-w-7xl mx-auto py-1 px-4 sm:px-6 lg:px-8">
-            <button class="mx-2" onclick="reportChange1()">有給休暇</button>
-            <button class="mx-2" onclick="reportChange2()">バースデイ休暇</button>
-            <button class="mx-2" onclick="reportChange12()">欠 勤</button>
-            <button class="mx-2" onclick="reportChange13()">遅 刻</button>
-            <button class="mx-2" onclick="reportChange14()">早 退</button>
-            <button class="mx-2" onclick="reportChange15()">外 出</button>
-        </div>
-    </header>
+    <!-- Page nav -->
+    <div class="border-b-2 border-gray-200">
+        <nav class="px-4 -mb-0.5 flex space-x-2">
+            <x-nav-button onclick="reportChange1()">
+                {{ __('有給休暇') }}
+            </x-nav-button>
+            <x-nav-button onclick="reportChange2()">
+                {{ __('バースデイ休暇') }}
+            </x-nav-button>
+            <x-nav-button onclick="reportChange12()">
+                {{ __('欠勤') }}
+            </x-nav-button>
+            <x-nav-button onclick="reportChange13()">
+                {{ __('遅刻') }}
+            </x-nav-button>
+            <x-nav-button onclick="reportChange14()">
+                {{ __('早退') }}
+            </x-nav-button>
+            <x-nav-button onclick="reportChange15()">
+                {{ __('外出') }}
+            </x-nav-button>
+        </nav>
+    </div>
     <section class="text-gray-600 body-font">
-        <div class="container max-w-3xl px-5 py-24 mx-auto">
+        <div class="container max-w-3xl px-5 py-16 mx-auto">
             <div class="flex flex-col text-center w-full mb-6">
                 <h1 class="sm:text-4xl text-3xl font-medium title-font mb-4 text-gray-900">休暇取得状況</h1>
                 <p id="report_name-1" style="display: " class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
@@ -81,8 +93,7 @@
                                                 <td
                                                     class="px-4 py-4 whitespace-nowrap text-sm text-center text-gray-800 ">
                                                     {{ $user->employee }}</td>
-                                                <td
-                                                    class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                     {{ $user->name }}</td>
                                                 <td
                                                     class="px-2 py-4 whitespace-nowrap text-sm text-right text-gray-800 ">

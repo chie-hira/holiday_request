@@ -9,6 +9,7 @@ use Laravel\Sanctum\HasApiTokens;
 use App\Notifications\Registered;
 use App\Notifications\Approved;
 use App\Notifications\StoreReport;
+use App\Notifications\UpdateReport;
 use Carbon\Carbon;
 
 class User extends Authenticatable
@@ -402,5 +403,11 @@ class User extends Authenticatable
     public function storeReport($report)
     {
         $this->notify(new StoreReport($report));
+    }
+
+    # 届出更新
+    public function updateReport($report)
+    {
+        $this->notify(new UpdateReport($report));
     }
 }

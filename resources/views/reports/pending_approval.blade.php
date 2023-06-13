@@ -4,7 +4,7 @@
         <div class="container px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-10">
                 <h1 class="sm:text-4xl text-3xl font-medium title-font text-gray-900"><span
-                        class="text-red-500">{{ __('承認待ち') }}</span>{{ __('一覧') }}</h1>
+                        class="text-rose-700">{{ __('承認待ち') }}</span>{{ __('一覧') }}</h1>
             </div>
 
             <x-notice :notice="session('notice')" />

@@ -44,6 +44,9 @@
                                                 <td
                                                     class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-800 ">
                                                     {{ $my_remaining->report_category->report_name }}
+                                                    @if ($my_remaining->report_id == 1)
+                                                        <span class="ml-2 text-xs">{{ __('(取得推進日を除く)') }}</span>
+                                                    @endif
                                                 </td>
                                                 <td
                                                     class="px-6 pt-3 pb-1 whitespace-nowrap text-right text-sm font-medium">

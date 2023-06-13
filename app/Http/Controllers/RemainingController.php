@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\RemainingExport;
 use App\Http\Requests\StoreRemainingRequest;
 use App\Http\Requests\UpdateRemainingRequest;
 use App\Models\User;
@@ -13,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Facades\Excel;
 
 class RemainingController extends Controller
 {
@@ -183,12 +185,14 @@ class RemainingController extends Controller
 
     public function addRemainings(Request $request)
     {
-        // TODO:取得推進日の3日間をマイナス
-        // TODO:更新前にエクセルファイル出力
         $request->validate([
             'update_date' => 'required',
         ]);
 
+        /** 更新前データの保存 */
+        $excel_name = date('YmdHis') . '_remainings.xlsx';
+        Excel::store(new RemainingExport(), 'public/excels/'.$excel_name);
+        
         /** remainingsアーカイブ作成 */
         DB::beginTransaction(); # トランザクション開始
         try {
@@ -231,60 +235,60 @@ class RemainingController extends Controller
 
                 switch ($length_of_service) {
                     case $length_of_service >= 0.5 && $length_of_service < 1.5:
-                        $remaining_report1->remaining = 10;
+                        $remaining_report1->remaining = 10 - 3; # 取得推進日3日を除く
                         break;
 
                     case $length_of_service >= 1.5 && $length_of_service < 2.5:
                         $remaining_add = $remaining_now + 11;
                         if ($remaining_add >= 21) {
-                            $remaining_report1->remaining = 21;
+                            $remaining_report1->remaining = 21 - 3; # 取得推進日3日を除く
                         } else {
-                            $remaining_report1->remaining = $remaining_add;
+                            $remaining_report1->remaining = $remaining_add - 3; # 取得推進日3日を除く
                         }
                         break;
 
                     case $length_of_service >= 2.5 && $length_of_service < 3.5:
                         $remaining_add = $remaining_now + 12;
                         if ($remaining_add >= 23) {
-                            $remaining_report1->remaining = 23;
+                            $remaining_report1->remaining = 23 - 3; # 取得推進日3日を除く
                         } else {
-                            $remaining_report1->remaining = $remaining_add;
+                            $remaining_report1->remaining = $remaining_add - 3; # 取得推進日3日を除く
                         }
                         break;
 
                     case $length_of_service >= 3.5 && $length_of_service < 4.5:
                         $remaining_add = $remaining_now + 14;
                         if ($remaining_add >= 26) {
-                            $remaining_report1->remaining = 26;
+                            $remaining_report1->remaining = 26 - 3; # 取得推進日3日を除く
                         } else {
-                            $remaining_report1->remaining = $remaining_add;
+                            $remaining_report1->remaining = $remaining_add - 3; # 取得推進日3日を除く
                         }
                         break;
 
                     case $length_of_service >= 4.5 && $length_of_service < 5.5:
                         $remaining_add = $remaining_now + 16;
                         if ($remaining_add >= 30) {
-                            $remaining_report1->remaining = 30;
+                            $remaining_report1->remaining = 30 - 3; # 取得推進日3日を除く
                         } else {
-                            $remaining_report1->remaining = $remaining_add;
+                            $remaining_report1->remaining = $remaining_add - 3; # 取得推進日3日を除く
                         }
                         break;
 
                     case $length_of_service >= 5.5 && $length_of_service < 6.5:
                         $remaining_add = $remaining_now + 18;
                         if ($remaining_add >= 32) {
-                            $remaining_report1->remaining = 32;
+                            $remaining_report1->remaining = 32 - 3; # 取得推進日3日を除く
                         } else {
-                            $remaining_report1->remaining = $remaining_add;
+                            $remaining_report1->remaining = $remaining_add - 3; # 取得推進日3日を除く
                         }
                         break;
 
                     case $length_of_service >= 6.5:
                         $remaining_add = $remaining_now + 20;
                         if ($remaining_add >= 40) {
-                            $remaining_report1->remaining = 40;
+                            $remaining_report1->remaining = 40 - 3; # 取得推進日3日を除く
                         } else {
-                            $remaining_report1->remaining = $remaining_add;
+                            $remaining_report1->remaining = $remaining_add - 3; # 取得推進日3日を除く
                         }
                         break;
                 }

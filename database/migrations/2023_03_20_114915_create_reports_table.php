@@ -13,7 +13,6 @@ class CreateReportsTable extends Migration
      */
     public function up()
     {
-        // TODO:シフトテーブル、カラム追加
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
             $table->date('report_date');
