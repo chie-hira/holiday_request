@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Route;
 //     ->middleware(['auth'])
 //     ->name('dashboard');
 
+// TODO:policy,can設定、自分しか自分の投稿を編集、削除申請できない
 # reportルーティング
 Route::resource('reports', ReportController::class)
     ->only(['create', 'store', 'edit', 'update'])

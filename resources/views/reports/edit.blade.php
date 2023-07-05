@@ -1111,6 +1111,12 @@
                     let reportStartTime = value.start_time;
                     let reportEndTime = value.end_time;
                     let reportStartDate = value.start_date;
+                    // 終日選択
+                    if (subReportCategories[0].checked || subReportCategories[1].checked) {
+                        if (reportStartDate == startY_M_D) {
+                            duplication = true;
+                        }
+                    }
                     // 終日休み
                     if (reportAmPm == null && reportStartTime == null && reportStartDate == startY_M_D) {
                         duplication = true;

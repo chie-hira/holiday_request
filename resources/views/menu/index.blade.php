@@ -125,7 +125,7 @@
                                     clip-rule="evenodd" />
                             </svg>
                         </span>
-                        <span class="font-bold">{{ $approved }}件</span>の<span class="font-bold">承認待</span>があります
+                        <span class="font-bold">{{ $approved }}件</span>の<span class="font-bold">取消確認</span>があります
                     </div>
                 @endif
             </div>

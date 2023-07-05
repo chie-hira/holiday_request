@@ -1,5 +1,6 @@
 <x-app-layout>
     {{-- //TODO:メール機能届出の提出、更新、削除で通知、承認で通知 --}}
+    {{-- //TODO:半日休、シフトごとで時間違う --}}
     <section class="text-gray-600 body-font">
         <div class="container max-w-2xl min-w-max w-full md:w-4/5 lg:w-2/3 px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-12">
@@ -921,11 +922,7 @@
             if (reportCategory.value == 2 || reportCategory.value == 12) { // バースデイ休暇、欠勤
                 if (holidayCheck() == true) {
                     getDays = 0;
-                } else {
-                    getDays = 1.0;
-                }
-
-                if (duplicationCheck() == true) {
+                } else if (duplicationCheck() == true) {
                     getDays = 0;
                 } else {
                     getDays = 1.0;
@@ -1079,6 +1076,12 @@
                 const myReports = @json($my_reports);
                 let duplication = false;
                 myReports.forEach(report => {
+                    // 終日選択
+                    if (subReportCategories[0].checked || subReportCategories[1].checked) {
+                        if (reportStartDate == startY_M_D) {
+                            duplication = true;
+                        }
+                    }
                     // 終日休み
                     if (report.am_pm == null && report.start_time == null && report.start_date == startY_M_D) {
                         duplication = true;

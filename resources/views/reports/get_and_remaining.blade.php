@@ -1,4 +1,5 @@
 <x-app-layout>
+{{-- //TODO:月、部所指定して表示 --}}
     <!-- Page nav -->
     <div class="border-b-2 border-gray-200">
         <nav class="px-4 -mb-0.5 flex space-x-2">

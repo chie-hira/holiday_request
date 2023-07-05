@@ -130,27 +130,6 @@ class RemainingController extends Controller
     {
         $my_remainings = Auth::user()->remainings;
 
-        $reports = Auth::user()
-            ->reports->whereIn('report_id', [
-                1,
-                2,
-                3,
-                4,
-                5,
-                6,
-                7,
-                8,
-                9,
-                10,
-                11,
-                16,
-            ])
-            ->where('approved', 0)
-            ->where('cancel', 0);
-        if (empty($reports->first())) {
-            $reports = [];
-        }
-
         /** 最後の弔事届出から14日で弔事の残日数をリセット */
         # 弔事の届出から14日で自動的にリセット
         # 14日以内に同分類に弔事が発生した場合は、管理者が手動で更新
@@ -168,9 +147,7 @@ class RemainingController extends Controller
             }
         }
 
-        return view('remainings.my_index')->with(
-            compact('my_remainings', 'reports')
-        );
+        return view('remainings.my_index')->with(compact('my_remainings'));
     }
 
     /** 残日数リセット関数 */

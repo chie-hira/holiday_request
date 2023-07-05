@@ -375,6 +375,7 @@ class ReportController extends Controller
                 return redirect()
                     ->route('reports.show', $report)
                     ->with('msg', '承認しました');
+                    // FIXME:メッセージの埋め込み、修正に強くする
             } catch (\Exception $e) {
                 DB::rollBack(); # トランザクション失敗終了
                 return back()
@@ -1511,9 +1512,9 @@ class ReportController extends Controller
         # 重複削除&並べ替え
         $reports = $reports
             ->unique()
-            ->sortBy('report_date')
+            ->sortBy('user.department_id')
             ->sortBy('user.factory_id')
-            ->sortBy('user.department_id');
+            ->sortBy('report_date');
 
         return view('reports.pending_approval')->with(compact('reports'));
     }
@@ -1697,9 +1698,9 @@ class ReportController extends Controller
         # 重複削除&並べ替え
         $reports = $reports
             ->unique()
-            ->sortBy('report_date')
+            ->sortBy('user.department_id')
             ->sortBy('user.factory_id')
-            ->sortBy('user.department_id');
+            ->sortBy('report_date');
 
         return view('reports.approved')->with(compact('reports'));
     }
@@ -1936,7 +1937,7 @@ class ReportController extends Controller
                     $remaining->save(); # 残日数を保存
                 }
                 DB::commit(); # トランザクション成功終了
-                $user = $report->user()->first();
+                $user = $report->user;
                 $user->approved($report); # 届出作成者に承認を通知
                 return redirect()
                     ->route('reports.show', $report)
@@ -2598,9 +2599,9 @@ class ReportController extends Controller
         # 重複削除&並べ替え
         $reports = $reports
             ->unique()
-            ->sortBy('report_date')
+            ->sortBy('user.department_id')
             ->sortBy('user.factory_id')
-            ->sortBy('user.department_id');
+            ->sortBy('report_date');
         $factories = FactoryCategory::all();
         $report_categories = ReportCategory::all();
 
