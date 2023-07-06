@@ -332,9 +332,10 @@ class ReportController extends Controller
 
         $remaining = Remaining::where('user_id', '=', Auth::user()->id)
             ->where('report_id', $request->report_id)
-            ->first('remaining');
+            ->first();
         if (!empty($remaining->remaining)) {
-            $result = $remaining->remaining - $request->get_days; // 説明変数
+            // $result = $remaining->remaining - $request->get_days; // 説明変数
+            $result = $remaining->remaining - $remaining->pending_get_days - $request->get_days; // 説明変数
 
             if ($result < 0) {
                 throw ValidationException::withMessages([
@@ -2615,6 +2616,7 @@ class ReportController extends Controller
 
     public function export(Request $request)
     {
+        // FIXME:権限で絞り込んでいないので表示どおりに出力されない
         /** 設定条件を定義して出力するreportを絞り込む
          * factory_id 工場
          * user_id ユーザー

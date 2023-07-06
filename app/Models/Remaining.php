@@ -12,6 +12,8 @@ class Remaining extends Model
 
     protected $fillable = ['user_id', 'report_id', 'remaining_days', 'am_pm'];
 
+    public $appends = ['pending_get_days'];
+
     /**
      * Get the user that owns the Remaining
      *
@@ -97,5 +99,15 @@ class Remaining extends Model
         } else {
             return 0;
         }
+    }
+
+    /** 承認待ちの取得日数 */
+    public function getPendingGetDaysAttribute()
+    {
+        $reports = Auth::user()
+            ->reports->where('report_id', $this->report_id)
+            ->where('approved', 0)
+            ->where('cancel', 0);
+        return $reports->sum('get_days');
     }
 }

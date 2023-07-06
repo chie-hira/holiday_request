@@ -1012,7 +1012,9 @@
             // console.log(arr);
             arr.forEach((el) => {
                 if (ownRemainings[el].report_id == reportId) {
-                    ownRemainingDays = ownRemainings[el].remaining;
+                    // ownRemainingDays = ownRemainings[el].remaining;
+                    // 申請中の日数を考慮した残日数を算出
+                    ownRemainingDays = ownRemainings[el].remaining - ownRemainings[el].pending_get_days;
                 }
             });
 
