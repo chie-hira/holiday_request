@@ -250,7 +250,7 @@ class UsersTableSeeder extends Seeder
             ],
             [
                 'name' => '浅利　摩実',
-                'email' => '201@mailaddress.com',
+                'email' => 'm-asari@nagashima-s.co.jp',
                 'password' => bcrypt(201),
                 'employee' => 201,
                 'factory_id' => 1,
@@ -272,7 +272,7 @@ class UsersTableSeeder extends Seeder
             ],
             [
                 'name' => '千葉　寛子',
-                'email' => '214@mailaddress.com',
+                'email' => 'h-chiba@nagashima-s.co.jp',
                 'password' => bcrypt(214),
                 'employee' => 214,
                 'factory_id' => 1,
@@ -415,7 +415,7 @@ class UsersTableSeeder extends Seeder
             ],
             [
                 'name' => '須藤三樹夫',
-                'email' => 'app.sample.001@gmail.com',
+                'email' => 'm-sudou@nagashima-s.co.jp',
                 'password' => bcrypt(366),
                 'employee' => 366,
                 'factory_id' => 1,
@@ -690,7 +690,7 @@ class UsersTableSeeder extends Seeder
             ],
             [
                 'name' => '蜂谷　昭子',
-                'email' => '499@mailaddress.com',
+                'email' => 's-shouko@nagashima-s.co.jp',
                 'password' => bcrypt(499),
                 'employee' => 499,
                 'factory_id' => 1,
@@ -1053,7 +1053,7 @@ class UsersTableSeeder extends Seeder
             ],
             [
                 'name' => '松井　むつみ',
-                'email' => '640@mailaddress.com',
+                'email' => 'm-matsui@nagashima-s.co.jp',
                 'password' => bcrypt(640),
                 'employee' => 640,
                 'factory_id' => 1,
