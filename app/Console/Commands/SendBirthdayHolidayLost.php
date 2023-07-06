@@ -49,7 +49,7 @@ class SendBirthdayHolidayLost extends Command
                 $birthday->copy()->addMonths(3)->day .
                 '日';
             Mail::send(
-                'mail.birthdayHolidayLost',
+                'mails.birthdayHolidayLost',
                 ['name' => $user->name, 'start' => $start, 'end' => $end],
                 function ($message) use ($user) {
                     $message

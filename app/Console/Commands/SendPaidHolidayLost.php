@@ -29,7 +29,7 @@ class SendPaidHolidayLost extends Command
         foreach ($users as $user) {
             $lost_paid_holidays = $user->lost_paid_holidays;
             Mail::send(
-                'mail.paidHolidayLost',
+                'mails.paidHolidayLost',
                 ['name' => $user->name, 'lost_paid_holidays' => $lost_paid_holidays],
                 function ($message) use ($user) {
                     $message
