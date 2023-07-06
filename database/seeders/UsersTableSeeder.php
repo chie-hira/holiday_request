@@ -415,7 +415,7 @@ class UsersTableSeeder extends Seeder
             ],
             [
                 'name' => '須藤三樹夫',
-                'email' => '366@mailaddress.com',
+                'email' => 'app.sample.001@gmail.com',
                 'password' => bcrypt(366),
                 'employee' => 366,
                 'factory_id' => 1,
