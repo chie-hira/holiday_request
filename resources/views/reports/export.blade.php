@@ -7,6 +7,7 @@
             <th>{{ __('休暇の種類') }}</th>
             <th>{{ __('取得期間') }}</th>
             <th></th>
+            <th></th>
             <th>{{ __('取得日数') }}</th>
             <th>{{ __('シフト') }}</th>
             <th>{{ __('届出日') }}</th>
@@ -38,23 +39,22 @@
                 <td>
                     @if ($report->start_date != null)
                         {{ $report->start_date }}
-                    @else
-                        -
-                    @endif
-                    @if ($report->start_time != null)
-                        &emsp;{{ Str::substr($report->start_time, 0, 5) }}
                     @endif
                 </td>
-                
                 <td>
-                    @if ($report->end_date != null)
-                        ~&emsp;&emsp;{{ $report->end_date }}
-                    @endif
-                    @if ($report->end_time != null)
-                        ~&emsp;&emsp;{{ Str::substr($report->end_time, 0, 5) }}
+                    @if ($report->start_time != null)
+                        {{ Str::substr($report->start_time, 0, 5) }}
                     @endif
                     @if ($report->am_pm != null)
                         {{ $report->am_pm == 1 ? '午 前' : '午 後' }}
+                    @endif
+                    @if ($report->end_date != null)
+                        {{ $report->end_date }}
+                    @endif
+                </td>
+                <td>
+                    @if ($report->end_time != null)
+                        {{ Str::substr($report->end_time, 0, 5) }}
                     @endif
                 </td>
                 <td>
