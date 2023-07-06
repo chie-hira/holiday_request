@@ -29,7 +29,7 @@ class SendPaidHoliday extends Command
         foreach ($users as $user) {
             $get_paid_holidays = $user->sum_get_paid_holidays;
             Mail::send(
-                'mail.paidHoliday',
+                'mails.paidHoliday',
                 ['name' => $user->name, 'get_paid_holidays' => $get_paid_holidays],
                 function ($message) use ($user) {
                     $message

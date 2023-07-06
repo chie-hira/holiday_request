@@ -30,7 +30,7 @@ class SendBirthdayGreetings extends Command
 
         foreach ($users as $user) {
             Mail::send(
-                'mail.birthday',
+                'mails.birthday',
                 ['name' => $user->name],
                 function ($message) use ($user) {
                     $message->to($user->email)->subject('Happy Birthday!');

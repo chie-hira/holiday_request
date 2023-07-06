@@ -42,10 +42,11 @@ class Registered extends Notification
      */
     public function toMail($notifiable)
     {
-        // return (new MailMessage)->markdown('mail.registered');
-        return (new MailMessage())->markdown('mail.registered', [
-            'user_name' => $this->user_name,
-        ]);
+        $url = route('menu');
+        return (new MailMessage)->subject('休暇申請アプリに登録されました')->markdown('mails.registered', [
+            'user_name' => $this->user_name, 
+            'url' => $url, 
+            ]);
     }
 
     /**

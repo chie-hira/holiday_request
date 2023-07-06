@@ -147,7 +147,7 @@
                     </div>
                     <!-- 有給休暇 - end -->
 
-                    <!-- 半日有給 - start -->
+                    <!-- 半日休 - start -->
                     <div style="display: none" id="am_pm_form">
                         <label for="am_pm" class="block mb-2 text-sm font-medium text-gray-900">
                             前半・後半
@@ -158,7 +158,7 @@
                             <option value="2" @if (2 === (int) old('am_pm', $report->am_pm)) selected @endif>後半</option>
                         </x-select>
                     </div>
-                    <!-- 半日有給 - end -->
+                    <!-- 半日休 - end -->
 
                     <!-- 時間休 - start -->
                     <div style="display: none" id="time_empty_form">
@@ -194,6 +194,24 @@
                     </div>
                 </div>
                 <!-- 時間休 - end -->
+
+                <!-- 半日休コメント - start -->
+                <div style="display: none" id="am_pm_comment">
+                    <div class="flex h-8 leading-8 items-center text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="w-5 h-5 mr-2 text-sky-600">
+                            <path fill-rule="evenodd"
+                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                                clip-rule="evenodd" fill="" />
+                        </svg>
+                        <div class="items-center text-center">
+                            半日休の後半が日を跨ぐ場合でも、休暇予定日は
+                            <span class="font-semibold">始業時間の日付</span>
+                            にしてください。
+                        </div>
+                    </div>
+                </div>
+                <!-- 半日休コメント - end -->
 
                 <!-- 遅刻・早退 - start -->
                 <div style="display: none" id="time_form_10m">
@@ -409,6 +427,7 @@
         let endTimeForm = document.getElementById('end_time_form');
         let halfDateLabel = document.getElementById('half_date_label');
         let amPmForm = document.getElementById('am_pm_form');
+        let amPmComment = document.getElementById('am_pm_comment');
         let amPm = document.getElementById('am_pm');
         const reasons = @json($reasons);
         // const report = @json($report);
@@ -480,6 +499,7 @@
                     halfDateLabel.style.display = "";
                     startDateForm.style.display = "";
                     amPmForm.style.display = "none";
+                    amPmComment.style.display = "none";
                     timeEmptyForm.style.display = "none";
                     timeForm.style.display = "none";
                     timeForm30.style.display = "none";
@@ -492,6 +512,7 @@
                 if (subReportCategoryValue == 2) { // 連休
                     halfDateLabel.style.display = "none";
                     amPmForm.style.display = "none";
+                    amPmComment.style.display = "none";
                     timeEmptyForm.style.display = "none";
                     timeForm.style.display = "none";
                     timeForm30.style.display = "none";
@@ -507,6 +528,7 @@
                     halfDateLabel.style.display = "";
                     startDateForm.style.display = "";
                     amPmForm.style.display = "";
+                    amPmComment.style.display = "";
                     timeEmptyForm.style.display = "none";
                     timeForm.style.display = "none";
                     timeForm30.style.display = "none";
@@ -520,6 +542,7 @@
                     halfDateLabel.style.display = "";
                     startDateForm.style.display = "";
                     amPmForm.style.display = "none";
+                    amPmComment.style.display = "none";
                     timeEmptyForm.style.display = "";
                     timeForm.style.display = "";
                     timeForm30.style.display = "none";
@@ -900,7 +923,32 @@
                 } else if (duplicationCheck() == true) {
                     getDays = 0;
                 } else {
-                    getDays = 0.5;
+                    // パート,アルバイトはコードで休時間が変わる
+                    // フルタイムは4時間
+                    if (shiftId == 19 || // コード43
+                        (shiftId == 15 && amPmVal == 2)) { // コード11後半
+                        getDays = 0.25; // 2時間
+                    } else if (
+                        (shiftId == 21 && amPmVal == 2) || // コード58後半
+                        (shiftId == 14 && amPmVal == 2) || // コード8後半
+                        shiftId == 22 || // コード59
+                        (shiftId == 16 && amPmVal == 1)) { // コード14前半
+                        getDays = 0.3125; // 2時間半
+                    } else if (
+                        (shiftId == 17 && amPmVal == 2) || // コード19後半
+                        shiftId == 18 || // コード42
+                        (shiftId == 13 && amPmVal == 1) || // コード5前半
+                        (shiftId == 16 && amPmVal == 2)) { // コード14後半
+                        getDays = 0.375; // 3時間
+                    } else if (
+                        (shiftId == 15 && amPmVal == 1) || // コード11前半
+                        shiftId == 20 || // コード53
+                        (shiftId == 14 && amPmVal == 1) || // コード8前半
+                        (shiftId == 17 && amPmVal == 1)) { // コード19前半
+                        getDays = 0.4375; // 3時間半
+                    } else {
+                        getDays = 0.5;
+                    }
                 }
             }
 
@@ -1104,49 +1152,43 @@
                 console.log('duplicationCheck'); // 起動確認
                 const myReports = @json($my_reports);
                 let duplication = false;
-
-                Object.keys(myReports).forEach(key => {
-                    const value = myReports[key];
-                    let reportAmPm = value.am_pm;
-                    let reportStartTime = value.start_time;
-                    let reportEndTime = value.end_time;
-                    let reportStartDate = value.start_date;
+                Object.keys(myReports).forEach((el) => {
                     // 終日選択
                     if (subReportCategories[0].checked || subReportCategories[1].checked) {
-                        if (reportStartDate == startY_M_D) {
+                        if (myReports[el].start_date == startY_M_D) {
                             duplication = true;
                         }
                     }
                     // 終日休み
-                    if (reportAmPm == null && reportStartTime == null && reportStartDate == startY_M_D) {
+                    if (myReports[el].am_pm == null && myReports[el].start_time == null && myReports[el].start_date == startY_M_D) {
                         duplication = true;
                     }
                     // 時間休み
-                    if (reportStartTime != null && reportStartDate == startY_M_D) {
+                    if (myReports[el].start_time != null && myReports[el].start_date == startY_M_D) {
                         for (let t = new Date(startDate.value + ' ' + startTime.value); t <= endTimeVal; t.setTime(t
                                 .getTime() + 5 * 60 * 1000)) {
-                            if (reportStartTime == convertTime(t.getTime())) {
+                            if (myReports[el].start_time == convertTime(t.getTime())) {
                                 duplication = true;
                             }
-                            if (reportEndTime == convertTime(t.getTime())) {
+                            if (myReports[el].end_time == convertTime(t.getTime())) {
                                 duplication = true;
                             }
-                            if (reportStartTime <= convertTime(t.getTime()) && reportEndTime >= convertTime(t
+                            if (myReports[el].start_time <= convertTime(t.getTime()) && myReports[el].end_time >= convertTime(t
                                     .getTime())) {
                                 duplication = true;
                             }
                         }
                     }
                     // 半日休み
-                    if (reportAmPm != null && reportStartDate == startY_M_D) {
-                        if (reportAmPm == amPmVal) {
+                    if (myReports[el].am_pm != null && myReports[el].start_date == startY_M_D) {
+                        if (myReports[el].am_pm == amPmVal) {
                             duplication = true;
                         }
-                        if (reportAmPm == 1) {
+                        if (myReports[el].am_pm == 1) {
                             var sTime = workTimeStart;
                             var eTime = lunchTimeStart;
                         }
-                        if (reportAmPm == 2) {
+                        if (myReports[el].am_pm == 2) {
                             var sTime = lunchTimeEnd;
                             var eTime = workTimeEnd;
                         }

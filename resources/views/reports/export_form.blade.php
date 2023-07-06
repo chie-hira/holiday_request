@@ -11,6 +11,16 @@
                 @endforeach
             </x-select>
             <!-- 工場選択 - end -->
+            <!-- 理由選択 - start -->
+            <x-select name="select_user" id="select_user" class="block text-xs" onchange="search();">
+                <option value=''>全て</option>
+                @foreach ($users as $user)
+                    <option value="{{ $user->id }}" @if ($user->id === (int) old('select_user')) selected @endif>
+                        {{ $user->employee }}
+                    </option>
+                @endforeach
+            </x-select>
+            <!-- 理由選択 - end -->
             <!-- 休暇種類選択 - start -->
             <x-select name="select_report" id="select_report" class="block text-xs" onchange="search();">
                 <option value=''>全て</option>
@@ -171,6 +181,7 @@
                     <form action="{{ route('reports.export') }}" method="POST">
                         @csrf
                         <input type="hidden" name="factory_id" id="factory_id" value="">
+                        <input type="hidden" name="user_id" id="user_id" value="">
                         <input type="hidden" name="report_category_id" id="report_category_id" value="">
                         <input type="hidden" name="get_month" id="get_month" value="">
                         <div class="flex flex-row-reverse">
@@ -199,41 +210,115 @@
 
     <script>
         let selectFactory = document.getElementById('select_factory');
+        let selectUser = document.getElementById('select_user');
         let selectReport = document.getElementById('select_report');
         let selectMonth = document.getElementById('select_month');
         const reports = @json($reports);
 
         function search() {
             let selectFactoryId = selectFactory.value;
+            let selectUserId = selectUser.value;
             let selectReportId = selectReport.value;
             let selectGetMonth = selectMonth.value;
             console.log('search'); // 起動確認
             // 条件書き出し
             document.getElementById('factory_id').setAttribute('value', selectFactoryId);
+            document.getElementById('user_id').setAttribute('value', selectUserId);
             document.getElementById('report_category_id').setAttribute('value', selectReportId);
             document.getElementById('get_month').setAttribute('value', selectGetMonth);
-            reportDataChange(selectFactoryId, selectReportId, selectGetMonth);
+            reportDataChange(selectFactoryId, selectUserId, selectReportId, selectGetMonth);
         }
 
-        function reportDataChange(selectFactoryId, selectReportId, selectGetMonth) {
+        function reportDataChange(selectFactoryId, selectUserId, selectReportId, selectGetMonth) {
             Object.keys(reports).forEach(key => {
                 const value = reports[key];
                 let reportFactoryId = value.user.factory_id;
                 let reportCartegoryId = value.report_id;
+                let reportUserId = value.user_id;
                 let reportGetMonth = value.start_date.substr(0, 7);
                 let reportId = document.getElementById('report_' + value.id);
                 console.log(key, value);
 
                 // 選択された値と一致する場合は表示、そうでなければ非表示
-                if (selectFactoryId == reportFactoryId && selectReportId == reportCartegoryId && selectGetMonth ==
-                    reportGetMonth ||
-                    selectFactoryId == reportFactoryId && selectReportId == reportCartegoryId && !selectGetMonth ||
-                    selectFactoryId == reportFactoryId && !selectReportId && selectGetMonth == reportGetMonth ||
-                    selectFactoryId == reportFactoryId && !selectReportId && !selectGetMonth ||
-                    !selectFactoryId && selectReportId == reportCartegoryId && selectGetMonth == reportGetMonth ||
-                    !selectFactoryId && selectReportId == reportCartegoryId && !selectGetMonth ||
-                    !selectFactoryId && !selectReportId && selectGetMonth == reportGetMonth ||
-                    !selectFactoryId && !selectReportId && !selectGetMonth
+                if (selectFactoryId == reportFactoryId &&
+                    selectReportId == reportCartegoryId &&
+                    selectUserId == reportUserId &&
+                    selectGetMonth == reportGetMonth || // 全て選択
+
+                    !selectFactoryId &&
+                    selectReportId == reportCartegoryId &&
+                    selectUserId == reportUserId &&
+                    selectGetMonth == reportGetMonth || // 休暇種類,ユーザー,月 選択
+
+                    selectFactoryId == reportFactoryId &&
+                    !selectReportId &&
+                    selectUserId == reportUserId &&
+                    selectGetMonth == reportGetMonth || // 工場,ユーザー,月 選択
+
+                    selectFactoryId == reportFactoryId &&
+                    selectReportId == reportCartegoryId &&
+                    !selectUserId &&
+                    selectGetMonth == reportGetMonth || // 工場,休暇種類,月 選択
+
+                    selectFactoryId == reportFactoryId &&
+                    selectReportId == reportCartegoryId &&
+                    selectUserId == reportUserId &&
+                    !selectGetMonth || // 工場,休暇種類,ユーザー 選択
+
+                    !selectFactoryId &&
+                    !selectReportId &&
+                    selectUserId == reportUserId &&
+                    selectGetMonth == reportGetMonth || // ユーザー,月 選択
+
+                    !selectFactoryId &&
+                    selectReportId == reportCartegoryId &&
+                    !selectUserId &&
+                    selectGetMonth == reportGetMonth || // 休暇種類,月 選択
+
+                    !selectFactoryId &&
+                    selectReportId == reportCartegoryId &&
+                    selectUserId == reportUserId &&
+                    !selectGetMonth || // 休暇種類,ユーザー 選択
+
+                    selectFactoryId == reportFactoryId &&
+                    !selectReportId &&
+                    !selectUserId &&
+                    selectGetMonth == reportGetMonth || // 工場,月 選択
+
+                    selectFactoryId == reportFactoryId &&
+                    !selectReportId &&
+                    selectUserId == reportUserId &&
+                    !selectGetMonth || // 工場,ユーザー 選択
+
+                    selectFactoryId == reportFactoryId &&
+                    selectReportId == reportCartegoryId &&
+                    !selectUserId &&
+                    !selectGetMonth || // 工場,休暇種類 選択
+
+                    !selectFactoryId &&
+                    !selectReportId &&
+                    !selectUserId &&
+                    selectGetMonth == reportGetMonth || // 月 選択
+
+                    !selectFactoryId &&
+                    selectReportId == reportCartegoryId &&
+                    !selectUserId &&
+                    !selectGetMonth || // 休暇種類 選択
+
+                    !selectFactoryId &&
+                    !selectReportId &&
+                    selectUserId == reportUserId &&
+                    !selectGetMonth || // ユーザー 選択
+
+                    selectFactoryId == reportFactoryId &&
+                    !selectReportId &&
+                    !selectUserId &&
+                    !selectGetMonth || // 工場 選択
+
+                    !selectFactoryId &&
+                    !selectReportId &&
+                    !selectUserId &&
+                    !selectGetMonth // 全て未選択
                 ) {
                     reportId.style.display = '';
                 } else {

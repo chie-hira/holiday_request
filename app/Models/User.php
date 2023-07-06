@@ -116,10 +116,21 @@ class User extends Authenticatable
     // アクセサ
     public function getTeamAllAttribute()
     {
-        $team =
-            $this->factory->factory_name .
-            $this->department->department_name .
-            $this->group->group_name;
+        if ($this->group->id != 1) {
+            $team =
+                $this->factory->factory_name .
+                $this->department->department_name .
+                $this->group->group_name;
+        }
+        if ($this->department->id != 1 && $this->group->id == 1) {
+            $team =
+                $this->factory->factory_name .
+                $this->department->department_name;
+        }
+        if ($this->department->id == 1) {
+            $team =
+                $this->factory->factory_name;
+        }
         return $team;
     }
 
