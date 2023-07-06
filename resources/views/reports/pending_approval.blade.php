@@ -18,47 +18,47 @@
                                     <thead>
                                         <tr>
                                             <th scope="col"
-                                                class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                class="px-4 py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
                                                 届出日
                                             </th>
                                             <th scope="col"
-                                                class="pl-4 pr-1 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                class="pl-4 pr-1 py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Team') }}
                                             </th>
                                             <th scope="col"
-                                                class="py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                class="py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Employee') }}
                                             </th>
                                             <th scope="col"
-                                                class="pl-1 pr-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                class="pl-1 pr-4 py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Name') }}
                                             </th>
                                             <th scope="col"
-                                                class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                class="px-4 py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
                                                 内 容
                                             </th>
                                             <th scope="col" colspan="2"
-                                                class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                class="px-4 py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
                                                 期 間
                                             </th>
                                             <th scope="col"
-                                                class="px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                class="px-2 py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
                                                 日数・時間
                                             </th>
                                             <th scope="col"
-                                                class="pl-2 pr-1 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                class="pl-2 pr-1 py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Approver') }}
                                             </th>
                                             <th scope="col"
-                                                class="pl-2 pr-1 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                class="pl-2 pr-1 py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Manager') }}
                                             </th>
                                             <th scope="col"
-                                                class="pl-1 pr-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                class="pl-1 pr-2 py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Leader') }}
                                             </th>
                                             <th scope="col"
-                                                class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                class="px-4 py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
                                             </th>
                                         </tr>
                                     </thead>

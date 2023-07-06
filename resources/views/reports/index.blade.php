@@ -52,7 +52,7 @@
                                     <thead>
                                         <tr>
                                             <th scope="col"
-                                                class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                class="px-4 py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
                                                 届出日
                                             </th>
                                             {{-- <th scope="col"
@@ -68,15 +68,15 @@
                                                 {{ __('Name') }}
                                             </th> --}}
                                             <th scope="col"
-                                                class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                class="px-4 py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
                                                 内 容
                                             </th>
                                             <th scope="col" colspan="2"
-                                                class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                class="px-4 py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
                                                 期 間
                                             </th>
                                             <th scope="col"
-                                                class="w-32 px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                class="w-32 px-2 py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
                                                 日数・時間
                                             </th>
                                             <th scope="col" colspan="4"
@@ -85,7 +85,6 @@
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-200 ">
-
                                         @foreach ($reports as $report)
                                             <tr class="hover:bg-gray-100 ">
                                                 <td
@@ -128,7 +127,7 @@
                                                         ~&emsp;&emsp;{{ Str::substr($report->end_time, 0, 5) }}
                                                     @endif
                                                     @if ($report->am_pm != null)
-                                                        {{ $report->am_pm == 1 ? '午 前' : '午 後' }}
+                                                        {{ $report->am_pm == 1 ? '前半' : '後半' }}
                                                     @endif
                                                 </td>
                                                 <td
@@ -148,7 +147,7 @@
                                                     @if ($report->cancel == 1)
                                                         <span class="text-red-600">取消確認中</span>
                                                     @else
-                                                        @if ($report->approval1 == 0 || $report->approval2 == 0)
+                                                        @if ($report->cancel == 0 && $report->approved == 0)
                                                             <span class="text-amber-600">承認中</span>
                                                         @else
                                                             <span class="text-sky-600">承認済み</span>

@@ -30,7 +30,7 @@
                             届出日
                         </label>
                         <x-input type="date" id="report_date" name="report_date" class="block mt-1 w-full"
-                            :value="old('report_date')" required />
+                            :value="date('Y-m-d')" required readonly />
                     </div>
                     <div>
                         <label for="user_id" class="block mb-2 text-sm font-medium text-gray-900">
@@ -44,7 +44,7 @@
                             休暇予定日のシフト
                         </label>
                         <x-select name="shift_id" id="shift_id" class="block mt-1 w-full" onchange="countDays();"
-                            required>
+                            required autofocus>
                             @foreach ($shifts as $shift)
                                 <option value="{{ $shift->id }}" @if ($shift->id === (int) old('shift_id')) selected @endif>
                                     シフトコード{{ $shift->shift_code }}&emsp;{{ $shift->start_time_hm }}~{{ $shift->end_time_hm }}
@@ -875,7 +875,32 @@
                 } else if (duplicationCheck() == true) {
                     getDays = 0;
                 } else {
-                    getDays = 0.5;
+                    // パート,アルバイトはコードで休時間が変わる
+                    // フルタイムは4時間
+                    if (shiftId == 19 || // コード43
+                        (shiftId == 15 && amPmVal == 2)) { // コード11後半
+                        getDays = 0.25; // 2時間
+                    } else if (
+                        (shiftId == 21 && amPmVal == 2) || // コード58後半
+                        (shiftId == 14 && amPmVal == 2) || // コード8後半
+                        shiftId == 22 || // コード59
+                        (shiftId == 16 && amPmVal == 1)) { // コード14前半
+                        getDays = 0.3125; // 2時間半
+                    } else if (
+                        (shiftId == 17 && amPmVal == 2) || // コード19後半
+                        shiftId == 18 || // コード42
+                        (shiftId == 13 && amPmVal == 1) || // コード5前半
+                        (shiftId == 16 && amPmVal == 2)) { // コード14後半
+                        getDays = 0.375; // 3時間
+                    } else if (
+                        (shiftId == 15 && amPmVal == 1) || // コード11前半
+                        shiftId == 20 || // コード53
+                        (shiftId == 14 && amPmVal == 1) || // コード8前半
+                        (shiftId == 17 && amPmVal == 1)) { // コード19前半
+                        getDays = 0.4375; // 3時間半
+                    } else {
+                        getDays = 0.5;
+                    }
                 }
             }
 
@@ -1075,43 +1100,45 @@
                 console.log('duplicationCheck'); // 起動確認
                 const myReports = @json($my_reports);
                 let duplication = false;
-                myReports.forEach(report => {
+                Object.keys(myReports).forEach((el) => {
                     // 終日選択
                     if (subReportCategories[0].checked || subReportCategories[1].checked) {
-                        if (reportStartDate == startY_M_D) {
+                        if (myReports[el].start_date == startY_M_D) {
                             duplication = true;
                         }
                     }
                     // 終日休み
-                    if (report.am_pm == null && report.start_time == null && report.start_date == startY_M_D) {
+                    if (myReports[el].am_pm == null && myReports[el].start_time == null && myReports[el]
+                        .start_date == startY_M_D) {
                         duplication = true;
                     }
                     // 時間休み
-                    if (report.start_time != null && report.start_date == startY_M_D) {
+                    if (myReports[el].start_time != null && myReports[el].start_date == startY_M_D) {
                         for (let t = new Date(startDate.value + ' ' + startTime.value); t <= endTimeVal; t.setTime(t
                                 .getTime() + 5 * 60 * 1000)) {
-                            if (report.start_time == convertTime(t.getTime())) {
+                            if (myReports[el].start_time == convertTime(t.getTime())) {
                                 duplication = true;
                             }
-                            if (report.end_time == convertTime(t.getTime())) {
+                            if (myReports[el].end_time == convertTime(t.getTime())) {
                                 duplication = true;
                             }
-                            if (report.start_time <= convertTime(t.getTime()) && report.end_time >= convertTime(t
+                            if (myReports[el].start_time <= convertTime(t.getTime()) && myReports[el].end_time >=
+                                convertTime(t
                                     .getTime())) {
                                 duplication = true;
                             }
                         }
                     }
                     // 半日休み
-                    if (report.am_pm != null && report.start_date == startY_M_D) {
-                        if (report.am_pm == amPmVal) {
+                    if (myReports[el].am_pm != null && myReports[el].start_date == startY_M_D) {
+                        if (myReports[el].am_pm == amPmVal) {
                             duplication = true;
                         }
-                        if (report.am_pm == 1) {
+                        if (myReports[el].am_pm == 1) {
                             var sTime = workTimeStart;
                             var eTime = lunchTimeStart;
                         }
-                        if (report.am_pm == 2) {
+                        if (myReports[el].am_pm == 2) {
                             var sTime = lunchTimeEnd;
                             var eTime = workTimeEnd;
                         }
