@@ -375,7 +375,7 @@ class ReportController extends Controller
                 return redirect()
                     ->route('reports.show', $report)
                     ->with('msg', '承認しました');
-                    // FIXME:メッセージの埋め込み、修正に強くする
+                // FIXME:メッセージの埋め込み、修正に強くする
             } catch (\Exception $e) {
                 DB::rollBack(); # トランザクション失敗終了
                 return back()
@@ -409,10 +409,10 @@ class ReportController extends Controller
             $user = $report->user()->first();
             // $user->approved($report); # 届出作成者に通知
 
-            /* 
-            * 届出作成者のapproverにメール通知
-            * 工場長、部長承認はdepartment分類の有無で分岐
-            **/
+            /*
+             * 届出作成者のapproverにメール通知
+             * 工場長、部長承認はdepartment分類の有無で分岐
+             **/
             # 工場長、総務部長にメール通知
             $approver = User::whereHas('approvals', function ($query) use (
                 $report
@@ -871,10 +871,10 @@ class ReportController extends Controller
             // $user = $report->user()->first();
             // $user->approved($report); # 届出作成者に通知
 
-            /* 
-            * 届出作成者のapproverにメール通知
-            * 工場長、部長承認はdepartment分類の有無で分岐
-            **/
+            /*
+             * 届出作成者のapproverにメール通知
+             * 工場長、部長承認はdepartment分類の有無で分岐
+             **/
             # 工場長、総務部長にメール通知
             $approver = User::whereHas('approvals', function ($query) use (
                 $report
@@ -946,7 +946,6 @@ class ReportController extends Controller
                 ->withErrors($th->getMessage())
                 ->withInput();
         }
-        
 
         // if (
         //     $request->report_id == 1 || # 有給
@@ -2332,6 +2331,8 @@ class ReportController extends Controller
 
         # 課長承認
         if ($approvals->contains('approval_id', 3)) {
+            $group_approvals = $approvals->where('approval_id', 3);
+            // dd($group_approvals);
             foreach ($group_approvals as $approval) {
                 # 管轄内のreportsを取得
                 $group_reports = Report::whereHas('user', function (
@@ -2629,7 +2630,10 @@ class ReportController extends Controller
         if ($month) {
             $carbon = new Carbon($month);
             $start_date = $carbon->format('Y-m-d');
-            $end_date = $carbon->addMonth()->subDay()->format('Y-m-d');
+            $end_date = $carbon
+                ->addMonth()
+                ->subDay()
+                ->format('Y-m-d');
         }
 
         /** 条件に従って帳票出力するreportを取得 */
