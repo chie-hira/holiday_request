@@ -15,7 +15,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Facades\Excel;
-
+// BUG:残日数更新
+// 取得推進日に扱い
+// 休業、有給取消の項目追加
+// TODO:休業日に申請できないようにする
+// 金曜日15::00まで申請できないように制御
 class RemainingController extends Controller
 {
     /**

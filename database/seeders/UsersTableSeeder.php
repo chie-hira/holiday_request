@@ -250,7 +250,8 @@ class UsersTableSeeder extends Seeder
             ],
             [
                 'name' => '浅利　摩実',
-                'email' => 'm-asari@nagashima-s.co.jp',
+                // 'email' => 'm-asari@nagashima-s.co.jp',
+                'email' => '201@mailaddress.com',
                 'password' => bcrypt(201),
                 'employee' => 201,
                 'factory_id' => 1,
@@ -272,7 +273,8 @@ class UsersTableSeeder extends Seeder
             ],
             [
                 'name' => '千葉　寛子',
-                'email' => 'h-chiba@nagashima-s.co.jp',
+                // 'email' => 'h-chiba@nagashima-s.co.jp',
+                'email' => '214@mailaddress.com',
                 'password' => bcrypt(214),
                 'employee' => 214,
                 'factory_id' => 1,
@@ -415,7 +417,8 @@ class UsersTableSeeder extends Seeder
             ],
             [
                 'name' => '須藤三樹夫',
-                'email' => 'm-sudou@nagashima-s.co.jp',
+                // 'email' => 'm-sudou@nagashima-s.co.jp',
+                'email' => '366@mailaddress.com',
                 'password' => bcrypt(366),
                 'employee' => 366,
                 'factory_id' => 1,
@@ -690,7 +693,8 @@ class UsersTableSeeder extends Seeder
             ],
             [
                 'name' => '蜂谷　昭子',
-                'email' => 's-shouko@nagashima-s.co.jp',
+                // 'email' => 's-shouko@nagashima-s.co.jp',
+                'email' => '499@mailaddress.com',
                 'password' => bcrypt(499),
                 'employee' => 499,
                 'factory_id' => 1,
@@ -1053,7 +1057,8 @@ class UsersTableSeeder extends Seeder
             ],
             [
                 'name' => '松井　むつみ',
-                'email' => 'm-matsui@nagashima-s.co.jp',
+                // 'email' => 'm-matsui@nagashima-s.co.jp',
+                'email' => '640@mailaddress.com',
                 'password' => bcrypt(640),
                 'employee' => 640,
                 'factory_id' => 1,

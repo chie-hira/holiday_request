@@ -45,6 +45,7 @@ class ReportController extends Controller
      */
     public function create()
     {
+        // FIXME:半日休2時間も受け入れる
         $sub_report_categories = SubReportCategory::all();
         $reasons = ReasonCategory::all();
         $shifts = ShiftCategory::all();
@@ -145,7 +146,7 @@ class ReportController extends Controller
                         'start_date' =>
                             'required|date|after:today|after_or_equal:report_date',
                         'am_pm' => 'required|integer',
-                        'get_days' => ['required', Rule::in(0.5)],
+                        'get_days' => ['required', Rule::in(0.25, 0.3125, 0.375, 0.4375, 0.5)],
                     ],
                     [
                         'get_days.in' => '半日有休は4時間です。',

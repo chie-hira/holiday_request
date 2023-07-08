@@ -16,6 +16,8 @@ class ReportCategorySeeder extends Seeder
     {
         // 年度末にリセット
         $param = [
+        // TODO:
+        // 弔事だけ当日可能
             ['report_name' => '有給休暇', 'max_days' => 40, 'max_times' => null], # 半日有給、時間休も含む
             ['report_name' => 'バースデイ休暇', 'max_days' => 1, 'max_times' => 1],
             ['report_name' => '特別休暇(慶事)', 'max_days' => 5, 'max_times' => null],

@@ -1,6 +1,9 @@
 <x-app-layout>
     {{-- //TODO:メール機能届出の提出、更新、削除で通知、承認で通知 --}}
     {{-- //TODO:半日休、シフトごとで時間違う --}}
+{{-- //TODO:弔事の表現 --}}
+{{-- //TODO:弔事の具体的のコメント --}}
+{{-- //TODO:一覧は統一&承認者見れる --}}
     <section class="text-gray-600 body-font">
         <div class="container max-w-2xl min-w-max w-full md:w-4/5 lg:w-2/3 px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-12">
@@ -302,6 +305,21 @@
                         </div>
                     </div>
                 </div>
+                <div id="late_start_alert" style="display: none">
+                    <div class="flex h-8 leading-8 items-center text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="w-5 h-5 mr-2 text-sky-600">
+                            <path fill-rule="evenodd"
+                                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                                clip-rule="evenodd" fill="" />
+                        </svg>
+                        <div class="items-center text-center">
+                            遅刻の開始時刻は
+                            <span class="font-semibold text-red-500">就業開始時刻</span>
+                            にしてください。
+                        </div>
+                    </div>
+                </div>
                 <!-- 遅刻アラート - end -->
 
                 <!-- 外出アラート - start -->
@@ -440,6 +458,7 @@
         function alertReset() {
             workingAlert.style.display = 'none';
             lateAlert.style.display = 'none';
+            lateStartAlert.style.display = 'none';
             goOutAlert.style.display = 'none';
         }
 
@@ -758,6 +777,7 @@
         let duplicationAlert = document.getElementById('duplication_alert');
         let workingAlert = document.getElementById('working_alert');
         let lateAlert = document.getElementById('late_alert');
+        let lateStartAlert = document.getElementById('late_start_alert');
         let goOutAlert = document.getElementById('go_out_alert');
         let shiftCategory = document.getElementById('shift_id');
 
@@ -944,6 +964,8 @@
                     getDays = 0;
                 } else if (goOutTimeCheck() == true && reportCategory.value == 13) {
                     getDays = 0;
+                } else if (lateStartTimeCheck() == true) {
+                    getDays = 0;
                 } else {
                     // ランチタイムを挟む場合
                     if (startTimeVal < lunchTimeStart && endTimeVal >= lunchTimeStart && endTimeVal < lunchTimeEnd) {
@@ -1062,10 +1084,30 @@
                 }
             }
 
-            // 遅刻確認関数
+            // 遅刻開始時刻確認関数
+            function lateStartTimeCheck() {
+                console.log('lateStartTimeCheck'); // 起動確認
+                let lateStartTime = false; // 遅刻開始時刻判定
+                console.log(workTimeStart.toLocaleString());
+                console.log(startTimeVal.toLocaleString());
+                console.log(workTimeStart.toLocaleString() == startTimeVal.toLocaleString());
+
+                if (startTime.value != '' && workTimeStart.toLocaleString() != startTimeVal.toLocaleString()) {
+                    lateStartTime = true;
+                }
+                if (lateStartTime == true) {
+                    lateStartAlert.style.display = '';
+                    return true;
+                } else {
+                    lateStartAlert.style.display = 'none';
+                    return false;
+                }
+            }
+            
             function lateTimeCheck() {
                 console.log('lateTimeCheck'); // 起動確認
-                let lateTime = false; // 遅刻判定
+                console.log(workTimeStart);
+                let lateTime = false; // 外出選択時の遅刻判定
                 if (startTime.value != '' && workTimeStart >= startTimeVal && reportCategory.value == 15) {
                     lateTime = true;
                 }
@@ -1107,7 +1149,7 @@
             function goOutTimeCheck() {
                 console.log('goOutTimeCheck'); // 起動確認
                 let goOutTime = false; // 外出判定
-                if (startTime.value != '' && workTimeStart < startTimeVal && reportCategory.value == 13) {
+                if (startTime.value != '' && workTimeStart != startTimeVal && workTimeStart < startTimeVal && reportCategory.value == 13) {
                     goOutTime = true;
                 }
 
