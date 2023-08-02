@@ -278,19 +278,14 @@
 
         <div class="w-full max-w-md mx-auto mt-10 grid grid-cols-1 gap-2">
             <div class="flex justify-end">
-                <x-return-button class="w-30" href="{{ route('reports.index') }}">
-                    届出一覧
+                <x-return-button class="w-30" href="{{ route('reports.my_index') }}">
+                    My届出一覧
                 </x-return-button>
             </div>
-            @can('general_gl_reader')
+            @can('approver_reader')
                 <div class="flex justify-end">
-                    <x-return-button class="w-30" href="{{ route('reports.pending_approval') }}">
-                        承認待ち一覧
-                    </x-return-button>
-                </div>
-                <div class="flex justify-end">
-                    <x-return-button class="w-30" href="{{ route('reports.approved') }}">
-                        承認済み一覧
+                    <x-return-button class="w-30" href="{{ route('reports.index') }}">
+                        届出一覧
                     </x-return-button>
                 </div>
             @endcan

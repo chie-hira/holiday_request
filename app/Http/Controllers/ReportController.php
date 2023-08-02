@@ -32,9 +32,50 @@ class ReportController extends Controller
      */
     public function index()
     {
-        $reports = Report::all()
-            ->where('user_id', Auth::user()->id)
-            ->sortBy('report_date');
+        // 管理者権限は設定についての権限なので、一覧に影響しない
+        // 管理者権限以外の権限を取得
+        $approvals = Auth::user()->approvals->where('approval_id', '!=', 1);
+        // 権限に当てはまるユーザーの申請を取得
+        $reports = Report::whereHas('user', function ($query) use ($approvals) {
+            $query->where(function ($query) use ($approvals) {
+                foreach ($approvals as $approval) {
+                    if ($approval->department_id == 1) {
+                        $query->orWhere('factory_id', $approval->factory_id);
+                    } else {
+                        $query->orWhere(function ($query) use ($approval) {
+                            $query
+                                ->where('factory_id', $approval->factory_id)
+                                ->where(
+                                    'department_id',
+                                    $approval->department_id
+                                );
+                        });
+                    }
+                }
+            });
+        })->get();
+        // 全体の閲覧権限があるときは全てのレポートを取得
+        if ($approvals->where('factory_id', 1)->first()) {
+            $reports = Report::all();
+        }
+
+        # 重複削除&並べ替え
+        if ($reports->first()) {
+            $reports = $reports
+                ->unique()
+                ->load([
+                    'user.factory',
+                    'user.department',
+                    'report_category',
+                    'sub_report_category',
+                ])
+                ->sortBy('report_id')
+                ->sortBy('user.department_id')
+                ->sortBy('start_date')
+                ->sortBy('report_date');
+        }
+        // dd($reports);
+
         return view('reports.index')->with(compact('reports'));
     }
 
@@ -146,7 +187,10 @@ class ReportController extends Controller
                         'start_date' =>
                             'required|date|after:today|after_or_equal:report_date',
                         'am_pm' => 'required|integer',
-                        'get_days' => ['required', Rule::in(0.25, 0.3125, 0.375, 0.4375, 0.5)],
+                        'get_days' => [
+                            'required',
+                            Rule::in(0.25, 0.3125, 0.375, 0.4375, 0.5),
+                        ],
                     ],
                     [
                         'get_days.in' => '半日有休は4時間です。',
@@ -336,7 +380,10 @@ class ReportController extends Controller
             ->first();
         if (!empty($remaining->remaining)) {
             // $result = $remaining->remaining - $request->get_days; // 説明変数
-            $result = $remaining->remaining - $remaining->pending_get_days - $request->get_days; // 説明変数
+            $result =
+                $remaining->remaining -
+                $remaining->pending_get_days -
+                $request->get_days; // 説明変数
 
             if ($result < 0) {
                 throw ValidationException::withMessages([
@@ -1238,6 +1285,15 @@ class ReportController extends Controller
         }
     }
 
+    public function myIndex()
+    {
+        $reports = Auth::user()
+            ->reports->load(['report_category', 'sub_report_category'])
+            ->sortBy('start_date')
+            ->sortBy('report_date');
+        return view('reports.my_index')->with(compact('reports'));
+    }
+
     /** 承認済み届出の取消申請 */
     public function approvedCancel(Report $report)
     {
@@ -1334,377 +1390,377 @@ class ReportController extends Controller
         }
     }
 
-    # 承認待ちのreports
-    public function pendingApproval()
-    {
-        $approvals = Auth::user()->approvals;
-        $reports = new Collection();
+    // # 承認待ちのreports
+    // public function pendingApproval()
+    // {
+    //     $approvals = Auth::user()->approvals;
+    //     $reports = new Collection();
 
-        # 閲覧
-        if ($approvals->contains('approval_id', 5)) {
-            $reader_apps = $approvals->where('approval_id', 5);
-            # 工場全体閲覧
-            if ($reader_apps->contains('department_id', 1)) {
-                foreach ($reader_apps as $approval) {
-                    $extractions = Report::whereHas('user', function (
-                        $query
-                    ) use ($approval) {
-                        $query->where('factory_id', $approval->factory_id);
-                    })
-                        ->where(function ($query) {
-                            $query->where('approved', 0);
-                        })
-                        ->get();
-                    $extractions->each(function ($extraction) use ($reports) {
-                        $reports->add($extraction);
-                    });
-                }
-            }
+    //     # 閲覧
+    //     if ($approvals->contains('approval_id', 5)) {
+    //         $reader_apps = $approvals->where('approval_id', 5);
+    //         # 工場全体閲覧
+    //         if ($reader_apps->contains('department_id', 1)) {
+    //             foreach ($reader_apps as $approval) {
+    //                 $extractions = Report::whereHas('user', function (
+    //                     $query
+    //                 ) use ($approval) {
+    //                     $query->where('factory_id', $approval->factory_id);
+    //                 })
+    //                     ->where(function ($query) {
+    //                         $query->where('approved', 0);
+    //                     })
+    //                     ->get();
+    //                 $extractions->each(function ($extraction) use ($reports) {
+    //                     $reports->add($extraction);
+    //                 });
+    //             }
+    //         }
 
-            # 課全体閲覧
-            if (
-                !$reader_apps->contains('department_id', 1) &&
-                $reader_apps->contains('group_id', 1)
-            ) {
-                foreach ($reader_apps as $approval) {
-                    $extractions = Report::whereHas('user', function (
-                        $query
-                    ) use ($approval) {
-                        $query
-                            ->where('factory_id', $approval->factory_id)
-                            ->where('department_id', $approval->department_id);
-                    })
-                        ->where(function ($query) {
-                            $query->where('approved', 0);
-                        })
-                        ->get();
-                    $extractions->each(function ($extraction) use ($reports) {
-                        $reports->add($extraction);
-                    });
-                }
-            }
+    //         # 課全体閲覧
+    //         if (
+    //             !$reader_apps->contains('department_id', 1) &&
+    //             $reader_apps->contains('group_id', 1)
+    //         ) {
+    //             foreach ($reader_apps as $approval) {
+    //                 $extractions = Report::whereHas('user', function (
+    //                     $query
+    //                 ) use ($approval) {
+    //                     $query
+    //                         ->where('factory_id', $approval->factory_id)
+    //                         ->where('department_id', $approval->department_id);
+    //                 })
+    //                     ->where(function ($query) {
+    //                         $query->where('approved', 0);
+    //                     })
+    //                     ->get();
+    //                 $extractions->each(function ($extraction) use ($reports) {
+    //                     $reports->add($extraction);
+    //                 });
+    //             }
+    //         }
 
-            # グループ閲覧
-            if (
-                !$reader_apps->contains('department_id', 1) &&
-                !$reader_apps->contains('group_id', 1)
-            ) {
-                foreach ($reader_apps as $approval) {
-                    $extractions = Report::whereHas('user', function (
-                        $query
-                    ) use ($approval) {
-                        $query
-                            ->where('factory_id', $approval->factory_id)
-                            ->where('department_id', $approval->department_id)
-                            ->where('group_id', $approval->group_id);
-                    })
-                        ->where(function ($query) {
-                            $query->where('approved', 0);
-                        })
-                        ->get();
-                    $extractions->each(function ($extraction) use ($reports) {
-                        $reports->add($extraction);
-                    });
-                }
-            }
-        }
+    //         # グループ閲覧
+    //         if (
+    //             !$reader_apps->contains('department_id', 1) &&
+    //             !$reader_apps->contains('group_id', 1)
+    //         ) {
+    //             foreach ($reader_apps as $approval) {
+    //                 $extractions = Report::whereHas('user', function (
+    //                     $query
+    //                 ) use ($approval) {
+    //                     $query
+    //                         ->where('factory_id', $approval->factory_id)
+    //                         ->where('department_id', $approval->department_id)
+    //                         ->where('group_id', $approval->group_id);
+    //                 })
+    //                     ->where(function ($query) {
+    //                         $query->where('approved', 0);
+    //                     })
+    //                     ->get();
+    //                 $extractions->each(function ($extraction) use ($reports) {
+    //                     $reports->add($extraction);
+    //                 });
+    //             }
+    //         }
+    //     }
 
-        # GL承認
-        if ($approvals->contains('approval_id', 4)) {
-            $group_apps = $approvals->where('approval_id', 4);
-            foreach ($group_apps as $approval) {
-                $extractions = Report::whereHas('user', function ($query) use (
-                    $approval
-                ) {
-                    $query
-                        ->where('factory_id', $approval->factory_id)
-                        ->where('department_id', $approval->department_id)
-                        ->where('group_id', $approval->group_id);
-                })
-                    ->where(function ($query) {
-                        $query->where('approved', 0);
-                    })
-                    ->get();
+    //     # GL承認
+    //     if ($approvals->contains('approval_id', 4)) {
+    //         $group_apps = $approvals->where('approval_id', 4);
+    //         foreach ($group_apps as $approval) {
+    //             $extractions = Report::whereHas('user', function ($query) use (
+    //                 $approval
+    //             ) {
+    //                 $query
+    //                     ->where('factory_id', $approval->factory_id)
+    //                     ->where('department_id', $approval->department_id)
+    //                     ->where('group_id', $approval->group_id);
+    //             })
+    //                 ->where(function ($query) {
+    //                     $query->where('approved', 0);
+    //                 })
+    //                 ->get();
 
-                $extractions->each(function ($extraction) use ($reports) {
-                    $reports->add($extraction);
-                });
-            }
-        }
+    //             $extractions->each(function ($extraction) use ($reports) {
+    //                 $reports->add($extraction);
+    //             });
+    //         }
+    //     }
 
-        # 課長承認
-        if ($approvals->contains('approval_id', 3)) {
-            $department_apps = $approvals->where('approval_id', 3);
-            foreach ($department_apps as $approval) {
-                $extractions = Report::whereHas('user', function ($query) use (
-                    $approval
-                ) {
-                    $query
-                        ->where('factory_id', $approval->factory_id)
-                        ->where('department_id', $approval->department_id);
-                })
-                    ->where(function ($query) {
-                        $query->where('approved', 0);
-                    })
-                    ->get();
+    //     # 課長承認
+    //     if ($approvals->contains('approval_id', 3)) {
+    //         $department_apps = $approvals->where('approval_id', 3);
+    //         foreach ($department_apps as $approval) {
+    //             $extractions = Report::whereHas('user', function ($query) use (
+    //                 $approval
+    //             ) {
+    //                 $query
+    //                     ->where('factory_id', $approval->factory_id)
+    //                     ->where('department_id', $approval->department_id);
+    //             })
+    //                 ->where(function ($query) {
+    //                     $query->where('approved', 0);
+    //                 })
+    //                 ->get();
 
-                $extractions->each(function ($extraction) use ($reports) {
-                    $reports->add($extraction);
-                });
-            }
-        }
+    //             $extractions->each(function ($extraction) use ($reports) {
+    //                 $reports->add($extraction);
+    //             });
+    //         }
+    //     }
 
-        # 工場長承認:課ごと
-        if (
-            $approvals
-                ->where('approval_id', 2)
-                ->where('department_id', '!=', 1) # 課ごと
-                ->first()
-        ) {
-            $department_apps = $approvals
-                ->where('approval_id', 2)
-                ->where('department_id', '!=', 1);
-            foreach ($department_apps as $approval) {
-                $extractions = Report::whereHas('user', function ($query) use (
-                    $approval
-                ) {
-                    $query
-                        ->where('factory_id', $approval->factory_id)
-                        ->where('department_id', $approval->department_id);
-                })
-                    ->where(function ($query) {
-                        $query->where('approved', 0);
-                    })
-                    ->get();
+    //     # 工場長承認:課ごと
+    //     if (
+    //         $approvals
+    //             ->where('approval_id', 2)
+    //             ->where('department_id', '!=', 1) # 課ごと
+    //             ->first()
+    //     ) {
+    //         $department_apps = $approvals
+    //             ->where('approval_id', 2)
+    //             ->where('department_id', '!=', 1);
+    //         foreach ($department_apps as $approval) {
+    //             $extractions = Report::whereHas('user', function ($query) use (
+    //                 $approval
+    //             ) {
+    //                 $query
+    //                     ->where('factory_id', $approval->factory_id)
+    //                     ->where('department_id', $approval->department_id);
+    //             })
+    //                 ->where(function ($query) {
+    //                     $query->where('approved', 0);
+    //                 })
+    //                 ->get();
 
-                $extractions->each(function ($extraction) use ($reports) {
-                    $reports->add($extraction);
-                });
-            }
-        }
+    //             $extractions->each(function ($extraction) use ($reports) {
+    //                 $reports->add($extraction);
+    //             });
+    //         }
+    //     }
 
-        # 工場長承認:包括
-        if (
-            $approvals
-                ->where('approval_id', 2)
-                ->where('department_id', 1) # 全課
-                ->first()
-        ) {
-            $department_apps = $approvals
-                ->where('approval_id', 2)
-                ->where('department_id', 1);
-            foreach ($department_apps as $approval) {
-                $extractions = Report::whereHas('user', function ($query) use (
-                    $approval
-                ) {
-                    $query->where('factory_id', $approval->factory_id);
-                })
-                    ->where(function ($query) {
-                        $query->where('approved', 0);
-                    })
-                    ->get();
+    //     # 工場長承認:包括
+    //     if (
+    //         $approvals
+    //             ->where('approval_id', 2)
+    //             ->where('department_id', 1) # 全課
+    //             ->first()
+    //     ) {
+    //         $department_apps = $approvals
+    //             ->where('approval_id', 2)
+    //             ->where('department_id', 1);
+    //         foreach ($department_apps as $approval) {
+    //             $extractions = Report::whereHas('user', function ($query) use (
+    //                 $approval
+    //             ) {
+    //                 $query->where('factory_id', $approval->factory_id);
+    //             })
+    //                 ->where(function ($query) {
+    //                     $query->where('approved', 0);
+    //                 })
+    //                 ->get();
 
-                $extractions->each(function ($extraction) use ($reports) {
-                    $reports->add($extraction);
-                });
-            }
-        }
+    //             $extractions->each(function ($extraction) use ($reports) {
+    //                 $reports->add($extraction);
+    //             });
+    //         }
+    //     }
 
-        # 重複削除&並べ替え
-        $reports = $reports
-            ->unique()
-            ->sortBy('user.department_id')
-            ->sortBy('user.factory_id')
-            ->sortBy('report_date');
+    //     # 重複削除&並べ替え
+    //     $reports = $reports
+    //         ->unique()
+    //         ->sortBy('user.department_id')
+    //         ->sortBy('user.factory_id')
+    //         ->sortBy('report_date');
 
-        return view('reports.pending_approval')->with(compact('reports'));
-    }
+    //     return view('reports.pending_approval')->with(compact('reports'));
+    // }
 
-    # 承認済みのreports
-    public function approved()
-    {
-        $approvals = Auth::user()->approvals;
-        $reports = new Collection();
+    // # 承認済みのreports
+    // public function approved()
+    // {
+    //     $approvals = Auth::user()->approvals;
+    //     $reports = new Collection();
 
-        # 閲覧
-        if ($approvals->contains('approval_id', 5)) {
-            $reader_apps = $approvals->where('approval_id', 5);
-            # 工場全体閲覧
-            if ($reader_apps->contains('department_id', 1)) {
-                foreach ($reader_apps as $approval) {
-                    $extractions = Report::whereHas('user', function (
-                        $query
-                    ) use ($approval) {
-                        $query->where('factory_id', $approval->factory_id);
-                    })
-                        ->where(function ($query) {
-                            $query->where('approved', 1);
-                        })
-                        ->get();
-                    $extractions->each(function ($extraction) use ($reports) {
-                        $reports->add($extraction);
-                    });
-                }
-            }
+    //     # 閲覧
+    //     if ($approvals->contains('approval_id', 5)) {
+    //         $reader_apps = $approvals->where('approval_id', 5);
+    //         # 工場全体閲覧
+    //         if ($reader_apps->contains('department_id', 1)) {
+    //             foreach ($reader_apps as $approval) {
+    //                 $extractions = Report::whereHas('user', function (
+    //                     $query
+    //                 ) use ($approval) {
+    //                     $query->where('factory_id', $approval->factory_id);
+    //                 })
+    //                     ->where(function ($query) {
+    //                         $query->where('approved', 1);
+    //                     })
+    //                     ->get();
+    //                 $extractions->each(function ($extraction) use ($reports) {
+    //                     $reports->add($extraction);
+    //                 });
+    //             }
+    //         }
 
-            # 課全体閲覧
-            if (
-                !$reader_apps->contains('department_id', 1) &&
-                $reader_apps->contains('group_id', 1)
-            ) {
-                foreach ($reader_apps as $approval) {
-                    $extractions = Report::whereHas('user', function (
-                        $query
-                    ) use ($approval) {
-                        $query
-                            ->where('factory_id', $approval->factory_id)
-                            ->where('department_id', $approval->department_id);
-                    })
-                        ->where(function ($query) {
-                            $query->where('approved', 1);
-                        })
-                        ->get();
-                    $extractions->each(function ($extraction) use ($reports) {
-                        $reports->add($extraction);
-                    });
-                }
-            }
+    //         # 課全体閲覧
+    //         if (
+    //             !$reader_apps->contains('department_id', 1) &&
+    //             $reader_apps->contains('group_id', 1)
+    //         ) {
+    //             foreach ($reader_apps as $approval) {
+    //                 $extractions = Report::whereHas('user', function (
+    //                     $query
+    //                 ) use ($approval) {
+    //                     $query
+    //                         ->where('factory_id', $approval->factory_id)
+    //                         ->where('department_id', $approval->department_id);
+    //                 })
+    //                     ->where(function ($query) {
+    //                         $query->where('approved', 1);
+    //                     })
+    //                     ->get();
+    //                 $extractions->each(function ($extraction) use ($reports) {
+    //                     $reports->add($extraction);
+    //                 });
+    //             }
+    //         }
 
-            # グループ閲覧
-            if (
-                !$reader_apps->contains('department_id', 1) &&
-                !$reader_apps->contains('group_id', 1)
-            ) {
-                foreach ($reader_apps as $approval) {
-                    $extractions = Report::whereHas('user', function (
-                        $query
-                    ) use ($approval) {
-                        $query
-                            ->where('factory_id', $approval->factory_id)
-                            ->where('department_id', $approval->department_id)
-                            ->where('group_id', $approval->group_id);
-                    })
-                        ->where(function ($query) {
-                            $query->where('approved', 1);
-                        })
-                        ->get();
-                    $extractions->each(function ($extraction) use ($reports) {
-                        $reports->add($extraction);
-                    });
-                }
-            }
-        }
+    //         # グループ閲覧
+    //         if (
+    //             !$reader_apps->contains('department_id', 1) &&
+    //             !$reader_apps->contains('group_id', 1)
+    //         ) {
+    //             foreach ($reader_apps as $approval) {
+    //                 $extractions = Report::whereHas('user', function (
+    //                     $query
+    //                 ) use ($approval) {
+    //                     $query
+    //                         ->where('factory_id', $approval->factory_id)
+    //                         ->where('department_id', $approval->department_id)
+    //                         ->where('group_id', $approval->group_id);
+    //                 })
+    //                     ->where(function ($query) {
+    //                         $query->where('approved', 1);
+    //                     })
+    //                     ->get();
+    //                 $extractions->each(function ($extraction) use ($reports) {
+    //                     $reports->add($extraction);
+    //                 });
+    //             }
+    //         }
+    //     }
 
-        # GL承認
-        if ($approvals->contains('approval_id', 4)) {
-            $group_apps = $approvals->where('approval_id', 4);
-            foreach ($group_apps as $approval) {
-                $extractions = Report::whereHas('user', function ($query) use (
-                    $approval
-                ) {
-                    $query
-                        ->where('factory_id', $approval->factory_id)
-                        ->where('department_id', $approval->department_id)
-                        ->where('group_id', $approval->group_id);
-                })
-                    ->where(function ($query) {
-                        $query->where('approved', 1);
-                    })
-                    ->get();
+    //     # GL承認
+    //     if ($approvals->contains('approval_id', 4)) {
+    //         $group_apps = $approvals->where('approval_id', 4);
+    //         foreach ($group_apps as $approval) {
+    //             $extractions = Report::whereHas('user', function ($query) use (
+    //                 $approval
+    //             ) {
+    //                 $query
+    //                     ->where('factory_id', $approval->factory_id)
+    //                     ->where('department_id', $approval->department_id)
+    //                     ->where('group_id', $approval->group_id);
+    //             })
+    //                 ->where(function ($query) {
+    //                     $query->where('approved', 1);
+    //                 })
+    //                 ->get();
 
-                $extractions->each(function ($extraction) use ($reports) {
-                    $reports->add($extraction);
-                });
-            }
-        }
+    //             $extractions->each(function ($extraction) use ($reports) {
+    //                 $reports->add($extraction);
+    //             });
+    //         }
+    //     }
 
-        # 課長承認
-        if ($approvals->contains('approval_id', 3)) {
-            $department_apps = $approvals->where('approval_id', 3);
-            foreach ($department_apps as $approval) {
-                $extractions = Report::whereHas('user', function ($query) use (
-                    $approval
-                ) {
-                    $query
-                        ->where('factory_id', $approval->factory_id)
-                        ->where('department_id', $approval->department_id);
-                })
-                    ->where(function ($query) {
-                        $query->where('approved', 1);
-                    })
-                    ->get();
+    //     # 課長承認
+    //     if ($approvals->contains('approval_id', 3)) {
+    //         $department_apps = $approvals->where('approval_id', 3);
+    //         foreach ($department_apps as $approval) {
+    //             $extractions = Report::whereHas('user', function ($query) use (
+    //                 $approval
+    //             ) {
+    //                 $query
+    //                     ->where('factory_id', $approval->factory_id)
+    //                     ->where('department_id', $approval->department_id);
+    //             })
+    //                 ->where(function ($query) {
+    //                     $query->where('approved', 1);
+    //                 })
+    //                 ->get();
 
-                $extractions->each(function ($extraction) use ($reports) {
-                    $reports->add($extraction);
-                });
-            }
-        }
+    //             $extractions->each(function ($extraction) use ($reports) {
+    //                 $reports->add($extraction);
+    //             });
+    //         }
+    //     }
 
-        # 工場長承認:課ごと
-        if (
-            $approvals
-                ->where('approval_id', 2)
-                ->where('department_id', '!=', 1) # 課ごと
-                ->first()
-        ) {
-            $department_apps = $approvals
-                ->where('approval_id', 2)
-                ->where('department_id', '!=', 1);
-            foreach ($department_apps as $approval) {
-                $extractions = Report::whereHas('user', function ($query) use (
-                    $approval
-                ) {
-                    $query
-                        ->where('factory_id', $approval->factory_id)
-                        ->where('department_id', $approval->department_id);
-                })
-                    ->where(function ($query) {
-                        $query->where('approved', 1);
-                    })
-                    ->get();
+    //     # 工場長承認:課ごと
+    //     if (
+    //         $approvals
+    //             ->where('approval_id', 2)
+    //             ->where('department_id', '!=', 1) # 課ごと
+    //             ->first()
+    //     ) {
+    //         $department_apps = $approvals
+    //             ->where('approval_id', 2)
+    //             ->where('department_id', '!=', 1);
+    //         foreach ($department_apps as $approval) {
+    //             $extractions = Report::whereHas('user', function ($query) use (
+    //                 $approval
+    //             ) {
+    //                 $query
+    //                     ->where('factory_id', $approval->factory_id)
+    //                     ->where('department_id', $approval->department_id);
+    //             })
+    //                 ->where(function ($query) {
+    //                     $query->where('approved', 1);
+    //                 })
+    //                 ->get();
 
-                $extractions->each(function ($extraction) use ($reports) {
-                    $reports->add($extraction);
-                });
-            }
-        }
+    //             $extractions->each(function ($extraction) use ($reports) {
+    //                 $reports->add($extraction);
+    //             });
+    //         }
+    //     }
 
-        # 工場長承認:包括
-        if (
-            $approvals
-                ->where('approval_id', 2)
-                ->where('department_id', 1) # 全課
-                ->first()
-        ) {
-            $department_apps = $approvals
-                ->where('approval_id', 2)
-                ->where('department_id', 1);
-            foreach ($department_apps as $approval) {
-                $extractions = Report::whereHas('user', function ($query) use (
-                    $approval
-                ) {
-                    $query->where('factory_id', $approval->factory_id);
-                })
-                    ->where(function ($query) {
-                        $query->where('approved', 1);
-                    })
-                    ->get();
+    //     # 工場長承認:包括
+    //     if (
+    //         $approvals
+    //             ->where('approval_id', 2)
+    //             ->where('department_id', 1) # 全課
+    //             ->first()
+    //     ) {
+    //         $department_apps = $approvals
+    //             ->where('approval_id', 2)
+    //             ->where('department_id', 1);
+    //         foreach ($department_apps as $approval) {
+    //             $extractions = Report::whereHas('user', function ($query) use (
+    //                 $approval
+    //             ) {
+    //                 $query->where('factory_id', $approval->factory_id);
+    //             })
+    //                 ->where(function ($query) {
+    //                     $query->where('approved', 1);
+    //                 })
+    //                 ->get();
 
-                $extractions->each(function ($extraction) use ($reports) {
-                    $reports->add($extraction);
-                });
-            }
-        }
+    //             $extractions->each(function ($extraction) use ($reports) {
+    //                 $reports->add($extraction);
+    //             });
+    //         }
+    //     }
 
-        # 重複削除&並べ替え
-        $reports = $reports
-            ->unique()
-            ->sortBy('user.department_id')
-            ->sortBy('user.factory_id')
-            ->sortBy('report_date');
+    //     # 重複削除&並べ替え
+    //     $reports = $reports
+    //         ->unique()
+    //         ->sortBy('user.department_id')
+    //         ->sortBy('user.factory_id')
+    //         ->sortBy('report_date');
 
-        return view('reports.approved')->with(compact('reports'));
-    }
+    //     return view('reports.approved')->with(compact('reports'));
+    // }
 
     public function getAndRemaining()
     {

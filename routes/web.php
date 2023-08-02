@@ -28,10 +28,29 @@ use Illuminate\Support\Facades\Route;
 // TODO:policy,can設定、自分しか自分の投稿を編集、削除申請できない
 # reportルーティング
 Route::resource('reports', ReportController::class)
-    ->only(['create', 'store', 'edit', 'update'])
+    ->only(['create', 'show'])
     ->middleware('auth');
 Route::resource('reports', ReportController::class)
-    ->only(['index', 'show', 'destroy'])
+    ->only('store')
+    ->middleware('auth')
+    ->middleware('throttle:5, 1'); # 1分間に受け付けるリクエスト数を5回に制限
+    // ReportControllerTestを実行するときはリクエスト制限を外すこと
+Route::resource('reports', ReportController::class)
+    ->only(['edit', 'update'])
+    ->middleware('auth')
+    ->middleware('can:update,report');
+Route::resource('reports', ReportController::class)
+    ->only('destroy')
+    ->middleware('auth')
+    ->middleware('can:delete,report');
+Route::resource('reports', ReportController::class)
+    ->only('index')
+    ->middleware('auth')
+    ->middleware('can:approver_reader');
+
+# my_indexルーティング
+Route::get('/my_reports', [ReportController::class, 'myIndex'])
+    ->name('reports.my_index')
     ->middleware('auth');
 
 # remainingルーティング
@@ -44,12 +63,12 @@ Route::resource('users', UserController::class)->middleware('auth');
 Route::resource('approvals', ApprovalController::class)->middleware('auth');
 
 # 承認ルーティング
-Route::get('/pending_approval', [ReportController::class, 'pendingApproval'])
-    ->name('reports.pending_approval')
-    ->middleware('auth', 'can:general_gl_reader');
-Route::get('/approved', [ReportController::class, 'approved'])
-    ->name('reports.approved')
-    ->middleware('auth', 'can:general_gl_reader');
+// Route::get('/pending_approval', [ReportController::class, 'pendingApproval'])
+//     ->name('reports.pending_approval')
+//     ->middleware('auth', 'can:general_gl_reader');
+// Route::get('/approved', [ReportController::class, 'approved'])
+//     ->name('reports.approved')
+//     ->middleware('auth', 'can:general_gl_reader');
 Route::get('/get_and_remaining', [ReportController::class, 'getAndRemaining'])
     ->name('reports.get_and_remaining')
     ->middleware('auth', 'can:general_gl_reader');

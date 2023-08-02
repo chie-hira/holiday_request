@@ -55,6 +55,13 @@ class AuthServiceProvider extends ServiceProvider
             );
         });
 
+        // 「承認」「閲覧」
+        Gate::define('approver_reader', function ($user) {
+            return !empty(
+                $user->approvals->where('approval_id', '>=', 2)->first()
+            );
+        });
+
         // 権限なしに適用
         Gate::define('no_approvals', function ($user) {
             return empty($user->approvals->first());

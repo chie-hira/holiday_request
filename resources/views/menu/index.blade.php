@@ -152,7 +152,7 @@
                         </div>
                     </a>
 
-                    <a href={{ route('remainings.my_index') }} {{-- class="block text-center items-center p-3 my-2 text-base text-white rounded-xl border-2 border-gray-500 bg-fuchsia-400 hover:text-gray-600 hover:font-semibold hover:bg-white focus:text-fuchsia-400 "> --}}
+                    <a href={{ route('remainings.my_index') }} 
                         class="block text-center items-center p-3 my-2 text-white rounded-xl border border-gray-500 bg-fuchsia-400 hover:text-gray-600 hover:bg-white focus:text-fuchsia-400">
                         <div class="flex justify-center items-center text-2xl">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
@@ -167,7 +167,7 @@
                         </div>
                     </a>
 
-                    <a href={{ route('reports.index') }} {{-- class="block text-center items-center p-3 my-2 text-white rounded-xl border-2 border-gray-500 bg-amber-400 hover:text-gray-600 hover:font-semibold hover:bg-white focus:text-amber-400 "> --}}
+                    <a href={{ route('reports.my_index') }} 
                         class="block text-center items-center p-3 my-2 text-white rounded-xl border border-gray-500 bg-amber-400 hover:text-gray-600 hover:bg-white focus:text-amber-400">
                         <div class="flex justify-center items-center text-2xl">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
@@ -175,7 +175,7 @@
                                     d="M1.5 5.625c0-1.036.84-1.875 1.875-1.875h17.25c1.035 0 1.875.84 1.875 1.875v12.75c0 1.035-.84 1.875-1.875 1.875H3.375A1.875 1.875 0 011.5 18.375V5.625zM21 9.375A.375.375 0 0020.625 9h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zm0 3.75a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zm0 3.75a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zM10.875 18.75a.375.375 0 00.375-.375v-1.5a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5zM3.375 15h7.5a.375.375 0 00.375-.375v-1.5a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375zm0-3.75h7.5a.375.375 0 00.375-.375v-1.5A.375.375 0 0010.875 9h-7.5A.375.375 0 003 9.375v1.5c0 .207.168.375.375.375z"
                                     clip-rule="evenodd" fill="" />
                             </svg>
-                            <span class="ZenMaruGothic w-40">届 出 一 覧</span>
+                            <span class="ZenMaruGothic w-40">My届出一覧</span>
                         </div>
                     </a>
                 </div>
@@ -184,7 +184,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
                     <!-- 閲覧権限以上 start -->
                     @can(['general_gl_reader'])
-                        <a href={{ route('reports.pending_approval') }}
+                        <a href={{ route('reports.index') }} 
                             class="inline-flex items-center p-2 text-lg font-medium text-gray-600 hover:text-sky-700 hover:underline hover:underline-offset-0 hover:decoration-4 hover:decoration-sky-200">
                             <span class="mr-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -194,9 +194,9 @@
                                 </svg>
                             </span>
                             <span class="flex items-center w-24">
-                                承認<span class="text-red-600 font-bold">待ち</span>
+                                届出一覧
                             </span>
-                            @if ($pending)
+                            @if ($pending || $approved)
                                 <div class="flex justify-center relative -ml-4 -mt-5">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                                         class="w-6 h-6 text-red-600">
@@ -205,34 +205,7 @@
                                             clip-rule="evenodd" fill="" />
                                     </svg>
                                     <div class="absolute text-xs text-white font-bold leading-6 text-center">
-                                        {{ $pending }}
-                                    </div>
-                                </div>
-                            @endif
-                        </a>
-
-                        <a href={{ route('reports.approved') }}
-                            class="inline-flex items-center p-2 text-lg font-medium text-gray-600 hover:text-sky-700 hover:underline hover:underline-offset-0 hover:decoration-4 hover:decoration-sky-200">
-                            <span class="mr-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-                                </svg>
-                            </span>
-                            <span class="flex items-center w-24">
-                                承認<span class="font-bold text-sky-600">済み</span>
-                            </span>
-                            @if ($approved)
-                                <div class="flex justify-center relative -ml-4 -mt-5">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                        class="w-6 h-6 text-red-600">
-                                        <path fill-rule="evenodd"
-                                            d="M5.337 21.718a6.707 6.707 0 01-.533-.074.75.75 0 01-.44-1.223 3.73 3.73 0 00.814-1.686c.023-.115-.022-.317-.254-.543C3.274 16.587 2.25 14.41 2.25 12c0-5.03 4.428-9 9.75-9s9.75 3.97 9.75 9c0 5.03-4.428 9-9.75 9-.833 0-1.643-.097-2.417-.279a6.721 6.721 0 01-4.246.997z"
-                                            clip-rule="evenodd" fill="" />
-                                    </svg>
-                                    <div class="absolute text-xs text-white font-bold leading-6 text-center">
-                                        {{ $approved }}
+                                        {{ $pending + $approved }}
                                     </div>
                                 </div>
                             @endif
