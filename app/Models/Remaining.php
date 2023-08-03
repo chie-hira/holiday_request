@@ -35,6 +35,51 @@ class Remaining extends Model
     }
 
     # アクセサ
+    /** 承認済みの取得日数集計 */
+    public function getSumGetDaysAttribute()
+    {
+        $sum_report = Report::where('user_id',$this->user_id)
+                ->where('report_id',$this->report_id)
+                ->where('approved',1)
+                ->get();
+        return $sum_report->sum('get_days');
+    }
+    /** 承認済みの取得日数集計の日数だけ */
+    public function getSumGetDaysOnlyAttribute()
+    {
+        $exp = explode('.', $this->sum_get_days);
+        return $exp[0];
+    }
+    /** 承認済みの取得日数集計の時間だけ */
+    public function getSumGetDaysHoursAttribute()
+    {
+        $exp = explode('.', $this->sum_get_days);
+        $exp_key1 = array_key_exists(1, $exp);
+        if ($exp_key1) {
+            $decimal_p = '0.' . $exp[1];
+            return $decimal_p * 8; # 8時間で1日
+        } else {
+            return 0;
+        }
+    }
+    /** 承認待ちの取得日数集計の日数だけ */
+    public function getPendingGetDaysOnlyAttribute()
+    {
+        $exp = explode('.', $this->pending_get_days);
+        return $exp[0];
+    }
+    /** 承認待ちの取得日数集計の時間だけ */
+    public function getPendingGetHoursAttribute()
+    {
+        $exp = explode('.', $this->pending_get_days);
+        $exp_key1 = array_key_exists(1, $exp);
+        if ($exp_key1) {
+            $decimal_p = '0.' . $exp[1];
+            return $decimal_p * 8; # 8時間で1日
+        } else {
+            return 0;
+        }
+    }
     /** 残日数の日数だけ */
     public function getRemainingDaysAttribute()
     {
