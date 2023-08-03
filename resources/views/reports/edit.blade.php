@@ -356,7 +356,7 @@
             </form>
 
             <div class="mt-10 flex justify-end">
-                <x-return-button class="w-24 mr-2" href="{{ route('reports.index') }}">
+                <x-return-button class="w-24 mr-2" href="{{ route('reports.my_index') }}">
                     一覧
                 </x-return-button>
                 <x-back-home-button class="w-30" href="{{ route('menu') }}">

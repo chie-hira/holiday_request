@@ -103,7 +103,7 @@ Route::get('/', [ReportController::class, 'menu'])
     ->middleware('auth');
 
 # 承認後のreport削除
-Route::delete('/reports/approved/{report}/cancel', [
+Route::put('/reports/approved/{report}/cancel', [
     ReportController::class,
     'approvedCancel',
 ])
