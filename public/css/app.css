@@ -768,6 +768,9 @@ select {
 .-mb-5 {
   margin-bottom: -1.25rem;
 }
+.-ml-2 {
+  margin-left: -0.5rem;
+}
 .-ml-3 {
   margin-left: -0.75rem;
 }
@@ -1658,6 +1661,10 @@ select {
 .text-sky-400 {
   --tw-text-opacity: 1;
   color: rgb(56 189 248 / var(--tw-text-opacity));
+}
+.text-sky-500 {
+  --tw-text-opacity: 1;
+  color: rgb(14 165 233 / var(--tw-text-opacity));
 }
 .text-sky-600 {
   --tw-text-opacity: 1;
