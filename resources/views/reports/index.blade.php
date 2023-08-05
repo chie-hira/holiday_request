@@ -28,10 +28,6 @@
                                                 class="px-4 py-3 whitespace-nowrap text-right text-xs font-medium text-gray-500 tracking-wider">
                                             </th>
                                             <th scope="col"
-                                                class="pl-4 pr-1 py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
-                                                {{ __('Team') }}
-                                            </th>
-                                            <th scope="col"
                                                 class="py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Employee') }}
                                             </th>
@@ -40,16 +36,20 @@
                                                 {{ __('Name') }}
                                             </th>
                                             <th scope="col"
+                                                class="pl-4 pr-1 py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
+                                                {{ __('Team') }}
+                                            </th>
+                                            <th scope="col"
                                                 class="px-4 py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
-                                                内 容
+                                                {{ __('Report Category') }}
                                             </th>
                                             <th scope="col" colspan="2"
                                                 class="px-4 py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
-                                                期 間
+                                                {{ __('Lest Span') }}
                                             </th>
                                             <th scope="col"
                                                 class="px-2 py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
-                                                日数・時間
+                                                {{ __('Lest Day') }}
                                             </th>
                                             <th scope="col"
                                                 class="pl-2 pr-1 py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
@@ -63,9 +63,6 @@
                                                 class="pl-1 pr-2 py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Leader') }}
                                             </th>
-                                            {{-- <th scope="col"
-                                                class="px-4 py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
-                                            </th> --}}
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-200 ">
@@ -92,13 +89,15 @@
                                                         class="px-3 py-1">
                                                         {{ __('Show') }}
                                                     </x-show-a-button>
+                                                    {{-- //FIXME:課長,GLの設定まだ --}}
                                                     @if (
-                                                        (Auth::user()->approvals->where('approval_id', 2)->where('factory_id', $report->user->factory_id)->where('department_id', 1)->first() &&
-                                                            (($report->cancel == 0 && $report->approval1 == 0) || ($report->cancel == 1 && $report->approval1 == 1))) ||
+                                                            (Auth::user()->approvals->where('approval_id', 2)->where('factory_id', $report->user->factory_id)->where('department_id', 1)->first() &&
+                                                                (($report->cancel == 0 && $report->approval1 == 0) || ($report->cancel == 1 && $report->approval1 == 1))) ||
                                                             (Auth::user()->approvals->where('approval_id', 2)->where('factory_id', $report->user->factory_id)->where('department_id', $report->user->department_id)->first() &&
                                                                 (($report->cancel == 0 && $report->approval1 == 0) || ($report->cancel == 1 && $report->approval1 == 1))) ||
                                                             (Auth::user()->approvals->where('approval_id', 3)->where('factory_id', $report->user->factory_id)->where('department_id', $report->user->department_id)->first() &&
-                                                                (($report->cancel == 0 && $report->approval2 == 0) || ($report->cancel == 1 && $report->approval2 == 1))))
+                                                                (($report->cancel == 0 && $report->approval2 == 0) || ($report->cancel == 1 && $report->approval2 == 1)))
+                                                        )
                                                         <div class="mt-2 -ml-2 text-red-700">
                                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
                                                                 fill="currentColor" class="w-5 h-5">
@@ -108,9 +107,6 @@
                                                             </svg>
                                                         </div>
                                                     @endif
-                                                </td>
-                                                <td class="pl-4 pr-1 py-4 whitespace-nowrap text-sm text-gray-800 ">
-                                                    {{ $report->user->team }}
                                                 </td>
                                                 <td
                                                     class="px-2 py-4 whitespace-nowrap text-sm text-center text-gray-800 ">
@@ -124,6 +120,9 @@
                                                 </td>
                                                 <td class="pl-1 pr-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                     {{ $report->user->name }}
+                                                </td>
+                                                <td class="pl-4 pr-1 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                    {{ $report->user->team }}
                                                 </td>
                                                 <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                     <x-report-name :report="$report" />
@@ -140,10 +139,10 @@
                                                 </td>
                                                 <td class="pr-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                     @if ($report->end_date != null)
-                                                        ~&emsp;&emsp;{{ $report->end_date }}
+                                                        ~&emsp;{{ $report->end_date }}
                                                     @endif
                                                     @if ($report->end_time != null)
-                                                        ~&emsp;&emsp;{{ Str::substr($report->end_time, 0, 5) }}
+                                                        ~&emsp;{{ Str::substr($report->end_time, 0, 5) }}
                                                     @endif
                                                     @if ($report->am_pm != null)
                                                         {{ $report->am_pm == 1 ? '午 前' : '午 後' }}

@@ -153,7 +153,7 @@
                             @endforeach
                         </x-select>
                     </div>
-                    <div style="display: none" class="col-span-2" id="reason_detail_form">
+                    <div style="display: " class="" id="reason_detail_form">
                         <label for="reason_detail" class="block mb-2 text-sm font-medium text-gray-900">
                             理由の詳細・備考
                         </label>
@@ -428,10 +428,10 @@
             document.getElementById('remaining_minutes').setAttribute('value', 0);
         }
 
-        // // その他理由選択時の表示切替
-        // function reasonChange() {
-        //     reasonDisplaySwitch(); // reasonで理由:その他表示切替
-        // }
+        // その他理由選択時のplaceholder表示切替
+        function reasonChange() {
+            reasonDisplaySwitch(); // reasonで理由:その他表示切替
+        }
 
         // subカテゴリーによるフォーム切替関数
         function subReportChange() {
@@ -720,15 +720,15 @@
             }
         }
 
-        // // 理由form切替関数
-        // function reasonDisplaySwitch() {
-        //     if (reasonCategory.value == "9") { // 理由その他表示
-        //         reasonDetail.style.display = "";
-        //     }
-        //     if (reasonCategory.value != "9") { // 理由その他非表示
-        //         reasonDetail.style.display = "none";
-        //     }
-        // }
+        // 理由詳細placeholder切替関数
+        function reasonDisplaySwitch() {
+            if (reasonCategory.value == "9") { // 理由その他表示
+                reasonDetail.placeholder = "詳細を記入してください";
+            }
+            if (reasonCategory.value != "9") { // 理由その他非表示
+                reasonDetail.placeholder = "詳細・備考があれば記入してください";
+            }
+        }
         /* 表示切替end */
 
         /* 二重送信防止start */
