@@ -33,13 +33,13 @@ class GroupCategorySeeder extends Seeder
             ['group_name' => '溶接2G'],
             ['group_name' => '溶接1G'],
             ['group_name' => 'プレス検査G '],
-            ['group_name' => '金型保全Ｇ'],
-            ['group_name' => '生技保全Ｇ'],
+            ['group_name' => '金型保全G'],
+            ['group_name' => '生技保全G'],
             ['group_name' => '管理G'],
-            ['group_name' => '製造５Ｇ・自動車溶接'],
-            ['group_name' => '製造４Ｇ・自動車プレス'],
-            ['group_name' => '製造３Ｇ'],
-            ['group_name' => '製造1Ｇ'],
+            ['group_name' => '製造5G・自動車溶接'],
+            ['group_name' => '製造4G・自動車プレス'],
+            ['group_name' => '製造3G'],
+            ['group_name' => '製造1G'],
         ];
         DB::table('group_categories')->insert($param);
     }

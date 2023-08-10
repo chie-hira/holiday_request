@@ -1,7 +1,7 @@
 <x-app-layout>
     {{-- //TODO:工場、部所で検索 --}}
     <section class="text-gray-600 body-font">
-        <div class="container px-5 py-24 mx-auto">
+        <div class="container px-5 py-16 mx-auto">
             <div class="flex flex-col text-center w-full mb-10">
                 <h1 class="sm:text-4xl text-3xl font-medium title-font text-gray-900">{{ __('届出一覧') }}</h1>
             </div>
@@ -17,51 +17,43 @@
                                     <thead>
                                         <tr>
                                             <th scope="col"
-                                                class="px-4 py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
+                                                class="px-4 py-2 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Report Date') }}
                                             </th>
                                             <th scope="col"
-                                                class="px-6 py-3 whitespace-nowrap text-right text-xs font-medium text-gray-500 tracking-wider">
+                                                class="px-2 py-2 whitespace-nowrap text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('状 態') }}
+                                                <div class="text-xxs text-blue-500">
+                                                    {{ __('Factory Manager') }}
+                                                    ・{{ __('Group Leader') }}
+                                                </div>
                                             </th>
                                             <th scope="col"
-                                                class="px-4 py-3 whitespace-nowrap text-right text-xs font-medium text-gray-500 tracking-wider">
+                                                class="px-4 py-2 whitespace-nowrap text-right text-xs font-medium text-gray-500 tracking-wider">
+                                            </th>
+                                            <th scope="col" colspan="2"
+                                                class="px-4 py-2 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
+                                                {{ __('社 員') }}
                                             </th>
                                             <th scope="col"
-                                                class="py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
-                                                {{ __('Employee') }}
-                                            </th>
-                                            <th scope="col"
-                                                class="pl-1 pr-4 py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
-                                                {{ __('Name') }}
-                                            </th>
-                                            <th scope="col"
-                                                class="pl-4 pr-1 py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
+                                                class="px-4 py-2 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Team') }}
                                             </th>
                                             <th scope="col"
-                                                class="px-4 py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
+                                                class="px-4 py-2 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
+                                                {{ __('Shift') }}
+                                            </th>
+                                            <th scope="col"
+                                                class="px-4 py-2 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Report Category') }}
                                             </th>
                                             <th scope="col" colspan="2"
-                                                class="px-4 py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
+                                                class="px-4 py-2 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Lest Span') }}
                                             </th>
                                             <th scope="col"
-                                                class="px-2 py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
+                                                class="px-4 py-2 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Lest Day') }}
-                                            </th>
-                                            <th scope="col"
-                                                class="pl-2 pr-1 py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
-                                                {{ __('Approver') }}
-                                            </th>
-                                            <th scope="col"
-                                                class="pl-2 pr-1 py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
-                                                {{ __('Manager') }}
-                                            </th>
-                                            <th scope="col"
-                                                class="pl-1 pr-2 py-3 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
-                                                {{ __('Leader') }}
                                             </th>
                                         </tr>
                                     </thead>
@@ -69,11 +61,11 @@
                                         @foreach ($reports as $report)
                                             <tr class="hover:bg-gray-100 ">
                                                 <td
-                                                    class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">
+                                                    class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-800 ">
                                                     {{ $report->report_date }}
                                                 </td>
                                                 <td
-                                                    class="px-2 py-4 text-center whitespace-nowrap text-sm text-gray-800 ">
+                                                    class="px-2 py-3 text-center whitespace-nowrap text-sm text-gray-800 ">
                                                     @if ($report->approved == 0 && $report->cancel == 0)
                                                         <span class="text-amber-500">承認待ち</span>
                                                     @endif
@@ -83,21 +75,50 @@
                                                     @if ($report->cancel == 1)
                                                         <span class="text-red-500">取消確認中</span>
                                                     @endif
+                                                    @if ($report->cancel == 0)
+                                                        <div class="flex">
+                                                            <div class="flex-1">
+                                                                @if ($report->approval1 == 1)
+                                                                    <span class="text-blue-500">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                                            viewBox="0 0 24 24" fill="currentColor"
+                                                                            class="w-3 h-3 mx-auto">
+                                                                            <path fill-rule="evenodd"
+                                                                                d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
+                                                                                clip-rule="evenodd" />
+                                                                        </svg>
+                                                                    </span>
+                                                                @endif
+                                                            </div>
+                                                            <div class="flex-1">
+                                                                @if ($report->approval2 == 1)
+                                                                    <span class="text-blue-500">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                                            viewBox="0 0 24 24" fill="currentColor"
+                                                                            class="w-3 h-3 mx-auto">
+                                                                            <path fill-rule="evenodd"
+                                                                                d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
+                                                                                clip-rule="evenodd" />
+                                                                        </svg>
+                                                                    </span>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                    @endif
                                                 </td>
-                                                <td class="flex px-2 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                <td class="flex px-2 py-3 whitespace-nowrap text-sm text-gray-800 ">
                                                     <x-show-a-button href="{{ route('reports.show', $report) }}"
                                                         class="px-3 py-1">
                                                         {{ __('Show') }}
                                                     </x-show-a-button>
                                                     {{-- //FIXME:課長,GLの設定まだ --}}
                                                     @if (
-                                                            (Auth::user()->approvals->where('approval_id', 2)->where('factory_id', $report->user->factory_id)->where('department_id', 1)->first() &&
-                                                                (($report->cancel == 0 && $report->approval1 == 0) || ($report->cancel == 1 && $report->approval1 == 1))) ||
+                                                        (Auth::user()->approvals->where('approval_id', 2)->where('factory_id', $report->user->factory_id)->where('department_id', 1)->first() &&
+                                                            (($report->cancel == 0 && $report->approval1 == 0) || ($report->cancel == 1 && $report->approval1 == 1))) ||
                                                             (Auth::user()->approvals->where('approval_id', 2)->where('factory_id', $report->user->factory_id)->where('department_id', $report->user->department_id)->first() &&
                                                                 (($report->cancel == 0 && $report->approval1 == 0) || ($report->cancel == 1 && $report->approval1 == 1))) ||
                                                             (Auth::user()->approvals->where('approval_id', 3)->where('factory_id', $report->user->factory_id)->where('department_id', $report->user->department_id)->first() &&
-                                                                (($report->cancel == 0 && $report->approval2 == 0) || ($report->cancel == 1 && $report->approval2 == 1)))
-                                                        )
+                                                                (($report->cancel == 0 && $report->approval2 == 0) || ($report->cancel == 1 && $report->approval2 == 1))))
                                                         <div class="mt-2 -ml-2 text-red-700">
                                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
                                                                 fill="currentColor" class="w-5 h-5">
@@ -109,7 +130,7 @@
                                                     @endif
                                                 </td>
                                                 <td
-                                                    class="px-2 py-4 whitespace-nowrap text-sm text-center text-gray-800 ">
+                                                    class="pl-4 py-3 whitespace-nowrap text-xxs text-center text-gray-800">
                                                     @if (Str::length($report->user->employee) == 1)
                                                         &ensp;&ensp;
                                                     @endif
@@ -118,16 +139,27 @@
                                                     @endif
                                                     {{ $report->user->employee }}
                                                 </td>
-                                                <td class="pl-1 pr-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                <td class="pl-2 pr-4 py-3 whitespace-nowrap text-sm text-gray-800 ">
                                                     {{ $report->user->name }}
                                                 </td>
-                                                <td class="pl-4 pr-1 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800 ">
+                                                    <div class="text-xxs text-blue-500">
+                                                        {{ $report->user->factory->factory_name }}
+                                                    </div>
                                                     {{ $report->user->team }}
                                                 </td>
-                                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                <td
+                                                    class="px-4 py-3 whitespace-nowrap text-sm text-center text-gray-800 ">
+                                                    {{ $report->shift_category->shift_code }}
+                                                    <div class="text-xxs text-blue-500">
+                                                        {{ $report->shift_category->start_time_hm }} ~
+                                                        {{ $report->shift_category->end_time_hm }}
+                                                    </div>
+                                                </td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800 ">
                                                     <x-report-name :report="$report" />
                                                 </td>
-                                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800 ">
                                                     @if ($report->start_date != null)
                                                         {{ $report->start_date }}
                                                     @else
@@ -137,7 +169,7 @@
                                                         &emsp;{{ Str::substr($report->start_time, 0, 5) }}
                                                     @endif
                                                 </td>
-                                                <td class="pr-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                <td class="pr-6 py-3 whitespace-nowrap text-sm text-gray-800 ">
                                                     @if ($report->end_date != null)
                                                         ~&emsp;{{ $report->end_date }}
                                                     @endif
@@ -145,11 +177,11 @@
                                                         ~&emsp;{{ Str::substr($report->end_time, 0, 5) }}
                                                     @endif
                                                     @if ($report->am_pm != null)
-                                                        {{ $report->am_pm == 1 ? '午 前' : '午 後' }}
+                                                        {{ $report->am_pm == 1 ? '前 半' : '後 半' }}
                                                     @endif
                                                 </td>
                                                 <td
-                                                    class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-800 ">
+                                                    class="px-6 py-3 whitespace-nowrap text-sm text-left text-gray-800 ">
                                                     @if ($report->get_days_only != 0)
                                                         {{ $report->get_days_only }} 日&emsp;
                                                     @endif
@@ -160,146 +192,6 @@
                                                         {{ $report->get_minutes }} 分
                                                     @endif
                                                 </td>
-                                                @if ($report->cancel == 0)
-                                                    <td class="pl-6 pr-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
-                                                        @if ($report->approval1 == 1)
-                                                            <span class="text-blue-500">
-                                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                                    viewBox="0 0 24 24" fill="currentColor"
-                                                                    class="w-4 h-4 mx-auto">
-                                                                    <path fill-rule="evenodd"
-                                                                        d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
-                                                                        clip-rule="evenodd" />
-                                                                </svg>
-                                                            </span>
-                                                        @endif
-                                                    </td>
-                                                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
-                                                        @if ($report->approval2 == 1)
-                                                            <span class="text-blue-500">
-                                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                                    viewBox="0 0 24 24" fill="currentColor"
-                                                                    class="w-4 h-4 mx-auto">
-                                                                    <path fill-rule="evenodd"
-                                                                        d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
-                                                                        clip-rule="evenodd" />
-                                                                </svg>
-                                                            </span>
-                                                        @endif
-                                                    </td>
-                                                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
-                                                        @if ($report->approval3 == 1)
-                                                            <span class="text-blue-500">
-                                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                                    viewBox="0 0 24 24" fill="currentColor"
-                                                                    class="w-4 h-4 mx-auto">
-                                                                    <path fill-rule="evenodd"
-                                                                        d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
-                                                                        clip-rule="evenodd" />
-                                                                </svg>
-                                                            </span>
-                                                        @endif
-                                                    </td>
-                                                @else
-                                                    <td colspan="3"
-                                                        class="px-2 py-4 text-center text-red-600 whitespace-nowrap text-sm">
-                                                        取消確認中
-                                                    </td>
-                                                @endif
-                                                {{-- <td
-                                                    class="flex px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                    <x-show-a-button href="{{ route('reports.show', $report) }}"
-                                                        class="px-3 py-1">
-                                                        {{ __('Show') }}
-                                                    </x-show-a-button>
-                                                    <!-- 工場長:課ごとチェックマーク start -->
-                                                    @if (Auth::user()->approvals->where('approval_id', 2)->where('department_id', $report->department_id)->first())
-                                                        @foreach (Auth::user()->approvals->where('approval_id', 2)->where('factory_id', $report->factory_id)->where('department_id', $report->department_id) as $approval)
-                                                            @if (
-                                                                $report->user->factory_id == $approval->factory_id &&
-                                                                    $report->user->department_id == $approval->department_id &&
-                                                                    $report->approval1 == 0 &&
-                                                                    $report->cancel == 0)
-                                                                <div class="mt-2 -ml-3">
-                                                                    <x-check-mark />
-                                                                </div>
-                                                            @endif
-                                                            @if ($report->user->factory_id == $approval->factory_id && $report->approval1 == 1 && $report->cancel == 1)
-                                                                <div class="mt-2 -ml-3">
-                                                                    <x-check-mark />
-                                                                </div>
-                                                            @endif
-                                                        @endforeach
-                                                    @endif
-                                                    <!-- 工場長:課ごとチェックマーク end -->
-                                                    <!-- 工場長:包括チェックマーク start -->
-                                                    @if (Auth::user()->approvals->where('approval_id', 2)->where('department_id', 1)->first())
-                                                        @foreach (Auth::user()->approvals->where('approval_id', 2)->where('factory_id', $report->user->factory_id) as $approval)
-                                                            @if ($report->user->factory_id == $approval->factory_id && $report->approval1 == 0 && $report->cancel == 0)
-                                                                <div class="mt-2 -ml-3">
-                                                                    <x-check-mark />
-                                                                </div>
-                                                            @endif
-                                                            @if ($report->user->factory_id == $approval->factory_id && $report->approval1 == 1 && $report->cancel == 1)
-                                                                <div class="mt-2 -ml-3">
-                                                                    <x-check-mark />
-                                                                </div>
-                                                            @endif
-                                                        @endforeach
-                                                    @endif
-                                                    <!-- 工場長:包括チェックマーク end -->
-                                                    <!-- 課長チェックマーク start -->
-                                                    @if (Auth::user()->approvals->where('approval_id', 3)->first())
-                                                        @foreach (Auth::user()->approvals->where('approval_id', 3)->where('factory_id', $report->user->factory_id) as $approval)
-                                                            @if (
-                                                                $report->user->factory_id == $approval->factory_id &&
-                                                                    $report->user->department_id == $approval->department_id &&
-                                                                    $report->approval2 == 0 &&
-                                                                    $report->cancel == 0)
-                                                                <div class="mt-2 -ml-3">
-                                                                    <x-check-mark />
-                                                                </div>
-                                                            @endif
-                                                            @if (
-                                                                $report->user->factory_id == $approval->factory_id &&
-                                                                    $report->user->department_id == $approval->department_id &&
-                                                                    $report->user->group_id == $approval->group_id &&
-                                                                    $report->approval3 == 1 &&
-                                                                    $report->cancel == 1)
-                                                                <div class="mt-2 -ml-3">
-                                                                    <x-check-mark />
-                                                                </div>
-                                                            @endif
-                                                        @endforeach
-                                                    @endif
-                                                    <!-- 課長チェックマーク end -->
-                                                    <!-- GLチェックマーク start -->
-                                                    @if (Auth::user()->approvals->where('approval_id', 4)->first())
-                                                        @foreach (Auth::user()->approvals->where('approval_id', 4) as $approval)
-                                                            @if (
-                                                                $report->user->factory_id == $approval->factory_id &&
-                                                                    $report->user->department_id == $approval->department_id &&
-                                                                    $report->user->group_id == $approval->group_id &&
-                                                                    $report->approval3 == 0 &&
-                                                                    $report->cancel == 0)
-                                                                <div class="mt-2 -ml-3">
-                                                                    <x-check-mark />
-                                                                </div>
-                                                            @endif
-                                                            @if (
-                                                                $report->user->factory_id == $approval->factory_id &&
-                                                                    $report->user->department_id == $approval->department_id &&
-                                                                    $report->user->group_id == $approval->group_id &&
-                                                                    $report->approval3 == 1 &&
-                                                                    $report->cancel == 1)
-                                                                <div class="mt-2 -ml-3">
-                                                                    <x-check-mark />
-                                                                </div>
-                                                            @endif
-                                                        @endforeach
-                                                    @endif
-                                                    <!-- GLチェックマーク end -->
-                                                </td> --}}
                                             </tr>
                                         @endforeach
                                     </tbody>

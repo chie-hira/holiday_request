@@ -8,6 +8,8 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Notifications\Registered;
 use App\Notifications\Approved;
+use App\Notifications\CancelReport;
+use App\Notifications\DestroyReport;
 use App\Notifications\StoreReport;
 use App\Notifications\UpdateReport;
 use Carbon\Carbon;
@@ -420,5 +422,17 @@ class User extends Authenticatable
     public function updateReport($report)
     {
         $this->notify(new UpdateReport($report));
+    }
+
+    /** 削除申請 */ 
+    public function cancelReport($report)
+    {
+        $this->notify(new CancelReport($report));
+    }
+
+    /** 申請削除 */ 
+    public function destroyReport($report)
+    {
+        $this->notify(new DestroyReport($report));
     }
 }

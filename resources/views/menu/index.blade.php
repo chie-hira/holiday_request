@@ -290,54 +290,40 @@
             <div class="text-left w-full my-12">
                 @if (Auth::user()->approvals->first())
                     <ul class="text-sm">
-                        @foreach (Auth::user()->approvals as $approval)
-                            <li class="flex mx-auto items-center leading-relaxed">
-                                <span class="w-4 h-4 mr-2 rounded-full inline-flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                                        class="w-5 h-5 text-sky-600">
-                                        <path fill-rule="evenodd"
-                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                                            clip-rule="evenodd" fill="" />
-                                    </svg>
-                                </span>
-                                <!-- 閲覧 -->
-                                @if ($approval->approval_id == 5)
-                                    {{ Auth::user()->getApprovalFactory($approval->factory_id) }}
-                                    @if ($approval->department_id == 1)
-                                        ・{{ Auth::user()->getApprovalName($approval->approval_id) }}
-                                    @else
-                                        ・{{ Auth::user()->getApprovalDepartment($approval->department_id) }}
-                                        ・{{ Auth::user()->getApprovalGroup($approval->group_id) }}
-                                        ・{{ Auth::user()->getApprovalName($approval->approval_id) }}
-                                    @endif
-                                @endif
-                                <!-- GL -->
-                                @if ($approval->approval_id == 4)
-                                    {{ Auth::user()->getApprovalDepartment($approval->department_id) }}
-                                    ・{{ Auth::user()->getApprovalGroup($approval->group_id) }}
-                                    ・{{ __('Leader') }}
-                                @endif
-                                <!-- 課長 -->
-                                @if ($approval->approval_id == 3)
-                                    {{ Auth::user()->getApprovalDepartment($approval->department_id) }}
-                                    ・{{ __('Manager') }}
-                                @endif
-                                <!-- 工場長承認:課ごと -->
-                                @if ($approval->approval_id == 2 && $approval->department_id != 1)
-                                    {{ Auth::user()->getApprovalFactory($approval->factory_id) }}
-                                    ・{{ Auth::user()->getApprovalDepartment($approval->department_id) . __('長') }}
-                                @endif
-                                <!-- 工場長承認:包括 -->
-                                @if ($approval->approval_id == 2 && $approval->department_id == 1)
-                                    {{ Auth::user()->getApprovalFactory($approval->factory_id) }}
-                                    ・{{ __('工場長') }}
-                                @endif
+                        @foreach (Auth::user()->approvals->load(['factory', 'department']) as $approval)
+                            <x-list>
                                 <!-- 管理者 -->
                                 @if ($approval->approval_id == 1)
-                                    {{ Auth::user()->getApprovalFactory($approval->factory_id) }}
-                                    ・{{ Auth::user()->getApprovalName($approval->approval_id) }}
+                                    {{ $approval->factory->factory_name }}
+                                    @if ($approval->department_id != 1)
+                                        {{ $approval->department->department_name }}
+                                    @endif
+                                    ・{{ __('Admin') }}
                                 @endif
-                            </li>
+                                <!-- 承認 -->
+                                @if ($approval->approval_id == 2)
+                                    {{ $approval->factory->factory_name }}
+                                    @if ($approval->department_id != 1)
+                                        {{ $approval->department->department_name }}
+                                    @endif
+                                    ・{{ __('Approval1') }}
+                                @endif
+                                @if ($approval->approval_id == 3)
+                                    {{ $approval->factory->factory_name }}
+                                    @if ($approval->department_id != 1)
+                                        {{ $approval->department->department_name }}
+                                    @endif
+                                    ・{{ __('Approval2') }}
+                                @endif
+                                <!-- 閲覧 -->
+                                @if ($approval->approval_id == 4)
+                                    {{ $approval->factory->factory_name }}
+                                    @if ($approval->department_id != 1)
+                                        {{ $approval->department->department_name }}
+                                    @endif
+                                    ・{{ __('Reader') }}
+                                @endif
+                            </x-list>
                         @endforeach
                     </ul>
                 @endif

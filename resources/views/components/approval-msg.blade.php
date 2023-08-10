@@ -11,7 +11,7 @@
                 </svg>
             </span>
             <b class="font-medium">
-                {{ $msg }}
+                {{ __($msg) }}
             </b>
             <button type="button" onclick="window.location.reload();"
                 class="ml-auto -mx-1.5 -my-1.5 text-amber-400 p-1.5 hover:text-amber-500 inline-flex h-8 w-8"
