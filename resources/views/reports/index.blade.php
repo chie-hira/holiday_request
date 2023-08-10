@@ -144,7 +144,7 @@
                                                 </td>
                                                 <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800 ">
                                                     <div class="text-xxs text-blue-500">
-                                                        {{ $report->user->factory->factory_name }}
+                                                        {{ $report->user->affiliation->factory->factory_name }}
                                                     </div>
                                                     {{ $report->user->team }}
                                                 </td>

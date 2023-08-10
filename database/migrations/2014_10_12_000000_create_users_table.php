@@ -21,16 +21,8 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->integer('employee')->nullable()->unique();
-            $table->foreignId('factory_id') # メインの所属工場
-                ->constrained('factory_categories')
-                ->cascadeOnUpdate()
-                ->cascadeOnDelete();
-            $table->foreignId('department_id') # メインの所属課、同列複数の場合(工場長)は無所属
-                ->constrained('department_categories')
-                ->cascadeOnUpdate()
-                ->cascadeOnDelete();
-            $table->foreignId('group_id') # メインのグループ、同列複数の場合は無所属
-                ->constrained('group_categories')
+            $table->foreignId('affiliation_id') # 所属
+                ->constrained('affiliations')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
             $table->date('adoption_date')->nullable();

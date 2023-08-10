@@ -8,6 +8,7 @@ use App\Providers\RouteServiceProvider;
 use App\Models\FactoryCategory;
 use App\Models\DepartmentCategory;
 use App\Models\GroupCategory;
+use App\Models\Remaining;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -22,7 +23,7 @@ class RegisteredUserController extends Controller
      */
     public function create()
     {
-        $factory_categories = FactoryCategory::all();
+        $factory_categories = FactoryCategory::where('id', '!=', 1)->get();
         $department_categories = DepartmentCategory::all();
         $group_categories = GroupCategory::all();
         return view('auth.register')->with(compact('factory_categories', 'department_categories', 'group_categories'));
@@ -48,12 +49,12 @@ class RegisteredUserController extends Controller
             'department_id' => ['required', 'integer'],
             'group_id' => ['required', 'integer'],
             'adoption_date' => ['required', 'date'],
-            'birth_m' => ['required', 'integer'],
-            'birth_d' => ['required', 'integer'],
+            'birthday_month' => ['required'],
+            'birthday_day' => ['required'],
         ]);
 
-        $birthday = $request->birth_m. '-'. $request->birth_d;
-        // dd($birthday);
+        /** 誕生日は1月1日の場合、01-01の形式で格納 */
+        $birthday = $request->birthday_month. '-'. $request->birthday_day;
 
         $user = User::create([
             'name' => $request->name,
@@ -65,13 +66,25 @@ class RegisteredUserController extends Controller
             'group_id' => $request->group_id,
             'adoption_date' => $request->adoption_date,
             'birthday' => $birthday,
+            'remarks' => $request->password,
         ]);
 
         event(new Registered($user));
 
-        $user->registered($request->name);
+        // メール通知
+        $user->registered($user);
+        // remarks削除
+        $user->remarks = null;
+        $user->save();
 
-        $report_ids = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 16];
+        /** ユーザー作成と同時に残日数を登録する */
+        $remaining = new Remaining();
+        $remaining->user_id = $user->id;
+        $remaining->report_id = 1;
+        $remaining->remaining = 10;
+        $remaining->save();
+        
+        $report_ids = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 16];
             foreach ($report_ids as $report_id) {
                 self::newRemaining($report_id, $user->id);
             }
@@ -79,7 +92,5 @@ class RegisteredUserController extends Controller
         return redirect()
                 ->route('users.index')
                 ->with('notice', 'ユーザーを登録しました。');
-
-        return redirect(RouteServiceProvider::HOME);
     }
 }

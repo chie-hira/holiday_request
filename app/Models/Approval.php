@@ -11,10 +11,8 @@ class Approval extends Model
 
     protected $fillable = [
         'user_id',
-        'factory_id',
-        'department_id',
+        'affiliation_id',
         'approval_id',
-        'group_id',
     ];
 
     /**
@@ -28,33 +26,13 @@ class Approval extends Model
     }
 
     /**
-     * Get the factory that owns the Approval
+     * Get the affiliation that owns the Approval
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function factory()
+    public function affiliation()
     {
-        return $this->belongsTo(FactoryCategory::class, 'factory_id', 'id');
-    }
-
-    /**
-     * Get the department that owns the Approval
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function department()
-    {
-        return $this->belongsTo(DepartmentCategory::class, 'department_id', 'id');
-    }
-
-    /**
-     * Get the group that owns the Approval
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function group()
-    {
-        return $this->belongsTo(GroupCategory::class, 'group_id', 'id');
+        return $this->belongsTo(Affiliation::class, 'affiliation_id', 'id');
     }
 
     /**

@@ -24,7 +24,7 @@
                     出 退 勤 届 け
                 </h5>
                 <p class="border-solid border-2 px-4 py-1 border-sky-500 rounded-md text-md font-medium text-sky-600">
-                    {{ $report->user->factory->factory_name }}
+                    {{ $report->user->affiliation->factory->factory_name }}
                 </p>
             </div>
             <p class="text-gray-600 text-sm text-right">{{ $report->user->team }}</p>

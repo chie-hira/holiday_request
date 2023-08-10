@@ -30,6 +30,9 @@ class DepartmentCategorySeeder extends Seeder
             ['department_name' => '製造支援課'],
             ['department_name' => '製造2課（自動車）'],
             ['department_name' => '製造1課（板金）'],
+            ['department_name' => '業務課'],
+            ['department_name' => '工機課'],
+            ['department_name' => '製造課'],
         ];
         DB::table('department_categories')->insert($param);
     }

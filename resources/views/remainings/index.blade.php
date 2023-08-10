@@ -87,12 +87,12 @@
                                             <tr>
                                                 <td
                                                     class="px-4 py-4 whitespace-nowrap text-xs font-medium text-gray-800 ">
-                                                    {{ $user->factory->factory_name }}工場
-                                                    @if ($user->department->id != 1)
-                                                        ・{{ $user->department->department_name }}
+                                                    {{ $user->affiliation->factory->factory_name }}工場
+                                                    @if ($user->affiliation->department->id != 1)
+                                                        ・{{ $user->affiliation->department->department_name }}
                                                     @endif
-                                                    @if ($user->group != null && $user->group->id != 1)
-                                                        ・{{ $user->group->group_name }}
+                                                    @if ($user->affiliation->group != null && $user->affiliation->group->id != 1)
+                                                        ・{{ $user->affiliation->group->group_name }}
                                                     @endif
                                                 </td>
                                                 <td

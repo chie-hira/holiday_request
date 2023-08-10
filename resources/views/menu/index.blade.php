@@ -290,36 +290,36 @@
             <div class="text-left w-full my-12">
                 @if (Auth::user()->approvals->first())
                     <ul class="text-sm">
-                        @foreach (Auth::user()->approvals->load(['factory', 'department']) as $approval)
+                        @foreach (Auth::user()->approvals->load('affiliation') as $approval)
                             <x-list>
                                 <!-- 管理者 -->
                                 @if ($approval->approval_id == 1)
-                                    {{ $approval->factory->factory_name }}
-                                    @if ($approval->department_id != 1)
-                                        {{ $approval->department->department_name }}
+                                    {{ $approval->affiliation->factory->factory_name }}
+                                    @if ($approval->affiliation->department_id != 1)
+                                        {{ $approval->affiliation->department->department_name }}
                                     @endif
                                     ・{{ __('Admin') }}
                                 @endif
                                 <!-- 承認 -->
                                 @if ($approval->approval_id == 2)
-                                    {{ $approval->factory->factory_name }}
-                                    @if ($approval->department_id != 1)
-                                        {{ $approval->department->department_name }}
+                                    {{ $approval->affiliation->factory->factory_name }}
+                                    @if ($approval->affiliation->department_id != 1)
+                                        {{ $approval->affiliation->department->department_name }}
                                     @endif
                                     ・{{ __('Approval1') }}
                                 @endif
                                 @if ($approval->approval_id == 3)
-                                    {{ $approval->factory->factory_name }}
-                                    @if ($approval->department_id != 1)
-                                        {{ $approval->department->department_name }}
+                                    {{ $approval->affiliation->factory->factory_name }}
+                                    @if ($approval->affiliation->department_id != 1)
+                                        {{ $approval->affiliation->department->department_name }}
                                     @endif
                                     ・{{ __('Approval2') }}
                                 @endif
                                 <!-- 閲覧 -->
                                 @if ($approval->approval_id == 4)
-                                    {{ $approval->factory->factory_name }}
-                                    @if ($approval->department_id != 1)
-                                        {{ $approval->department->department_name }}
+                                    {{ $approval->affiliation->factory->factory_name }}
+                                    @if ($approval->affiliation->department_id != 1)
+                                        {{ $approval->affiliation->department->department_name }}
                                     @endif
                                     ・{{ __('Reader') }}
                                 @endif

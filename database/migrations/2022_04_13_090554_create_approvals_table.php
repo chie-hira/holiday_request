@@ -19,16 +19,8 @@ class CreateApprovalsTable extends Migration
                 ->constrained('users')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
-            $table->foreignId('factory_id')
-                ->constrained('factory_categories')
-                ->cascadeOnUpdate()
-                ->cascadeOnDelete();
-            $table->foreignId('department_id')
-                ->constrained('department_categories')
-                ->cascadeOnUpdate()
-                ->cascadeOnDelete();
-            $table->foreignId('group_id')
-                ->constrained('group_categories')
+            $table->foreignId('affiliation_id')
+                ->constrained('affiliations')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
             $table->foreignId('approval_id')

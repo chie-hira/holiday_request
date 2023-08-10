@@ -44,23 +44,37 @@ class ReportController extends Controller
         $reports = Report::whereHas('user', function ($query) use ($approvals) {
             $query->where(function ($query) use ($approvals) {
                 foreach ($approvals as $approval) {
-                    if ($approval->department_id == 1) {
-                        $query->orWhere('factory_id', $approval->factory_id);
+                    if ($approval->affiliation->department_id == 1) {
+                        $query->whereHas('affiliation', function ($query) use (
+                            $approval
+                        ) {
+                            $query->orWhere(
+                                'factory_id',
+                                $approval->affiliation->factory_id
+                            );
+                        });
                     } else {
-                        $query->orWhere(function ($query) use ($approval) {
-                            $query
-                                ->where('factory_id', $approval->factory_id)
-                                ->where(
-                                    'department_id',
-                                    $approval->department_id
-                                );
+                        $query->whereHas('affiliation', function ($query) use (
+                            $approval
+                        ) {
+                            $query->orWhere(function ($query) use ($approval) {
+                                $query
+                                    ->where(
+                                        'factory_id',
+                                        $approval->affiliation->factory_id
+                                    )
+                                    ->where(
+                                        'department_id',
+                                        $approval->affiliation->department_id
+                                    );
+                            });
                         });
                     }
                 }
             });
         })->get();
         // 全体の閲覧権限があるときは全てのレポートを取得
-        if ($approvals->where('factory_id', 1)->first()) {
+        if ($approvals->contains('affiliation_id', 1)) {
             $reports = Report::all();
         }
 
@@ -69,13 +83,12 @@ class ReportController extends Controller
             $reports = $reports
                 ->unique()
                 ->load([
-                    'user.factory',
-                    'user.department',
+                    'user.affiliation',
                     'report_category',
                     'sub_report_category',
                 ])
                 ->sortBy('report_id')
-                ->sortBy('user.department_id')
+                ->sortBy('user.affiliation_id')
                 ->sortBy('start_date')
                 ->sortBy('report_date');
         }
@@ -505,7 +518,7 @@ class ReportController extends Controller
                     $report
                 ) {
                     $query
-                        ->where('factory_id', $report->user->factory_id)
+                        ->where('factory_id', $report->user->affiliation->factory_id)
                         ->where(function ($query) use ($report) {
                             $query
                                 ->orWhere('approval_id', 2)
@@ -1401,26 +1414,46 @@ class ReportController extends Controller
         $approvals = Auth::user()->approvals->where('approval_id', '!=', 1);
         $users = User::where(function ($query) use ($approvals) {
             foreach ($approvals as $approval) {
-                if ($approval->department_id == 1) {
-                    $query->orWhere('factory_id', $approval->factory_id);
-                } elseif (
-                    $approval->department_id != 1 &&
-                    $approval->group_id == 1
-                ) {
+                if ($approval->affiliation->department_id == 1) {
                     $query->orWhere(function ($query) use ($approval) {
-                        $query
-                            ->where('factory_id', $approval->factory_id)
-                            ->where('department_id', $approval->department_id);
+                        $query->whereHas('affiliation', function ($query) use (
+                            $approval
+                        ) {
+                            $query->where('factory_id', $approval->factory_id);
+                        });
                     });
                 } elseif (
                     $approval->department_id != 1 &&
-                    $approval->group_id != 1
+                    $approval->affiliation->group_id == 1
                 ) {
                     $query->orWhere(function ($query) use ($approval) {
-                        $query
-                            ->where('factory_id', $approval->factory_id)
-                            ->where('department_id', $approval->department_id)
-                            ->where('group_id', $approval->group_id);
+                        $query->whereHas('affiliation', function ($query) use (
+                            $approval
+                        ) {
+                            $query
+                                ->where('factory_id', $approval->factory_id)
+                                ->where(
+                                    'department_id',
+                                    $approval->department_id
+                                );
+                        });
+                    });
+                } elseif (
+                    $approval->department_id != 1 &&
+                    $approval->affiliation->group_id != 1
+                ) {
+                    $query->orWhere(function ($query) use ($approval) {
+                        $query->whereHas('affiliation', function ($query) use (
+                            $approval
+                        ) {
+                            $query
+                                ->where('factory_id', $approval->factory_id)
+                                ->where(
+                                    'department_id',
+                                    $approval->department_id
+                                )
+                                ->where('group_id', $approval->group_id);
+                        });
                     });
                 }
             }
@@ -1430,10 +1463,9 @@ class ReportController extends Controller
         if ($users->first()) {
             $users = $users
                 ->unique()
-                ->load(['factory', 'department', 'reports', 'remainings'])
+                ->load(['affiliation', 'reports', 'remainings'])
                 ->sortBy('employee')
-                ->sortBy('department_id')
-                ->sortBy('factory_id');
+                ->sortBy('affiliation_id');
         }
 
         $report_categories = ReportCategory::all();
@@ -1652,52 +1684,86 @@ class ReportController extends Controller
                     foreach ($approvals as $approval) {
                         if (
                             $approval->approval_id == 2 &&
-                            $approval->department_id == 1
+                            $approval->affiliation->department_id == 1
                         ) {
                             $query->orWhere(function ($query) use ($approval) {
                                 $query
-                                    ->where('factory_id', $approval->factory_id)
+                                    ->whereHas('affiliation', function (
+                                        $query
+                                    ) use ($approval) {
+                                        $query->where(
+                                            'factory_id',
+                                            $approval->factory_id
+                                        );
+                                    })
                                     ->where('cancel', 0)
                                     ->where('approval1', 0);
                             });
                         }
                         if (
                             $approval->approval_id == 2 &&
-                            $approval->department_id != 1
+                            $approval->affiliation->department_id != 1
                         ) {
                             $query->orWhere(function ($query) use ($approval) {
                                 $query
-                                    ->where('factory_id', $approval->factory_id)
-                                    ->where(
-                                        'department_id',
-                                        $approval->department_id
-                                    )
+                                    ->whereHas('affiliation', function (
+                                        $query
+                                    ) use ($approval) {
+                                        $query
+                                            ->where(
+                                                'factory_id',
+                                                $approval->affiliation
+                                                    ->factory_id
+                                            )
+                                            ->where(
+                                                'department_id',
+                                                $approval->affiliation
+                                                    ->department_id
+                                            );
+                                    })
                                     ->where('cancel', 0)
                                     ->where('approval1', 0);
                             });
                         }
                         if (
                             $approval->approval_id == 3 &&
-                            $approval->department_id == 1
+                            $approval->affiliation->department_id == 1
                         ) {
                             $query->orWhere(function ($query) use ($approval) {
                                 $query
-                                    ->where('factory_id', $approval->factory_id)
+                                    ->whereHas('affiliation', function (
+                                        $query
+                                    ) use ($approval) {
+                                        $query->where(
+                                            'factory_id',
+                                            $approval->affiliation->factory_id
+                                        );
+                                    })
                                     ->where('cancel', 0)
                                     ->where('approval2', 0);
                             });
                         }
                         if (
                             $approval->approval_id == 3 &&
-                            $approval->department_id != 1
+                            $approval->affiliation->department_id != 1
                         ) {
                             $query->orWhere(function ($query) use ($approval) {
                                 $query
-                                    ->where('factory_id', $approval->factory_id)
-                                    ->where(
-                                        'department_id',
-                                        $approval->department_id
-                                    )
+                                    ->whereHas('affiliation', function (
+                                        $query
+                                    ) use ($approval) {
+                                        $query
+                                            ->where(
+                                                'factory_id',
+                                                $approval->affiliation
+                                                    ->factory_id
+                                            )
+                                            ->where(
+                                                'department_id',
+                                                $approval->affiliation
+                                                    ->department_id
+                                            );
+                                    })
                                     ->where('cancel', 0)
                                     ->where('approval2', 0);
                             });
@@ -1714,52 +1780,86 @@ class ReportController extends Controller
                     foreach ($approvals as $approval) {
                         if (
                             $approval->approval_id == 2 &&
-                            $approval->department_id == 1
+                            $approval->affiliation->department_id == 1
                         ) {
                             $query->orWhere(function ($query) use ($approval) {
                                 $query
-                                    ->where('factory_id', $approval->factory_id)
+                                    ->whereHas('affiliation', function (
+                                        $query
+                                    ) use ($approval) {
+                                        $query->where(
+                                            'factory_id',
+                                            $approval->affiliation->factory_id
+                                        );
+                                    })
                                     ->where('cancel', 1)
                                     ->where('approval1', 1);
                             });
                         }
                         if (
                             $approval->approval_id == 2 &&
-                            $approval->department_id != 1
+                            $approval->affiliation->department_id != 1
                         ) {
                             $query->orWhere(function ($query) use ($approval) {
                                 $query
-                                    ->where('factory_id', $approval->factory_id)
-                                    ->where(
-                                        'department_id',
-                                        $approval->department_id
-                                    )
+                                    ->whereHas('affiliation', function (
+                                        $query
+                                    ) use ($approval) {
+                                        $query
+                                            ->where(
+                                                'factory_id',
+                                                $approval->affiliation
+                                                    ->factory_id
+                                            )
+                                            ->where(
+                                                'department_id',
+                                                $approval->affiliation
+                                                    ->department_id
+                                            );
+                                    })
                                     ->where('cancel', 1)
                                     ->where('approval1', 1);
                             });
                         }
                         if (
                             $approval->approval_id == 3 &&
-                            $approval->department_id == 1
+                            $approval->affiliation->department_id == 1
                         ) {
                             $query->orWhere(function ($query) use ($approval) {
                                 $query
-                                    ->where('factory_id', $approval->factory_id)
+                                    ->whereHas('affiliation', function (
+                                        $query
+                                    ) use ($approval) {
+                                        $query->where(
+                                            'factory_id',
+                                            $approval->affiliation->factory_id
+                                        );
+                                    })
                                     ->where('cancel', 1)
                                     ->where('approval2', 1);
                             });
                         }
                         if (
                             $approval->approval_id == 3 &&
-                            $approval->department_id != 1
+                            $approval->affiliation->department_id != 1
                         ) {
                             $query->orWhere(function ($query) use ($approval) {
                                 $query
-                                    ->where('factory_id', $approval->factory_id)
-                                    ->where(
-                                        'department_id',
-                                        $approval->department_id
-                                    )
+                                    ->whereHas('affiliation', function (
+                                        $query
+                                    ) use ($approval) {
+                                        $query
+                                            ->where(
+                                                'factory_id',
+                                                $approval->affiliation
+                                                    ->factory_id
+                                            )
+                                            ->where(
+                                                'department_id',
+                                                $approval->affiliation
+                                                    ->department_id
+                                            );
+                                    })
                                     ->where('cancel', 1)
                                     ->where('approval2', 1);
                             });
@@ -1822,33 +1922,64 @@ class ReportController extends Controller
                     if ($approval->department_id == 1) {
                         $query->orWhere(function ($query) use ($approval) {
                             $query
-                                ->where('factory_id', $approval->factory_id)
+                                ->whereHas('affiliation', function (
+                                    $query
+                                ) use ($approval) {
+                                    $query->where(
+                                        'factory_id',
+                                        $approval->affiliation->factory_id
+                                    );
+                                })
                                 ->where('approved', 1)
                                 ->where('cancel', 0);
                         });
-                    } elseif ($approval->department_id != 1 && $approval->group_id == 1) {
+                    } elseif (
+                        $approval->department_id != 1 &&
+                        $approval->affiliation->group_id == 1
+                    ) {
                         $query->orWhere(function ($query) use ($approval) {
                             $query
-                                ->where('factory_id', $approval->factory_id)
-                                ->where(
-                                    'department_id',
-                                    $approval->department_id
-                                )
+                                ->whereHas('affiliation', function (
+                                    $query
+                                ) use ($approval) {
+                                    $query
+                                        ->where(
+                                            'factory_id',
+                                            $approval->affiliation->factory_id
+                                        )
+                                        ->where(
+                                            'department_id',
+                                            $approval->affiliation
+                                                ->department_id
+                                        );
+                                })
                                 ->where('approved', 1)
                                 ->where('cancel', 0);
                         });
-                    } elseif ($approval->department_id != 1 && $approval->group_id != 1) {
+                    } elseif (
+                        $approval->department_id != 1 &&
+                        $approval->affiliation->group_id != 1
+                    ) {
                         $query->orWhere(function ($query) use ($approval) {
                             $query
-                                ->where('factory_id', $approval->factory_id)
-                                ->where(
-                                    'department_id',
-                                    $approval->department_id
-                                )
-                                ->where(
-                                    'group_id',
-                                    $approval->group_id
-                                )
+                                ->whereHas('affiliation', function (
+                                    $query
+                                ) use ($approval) {
+                                    $query
+                                        ->where(
+                                            'factory_id',
+                                            $approval->affiliation->factory_id
+                                        )
+                                        ->where(
+                                            'department_id',
+                                            $approval->affiliation
+                                                ->department_id
+                                        )
+                                        ->where(
+                                            'group_id',
+                                            $approval->affiliation->group_id
+                                        );
+                                })
                                 ->where('approved', 1)
                                 ->where('cancel', 0);
                         });
@@ -1863,17 +1994,15 @@ class ReportController extends Controller
                 ->unique()
                 ->load([
                     'user',
-                    'user.factory',
-                    'user.department',
+                    'user.affiliation',
                     'report_category',
                     'reason_category',
                 ])
-                ->sortBy('user.department_id')
+                ->sortBy('user.affiliation_id')
                 ->sortBy('report_date');
         }
         $factories = FactoryCategory::all();
         $departments = DepartmentCategory::all();
-        // $groups = GroupCategory::all();
         $report_categories = ReportCategory::all();
         $reason_categories = ReasonCategory::all();
         $users = User::all('id', 'employee');
@@ -1883,7 +2012,6 @@ class ReportController extends Controller
                 'reports',
                 'factories',
                 'departments',
-                // 'groups',
                 'report_categories',
                 'reason_categories',
                 'users'
@@ -1902,36 +2030,67 @@ class ReportController extends Controller
         $reports = Report::whereHas('user', function ($query) use ($approvals) {
             $query->where(function ($query) use ($approvals) {
                 foreach ($approvals as $approval) {
-                    if ($approval->department_id == 1) {
+                    if ($approval->affiliation->department_id == 1) {
                         $query->orWhere(function ($query) use ($approval) {
                             $query
-                                ->where('factory_id', $approval->factory_id)
+                                ->whereHas('affiliation', function (
+                                    $query
+                                ) use ($approval) {
+                                    $query->where(
+                                        'factory_id',
+                                        $approval->affiliation->factory_id
+                                    );
+                                })
                                 ->where('approved', 1)
                                 ->where('cancel', 0);
                         });
-                    } elseif ($approval->department_id != 1 && $approval->group_id == 1) {
+                    } elseif (
+                        $approval->department_id != 1 &&
+                        $approval->affiliation->group_id == 1
+                    ) {
                         $query->orWhere(function ($query) use ($approval) {
                             $query
-                                ->where('factory_id', $approval->factory_id)
-                                ->where(
-                                    'department_id',
-                                    $approval->department_id
-                                )
+                                ->whereHas('affiliation', function (
+                                    $query
+                                ) use ($approval) {
+                                    $query
+                                        ->where(
+                                            'factory_id',
+                                            $approval->affiliation->factory_id
+                                        )
+                                        ->where(
+                                            'department_id',
+                                            $approval->affiliation
+                                                ->department_id
+                                        );
+                                })
                                 ->where('approved', 1)
                                 ->where('cancel', 0);
                         });
-                    } elseif ($approval->department_id != 1 && $approval->group_id != 1) {
+                    } elseif (
+                        $approval->department_id != 1 &&
+                        $approval->affiliation->group_id != 1
+                    ) {
                         $query->orWhere(function ($query) use ($approval) {
                             $query
-                                ->where('factory_id', $approval->factory_id)
-                                ->where(
-                                    'department_id',
-                                    $approval->department_id
-                                )
-                                ->where(
-                                    'group_id',
-                                    $approval->group_id
-                                )
+                                ->whereHas('affiliation', function (
+                                    $query
+                                ) use ($approval) {
+                                    $query
+                                        ->where(
+                                            'factory_id',
+                                            $approval->affiliation->factory_id
+                                        )
+                                        ->where(
+                                            'department_id',
+                                            $approval->affiliation
+                                                ->department_id
+                                        )
+                                        ->where(
+                                            'group_id',
+                                            $approval->affiliation->group_id
+                                        );
+                                })
                                 ->where('approved', 1)
                                 ->where('cancel', 0);
                         });
@@ -1946,12 +2105,11 @@ class ReportController extends Controller
                 ->unique()
                 ->load([
                     'user',
-                    'user.factory',
-                    'user.department',
+                    'user.affiliation',
                     'report_category',
                     'reason_category',
                 ])
-                ->sortBy('user.department_id')
+                ->sortBy('user.affiliation_id')
                 ->sortBy('report_date');
         }
 
@@ -1998,7 +2156,7 @@ class ReportController extends Controller
             # 所属1を指定
             $reports = $reports
                 ->filter(function ($item) use ($factory_id) {
-                    return $item->user->factory_id == $factory_id;
+                    return $item->user->affiliation->factory_id == $factory_id;
                 })
                 ->where('approved', 1)
                 ->where('cancel', 0);
@@ -2012,7 +2170,7 @@ class ReportController extends Controller
             # 所属2を指定
             $reports = $reports
                 ->filter(function ($item) use ($department_id) {
-                    return $item->user->department_id == $department_id;
+                    return $item->user->affiliation->department_id == $department_id;
                 })
                 ->where('approved', 1)
                 ->where('cancel', 0);
@@ -2063,10 +2221,10 @@ class ReportController extends Controller
             # 所属を指定
             $reports = $reports
                 ->filter(function ($item) use ($factory_id) {
-                    return $item->user->factory_id == $factory_id;
+                    return $item->user->affiliation->factory_id == $factory_id;
                 })
                 ->filter(function ($item) use ($department_id) {
-                    return $item->user->department_id == $department_id;
+                    return $item->user->affiliation->department_id == $department_id;
                 })
                 ->where('approved', 1)
                 ->where('cancel', 0);
@@ -2080,7 +2238,7 @@ class ReportController extends Controller
             # 所属1,休暇種類を指定
             $reports = $reports
                 ->filter(function ($item) use ($factory_id) {
-                    return $item->user->factory_id == $factory_id;
+                    return $item->user->affiliation->factory_id == $factory_id;
                 })
                 ->where('report_id', $report_id)
                 ->where('approved', 1)
@@ -2095,7 +2253,7 @@ class ReportController extends Controller
             # 所属1,理由を指定
             $reports = $reports
                 ->filter(function ($item) use ($factory_id) {
-                    return $item->user->factory_id == $factory_id;
+                    return $item->user->affiliation->factory_id == $factory_id;
                 })
                 ->where('reason_id', $reason_id)
                 ->where('approved', 1)
@@ -2110,7 +2268,7 @@ class ReportController extends Controller
             # 所属1,月を指定
             $reports = $reports
                 ->filter(function ($item) use ($factory_id) {
-                    return $item->user->factory_id == $factory_id;
+                    return $item->user->affiliation->factory_id == $factory_id;
                 })
                 ->where('start_date', '>=', $start_date)
                 ->where('start_date', '<=', $end_date)
@@ -2126,7 +2284,7 @@ class ReportController extends Controller
             # 所属2,休暇種類を指定
             $reports = $reports
                 ->filter(function ($item) use ($department_id) {
-                    return $item->user->department_id == $department_id;
+                    return $item->user->affiliation->department_id == $department_id;
                 })
                 ->where('report_id', $report_id)
                 ->where('approved', 1)
@@ -2141,7 +2299,7 @@ class ReportController extends Controller
             # 所属2,理由を指定
             $reports = $reports
                 ->filter(function ($item) use ($department_id) {
-                    return $item->user->department_id == $department_id;
+                    return $item->user->affiliation->department_id == $department_id;
                 })
                 ->where('reason_id', $reason_id)
                 ->where('approved', 1)
@@ -2156,7 +2314,7 @@ class ReportController extends Controller
             # 所属2,月を指定
             $reports = $reports
                 ->filter(function ($item) use ($department_id) {
-                    return $item->user->department_id == $department_id;
+                    return $item->user->affiliation->department_id == $department_id;
                 })
                 ->where('start_date', '>=', $start_date)
                 ->where('start_date', '<=', $end_date)
@@ -2213,10 +2371,10 @@ class ReportController extends Controller
             # 所属,休暇種類を指定
             $reports = $reports
                 ->filter(function ($item) use ($factory_id) {
-                    return $item->user->factory_id == $factory_id;
+                    return $item->user->affiliation->factory_id == $factory_id;
                 })
                 ->filter(function ($item) use ($department_id) {
-                    return $item->user->department_id == $department_id;
+                    return $item->user->affiliation->department_id == $department_id;
                 })
                 ->where('report_id', $report_id)
                 ->where('approved', 1)
@@ -2231,10 +2389,10 @@ class ReportController extends Controller
             # 所属,理由を指定
             $reports = $reports
                 ->filter(function ($item) use ($factory_id) {
-                    return $item->user->factory_id == $factory_id;
+                    return $item->user->affiliation->factory_id == $factory_id;
                 })
                 ->filter(function ($item) use ($department_id) {
-                    return $item->user->department_id == $department_id;
+                    return $item->user->affiliation->department_id == $department_id;
                 })
                 ->where('reason_id', $reason_id)
                 ->where('approved', 1)
@@ -2249,10 +2407,10 @@ class ReportController extends Controller
             # 所属,月を指定
             $reports = $reports
                 ->filter(function ($item) use ($factory_id) {
-                    return $item->user->factory_id == $factory_id;
+                    return $item->user->affiliation->factory_id == $factory_id;
                 })
                 ->filter(function ($item) use ($department_id) {
-                    return $item->user->department_id == $department_id;
+                    return $item->user->affiliation->department_id == $department_id;
                 })
                 ->where('start_date', '>=', $start_date)
                 ->where('start_date', '<=', $end_date)
@@ -2268,7 +2426,7 @@ class ReportController extends Controller
             # 所属2,休暇種類,理由を指定
             $reports = $reports
                 ->filter(function ($item) use ($department_id) {
-                    return $item->user->department_id == $department_id;
+                    return $item->user->affiliation->department_id == $department_id;
                 })
                 ->where('report_id', $report_id)
                 ->where('reason_id', $reason_id)
@@ -2284,7 +2442,7 @@ class ReportController extends Controller
             # 所属2,休暇種類,月を指定
             $reports = $reports
                 ->filter(function ($item) use ($department_id) {
-                    return $item->user->department_id == $department_id;
+                    return $item->user->affiliation->department_id == $department_id;
                 })
                 ->where('start_date', '>=', $start_date)
                 ->where('start_date', '<=', $end_date)
@@ -2301,7 +2459,7 @@ class ReportController extends Controller
             # 所属2,理由,月を指定
             $reports = $reports
                 ->filter(function ($item) use ($department_id) {
-                    return $item->user->department_id == $department_id;
+                    return $item->user->affiliation->department_id == $department_id;
                 })
                 ->where('start_date', '>=', $start_date)
                 ->where('start_date', '<=', $end_date)
@@ -2333,10 +2491,10 @@ class ReportController extends Controller
             # 所属,休暇種類,理由を指定
             $reports = $reports
                 ->filter(function ($item) use ($factory_id) {
-                    return $item->user->factory_id == $factory_id;
+                    return $item->user->affiliation->factory_id == $factory_id;
                 })
                 ->filter(function ($item) use ($department_id) {
-                    return $item->user->department_id == $department_id;
+                    return $item->user->affiliation->department_id == $department_id;
                 })
                 ->where('report_id', $report_id)
                 ->where('reason_id', $reason_id)
@@ -2352,10 +2510,10 @@ class ReportController extends Controller
             # 所属,休暇種類,月を指定
             $reports = $reports
                 ->filter(function ($item) use ($factory_id) {
-                    return $item->user->factory_id == $factory_id;
+                    return $item->user->affiliation->factory_id == $factory_id;
                 })
                 ->filter(function ($item) use ($department_id) {
-                    return $item->user->department_id == $department_id;
+                    return $item->user->affiliation->department_id == $department_id;
                 })
                 ->where('report_id', $report_id)
                 ->where('start_date', '>=', $start_date)
@@ -2372,10 +2530,10 @@ class ReportController extends Controller
             # 所属,理由,月を指定
             $reports = $reports
                 ->filter(function ($item) use ($factory_id) {
-                    return $item->user->factory_id == $factory_id;
+                    return $item->user->affiliation->factory_id == $factory_id;
                 })
                 ->filter(function ($item) use ($department_id) {
-                    return $item->user->department_id == $department_id;
+                    return $item->user->affiliation->department_id == $department_id;
                 })
                 ->where('reason_id', $reason_id)
                 ->where('start_date', '>=', $start_date)
@@ -2392,7 +2550,7 @@ class ReportController extends Controller
             # 所属1,休暇種類,理由,月を指定
             $reports = $reports
                 ->filter(function ($item) use ($factory_id) {
-                    return $item->user->factory_id == $factory_id;
+                    return $item->user->affiliation->factory_id == $factory_id;
                 })
                 ->where('report_id', $report_id)
                 ->where('reason_id', $reason_id)
@@ -2410,7 +2568,7 @@ class ReportController extends Controller
             # 所属2,休暇種類,理由,月を指定
             $reports = $reports
                 ->filter(function ($item) use ($department_id) {
-                    return $item->user->department_id == $department_id;
+                    return $item->user->affiliation->department_id == $department_id;
                 })
                 ->where('report_id', $report_id)
                 ->where('reason_id', $reason_id)
@@ -2423,7 +2581,7 @@ class ReportController extends Controller
 
         $view = view('reports.export')->with(compact('reports'));
         return Excel::download(new ReportFormExport($view), 'reports.xlsx');
-        
+
         // FIXME:権限で絞り込んでいないので表示どおりに出力されない
         /** 設定条件を定義して出力するreportを絞り込む
          * factory_id 工場

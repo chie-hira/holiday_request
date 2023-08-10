@@ -28,9 +28,7 @@ class User extends Authenticatable
         'email',
         'password',
         'employee',
-        'factory_id',
-        'department_id',
-        'group_id',
+        'affiliation_id',
         'adoption_date',
         'birthday',
     ];
@@ -82,72 +80,48 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the factory that owns the User
+     * Get the affiliation that owns the User
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function factory()
+    public function affiliation()
     {
-        return $this->belongsTo(FactoryCategory::class, 'factory_id', 'id');
-    }
-
-    /**
-     * Get the department that owns the User
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function department()
-    {
-        return $this->belongsTo(
-            DepartmentCategory::class,
-            'department_id',
-            'id'
-        );
-    }
-
-    /**
-     * Get the group that owns the User
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function group()
-    {
-        return $this->belongsTo(GroupCategory::class, 'group_id', 'id');
+        return $this->belongsTo(Affiliation::class, 'affiliation_id', 'id');
     }
 
     // アクセサ
     public function getTeamAllAttribute()
     {
-        if ($this->group->id != 1) {
+        if ($this->affiliation->group->id != 1) {
             $team =
-                $this->factory->factory_name .
-                $this->department->department_name .
-                $this->group->group_name;
+                $this->affiliation->factory->factory_name .
+                $this->affiliation->department->department_name .
+                $this->affiliation->group->group_name;
         }
-        if ($this->department->id != 1 && $this->group->id == 1) {
+        if ($this->affiliation->department->id != 1 && $this->affiliation->group->id == 1) {
             $team =
-                $this->factory->factory_name .
-                $this->department->department_name;
+                $this->affiliation->factory->factory_name .
+                $this->affiliation->department->department_name;
         }
-        if ($this->department->id == 1) {
+        if ($this->affiliation->department->id == 1) {
             $team =
-                $this->factory->factory_name;
+                $this->affiliation->factory->factory_name;
         }
         return $team;
     }
 
     public function getTeamAttribute()
     {
-        if ($this->group->id != 1) {
+        if ($this->affiliation->group->id != 1) {
             $team =
-                $this->department->department_name .
+                $this->affiliation->department->department_name .
                 ' ' .
-                $this->group->group_name;
+                $this->affiliation->group->group_name;
         }
-        if ($this->department->id != 1 && $this->group->id == 1) {
-            $team = $this->department->department_name;
+        if ($this->affiliation->department->id != 1 && $this->affiliation->group->id == 1) {
+            $team = $this->affiliation->department->department_name;
         }
-        if ($this->department->id == 1) {
+        if ($this->affiliation->department->id == 1) {
             $team = '工場長';
         }
 

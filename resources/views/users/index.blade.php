@@ -69,14 +69,14 @@
                                                     {{ $user->name }}
                                                 </td>
                                                 <td class="px-4 py-4 whitespace-nowrap text-xs text-gray-800 ">
-                                                    {{ $user->factory->factory_name }}
-                                                    @if ($user->department->id != 1)
-                                                        ・{{ $user->department->department_name }}
+                                                    {{ $user->affiliation->factory->factory_name }}
+                                                    @if ($user->affiliation->department->id != 1)
+                                                        ・{{ $user->affiliation->department->department_name }}
                                                     @endif
-                                                    @if ($user->group->id != 1)
-                                                        ・{{ $user->group->group_name }}
+                                                    @if ($user->affiliation->group->id != 1)
+                                                        ・{{ $user->affiliation->group->group_name }}
                                                     @endif
-                                                    @if ($user->department->id == 1)
+                                                    @if ($user->affiliation->department->id == 1)
                                                         ・工場長
                                                     @endif
                                                 </td>

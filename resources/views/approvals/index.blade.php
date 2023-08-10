@@ -72,10 +72,10 @@
                                                 </td>
                                                 <td
                                                     class="px-4 py-4 whitespace-nowrap text-xs text-gray-800 dark:text-gray-200">
-                                                    {{ $approval->factory->factory_name }}
-                                                        ・{{ $approval->department->department_name }}
-                                                    @if ($approval->group != null && $approval->group->id != 1)
-                                                        ・{{ $approval->group->group_name }}
+                                                    {{ $approval->affiliation->factory->factory_name }}
+                                                        ・{{ $approval->affiliation->department->department_name }}
+                                                    @if ($approval->affiliation->group != null && $approval->affiliation->group->id != 1)
+                                                        ・{{ $approval->affiliation->group->group_name }}
                                                     @endif
                                                 </td>
                                                 <td
