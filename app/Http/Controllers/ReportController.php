@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\MultipleExport;
 use App\Http\Requests\StoreReportRequest;
 use App\Http\Requests\UpdateReportRequest;
 use App\Models\ReasonCategory;
@@ -2738,7 +2739,13 @@ class ReportController extends Controller
         }
         // dd($reports);
         $view = view('reports.export')->with(compact('reports'));
-        return Excel::download(new ReportExport($view), 'reports.xlsx');
+        return Excel::download(new ReportFormExport($view), 'reports.xlsx');
+    }
+
+    public function all_export()
+    {
+        # 全データ出力
+        return Excel::download(new MultipleExport(), 'pp.xlsx');
     }
 
     // public function source_export()

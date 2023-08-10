@@ -117,8 +117,7 @@ Route::get('/export_form', [ReportController::class, 'export_form'])
 Route::post('/export', [ReportController::class, 'export'])
     ->name('reports.export')
     ->middleware('auth');
-// Route::get('/export', [ReportController::class, 'export'])
-//     ->name('reports.export')
-//     ->middleware('auth');
+Route::get('/all_export', [ReportController::class, 'all_export'])
+    ->middleware('auth');
 
 require __DIR__ . '/auth.php';
