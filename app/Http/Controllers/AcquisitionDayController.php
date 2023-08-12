@@ -7,20 +7,17 @@ use App\Http\Requests\StoreAcquisitionDayRequest;
 use App\Http\Requests\UpdateAcquisitionDayRequest;
 use App\Models\User;
 use App\Models\AcquisitionDay;
-use App\Models\ArchiveAcquisition;
-use App\Models\ArchiveAcquisitionDay;
 use App\Models\ReportCategory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 // BUG:残日数更新
 // 取得推進日に扱い
 // 休業、有給取消の項目追加
 // TODO:休業日に申請できないようにする
 // 金曜日15::00まで申請できないように制御
-class RemainingController extends Controller
+class AcquisitionDayController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -83,7 +80,7 @@ class RemainingController extends Controller
 
         $report_categories = ReportCategory::all();
 
-        return view('remainings.index')->with(
+        return view('acquisition_days.index')->with(
             compact('users', 'report_categories')
         );
 
@@ -153,7 +150,7 @@ class RemainingController extends Controller
      */
     public function edit(AcquisitionDay $acquisition_day)
     {
-        return view('remainings.edit')->with(compact('acquisition_day'));
+        return view('acquisition_days.edit')->with(compact('acquisition_day'));
     }
 
     /**
@@ -221,7 +218,7 @@ class RemainingController extends Controller
             }
         }
 
-        return view('remainings.my_index')->with(compact('acquisition_days'));
+        return view('acquisition_days.my_index')->with(compact('acquisition_days'));
     }
 
     /** 残日数リセット関数 */
@@ -244,7 +241,7 @@ class RemainingController extends Controller
         ]);
 
         /** 更新前データの保存 */
-        $excel_name = date('YmdHis') . '_remainings.xlsx';
+        $excel_name = date('YmdHis') . '_acquisition_days.xlsx';
         Excel::store(new RemainingExport(), 'public/excels/' . $excel_name);
 
         /** remainings更新 */

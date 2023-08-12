@@ -1,10 +1,9 @@
 <?php
 
+use App\Http\Controllers\AcquisitionDayController;
 use App\Http\Controllers\ApprovalController;
-use App\Http\Controllers\RemainingController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
-use App\Models\ReportCategory;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -54,7 +53,7 @@ Route::get('/my_reports', [ReportController::class, 'myIndex'])
     ->middleware('auth');
 
 # remainingルーティング
-Route::resource('acquisition_days', RemainingController::class)->middleware('auth');
+Route::resource('acquisition_days', AcquisitionDayController::class)->middleware('auth');
 
 # usersルーティング
 Route::resource('users', UserController::class)->middleware('auth');
@@ -78,17 +77,17 @@ Route::get('/approval/{report}/cancel', [
 
 # remaining加算ルーティング
 Route::get('/update_remainings', function () {
-    return view('remainings.update_form');
+    return view('acquisition_days.update_form');
 })
-    ->name('remainings.update_form')
+    ->name('acquisition_days.update_form')
     ->middleware('auth');
-Route::post('/add_remainings', [RemainingController::class, 'addRemainings'])
-    ->name('remainings.add_remainings')
+Route::post('/add_remainings', [AcquisitionDayController::class, 'addRemainings'])
+    ->name('acquisitions_days.add_remainings')
     ->middleware('auth');
 
 # my_indexルーティング
-Route::get('/my_remainings', [RemainingController::class, 'myIndex'])
-    ->name('remainings.my_index')
+Route::get('/my_remainings', [AcquisitionDayController::class, 'myIndex'])
+    ->name('acquisition_days.my_index')
     ->middleware('auth');
 
 # menuルーティング

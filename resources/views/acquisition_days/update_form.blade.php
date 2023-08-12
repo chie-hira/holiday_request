@@ -52,7 +52,7 @@
             <x-notice :notice="session('notice')" />
 
             <!-- 更新日form - start -->
-            <form action="{{ route('remainings.add_remainings') }}" method="POST">
+            <form action="{{ route('acquisition_days.add_remainings') }}" method="POST">
                 @csrf
                 <div class="grid gap-6 mb-6 md:grid-cols-2">
                     <div>

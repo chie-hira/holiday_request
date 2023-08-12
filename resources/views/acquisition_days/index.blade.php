@@ -25,7 +25,7 @@
                 <h1 class="sm:text-4xl text-3xl font-medium title-font mb-4 text-gray-900">休暇可能日数</h1>
                 <h2 id="paid_holiday_update" style="display: " class=" text-right">
                     @can('admin_only')
-                        <a href={{ route('remainings.update_form') }}
+                        <a href={{ route('acquisition_days.update_form') }}
                             class="inline-flex items-center justify-center text-base mr-2 font-medium text-sky-600 hover:text-sky-50 p-1 rounded-full border-2 border-gray-400 bg-sky-100/60 hover:bg-sky-600">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                                 <path fill-rule="evenodd"

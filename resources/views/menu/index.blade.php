@@ -152,7 +152,7 @@
                         </div>
                     </a>
 
-                    <a href={{ route('remainings.my_index') }} 
+                    <a href={{ route('acquisition_days.my_index') }} 
                         class="block text-center items-center p-3 my-2 text-white rounded-xl border border-gray-500 bg-fuchsia-400 hover:text-gray-600 hover:bg-white focus:text-fuchsia-400">
                         <div class="flex justify-center items-center text-2xl">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
