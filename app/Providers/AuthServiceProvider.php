@@ -26,6 +26,11 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         // 管理者だけ
+        Gate::define('general_admin', function ($user) {
+            return !empty($user->approvals->where('approval_id', 1)->where('affiliation_id', 1)->first());
+        });
+
+        // 管理者だけ
         Gate::define('admin_only', function ($user) {
             return !empty($user->approvals->where('approval_id', 1)->first());
         });

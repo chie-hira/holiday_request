@@ -221,6 +221,54 @@ class AcquisitionDayController extends Controller
         return view('acquisition_days.my_index')->with(compact('acquisition_days'));
     }
 
+    public function acquisitionStatus()
+    {
+        $approvals = Auth::user()->approvals->where('approval_id', '!=', 1);
+        $users = User::where(function ($query) use ($approvals) {
+            foreach ($approvals as $approval) {
+                if ($approval->affiliation->department_id == 1) {
+                    $query->whereHas('affiliation', function ($query) use (
+                        $approval
+                    ) {
+                        $query->where('factory_id', $approval->affiliation->factory_id);
+                    });
+                } else {
+                    $query->whereHas('affiliation', function ($query) use (
+                        $approval
+                    ) {
+                        $query->orWhere(function ($query) use ($approval) {
+                            $query
+                                ->where('factory_id', $approval->affiliation->factory_id)
+                                ->where(
+                                    'department_id',
+                                    $approval->affiliation->department_id
+                                );
+                        });
+                    });
+                }
+            }
+        })->get();
+        if ($approvals->where('affiliation.factory_id', 1)->first()) {
+            $users = User::all();
+        }
+
+        # 重複削除&並べ替え
+        if ($users->first()) {
+            $users = $users
+                ->unique()
+                ->load(['reports', 'acquisition_days'])
+                ->sortBy('employee')
+                ->sortBy('affiliation_id');
+        }
+        // dd($users);
+
+        $report_categories = ReportCategory::all();
+
+        return view('acquisition_days.status_index')->with(
+            compact('users', 'report_categories')
+        );
+    }
+
     /** 残日数リセット関数 */
     public function resetRemaining($report_id)
     {

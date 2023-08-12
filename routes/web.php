@@ -46,14 +46,31 @@ Route::resource('reports', ReportController::class)
     ->only('index')
     ->middleware('auth')
     ->middleware('can:approver_reader');
-
-# my_indexルーティング
 Route::get('/my_reports', [ReportController::class, 'myIndex'])
     ->name('reports.my_index')
     ->middleware('auth');
 
-# remainingルーティング
-Route::resource('acquisition_days', AcquisitionDayController::class)->middleware('auth');
+# acquisition_daysルーティング
+Route::resource('acquisition_days', AcquisitionDayController::class)
+    ->middleware('auth')
+    ->middleware('can:admin_only');
+Route::get('/my_acquisition_days', [AcquisitionDayController::class, 'myIndex'])
+    ->name('acquisition_days.my_index')
+    ->middleware('auth');
+    // ->middleware('auth', 'can:view, acquisition_day');
+Route::get('/acquisition_status', [AcquisitionDayController::class, 'acquisitionStatus'])
+    ->name('acquisition_days.status_index')
+    ->middleware('auth', 'can:general_gl_reader');
+Route::get('/update_form', function () {
+    return view('acquisition_days.update_form');
+})
+    ->name('acquisition_days.update_form')
+    ->middleware('auth', 'can:general_admin');
+Route::post('/add_remainings', [AcquisitionDayController::class, 'addRemainings'])
+    ->name('acquisitions_days.add_remainings')
+    ->middleware('auth', 'can:general_admin');
+    // ->middleware('auth');
+
 
 # usersルーティング
 Route::resource('users', UserController::class)->middleware('auth');
@@ -62,9 +79,6 @@ Route::resource('users', UserController::class)->middleware('auth');
 Route::resource('approvals', ApprovalController::class)->middleware('auth');
 
 # 承認ルーティング
-Route::get('/get_and_remaining', [ReportController::class, 'getAndRemaining'])
-    ->name('reports.get_and_remaining')
-    ->middleware('auth', 'can:general_gl_reader');
 Route::get('/approval/{report}', [ReportController::class, 'approval'])
     ->name('approval')
     ->middleware('auth');
@@ -73,21 +87,6 @@ Route::get('/approval/{report}/cancel', [
     'approvalCancel',
 ])
     ->name('reports.approval_cancel')
-    ->middleware('auth');
-
-# remaining加算ルーティング
-Route::get('/update_remainings', function () {
-    return view('acquisition_days.update_form');
-})
-    ->name('acquisition_days.update_form')
-    ->middleware('auth');
-Route::post('/add_remainings', [AcquisitionDayController::class, 'addRemainings'])
-    ->name('acquisitions_days.add_remainings')
-    ->middleware('auth');
-
-# my_indexルーティング
-Route::get('/my_remainings', [AcquisitionDayController::class, 'myIndex'])
-    ->name('acquisition_days.my_index')
     ->middleware('auth');
 
 # menuルーティング
