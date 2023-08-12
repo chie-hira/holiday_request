@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\ReportCategory;
 
-class RemainingSeeder extends Seeder
+class AcquisitionDaySeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -21,18 +21,19 @@ class RemainingSeeder extends Seeder
 
         for ($i=0; $i < count($users) ; $i++) { 
             $user_id = $users[$i]->id;
-            $report_ids = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 16];
+            // $report_ids = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 16];
+            $report_categories = ReportCategory::all();
 
-            foreach ($report_ids as $report_id) {
-                $report_category = ReportCategory::find($report_id);
+            // foreach ($report_ids as $report_id) {
+            foreach ($report_categories as $report) {
                 $param[] = [
                     'user_id' => $user_id,
-                    'report_id' => $report_id,
-                    'remaining' => $report_category->max_days,
+                    'report_id' => $report->id,
+                    'remaining_days' => $report->max_days,
                 ];
             }
         }
 
-        DB::table('remainings')->insert($param);
+        DB::table('acquisition_days')->insert($param);
     }
 }

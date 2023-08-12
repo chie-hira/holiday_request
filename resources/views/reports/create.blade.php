@@ -999,12 +999,12 @@
             document.getElementById('get_hours').setAttribute('value', getHoursOnly);
             document.getElementById('get_minutes').setAttribute('value', getMinutes);
 
-            let ownRemainings = @json($my_remainings);
+            let myAcquisitionDays = @json($my_acquisition_days);
             let ownRemainingDays = 0;
-            Object.keys(ownRemainings).forEach((el) => {
-                if (ownRemainings[el].report_id == reportId) {
+            Object.keys(myAcquisitionDays).forEach((el) => {
+                if (myAcquisitionDays[el].report_id == reportId) {
                     // 申請中の日数を考慮した残日数を算出
-                    ownRemainingDays = ownRemainings[el].remaining - ownRemainings[el].pending_get_days;
+                    ownRemainingDays = myAcquisitionDays[el].remaining - myAcquisitionDays[el].pending_get_days;
                 }
             });
 

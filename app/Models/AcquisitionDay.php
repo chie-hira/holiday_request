@@ -6,16 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
-class Remaining extends Model
+class AcquisitionDay extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'report_id', 'remaining_days', 'am_pm'];
+    protected $fillable = ['user_id', 'report_id', 'remaining_days', 'acquisition_days'];
 
     public $appends = ['pending_get_days'];
 
     /**
-     * Get the user that owns the Remaining
+     * Get the user that owns the Acquisition days
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -81,15 +81,15 @@ class Remaining extends Model
         }
     }
     /** 残日数の日数だけ */
-    public function getRemainingDaysAttribute()
+    public function getRemainingDaysOnlyAttribute()
     {
-        $exp = explode('.', $this->remaining);
+        $exp = explode('.', $this->remaining_days);
         return $exp[0];
     }
     /** 残日数の時間だけ */
     public function getRemainingHoursAttribute()
     {
-        $exp = explode('.', $this->remaining);
+        $exp = explode('.', $this->remaining_days);
         $exp_key1 = array_key_exists(1, $exp);
         if ($exp_key1) {
             $decimal_p = '0.' . $exp[1];
@@ -112,13 +112,13 @@ class Remaining extends Model
     /** 残日数の日数だけ */
     public function getExpectationDaysAttribute()
     {
-        $exp = explode('.', $this->remaining - $this->get_days);
+        $exp = explode('.', $this->remaining_days - $this->get_days);
         return $exp[0];
     }
     /** 取得日数の時間だけ */
     public function getExpectationHoursAttribute()
     {
-        $exp = explode('.', $this->remaining - $this->get_days);
+        $exp = explode('.', $this->remaining_days - $this->get_days);
         if (array_key_exists(1, $exp)) {
             # 小数点以下あり(1日未満)
             $decimal_p = '0.' . $exp[1];
@@ -131,7 +131,7 @@ class Remaining extends Model
     /** 取得日数の分だけ */
     public function getExpectationMinutesAttribute()
     {
-        $exp = explode('.', $this->remaining - $this->get_days);
+        $exp = explode('.', $this->remaining_days - $this->get_days);
         if (array_key_exists(1, $exp)) {
             # 小数点以下あり(1日未満)
             $decimal_p = '0.' . $exp[1];

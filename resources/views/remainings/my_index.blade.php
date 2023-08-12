@@ -36,35 +36,35 @@
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-200">
-                                        @foreach ($my_remainings as $my_remaining)
+                                        @foreach ($acquisition_days as $acquisition_day)
                                             <tr class="hover:bg-gray-100">
                                                 <td
                                                     class="hidden md:block pl-4 pr-2 py-3 whitespace-nowrap text-sm font-medium text-gray-800 ">
-                                                    {{ $my_remaining->report_category->report_name }}
+                                                    {{ $acquisition_day->report_category->report_name }}
                                                 </td>
                                                 <td
                                                     class="block md:hidden pl-4 pr-2 py-3 whitespace-nowrap text-xs font-medium text-gray-800 ">
-                                                    {{ Str::limit($my_remaining->report_category->report_name, 20) }}
+                                                    {{ Str::limit($acquisition_day->report_category->report_name, 20) }}
                                                 </td>
                                                 <td
                                                     class="px-4 pt-3 pb-1 whitespace-nowrap text-right text-sm font-medium">
                                                     <span class=" font-bold">
-                                                        {{ $my_remaining->remaining_days }} 日
-                                                        @if (!empty($my_remaining->remaining_hours))
-                                                            &ensp;{{ $my_remaining->remaining_hours }} 時間
+                                                        {{ $acquisition_day->remaining_days }} 日
+                                                        @if (!empty($acquisition_day->remaining_hours))
+                                                            &ensp;{{ $acquisition_day->remaining_hours }} 時間
                                                         @endif
                                                     </span>
                                                     <p class="text-blue-400 text-xs">
-                                                        @if ($my_remaining->pending_get_days != 0)
-                                                            @if ($my_remaining->remaining - $my_remaining->pending_get_days == 0)
+                                                        @if ($acquisition_day->pending_get_days != 0)
+                                                            @if ($acquisition_day->remaining - $acquisition_day->pending_get_days == 0)
                                                                 {{ 0 }} 日
                                                             @endif
-                                                            @if ($my_remaining->expectation_days != 0)
-                                                                {{ $my_remaining->expectation_days }}
+                                                            @if ($acquisition_day->expectation_days != 0)
+                                                                {{ $acquisition_day->expectation_days }}
                                                                 日
                                                             @endif
-                                                            @if ($my_remaining->expectation_hours != 0)
-                                                                {{ $my_remaining->expectation_hours }}
+                                                            @if ($acquisition_day->expectation_hours != 0)
+                                                                {{ $acquisition_day->expectation_hours }}
                                                                 時間
                                                             @endif
                                                         @endif
@@ -73,19 +73,19 @@
                                                 <td
                                                     class="px-4 pt-3 pb-1 whitespace-nowrap text-right text-sm font-medium">
                                                     <span class=" font-bold">
-                                                        {{ $my_remaining->sum_get_days_only }} 日
-                                                        @if (!empty($my_remaining->remaining_hours))
-                                                            &ensp;{{ $my_remaining->remaining_hours }} 時間
+                                                        {{ $acquisition_day->sum_get_days_only }} 日
+                                                        @if (!empty($acquisition_day->remaining_hours))
+                                                            &ensp;{{ $acquisition_day->remaining_hours }} 時間
                                                         @endif
                                                     </span>
                                                     <p class="text-blue-400 text-xs">
-                                                        @if ($my_remaining->pending_get_days != 0)
-                                                            @if ($my_remaining->pending_get_days_only != 0)
-                                                                {{ $my_remaining->pending_get_days_only }}
+                                                        @if ($acquisition_day->pending_get_days != 0)
+                                                            @if ($acquisition_day->pending_get_days_only != 0)
+                                                                {{ $acquisition_day->pending_get_days_only }}
                                                                 日
                                                             @endif
-                                                            @if ($my_remaining->pending_get_hours != 0)
-                                                                {{ $my_remaining->pending_get_hours }}
+                                                            @if ($acquisition_day->pending_get_hours != 0)
+                                                                {{ $acquisition_day->pending_get_hours }}
                                                                 時間
                                                             @endif
                                                         @endif

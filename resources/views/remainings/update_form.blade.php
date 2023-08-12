@@ -73,7 +73,7 @@
             <!-- 更新日form - end -->
 
             <div class="mt-10 flex justify-end">
-                <x-return-button class="w-24 mr-2" href="{{ route('remainings.index') }}">
+                <x-return-button class="w-24 mr-2" href="{{ route('acquisition_days.index') }}">
                     一覧
                 </x-return-button>
                 <x-back-home-button class="w-30" href="{{ route('menu') }}">

@@ -83,12 +83,12 @@
                                             <tr>
                                                 <td
                                                     class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">
-                                                    {{ $user->factory->factory_name }}
-                                                    @if ($user->department->id != 1)
-                                                        ・{{ $user->department->department_name }}
+                                                    {{ $user->affiliation->factory->factory_name }}
+                                                    @if ($user->affiliation->department->id != 1)
+                                                        ・{{ $user->affiliation->department->department_name }}
                                                     @endif
-                                                    @if ($user->group != null && $user->group->id != 1)
-                                                        ・{{ $user->group->group_name }}
+                                                    @if ($user->affiliation->group != null && $user->affiliation->group->id != 1)
+                                                        ・{{ $user->affiliation->group->group_name }}
                                                     @endif
                                                 </td>
                                                 <td
@@ -204,16 +204,16 @@
             let getId = 'get-' + repoortCategoryId;
             let remainingId = 'remaining-' + repoortCategoryId;
 
-            users.forEach(e => {
-                let getId1 = document.getElementById('get-1_' + e.id);
-                let getId2 = document.getElementById('get-2_' + e.id);
-                let getId12 = document.getElementById('get-12_' + e.id);
-                let getId13 = document.getElementById('get-13_' + e.id);
-                let getId14 = document.getElementById('get-14_' + e.id);
-                let getId15 = document.getElementById('get-15_' + e.id);
-                let remainingId1 = document.getElementById('remaining-1_' + e.id);
-                let remainingId2 = document.getElementById('remaining-2_' + e.id);
-                let barId = document.getElementById('bar_' + e.id);
+            Object.keys(users).forEach((el) => {
+                let getId1 = document.getElementById('get-1_' + users[el].id);
+                let getId2 = document.getElementById('get-2_' + users[el].id);
+                let getId12 = document.getElementById('get-12_' + users[el].id);
+                let getId13 = document.getElementById('get-13_' + users[el].id);
+                let getId14 = document.getElementById('get-14_' + users[el].id);
+                let getId15 = document.getElementById('get-15_' + users[el].id);
+                let remainingId1 = document.getElementById('remaining-1_' + users[el].id);
+                let remainingId2 = document.getElementById('remaining-2_' + users[el].id);
+                let barId = document.getElementById('bar_' + users[el].id);
                 const getIds = [getId1, getId2, getId12, getId13, getId14, getId15];
                 const remainingIds = [remainingId1, remainingId2];
 
@@ -236,21 +236,54 @@
                 barTitle.style.display = '';
                 barId.style.display = '';
             });
+
+            // users.forEach(e => {
+            //     let getId1 = document.getElementById('get-1_' + e.id);
+            //     let getId2 = document.getElementById('get-2_' + e.id);
+            //     let getId12 = document.getElementById('get-12_' + e.id);
+            //     let getId13 = document.getElementById('get-13_' + e.id);
+            //     let getId14 = document.getElementById('get-14_' + e.id);
+            //     let getId15 = document.getElementById('get-15_' + e.id);
+            //     let remainingId1 = document.getElementById('remaining-1_' + e.id);
+            //     let remainingId2 = document.getElementById('remaining-2_' + e.id);
+            //     let barId = document.getElementById('bar_' + e.id);
+            //     const getIds = [getId1, getId2, getId12, getId13, getId14, getId15];
+            //     const remainingIds = [remainingId1, remainingId2];
+
+            //     getIds.forEach(id => {
+            //         idSplit = id.id.split('_');
+            //         if (getId == idSplit[0]) {
+            //             id.style.display = '';
+            //         } else {
+            //             id.style.display = 'none';
+            //         }
+            //     });
+            //     remainingIds.forEach(id => {
+            //         idSplit = id.id.split('_');
+            //         if (remainingId == idSplit[0]) {
+            //             id.style.display = '';
+            //         } else {
+            //             id.style.display = 'none';
+            //         }
+            //     });
+            //     barTitle.style.display = '';
+            //     barId.style.display = '';
+            // });
         }
 
         function reportDataRemainingOff(repoortCategoryId) {
             let getId = 'get-' + repoortCategoryId;
 
-            users.forEach(e => {
-                let getId1 = document.getElementById('get-1_' + e.id);
-                let getId2 = document.getElementById('get-2_' + e.id);
-                let getId12 = document.getElementById('get-12_' + e.id);
-                let getId13 = document.getElementById('get-13_' + e.id);
-                let getId14 = document.getElementById('get-14_' + e.id);
-                let getId15 = document.getElementById('get-15_' + e.id);
-                let remainingId1 = document.getElementById('remaining-1_' + e.id);
-                let remainingId2 = document.getElementById('remaining-2_' + e.id);
-                let barId = document.getElementById('bar_' + e.id);
+            Object.keys(users).forEach((el) => {
+                let getId1 = document.getElementById('get-1_' + users[el].id);
+                let getId2 = document.getElementById('get-2_' + users[el].id);
+                let getId12 = document.getElementById('get-12_' + users[el].id);
+                let getId13 = document.getElementById('get-13_' + users[el].id);
+                let getId14 = document.getElementById('get-14_' + users[el].id);
+                let getId15 = document.getElementById('get-15_' + users[el].id);
+                let remainingId1 = document.getElementById('remaining-1_' + users[el].id);
+                let remainingId2 = document.getElementById('remaining-2_' + users[el].id);
+                let barId = document.getElementById('bar_' + users[el].id);
                 const getIds = [getId1, getId2, getId12, getId13, getId14, getId15];
 
                 getIds.forEach(id => {
@@ -266,6 +299,31 @@
                 barTitle.style.display = 'none';
                 barId.style.display = 'none';
             });
+            // users.forEach(e => {
+            //     let getId1 = document.getElementById('get-1_' + e.id);
+            //     let getId2 = document.getElementById('get-2_' + e.id);
+            //     let getId12 = document.getElementById('get-12_' + e.id);
+            //     let getId13 = document.getElementById('get-13_' + e.id);
+            //     let getId14 = document.getElementById('get-14_' + e.id);
+            //     let getId15 = document.getElementById('get-15_' + e.id);
+            //     let remainingId1 = document.getElementById('remaining-1_' + e.id);
+            //     let remainingId2 = document.getElementById('remaining-2_' + e.id);
+            //     let barId = document.getElementById('bar_' + e.id);
+            //     const getIds = [getId1, getId2, getId12, getId13, getId14, getId15];
+
+            //     getIds.forEach(id => {
+            //         idSplit = id.id.split('_');
+            //         if (getId == idSplit[0]) {
+            //             id.style.display = '';
+            //         } else {
+            //             id.style.display = 'none';
+            //         }
+            //     });
+            //     remainingId1.style.display = 'none';
+            //     remainingId2.style.display = 'none';
+            //     barTitle.style.display = 'none';
+            //     barId.style.display = 'none';
+            // });
         }
 
         function reportNameRemainingOn(reportName) {

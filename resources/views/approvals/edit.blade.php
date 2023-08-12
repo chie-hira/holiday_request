@@ -115,8 +115,8 @@
                                                 <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
                                                     <x-select name="factory_id" class="block mt-1 w-32 text-sm" required
                                                         autofocus>
-                                                        <option value="{{ $approval->factory_id }}">
-                                                            {{ $approval->factory->factory_name }}</option>
+                                                        <option value="{{ $approval->affiliation->factory_id }}">
+                                                            {{ $approval->affiliation->factory->factory_name }}</option>
                                                         @foreach ($factory_categories as $factory_category)
                                                             <option value="{{ $factory_category->id }}"
                                                                 @if ($factory_category->id === (int) old('factory_id')) selected @endif>
@@ -127,8 +127,8 @@
                                                 <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
                                                     <x-select name="department_id" class="block mt-1 w-32 text-sm"
                                                         required autofocus>
-                                                        <option value="{{ $approval->department_id }}">
-                                                            {{ $approval->department->department_name }}</option>
+                                                        <option value="{{ $approval->affiliation->department_id }}">
+                                                            {{ $approval->affiliation->department->department_name }}</option>
                                                         @foreach ($department_categories as $department_category)
                                                             <option value="{{ $department_category->id }}"
                                                                 @if ($department_category->id === (int) old('department_id')) selected @endif>
@@ -139,8 +139,8 @@
                                                 <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
                                                     <x-select name="group_id" class="block mt-1 w-32 text-sm" required
                                                         autofocus>
-                                                        <option value="{{ $approval->group_id }}">
-                                                            {{ $approval->group->group_name }}</option>
+                                                        <option value="{{ $approval->affiliation->group_id }}">
+                                                            {{ $approval->affiliation->group->group_name }}</option>
                                                         @foreach ($group_categories as $group_category)
                                                             <option value="{{ $group_category->id }}"
                                                                 @if ($group_category->id === (int) old('group_id')) selected @endif>

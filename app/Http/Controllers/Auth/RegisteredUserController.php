@@ -9,8 +9,10 @@ use App\Models\FactoryCategory;
 use App\Models\DepartmentCategory;
 use App\Models\GroupCategory;
 use App\Models\Remaining;
+use App\Models\ReportCategory;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 
@@ -26,7 +28,13 @@ class RegisteredUserController extends Controller
         $factory_categories = FactoryCategory::where('id', '!=', 1)->get();
         $department_categories = DepartmentCategory::all();
         $group_categories = GroupCategory::all();
-        return view('auth.register')->with(compact('factory_categories', 'department_categories', 'group_categories'));
+        return view('auth.register')->with(
+            compact(
+                'factory_categories',
+                'department_categories',
+                'group_categories'
+            )
+        );
     }
 
     /**
@@ -42,7 +50,13 @@ class RegisteredUserController extends Controller
         // dd($request);
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                'unique:users',
+            ],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'employee' => ['required', 'integer', 'min:0', 'unique:users'],
             'factory_id' => ['required', 'integer'],
@@ -54,7 +68,7 @@ class RegisteredUserController extends Controller
         ]);
 
         /** 誕生日は1月1日の場合、01-01の形式で格納 */
-        $birthday = $request->birthday_month. '-'. $request->birthday_day;
+        $birthday = $request->birthday_month . '-' . $request->birthday_day;
 
         $user = User::create([
             'name' => $request->name,
@@ -78,19 +92,24 @@ class RegisteredUserController extends Controller
         $user->save();
 
         /** ユーザー作成と同時に残日数を登録する */
-        $remaining = new Remaining();
-        $remaining->user_id = $user->id;
-        $remaining->report_id = 1;
-        $remaining->remaining = 10;
-        $remaining->save();
-        
-        $report_ids = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 16];
-            foreach ($report_ids as $report_id) {
-                self::newRemaining($report_id, $user->id);
-            }
+        $report_categories = ReportCategory::where('id', '!=', 1)->get();
+
+        $param[] = [
+            'user_id' => $user->id,
+            'report_id' => 1,
+            'remaining_days' => 10,
+        ];
+        foreach ($report_categories as $report) {
+            $param[] = [
+                'user_id' => $user->id,
+                'report_id' => $report->id,
+                'remaining_days' => $report->max_days,
+            ];
+        }
+        DB::table('acquisition_days')->insert($param);
 
         return redirect()
-                ->route('users.index')
-                ->with('notice', 'ユーザーを登録しました。');
+            ->route('users.index')
+            ->with('notice', 'ユーザーを登録しました。');
     }
 }

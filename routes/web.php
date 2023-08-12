@@ -54,7 +54,7 @@ Route::get('/my_reports', [ReportController::class, 'myIndex'])
     ->middleware('auth');
 
 # remainingルーティング
-Route::resource('remainings', RemainingController::class)->middleware('auth');
+Route::resource('acquisition_days', RemainingController::class)->middleware('auth');
 
 # usersルーティング
 Route::resource('users', UserController::class)->middleware('auth');
@@ -63,12 +63,6 @@ Route::resource('users', UserController::class)->middleware('auth');
 Route::resource('approvals', ApprovalController::class)->middleware('auth');
 
 # 承認ルーティング
-// Route::get('/pending_approval', [ReportController::class, 'pendingApproval'])
-//     ->name('reports.pending_approval')
-//     ->middleware('auth', 'can:general_gl_reader');
-// Route::get('/approved', [ReportController::class, 'approved'])
-//     ->name('reports.approved')
-//     ->middleware('auth', 'can:general_gl_reader');
 Route::get('/get_and_remaining', [ReportController::class, 'getAndRemaining'])
     ->name('reports.get_and_remaining')
     ->middleware('auth', 'can:general_gl_reader');

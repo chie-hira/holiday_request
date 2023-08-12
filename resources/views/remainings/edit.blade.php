@@ -12,7 +12,7 @@
                                 clip-rule="evenodd" fill="" />
                         </svg>
                         <span class="font-semibold">
-                            {{ $remaining->report_category->report_name }}
+                            {{ $acquisition_day->report_category->report_name }}
                         </span>
                         の取得可能日数を変更できます。
                     </p>
@@ -44,37 +44,37 @@
                                     <tbody class="divide-y divide-gray-200 ">
                                         <tr class="hover:bg-gray-100">
                                             <td class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-800">
-                                                {{ $remaining->user->name }}
+                                                {{ $acquisition_day->user->name }}
                                             </td>
                                             <td class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-800">
-                                                {{ $remaining->report_category->report_name }}
+                                                {{ $acquisition_day->report_category->report_name }}
                                             </td>
-                                            <form action="{{ route('remainings.update', $remaining) }}" method="POST">
+                                            <form action="{{ route('acquisition_days.update', $acquisition_day) }}" method="POST">
                                                 @csrf
                                                 @method('PUT')
                                                 <td class="px-6 py-3 whitespace-nowrap text-center text-sm font-medium">
-                                                    @if ($remaining->report_id == 1) {{-- 有給休暇 --}}
+                                                    @if ($acquisition_day->report_id == 1) {{-- 有給休暇 --}}
                                                         <x-input name="remaining_days" type="number" max="40" min="0"
-                                                            class="inline h-8 mt-1 w-20" :value="old('remaining_days', $remaining->remaining_days)" />日
+                                                            class="inline h-8 mt-1 w-20" :value="old('remaining_days', $acquisition_day->remaining_days)" />日
                                                     @endif
-                                                    @if ($remaining->report_id == 4) {{-- 特別休暇(弔事・配偶者等) --}}
+                                                    @if ($acquisition_day->report_id == 4) {{-- 特別休暇(弔事・配偶者等) --}}
                                                         <x-input name="remaining_days" type="number" max="3" min="0"
-                                                            class="inline h-8 mt-1 w-20" :value="old('remaining_days', $remaining->remaining_days)" />日
+                                                            class="inline h-8 mt-1 w-20" :value="old('remaining_days', $acquisition_day->remaining_days)" />日
                                                     @endif
-                                                    @if ($remaining->report_id == 5) {{-- 特別休暇(弔事・同居の義父母) --}}
+                                                    @if ($acquisition_day->report_id == 5) {{-- 特別休暇(弔事・同居の義父母) --}}
                                                         <x-input name="remaining_days" type="number" max="2" min="0"
-                                                            class="inline h-8 mt-1 w-20" :value="old('remaining_days', $remaining->remaining_days)" />日
+                                                            class="inline h-8 mt-1 w-20" :value="old('remaining_days', $acquisition_day->remaining_days)" />日
                                                     @endif
-                                                    @if ($remaining->report_id == 6) {{-- 特別休暇(弔事・別居父母等) --}}
+                                                    @if ($acquisition_day->report_id == 6) {{-- 特別休暇(弔事・別居父母等) --}}
                                                         <x-input name="remaining_days" type="number" max="1" min="0"
-                                                            class="inline h-8 mt-1 w-20" :value="old('remaining_days', $remaining->remaining_days)" />日
+                                                            class="inline h-8 mt-1 w-20" :value="old('remaining_days', $acquisition_day->remaining_days)" />日
                                                     @endif
-                                                    @if ($remaining->report_id == 16) {{-- 介護休業 --}}
+                                                    @if ($acquisition_day->report_id == 16) {{-- 介護休業 --}}
                                                         <x-input name="remaining_days" type="number" max="186" min="0"
-                                                            class="inline h-8 mt-1 w-20" :value="old('remaining_days', $remaining->remaining_days)" />日
+                                                            class="inline h-8 mt-1 w-20" :value="old('remaining_days', $acquisition_day->remaining_days)" />日
                                                     @endif
                                                     <x-input name="remaining_hours" type="number" max="7" min="0"
-                                                        class="inline h-8 mt-1 w-20" :value="old('remaining_hours', $remaining->remaining_hours)" />時間
+                                                        class="inline h-8 mt-1 w-20" :value="old('remaining_hours', $acquisition_day->remaining_hours)" />時間
                                                 </td>
                                                 <td class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium">
                                                     <x-edit-button >
@@ -92,7 +92,7 @@
             </div>
 
             <div class="mt-10 flex justify-end">
-                <x-return-button class="w-24 mr-2" href="{{ route('remainings.index') }}">
+                <x-return-button class="w-24 mr-2" href="{{ route('acquisition_days.index') }}">
                     一覧
                 </x-return-button>
                 <x-back-home-button class="w-30" href="{{ route('menu') }}">

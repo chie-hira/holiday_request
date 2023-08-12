@@ -50,13 +50,13 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get all of the remainings for the User
+     * Get all of the acquisition days for the User
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function remainings()
+    public function acquisition_days()
     {
-        return $this->hasMany(Remaining::class, 'user_id', 'id');
+        return $this->hasMany(AcquisitionDay::class, 'user_id', 'id');
     }
 
     /**
@@ -165,13 +165,13 @@ class User extends Authenticatable
         }
 
         # 有休残日数
-        $paid_holidays = $this->remainings->where('report_id', 1)->first();
+        $paid_holidays = $this->acquisition_days()->where('report_id', 1)->first();
 
         /** 有休失効日数 */
         $adoption_date_carbon = new Carbon($this->adoption_date); # 採用年月日
         $diff = $adoption_date_carbon->diff($year_end); # 年度末-採用年月日
         $length_of_service = floatval($diff->y . '.' . $diff->m); # 年度末の勤続年数
-        $remaining_now = $paid_holidays->remaining;
+        $remaining_now = $paid_holidays->remaining_days;
 
         switch ($length_of_service) {
             case $length_of_service < 1.5:
@@ -317,9 +317,9 @@ class User extends Authenticatable
     public function remainingDaysOnly($key)
     {
         # 残日数だけ
-        $remaining = $this->remainings->where('report_id', $key)->first();
-        if ($remaining) {
-            $exp = explode('.', $remaining->remaining);
+        $acquisition_day = $this->acquisition_days->where('report_id', $key)->first();
+        if ($acquisition_day) {
+            $exp = explode('.', $acquisition_day->remaining_days);
             return $exp[0];
         } else {
             return 0;
@@ -329,9 +329,9 @@ class User extends Authenticatable
     public function remainingHours($key)
     {
         # 残時間だけ
-        $remaining = $this->remainings->where('report_id', $key)->first();
-        if ($remaining) {
-            $exp = explode('.', $remaining->remaining);
+        $acquisition_day = $this->acquisition_days->where('report_id', $key)->first();
+        if ($acquisition_day) {
+            $exp = explode('.', $acquisition_day->remaining_days);
 
             if (array_key_exists(1, $exp)) {
                 # 小数点以下あり(1日未満)
@@ -346,9 +346,9 @@ class User extends Authenticatable
     public function remainingMinutes($key)
     {
         # 残分だけ
-        $remaining = $this->remainings->where('report_id', $key)->first();
-        if ($remaining) {
-            $exp = explode('.', $remaining->remaining);
+        $acquisition_days = $this->acquisition_days()->where('report_id', $key)->first();
+        if ($acquisition_days) {
+            $exp = explode('.', $acquisition_days->remaining_days);
 
             if (array_key_exists(1, $exp)) {
                 # 小数点以下あり(1日未満)
@@ -367,10 +367,9 @@ class User extends Authenticatable
 
     public function remaining($report_category_id)
     {
-        $remainings = $this->remainings;
-        return $remainings
-            ->where('report_id', '=', $report_category_id)
+        $acquisition_days = $this->acquisition_days->where('report_id', $report_category_id)
             ->first();
+        return $acquisition_days;
     }
 
     // メール通知

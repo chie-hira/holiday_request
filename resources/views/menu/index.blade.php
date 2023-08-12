@@ -239,7 +239,7 @@
 
                     <!-- 管理者 start -->
                     @can('admin_only')
-                        <a href={{ route('remainings.index') }}
+                        <a href={{ route('acquisition_days.index') }}
                             class="inline-flex items-center p-2 text-lg font-medium text-gray-600 hover:text-sky-700 hover:underline hover:underline-offset-0 hover:decoration-4 hover:decoration-sky-200">
                             <span class="mr-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"

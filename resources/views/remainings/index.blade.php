@@ -128,31 +128,31 @@
                                                     class="pl-1 pr-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                     <div id="edit-1_{{ $user->id }}" style="display: ">
                                                         <x-edit-a-button
-                                                            href="{{ route('remainings.edit', $user->remaining(1)->id) }}">
+                                                            href="{{ route('acquisition_days.edit', $user->remaining(1)->id) }}">
                                                             {{ __('Edit') }}
                                                         </x-edit-a-button>
                                                     </div>
                                                     <div id="edit-4_{{ $user->id }}" style="display: none">
                                                         <x-edit-a-button
-                                                            href="{{ route('remainings.edit', $user->remaining(4)->id) }}">
+                                                            href="{{ route('acquisition_days.edit', $user->remaining(4)->id) }}">
                                                             {{ __('Edit') }}
                                                         </x-edit-a-button>
                                                     </div>
                                                     <div id="edit-5_{{ $user->id }}" style="display: none">
                                                         <x-edit-a-button
-                                                            href="{{ route('remainings.edit', $user->remaining(5)->id) }}">
+                                                            href="{{ route('acquisition_days.edit', $user->remaining(5)->id) }}">
                                                             {{ __('Edit') }}
                                                         </x-edit-a-button>
                                                     </div>
                                                     <div id="edit-6_{{ $user->id }}" style="display: none">
                                                         <x-edit-a-button
-                                                            href="{{ route('remainings.edit', $user->remaining(6)->id) }}">
+                                                            href="{{ route('acquisition_days.edit', $user->remaining(6)->id) }}">
                                                             {{ __('Edit') }}
                                                         </x-edit-a-button>
                                                     </div>
                                                     <div id="edit-16_{{ $user->id }}" style="display: none">
                                                         <x-edit-a-button
-                                                            href="{{ route('remainings.edit', $user->remaining(16)->id) }}">
+                                                            href="{{ route('acquisition_days.edit', $user->remaining(16)->id) }}">
                                                             {{ __('Edit') }}
                                                         </x-edit-a-button>
                                                     </div>

@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\Remaining;
+use App\Models\AcquisitionDay;
 use Maatwebsite\Excel\Concerns\FromCollection;
 
 class RemainingExport implements FromCollection
@@ -12,6 +12,6 @@ class RemainingExport implements FromCollection
     */
     public function collection()
     {
-        return Remaining::all();
+        return AcquisitionDay::all();
     }
 }

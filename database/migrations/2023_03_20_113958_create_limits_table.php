@@ -13,8 +13,8 @@ class CreateLimitsTable extends Migration
      */
     public function up()
     {
-        # limitsからremainingsに変更
-        Schema::create('remainings', function (Blueprint $table) {
+        # acquisition_daysに変更
+        Schema::create('acquisition_days', function (Blueprint $table) {
             $table->id()->comment('残日数ID');
             $table->foreignId('user_id')
                 ->constrained('users')
@@ -24,7 +24,8 @@ class CreateLimitsTable extends Migration
                 ->constrained('report_categories')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
-            $table->float('remaining', 8, 5)->nullable();
+            $table->float('remaining_days', 8, 5)->nullable();
+            $table->float('acquisition_days', 8, 5)->default(0);
             $table->timestamps();
 
             // 複合ユニーク制約
@@ -39,6 +40,6 @@ class CreateLimitsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('remainings');
+        Schema::dropIfExists('acquisition_days');
     }
 }
