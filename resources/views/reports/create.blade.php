@@ -5,345 +5,386 @@
     {{-- //TODO:弔事の具体的のコメント --}}
     {{-- //TODO:一覧は統一&承認者見れる --}}
     <section class="text-gray-600 body-font">
-        <div class="container max-w-2xl min-w-max w-full md:w-4/5 lg:w-2/3 px-5 py-24 mx-auto">
-            <div class="flex flex-col text-center w-full mb-12">
-                <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">届出書作成</h1>
-                <div class="mx-auto">
-                    <x-info>
-                        <p class="text-sm">
-                            項目を入力して、<span class="font-bold">提出</span>を押してください。
-                        </p>
-                    </x-info>
+        {{-- <div class="container max-w-2xl min-w-max w-full md:w-4/5 lg:w-2/3 px-5 py-24 mx-auto"> --}}
+        <div class="container px-6 py-12 mx-auto">
+            <div class="">
+                <div class="flex flex-col text-center w-full mb-12">
+                    <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">届出書作成</h1>
+                    <div class="mx-auto">
+                        <x-info>
+                            <p class="text-sm">
+                                項目を入力して、<span class="font-bold">提出</span>を押してください。
+                            </p>
+                        </x-info>
+                    </div>
                 </div>
-            </div>
 
-            <x-errors :errors="$errors" />
+                <x-errors :errors="$errors" />
 
-            <form id="myForm" action="{{ route('reports.store') }}" method="POST">
-                @csrf
-                <div class="grid gap-6 mb-6 md:grid-cols-2">
-                    <div>
-                        <label for="report_date" class="block mb-2 text-sm font-medium text-gray-900">
-                            届出日
-                        </label>
-                        <x-input type="date" id="report_date" name="report_date" class="block mt-1 w-full"
-                            :value="date('Y-m-d')" required readonly />
-                    </div>
-                    <div>
-                        <label for="user_id" class="block mb-2 text-sm font-medium text-gray-900">
-                            氏名
-                        </label>
-                        <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
-                        <x-input type="text" id="user_id" class="block mt-1 w-full" :value="Auth::user()->name" readonly />
-                    </div>
-                    <div>
-                        <label for="shift_id" class="block mb-2 text-sm font-medium text-gray-900">
-                            休暇予定日のシフト
-                        </label>
-                        <x-select name="shift_id" id="shift_id" class="block mt-1 w-full" onchange="countDays();"
-                            required autofocus>
-                            @foreach ($shifts as $shift)
-                                <option value="{{ $shift->id }}" @if ($shift->id === (int) old('shift_id')) selected @endif>
-                                    シフトコード{{ $shift->shift_code }}&emsp;{{ $shift->start_time_hm }}~{{ $shift->end_time_hm }}
-                                </option>
-                            @endforeach
-                        </x-select>
-                    </div>
-                    <div></div>
-                    <div>
-                        <label for="report_id" class="block mb-2 text-sm font-medium text-gray-900">
-                            {{ __('Report Category') }}
-                        </label>
-                        <x-select name="report_id" id="report_id" onchange="reportChange();" class="block mt-1 w-full"
-                            required>
-                            @foreach ($report_categories as $report_category)
-                                <option value="{{ $report_category->id }}"
-                                    @if ($report_category->id === (int) old('report_id')) selected @endif>
-                                    {{ $report_category->report_name }}</option>
-                            @endforeach
-                        </x-select>
-                    </div>
-                    <div style="display: " id="empty_field_form"></div>
-                    <div style="display: none" id="sub_category_form">
-                        <p class="block mb-2 text-sm font-medium text-gray-900">
-                            {{ __('Sub Report Category') }}
-                        </p>
-                        <div class="flex gap-x-6">
-                            <div class="flex mt-2">
-                                @foreach ($sub_report_categories as $sub_category)
-                                    <input type="radio" name="sub_report_id"
-                                        id="sub_report_id_{{ $sub_category->id }}" onclick="subReportChange()"
-                                        value="{{ $sub_category->id }}" @if ($sub_category->id === (int) old('sub_report_id')) checked @endif
-                                        class="shrink-0 mt-0.5 border-gray-200 rounded-full text-sky-600 focus:ring-sky-300 ">
-                                    <label for="sub_report_id_{{ $sub_category->id }}" name="sub_report_name"
-                                        class="mr-2 text-sm text-gray-500 ml-2">
-                                        {{ $sub_category->sub_report_name }}
-                                    </label>
+                <form id="myForm" action="{{ route('reports.store') }}" method="POST">
+                    @csrf
+
+                    {{-- <div class="grid gap-6 mb-6 md:grid-cols-2"> --}}
+                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                        <div>
+                            <label for="report_date" class="block mb-2 text-sm font-medium text-gray-900">
+                                届出日
+                            </label>
+                            <x-input type="date" id="report_date" name="report_date" class="block mt-1 w-full"
+                                :value="date('Y-m-d')" required readonly />
+                        </div>
+                        <div>
+                            <label for="user_id" class="block mb-2 text-sm font-medium text-gray-900">
+                                氏名
+                            </label>
+                            <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
+                            <x-input type="text" id="user_id" class="block mt-1 w-full" :value="Auth::user()->name"
+                                readonly />
+                        </div>
+                        <div>
+                            <label for="shift_id" class="block mb-2 text-sm font-medium text-gray-900">
+                                休暇予定日のシフト
+                            </label>
+                            <x-select name="shift_id" id="shift_id" class="block mt-1 w-full" onchange="countDays();"
+                                required autofocus>
+                                @foreach ($shifts as $shift)
+                                    <option value="{{ $shift->id }}"
+                                        @if ($shift->id === (int) old('shift_id')) selected @endif>
+                                        シフトコード{{ $shift->shift_code }}&emsp;{{ $shift->start_time_hm }}~{{ $shift->end_time_hm }}
+                                    </option>
                                 @endforeach
+                            </x-select>
+                        </div>
+                        <div></div>
+                        <div>
+                            <label for="report_id" class="block mb-2 text-sm font-medium text-gray-900">
+                                {{ __('Report Category') }}
+                            </label>
+                            <x-select name="report_id" id="report_id" onchange="reportChange();"
+                                class="block mt-1 w-full" required>
+                                @foreach ($report_categories as $report_category)
+                                    <option value="{{ $report_category->id }}"
+                                        @if ($report_category->id === (int) old('report_id')) selected @endif>
+                                        {{ $report_category->report_name }}</option>
+                                @endforeach
+                            </x-select>
+                        </div>
+                        <div class="hidden md:block" style="display: " id="empty_field_form"></div>
+
+                        <!-- 遅刻・早退コメント - start -->
+                        <div style="display: none" id="time_form_10m">
+                            <x-info>
+                                <p class="text-sm">
+                                    遅刻・早退は
+                                    <span class="font-semibold text-red-500">10分単位</span>
+                                    で取得できます
+                                </p>
+                            </x-info>
+                        </div>
+                        <!-- 遅刻・早退コメント - end -->
+
+                        <!-- 外出コメント - start -->
+                        <div style="display: none" id="time_form_30m">
+                            <x-info>
+                                <p class="text-sm">
+                                    外出は
+                                    <span class="font-semibold text-red-500">30分単位</span>
+                                    で取得できます
+                                </p>
+                            </x-info>
+                        </div>
+                        <!-- 外出コメント - end -->
+
+                        <!-- 弔事コメント - start -->
+                        <div class="col-span-1 md:col-span-2" style="display: none" id="mourning_1">
+                            <x-info>
+                                <p class="text-sm">
+                                    <span class="font-semibold text-red-500">配偶者、子、同居している父母</span>
+                                    の喪に服するとき取得できます
+                                </p>
+                            </x-info>
+                        </div>
+                        <div class="col-span-1 md:col-span-2" style="display: none" id="mourning_2">
+                            <x-info>
+                                <p class="text-sm">
+                                    <span class="font-semibold text-red-500">同居している配偶者の父母</span>
+                                    の喪に服するとき取得できます
+                                </p>
+                            </x-info>
+                        </div>
+                        <div class="col-span-1 md:col-span-2" style="display: none" id="mourning_3">
+                            <x-info class="">
+                                <p class="text-sm">
+                                    <span
+                                        class="font-semibold text-red-500">同居していない父母、同居していない配偶者の父母、祖父母、同居している配偶者の祖父母、兄弟姉妹</span>
+                                    の喪に服するとき取得できます
+                                </p>
+                            </x-info>
+                        </div>
+                        <!-- 弔事コメント - end -->
+
+                        <div style="display: none" id="sub_category_form">
+                            <p class="block mb-2 text-sm font-medium text-gray-900">
+                                {{ __('Sub Report Category') }}
+                            </p>
+                            <div class="flex gap-x-6">
+                                <div class="flex mt-2">
+                                    @foreach ($sub_report_categories as $sub_category)
+                                        <input type="radio" name="sub_report_id"
+                                            id="sub_report_id_{{ $sub_category->id }}" onclick="subReportChange()"
+                                            value="{{ $sub_category->id }}"
+                                            @if ($sub_category->id === (int) old('sub_report_id')) checked @endif
+                                            class="shrink-0 mt-0.5 border-gray-200 rounded-full text-sky-600 focus:ring-sky-300 ">
+                                        <label for="sub_report_id_{{ $sub_category->id }}" name="sub_report_name"
+                                            class="mr-2 text-sm text-gray-500 ml-2">
+                                            {{ $sub_category->sub_report_name }}
+                                        </label>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 半日休コメント - start -->
+                        <div class="col-span-1 md:col-span-2" style="display: none" id="am_pm_comment">
+                            <x-info>
+                                <p class="text-sm">
+                                    半日休の後半が日を跨ぐ場合でも、休暇予定日は
+                                    <span class="font-semibold text-red-500">始業時間の日付</span>
+                                    にしてください。
+                                </p>
+                            </x-info>
+                        </div>
+                        <!-- 半日休コメント - end -->
+
+                        <!-- 時間休コメント - start -->
+                        <div class="col-span-1 md:col-span-2" style="display: none" id="time_form">
+                            <x-info>
+                                <p class="text-sm">
+                                    時間休は
+                                    <span class="font-semibold text-red-500">1時間単位</span>
+                                    で取得できます。
+                                </p>
+                            </x-info>
+                        </div>
+                        <!-- 時間休コメント - end -->
+
+                        <!-- 有給休暇 - start -->
+                        <div>
+                            <label style="display: " id="start_date_label" for="start_date"
+                                class="block mb-2 text-sm font-medium text-gray-900">
+                                休暇予定日：何日から
+                            </label>
+                            <label style="display: none" id="half_date_label" for="start_date"
+                                class="block mb-2 text-sm font-medium text-gray-900">
+                                休暇予定日
+                            </label>
+                            <x-input style="display: " type="date" id="start_date" name="start_date"
+                                onchange="countDays();" class="block mt-1 w-full" :value="old('start_date')" required />
+                        </div>
+                        <div style="display: " id="end_date_form">
+                            <label for="end_date" class="block mb-2 text-sm font-medium text-gray-900">
+                                何日まで
+                            </label>
+                            <x-input type="date" id="end_date" name="end_date" onchange="countDays();"
+                                class="block mt-1 w-full" :value="old('end_date')" />
+                        </div>
+                        <!-- 有給休暇 - end -->
+
+                        <!-- 半日休 - start -->
+                        <div style="display: none" id="am_pm_form">
+                            <label for="am_pm" class="block mb-2 text-sm font-medium text-gray-900">
+                                前半・後半
+                            </label>
+                            <x-select name="am_pm" id="am_pm" class="block mt-1 w-full"
+                                onchange="countDays();">
+                                <option value="">選択してください</option>
+                                <option value="1" @if (1 === (int) old('am_pm')) selected @endif>前半</option>
+                                <option value="2" @if (2 === (int) old('am_pm')) selected @endif>後半</option>
+                            </x-select>
+                        </div>
+                        <!-- 半日休 - end -->
+
+                        <!-- 時間休 - start -->
+                        <div style="display: none" id="time_empty_form">
+                        </div>
+                        <div style="display: none" id="start_time_form">
+                            <label for="start_time" class="block mb-2 text-sm font-medium text-gray-900">
+                                何時から<span class="text-xs text-gray-600">&emsp;5分刻み</span>
+                            </label>
+                            <x-input type="time" id="start_time" name="start_time" step="300"
+                                onchange="countDays();" class="block mt-1 w-full" :value="old('start_time')" />
+                        </div>
+                        <div style="display: none" id="end_time_form">
+                            <label for="end_time" class="block mb-2 text-sm font-medium text-gray-900">
+                                何時まで<span class="text-xs text-gray-600">&emsp;5分刻み</span>
+                            </label>
+                            <x-input type="time" id="end_time" name="end_time" step="300"
+                                onchange="countDays();" class="block mt-1 w-full" :value="old('end_time')" />
+                        </div>
+                        <!-- 時間休 - end -->
+
+                        <!-- 理由 - start -->
+                        <div style="display: none" id="empty_reason_form"></div>
+                        <div>
+                            <label for="reason_id" class="block mb-2 text-sm font-medium text-gray-900">
+                                {{ __('Reason') }}
+                            </label>
+                            <x-select name="reason_id" id="reason_id" onchange="reasonChange();"
+                                class="block mt-1 w-full" required>
+                                @foreach ($reasons as $reason)
+                                    <option value="{{ $reason->id }}"
+                                        @if ($reason->id === (int) old('reason_id')) selected @endif>
+                                        {{ $reason->reason }}
+                                    </option>
+                                @endforeach
+                            </x-select>
+                        </div>
+                        <div style="display: " class="" id="reason_detail_form">
+                            <label for="reason_detail" class="block mb-2 text-sm font-medium text-gray-900">
+                                理由の詳細・備考
+                            </label>
+                            <x-input type="text" id="reason_detail" name="reason_detail"
+                                placeholder="詳細・備考があれば記載してください" class="block mt-1 w-full" :value="old('reason_detail')" />
+                        </div>
+                        <!-- 理由 - end -->
+
+                        <!-- 休日アラート - start -->
+                        <div id="holiday_alert" style="display: none">
+                            <x-info>
+                                <p class="text-sm">
+                                    選択中の休暇予定日は
+                                    <span class="font-semibold text-red-500">休日</span>
+                                    です
+                                </p>
+                            </x-info>
+                        </div>
+                        <!-- 休日アラート - end -->
+
+                        <!-- 重複アラート - start -->
+                        <div id="duplication_alert" style="display: none">
+                            <x-info>
+                                <p class="text-sm">
+                                    選択中の休暇予定に
+                                    <span class="font-semibold text-red-500">申請済みの日時</span>
+                                    が含まれています
+                                </p>
+                            </x-info>
+                        </div>
+                        <!-- 重複アラート - end -->
+
+                        <!-- 勤務時間アラート - start -->
+                        <div id="working_alert" style="display: none">
+                            <x-info>
+                                <p class="text-sm">
+                                    選択中の休暇予定時刻は
+                                    <span class="font-semibold text-red-500">勤務時間外</span>
+                                    です
+                                </p>
+                            </x-info>
+                        </div>
+                        <!-- 勤務時間アラート - end -->
+
+                        <!-- 遅刻アラート - start -->
+                        <div id="late_alert" style="display: none">
+                            <x-info>
+                                <p class="text-sm">
+                                    選択中の休暇予定時刻は
+                                    <span class="font-semibold text-red-500">遅刻</span>
+                                    です。休暇種類は遅刻で提出してください。
+                                </p>
+                            </x-info>
+                        </div>
+                        <div id="late_start_alert" style="display: none">
+                            <x-info>
+                                <p class="text-sm">
+                                    遅刻の開始時刻は
+                                    <span class="font-semibold text-red-500">就業開始時刻</span>
+                                    にしてください。
+                                </p>
+                            </x-info>
+                        </div>
+                        <!-- 遅刻アラート - end -->
+
+                        <!-- 外出アラート - start -->
+                        <div id="go_out_alert" style="display: none">
+                            <x-info>
+                                <p class="text-sm">
+                                    選択中の休暇予定時刻は
+                                    <span class="font-semibold text-red-500">外出</span>
+                                    です。休暇種類は外出で提出してください。
+                                </p>
+                            </x-info>
+                        </div>
+                        <!-- 外出アラート - end -->
+
+                        <!-- 早退アラート - start -->
+                        <div id="leaving_early_alert" style="display: none">
+                            <x-info>
+                                <p class="text-sm">
+                                    選択中の休暇予定時刻は
+                                    <span class="font-semibold text-red-500">早退</span>
+                                    です。休暇種類は早退で提出してください。
+                                </p>
+                            </x-info>
+                        </div>
+                        <!-- 早退アラート - end -->
+                    </div>
+                    {{-- </div> --}}
+
+                    <div class="flex my-6">
+                        <div class="mr-4">
+                            <p class="block mb-2 text-sm font-medium text-gray-900">
+                                取得日数
+                            </p>
+                            <input type="hidden" id="get_days" name="get_days"
+                                class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                value="{{ old('get_days') }}" readonly required>
+                            <div class="flex items-center mb-1">
+                                <x-input type="number" id="get_days_only" name="get_days_only"
+                                    class="block mt-1 w-20" :value="old('get_days_only')" readonly />
+                                <p class="ml-2">日</p>
+                            </div>
+                            <div class="flex items-center mb-1">
+                                <x-input type="number" id="get_hours" name="get_hours" class="block mt-1 w-20"
+                                    :value="old('get_hours')" readonly />
+                                <p class="ml-2">時間</p>
+                            </div>
+                            <div class="flex items-center">
+                                <x-input type="number" id="get_minutes" name="get_minutes" class="block mt-1 w-20"
+                                    :value="old('get_minutes')" readonly />
+                                <p class="ml-2">分</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="block mb-2 text-sm font-medium text-gray-900">
+                                残日数
+                            </p>
+                            <input type="hidden" id="remaining_days" name="remaining"
+                                class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                value="{{ old('remaining_days') }}" readonly required>
+                            <div class="flex items-center mb-1">
+                                <x-input type="number" id="remaining_days_only" name="remaining_days_only"
+                                    class="block mt-1 w-20" :value="old('remaining_days_only')" readonly />
+                                <p class="ml-2">日</p>
+                            </div>
+                            <div class="flex items-center mb-1">
+                                <x-input type="number" id="remaining_hours" name="remaining_hours"
+                                    class="block mt-1 w-20" :value="old('remaining_hours')" readonly />
+                                <p class="ml-2">時間</p>
+                            </div>
+                            <div class="flex items-center">
+                                <x-input type="number" id="remaining_minutes" name="remaining_minutes"
+                                    class="block mt-1 w-20" :value="old('remaining_minutes')" readonly />
+                                <p class="ml-2">分</p>
                             </div>
                         </div>
                     </div>
-
-                    <!-- 有給休暇 - start -->
-                    <div>
-                        <label style="display: " id="start_date_label" for="start_date"
-                            class="block mb-2 text-sm font-medium text-gray-900">
-                            休暇予定日：何日から
-                        </label>
-                        <label style="display: none" id="half_date_label" for="start_date"
-                            class="block mb-2 text-sm font-medium text-gray-900">
-                            休暇予定日
-                        </label>
-                        <x-input style="display: " type="date" id="start_date" name="start_date"
-                            onchange="countDays();" class="block mt-1 w-full" :value="old('start_date')" required />
-                    </div>
-                    <div style="display: " id="end_date_form">
-                        <label for="end_date" class="block mb-2 text-sm font-medium text-gray-900">
-                            何日まで
-                        </label>
-                        <x-input type="date" id="end_date" name="end_date" onchange="countDays();"
-                            class="block mt-1 w-full" :value="old('end_date')" />
-                    </div>
-                    <!-- 有給休暇 - end -->
-
-                    <!-- 半日休 - start -->
-                    <div style="display: none" id="am_pm_form">
-                        <label for="am_pm" class="block mb-2 text-sm font-medium text-gray-900">
-                            前半・後半
-                        </label>
-                        <x-select name="am_pm" id="am_pm" class="block mt-1 w-full" onchange="countDays();">
-                            <option value="">選択してください</option>
-                            <option value="1" @if (1 === (int) old('am_pm')) selected @endif>前半</option>
-                            <option value="2" @if (2 === (int) old('am_pm')) selected @endif>後半</option>
-                        </x-select>
-                    </div>
-                    <!-- 半日休 - end -->
-
-                    <!-- 時間休 - start -->
-                    <div style="display: none" id="time_empty_form">
-                    </div>
-                    <div style="display: none" id="start_time_form">
-                        <label for="start_time" class="block mb-2 text-sm font-medium text-gray-900">
-                            何時から<span class="text-xs text-gray-600">&emsp;5分刻み</span>
-                        </label>
-                        <x-input type="time" id="start_time" name="start_time" step="300"
-                            onchange="countDays();" class="block mt-1 w-full" :value="old('start_time')" />
-                    </div>
-                    <div style="display: none" id="end_time_form">
-                        <label for="end_time" class="block mb-2 text-sm font-medium text-gray-900">
-                            何時まで<span class="text-xs text-gray-600">&emsp;5分刻み</span>
-                        </label>
-                        <x-input type="time" id="end_time" name="end_time" step="300"
-                            onchange="countDays();" class="block mt-1 w-full" :value="old('end_time')" />
-                    </div>
-                    <!-- 時間休 - end -->
-
-                    <!-- 理由 - start -->
-                    <div style="display: none" id="empty_reason_form"></div>
-                    <div>
-                        <label for="reason_id" class="block mb-2 text-sm font-medium text-gray-900">
-                            {{ __('Reason') }}
-                        </label>
-                        <x-select name="reason_id" id="reason_id" onchange="reasonChange();"
-                            class="block mt-1 w-full" required>
-                            @foreach ($reasons as $reason)
-                                <option value="{{ $reason->id }}" @if ($reason->id === (int) old('reason_id')) selected @endif>
-                                    {{ $reason->reason }}
-                                </option>
-                            @endforeach
-                        </x-select>
-                    </div>
-                    <div style="display: " class="" id="reason_detail_form">
-                        <label for="reason_detail" class="block mb-2 text-sm font-medium text-gray-900">
-                            理由の詳細・備考
-                        </label>
-                        <x-input type="text" id="reason_detail" name="reason_detail"
-                            placeholder="詳細・備考があれば記載してください" class="block mt-1 w-full" :value="old('reason_detail')" />
-                    </div>
-                    <!-- 理由 - end -->
-                </div>
-
-                <!-- 半日休コメント - start -->
-                <div style="display: none" id="am_pm_comment">
-                    <x-info>
-                        <p class="text-sm">
-                            半日休の後半が日を跨ぐ場合でも、休暇予定日は
-                            <span class="font-semibold">始業時間の日付</span>
-                            にしてください。
-                        </p>
-                    </x-info>
-                </div>
-                <!-- 半日休コメント - end -->
-
-                <!-- 時間休コメント - start -->
-                <div style="display: none" id="time_form">
-                    <x-info>
-                        <p class="text-sm">
-                            時間休は
-                            <span class="font-semibold">1時間単位</span>
-                            で取得できます。
-                        </p>
-                    </x-info>
-                </div>
-                <!-- 時間休コメント - end -->
-
-                <!-- 遅刻・早退 - start -->
-                <div style="display: none" id="time_form_10m">
-                    <x-info>
-                        <p class="text-sm">
-                            遅刻・早退は
-                            <span class="font-semibold text-red-500">10分単位</span>
-                            で取得できます
-                        </p>
-                    </x-info>
-                </div>
-                <!-- 遅刻・早退 - end -->
-
-                <!-- 外出 - start -->
-                <div style="display: none" id="time_form_30m">
-                    <x-info>
-                        <p class="text-sm">
-                            遅刻・早退・外出は
-                            <span class="font-semibold text-red-500">30分単位</span>
-                            で取得できます
-                        </p>
-                    </x-info>
-                </div>
-                <!-- 外出 - end -->
-                <!-- 休日アラート - start -->
-                <div id="holiday_alert" style="display: none">
-                    <x-info>
-                        <p class="text-sm">
-                            選択中の休暇予定日は
-                            <span class="font-semibold text-red-500">休日</span>
-                            です
-                        </p>
-                    </x-info>
-                </div>
-                <!-- 休日アラート - end -->
-
-                <!-- 重複アラート - start -->
-                <div id="duplication_alert" style="display: none">
-                    <x-info>
-                        <p class="text-sm">
-                            選択中の休暇予定に
-                            <span class="font-semibold text-red-500">申請済みの日時</span>
-                            が含まれています
-                        </p>
-                    </x-info>
-                </div>
-                <!-- 重複アラート - end -->
-
-                <!-- 勤務時間アラート - start -->
-                <div id="working_alert" style="display: none">
-                    <x-info>
-                        <p class="text-sm">
-                            選択中の休暇予定時刻は
-                            <span class="font-semibold text-red-500">勤務時間外</span>
-                            です
-                        </p>
-                    </x-info>
-                </div>
-                <!-- 勤務時間アラート - end -->
-
-                <!-- 遅刻アラート - start -->
-                <div id="late_alert" style="display: none">
-                    <x-info>
-                        <p class="text-sm">
-                            選択中の休暇予定時刻は
-                            <span class="font-semibold text-red-500">遅刻</span>
-                            です。休暇種類は遅刻で提出してください。
-                        </p>
-                    </x-info>
-                </div>
-                <div id="late_start_alert" style="display: none">
-                    <x-info>
-                        <p class="text-sm">
-                            遅刻の開始時刻は
-                            <span class="font-semibold text-red-500">就業開始時刻</span>
-                            にしてください。
-                        </p>
-                    </x-info>
-                </div>
-                <!-- 遅刻アラート - end -->
-
-                <!-- 外出アラート - start -->
-                <div id="go_out_alert" style="display: none">
-                    <x-info>
-                        <p class="text-sm">
-                            選択中の休暇予定時刻は
-                            <span class="font-semibold text-red-500">外出</span>
-                            です。休暇種類は外出で提出してください。
-                        </p>
-                    </x-info>
-                </div>
-                <!-- 外出アラート - end -->
-
-                <!-- 早退アラート - start -->
-                <div id="leaving_early_alert" style="display: none">
-                    <x-info>
-                        <p class="text-sm">
-                            選択中の休暇予定時刻は
-                            <span class="font-semibold text-red-500">早退</span>
-                            です。休暇種類は早退で提出してください。
-                        </p>
-                    </x-info>
-                </div>
-                <!-- 早退アラート - end -->
-
-                <div class="flex my-6">
-                    <div class="mr-4">
-                        <p class="block mb-2 text-sm font-medium text-gray-900">
-                            取得日数
-                        </p>
-                        <input type="hidden" id="get_days" name="get_days"
-                            class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            value="{{ old('get_days') }}" readonly required>
-                        <div class="flex items-center mb-1">
-                            <x-input type="number" id="get_days_only" name="get_days_only" class="block mt-1 w-20"
-                                :value="old('get_days_only')" readonly />
-                            <p class="ml-2">日</p>
-                        </div>
-                        <div class="flex items-center mb-1">
-                            <x-input type="number" id="get_hours" name="get_hours" class="block mt-1 w-20"
-                                :value="old('get_hours')" readonly />
-                            <p class="ml-2">時間</p>
-                        </div>
-                        <div class="flex items-center">
-                            <x-input type="number" id="get_minutes" name="get_minutes" class="block mt-1 w-20"
-                                :value="old('get_minutes')" readonly />
-                            <p class="ml-2">分</p>
-                        </div>
-                    </div>
-
-                    <div>
-                        <p class="block mb-2 text-sm font-medium text-gray-900">
-                            残日数
-                        </p>
-                        <input type="hidden" id="remaining_days" name="remaining"
-                            class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                            value="{{ old('remaining_days') }}" readonly required>
-                        <div class="flex items-center mb-1">
-                            <x-input type="number" id="remaining_days_only" name="remaining_days_only"
-                                class="block mt-1 w-20" :value="old('remaining_days_only')" readonly />
-                            <p class="ml-2">日</p>
-                        </div>
-                        <div class="flex items-center mb-1">
-                            <x-input type="number" id="remaining_hours" name="remaining_hours"
-                                class="block mt-1 w-20" :value="old('remaining_hours')" readonly />
-                            <p class="ml-2">時間</p>
-                        </div>
-                        <div class="flex items-center">
-                            <x-input type="number" id="remaining_minutes" name="remaining_minutes"
-                                class="block mt-1 w-20" :value="old('remaining_minutes')" readonly />
-                            <p class="ml-2">分</p>
-                        </div>
-                    </div>
-                </div>
-                <x-button id="submitButton" class="w-full">
-                    {{ __('Submission') }}
-                </x-button>
-            </form>
+                    <x-button id="submitButton" class="w-full">
+                        {{ __('Submission') }}
+                    </x-button>
+                </form>
+            </div>
 
             <div class="mt-10 flex justify-end">
                 <x-back-home-button class="w-30" href="{{ route('menu') }}">
@@ -376,19 +417,25 @@
         let halfDateLabel = document.getElementById('half_date_label');
         let amPmForm = document.getElementById('am_pm_form');
         let amPmComment = document.getElementById('am_pm_comment');
+        let mourning1 = document.getElementById('mourning_1');
+        let mourning2 = document.getElementById('mourning_2');
+        let mourning3 = document.getElementById('mourning_3');
         let amPm = document.getElementById('am_pm');
         const reasons = @json($reasons);
 
         // リダイレクト時の表示切替
         window.addEventListener('load', function() {
+            displayReset();
             reportDisplaySwitch(); // reportでform表示切替
             subReportDisplaySwitch(); // sub_reportでform表示切替
             reportReasonSwitch(); // reportでreason種類切替
             // reasonDisplaySwitch(); // reasonで理由:その他表示切替
         });
 
+        // 切り替えるたびに初期化関数+表示ONだけ
         // 届出内容変更時の表示切替
         function reportChange() {
+            displayReset();
             reportDisplaySwitch(); // reportでform表示切替
             reportReasonSwitch(); // reportでreason種類切替
             // reasonDisplaySwitch(); // reasonで理由:その他表示切替
@@ -435,6 +482,7 @@
 
         // subカテゴリーによるフォーム切替関数
         function subReportChange() {
+            displayReset();
             dateChange();
             subReportDisplaySwitch();
             timeReset();
@@ -444,70 +492,56 @@
             }
         }
 
+        // 表示初期化関数
+        function displayReset() {
+            emptyFieldForm.style.display = "none";
+            subCategoryForm.style.display = "";
+            halfDateLabel.style.display = "none";
+            amPmForm.style.display = "none";
+            timeEmptyForm.style.display = "none";
+            timeForm.style.display = "none";
+            timeForm30.style.display = "none";
+            timeForm10.style.display = "none";
+            startTimeForm.style.display = "none";
+            endTimeForm.style.display = "none";
+            startDateLabel.style.display = "";
+            startDateForm.style.display = "";
+            endDateForm.style.display = "";
+            mourning1.style.display = "none";
+            mourning2.style.display = "none";
+            mourning3.style.display = "none";
+            amPmComment.style.display = "none";
+            emptyReasonForm.style.display = "none";
+        }
+
         function subReportDisplaySwitch() {
             let subReportCategory = document.querySelector('input[name=sub_report_id]:checked');
             if (subReportCategory) {
                 let subReportCategoryValue = subReportCategory.value;
                 if (subReportCategoryValue == 1) { // 終日休
                     halfDateLabel.style.display = "";
-                    startDateForm.style.display = "";
-                    amPmForm.style.display = "none";
-                    amPmComment.style.display = "none";
-                    timeEmptyForm.style.display = "none";
-                    timeForm.style.display = "none";
-                    timeForm30.style.display = "none";
-                    timeForm10.style.display = "none";
-                    startTimeForm.style.display = "none";
-                    endTimeForm.style.display = "none";
                     startDateLabel.style.display = "none";
                     endDateForm.style.display = "none";
                     emptyReasonForm.style.display = "";
                 }
                 if (subReportCategoryValue == 2) { // 連休
-                    halfDateLabel.style.display = "none";
-                    amPmForm.style.display = "none";
-                    amPmComment.style.display = "none";
-                    timeEmptyForm.style.display = "none";
-                    timeForm.style.display = "none";
-                    timeForm30.style.display = "none";
-                    timeForm10.style.display = "none";
-                    startTimeForm.style.display = "none";
-                    endTimeForm.style.display = "none";
-                    startDateLabel.style.display = "";
-                    startDateForm.style.display = "";
-                    endDateForm.style.display = "";
                     holidayAlert.style.display = "none";
-                    emptyReasonForm.style.display = "none";
                 }
                 if (subReportCategoryValue == 3) { // 半日休
                     halfDateLabel.style.display = "";
-                    startDateForm.style.display = "";
                     amPmForm.style.display = "";
                     amPmComment.style.display = "";
-                    timeEmptyForm.style.display = "none";
-                    timeForm.style.display = "none";
-                    timeForm30.style.display = "none";
-                    timeForm10.style.display = "none";
-                    startTimeForm.style.display = "none";
-                    endTimeForm.style.display = "none";
                     startDateLabel.style.display = "none";
                     endDateForm.style.display = "none";
-                    emptyReasonForm.style.display = "none";
                 }
                 if (subReportCategoryValue == 4) { // 時間休
                     halfDateLabel.style.display = "";
-                    startDateForm.style.display = "";
-                    amPmForm.style.display = "none";
-                    amPmComment.style.display = "none";
                     timeEmptyForm.style.display = "";
                     timeForm.style.display = "";
-                    timeForm30.style.display = "none";
-                    timeForm10.style.display = "none";
                     startTimeForm.style.display = "";
                     endTimeForm.style.display = "";
                     startDateLabel.style.display = "none";
                     endDateForm.style.display = "none";
-                    emptyReasonForm.style.display = "none";
                 }
             }
         }
@@ -630,57 +664,63 @@
 
         // form表示切替関数
         function reportDisplaySwitch() {
-            if (reportCategory.value == "1" || // 有給
-                reportCategory.value == "7" || // 特別休暇(看護・対象1名)
-                reportCategory.value == "8" || // 特別休暇(看護・対象2名)
-                reportCategory.value == "9" || // 特別休暇(介護・対象1名)
-                reportCategory.value == "10") { // 特別休暇(介護・対象2名)
-                emptyFieldForm.style.display = "none";
-                subCategoryForm.style.display = "";
-                halfDateLabel.style.display = "none";
-                amPmForm.style.display = "none";
-                timeEmptyForm.style.display = "none";
-                timeForm.style.display = "none";
-                timeForm30.style.display = "none";
-                timeForm10.style.display = "none";
-                startTimeForm.style.display = "none";
-                endTimeForm.style.display = "none";
-                startDateLabel.style.display = "";
-                startDateForm.style.display = "";
-                endDateForm.style.display = "";
+            // if (reportCategory.value == "1" || // 有給
+            //     reportCategory.value == "7" || // 特別休暇(看護・対象1名)
+            //     reportCategory.value == "8" || // 特別休暇(看護・対象2名)
+            //     reportCategory.value == "9" || // 特別休暇(介護・対象1名)
+            //     reportCategory.value == "10") { // 特別休暇(介護・対象2名)
+            //     emptyFieldForm.style.display = "none";
+            //     subCategoryForm.style.display = "";
+            //     halfDateLabel.style.display = "none";
+            //     amPmForm.style.display = "none";
+            //     timeEmptyForm.style.display = "none";
+            //     timeForm.style.display = "none";
+            //     timeForm30.style.display = "none";
+            //     timeForm10.style.display = "none";
+            //     startTimeForm.style.display = "none";
+            //     endTimeForm.style.display = "none";
+            //     startDateLabel.style.display = "";
+            //     startDateForm.style.display = "";
+            //     endDateForm.style.display = "";
+            //     mourning1.style.display = "none";
+            //     mourning2.style.display = "none";
+            //     mourning3.style.display = "none";
+            // }
+            if (
+                reportCategory.value == "4"
+            ) { // 特別休暇(弔事1)
+                emptyFieldForm.style.display = "";
+                subCategoryForm.style.display = "none";
+                mourning1.style.display = "";
+            }
+            if (
+                reportCategory.value == "5"
+            ) { // 特別休暇(弔事2)
+                emptyFieldForm.style.display = "";
+                subCategoryForm.style.display = "none";
+                mourning2.style.display = "";
+            }
+            if (
+                reportCategory.value == "6"
+            ) { // 特別休暇(弔事3)
+                emptyFieldForm.style.display = "";
+                subCategoryForm.style.display = "none";
+                mourning3.style.display = "";
             }
             if (reportCategory.value == "3" || // 特別休暇(慶事)
-                reportCategory.value == "4" || // 特別休暇(弔事)
-                reportCategory.value == "5" || // 特別休暇(弔事)
-                reportCategory.value == "6" || // 特別休暇(弔事)
                 reportCategory.value == "11" || // 特別休暇(短期育休)
                 reportCategory.value == "16" || // 介護休業
                 reportCategory.value == "17" || // 育児休業
                 reportCategory.value == "18") { // パパ育休
                 emptyFieldForm.style.display = "";
                 subCategoryForm.style.display = "none";
-                halfDateLabel.style.display = "none";
-                amPmForm.style.display = "none";
-                timeEmptyForm.style.display = "none";
-                timeForm.style.display = "none";
-                timeForm30.style.display = "none";
-                timeForm10.style.display = "none";
-                startTimeForm.style.display = "none";
-                endTimeForm.style.display = "none";
-                startDateLabel.style.display = "";
-                startDateForm.style.display = "";
-                endDateForm.style.display = "";
             }
             if (reportCategory.value == "13" || // 遅刻
                 reportCategory.value == "14") { // 早退
                 emptyFieldForm.style.display = "";
                 subCategoryForm.style.display = "none";
                 halfDateLabel.style.display = "";
-                startDateForm.style.display = "";
-                amPmForm.style.display = "none";
                 timeEmptyForm.style.display = "";
-                timeForm.style.display = "none";
-                timeForm30.style.display = "none";
                 timeForm10.style.display = "";
                 startTimeForm.style.display = "";
                 endTimeForm.style.display = "";
@@ -691,12 +731,8 @@
                 emptyFieldForm.style.display = "";
                 subCategoryForm.style.display = "none";
                 halfDateLabel.style.display = "";
-                startDateForm.style.display = "";
-                amPmForm.style.display = "none";
                 timeEmptyForm.style.display = "";
-                timeForm.style.display = "none";
                 timeForm30.style.display = "";
-                timeForm10.style.display = "none";
                 startTimeForm.style.display = "";
                 endTimeForm.style.display = "";
                 startDateLabel.style.display = "none";
@@ -707,14 +743,7 @@
                 emptyFieldForm.style.display = "";
                 subCategoryForm.style.display = "none";
                 halfDateLabel.style.display = "";
-                startDateForm.style.display = "";
                 timeEmptyForm.style.display = "";
-                amPmForm.style.display = "none";
-                timeForm.style.display = "none";
-                timeForm30.style.display = "none";
-                timeForm10.style.display = "none";
-                startTimeForm.style.display = "none";
-                endTimeForm.style.display = "none";
                 startDateLabel.style.display = "none";
                 endDateForm.style.display = "none";
             }
@@ -777,6 +806,12 @@
             const reportId = reportCategory.value;
             const shiftId = shiftCategory.value;
             const shifts = @json($shifts);
+
+            if (startTime.value > endTime.value) {
+                endTimeVal.setDate(endTimeVal.getDate() + 1);
+            }
+            console.log(startTimeVal);
+            console.log(endTimeVal);
             let diffDays = (endVal - startVal) / 86400000 + 1; // 単純な差
             let startYMD = startVal.getFullYear() +
                 ('0' + (startVal.getMonth() + 1)).slice(-2) +
@@ -857,8 +892,36 @@
                     rest3TimeEnd = new Date(startDate.value + ' ' + shift.rest3_end_time);
                     lunchTimeStart = new Date(startDate.value + ' ' + shift.lunch_start_time);
                     lunchTimeEnd = new Date(startDate.value + ' ' + shift.lunch_end_time);
+                    if (shift.start_time > shift.end_time) {
+                        workTimeEnd.setDate(workTimeEnd.getDate() + 1);
+                    }
+                    if (shift.start_time > shift.rest1_start_time) {
+                        rest1TimeStart.setDate(rest1TimeStart.getDate() + 1);
+                    }
+                    if (shift.start_time > shift.rest1_end_time) {
+                        rest1TimeEnd.setDate(rest1TimeEnd.getDate() + 1);
+                    }
+                    if (shift.start_time > shift.rest2_start_time) {
+                        rest2TimeStart.setDate(rest2TimeStart.getDate() + 1);
+                    }
+                    if (shift.start_time > shift.rest2_end_time) {
+                        rest2TimeEnd.setDate(rest2TimeEnd.getDate() + 1);
+                    }
+                    if (shift.start_time > shift.rest3_start_time) {
+                        rest3TimeStart.setDate(rest3TimeStart.getDate() + 1);
+                    }
+                    if (shift.start_time > shift.rest3_end_time) {
+                        rest3TimeEnd.setDate(rest3TimeEnd.getDate() + 1);
+                    }
+                    if (shift.start_time > shift.lunch_start_time) {
+                        lunchTimeStart.setDate(lunchTimeStart.getDate() + 1);
+                    }
+                    if (shift.start_time > shift.lunch_end_time) {
+                        lunchTimeEnd.setDate(lunchTimeEnd.getDate() + 1);
+                    }
                 }
             }
+            // console.log(workTimeEnd);
 
             if (reportCategory.value == 1 || // 有給
                 reportCategory.value == 3 || // 特別休暇(慶事)
@@ -1004,7 +1067,7 @@
             Object.keys(myAcquisitionDays).forEach((el) => {
                 if (myAcquisitionDays[el].report_id == reportId) {
                     // 申請中の日数を考慮した残日数を算出
-                    ownRemainingDays = myAcquisitionDays[el].remaining - myAcquisitionDays[el].pending_get_days;
+                    ownRemainingDays = myAcquisitionDays[el].remaining_days - myAcquisitionDays[el].pending_get_days;
                 }
             });
 
@@ -1120,13 +1183,13 @@
                 //     reportCategory.value == 14 ||
                 //     reportCategory.value == 15
                 // ) {
-                    if (startTime.value != '' && workTimeStart > startTimeVal) {
-                        workingTime = true;
-                    } else if (startTime.value != '' && workTimeEnd <= startTimeVal) {
-                        workingTime = true;
-                    } else if (endTime.value != '' && workTimeEnd < endTimeVal) {
-                        workingTime = true;
-                    }
+                if (startTime.value != '' && workTimeStart > startTimeVal) {
+                    workingTime = true;
+                } else if (startTime.value != '' && workTimeEnd <= startTimeVal) {
+                    workingTime = true;
+                } else if (endTime.value != '' && workTimeEnd < endTimeVal) {
+                    workingTime = true;
+                }
                 // }
 
                 if (workingTime == true) {

@@ -82,19 +82,11 @@
                                             </th>
                                             <th
                                                 class="w-24 px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                管轄工場
+                                                管轄
                                             </th>
                                             <th
                                                 class="w-24 px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                管轄課
-                                            </th>
-                                            <th
-                                                class="w-24 px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                管轄グループ
-                                            </th>
-                                            <th
-                                                class="w-24 px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                権限の種類
+                                                {{ __('Approval Category') }}
                                             </th>
                                             <th colspan="2" class="w-40"></th>
                                         </tr>
@@ -113,7 +105,20 @@
                                                 @csrf
                                                 @method('PUT')
                                                 <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
-                                                    <x-select name="factory_id" class="block mt-1 w-32 text-sm" required
+                                                    <x-select name="affiliation_id" class="block mt-1 w-30 text-sm"
+                                                        required autofocus>
+                                                        <option value="{{ $approval->affiliation_id }}">
+                                                            {{-- {{ $approval->affiliation->factory->factory_name }} --}}
+                                                            <x-affiliation-name :affiliation="$approval->affiliation"/>
+                                                        </option>
+                                                        @foreach ($affiliations as $affiliation)
+                                                            <option value="{{ $affiliation->id }}"
+                                                                @if ($affiliation->id === (int) old('affiliation_id')) selected @endif>
+                                                                <x-affiliation-name :affiliation="$affiliation"/>
+                                                            </option>
+                                                        @endforeach
+                                                    </x-select>
+                                                    {{-- <x-select name="factory_id" class="block mt-1 w-32 text-sm" required
                                                         autofocus>
                                                         <option value="{{ $approval->affiliation->factory_id }}">
                                                             {{ $approval->affiliation->factory->factory_name }}</option>
@@ -122,9 +127,9 @@
                                                                 @if ($factory_category->id === (int) old('factory_id')) selected @endif>
                                                                 {{ $factory_category->factory_name }}</option>
                                                         @endforeach
-                                                    </x-select>
+                                                    </x-select> --}}
                                                 </td>
-                                                <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
+                                                {{-- <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
                                                     <x-select name="department_id" class="block mt-1 w-32 text-sm"
                                                         required autofocus>
                                                         <option value="{{ $approval->affiliation->department_id }}">
@@ -147,7 +152,7 @@
                                                                 {{ $group_category->group_name }}</option>
                                                         @endforeach
                                                     </x-select>
-                                                </td>
+                                                </td> --}}
                                                 <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
                                                     <x-select name="approval_id" class="block mt-1 w-32 text-sm"
                                                         required autofocus>

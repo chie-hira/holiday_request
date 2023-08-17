@@ -15,6 +15,7 @@ use App\Models\User;
 use App\Models\Approval;
 use App\Models\FactoryCategory;
 use App\Exports\ReportFormExport;
+use App\Models\Affiliation;
 use App\Models\DepartmentCategory;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -32,44 +33,60 @@ class ReportController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    // index()
     public function index()
     {
         // 管理者権限は設定についての権限なので、一覧に影響しない
         // 管理者権限以外の権限を取得
         $approvals = Auth::user()->approvals->where('approval_id', '!=', 1);
         // 権限に当てはまるユーザーの申請を取得
-        $reports = Report::whereHas('user', function ($query) use ($approvals) {
+        $reports = Report::whereHas('user.affiliation', function ($query) use (
+            $approvals
+        ) {
             $query->where(function ($query) use ($approvals) {
                 foreach ($approvals as $approval) {
-                    if ($approval->affiliation->department_id == 1) {
-                        $query->whereHas('affiliation', function ($query) use (
-                            $approval
-                        ) {
-                            $query->orWhere(
+                    $query->orWhere(function ($query) use ($approval) {
+                        if ($approval->affiliation->department_id == 1) {
+                            $query->where(
                                 'factory_id',
                                 $approval->affiliation->factory_id
                             );
-                        });
-                    } else {
-                        $query->whereHas('affiliation', function ($query) use (
-                            $approval
+                        } elseif (
+                            $approval->affiliation->department_id != 1 &&
+                            $approval->affiliation->group_id == 1
                         ) {
-                            $query->orWhere(function ($query) use ($approval) {
-                                $query
-                                    ->where(
-                                        'factory_id',
-                                        $approval->affiliation->factory_id
-                                    )
-                                    ->where(
-                                        'department_id',
-                                        $approval->affiliation->department_id
-                                    );
-                            });
-                        });
-                    }
+                            $query
+                                ->where(
+                                    'factory_id',
+                                    $approval->affiliation->factory_id
+                                )
+                                ->where(
+                                    'department_id',
+                                    $approval->affiliation->department_id
+                                );
+                        } elseif (
+                            $approval->affiliation->department_id != 1 &&
+                            $approval->affiliation->group_id != 1
+                        ) {
+                            $query
+                                ->where(
+                                    'factory_id',
+                                    $approval->affiliation->factory_id
+                                )
+                                ->where(
+                                    'department_id',
+                                    $approval->affiliation->department_id
+                                )
+                                ->where(
+                                    'group_id',
+                                    $approval->affiliation->group_id
+                                );
+                        }
+                    });
                 }
             });
         })->get();
+        // dd($reports);
         // 全体の閲覧権限があるときは全てのレポートを取得
         if ($approvals->contains('affiliation_id', 1)) {
             $reports = Report::all();
@@ -99,6 +116,7 @@ class ReportController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    // create()
     public function create()
     {
         $sub_report_categories = SubReportCategory::all();
@@ -156,6 +174,7 @@ class ReportController extends Controller
      * @param  \App\Http\Requests\StoreReportRequest  $request
      * @return \Illuminate\Http\Response
      */
+    // store()
     public function store(StoreReportRequest $request)
     {
         // 二重送信防止
@@ -398,7 +417,6 @@ class ReportController extends Controller
                 ]
             );
         }
-
         $acquisition_day = AcquisitionDay::where('user_id', Auth::user()->id)
             ->where('report_id', $request->report_id)
             ->first();
@@ -423,7 +441,11 @@ class ReportController extends Controller
         if (
             !empty(
                 Auth::user()
-                    ->approvals->where('approval_id', 2)
+                    ->approvals->where(
+                        'affiliation.factory_id',
+                        $report->user->affiliation->factory_id
+                    )
+                    ->where('approval_id', 2)
                     ->first()
             )
         ) {
@@ -434,75 +456,103 @@ class ReportController extends Controller
             DB::beginTransaction(); # トランザクション開始
             try {
                 $report->save();
-                // $acquisition_day = AcquisitionDay::where('user_id', $report->user_id)
-                //     ->where('report_id', $report->report_id)
-                //     ->first();
                 if (!empty($acquisition_day)) {
-                    // TODO:これで大丈夫か検証
                     $acquisition_day->remaining_days -= $report->get_days;
-                    // $new_remaining = $acquisition_day->remaining_days - $report->get_days;
-                    // $acquisition_day->remaining_days = $new_remaining;
+                    $acquisition_day->acquisition_days += $report->get_days;
                     $acquisition_day->save(); # 残日数を保存
                 }
                 DB::commit(); # トランザクション成功終了
                 // 管轄内の課長・GLにメール通知
-                $approvals = Auth::user()->approvals->where('approval_id', 2);
-
-                foreach ($approvals as $approval) {
-                    if ($approval->department_id == 1) {
-                        // 工場単位で通知相手を抽出
-                        $approvers = User::whereHas('approvals', function (
+                $gl_approvals = Approval::whereHas('affiliation', function (
+                    $query
+                ) use ($report) {
+                    $query
+                        ->where(
+                            'factory_id',
+                            $report->user->affiliation->factory_id
+                        )
+                        ->where(
+                            'department_id',
+                            $report->user->affiliation->department_id
+                        )
+                        ->where(function ($query) use ($report) {
                             $query
-                        ) use ($approval) {
-                            $query->where(function ($query) use ($approval) {
-                                $query->whereHas('affiliation', function (
-                                    $query
-                                ) use ($approval) {
-                                    $query
-                                        ->where(
-                                            'factory_id',
-                                            $approval->factory_id
-                                        )
-                                        ->where('approval_id', 3);
-                                });
-                            });
-                        })->get();
-                        // 承認済みをメール通知
-                        if ($approvers) {
-                            foreach ($approvers as $approver) {
-                                $approver->Approved($report);
-                            }
-                        }
-                    } else {
-                        // 課単位で通知相手を抽出
-                        $approvers = User::whereHas('approvals', function (
-                            $query
-                        ) use ($approval) {
-                            $query->where(function ($query) use ($approval) {
-                                $query->whereHas('affiliation', function (
-                                    $query
-                                ) use ($approval) {
-                                    $query
-                                        ->where(
-                                            'factory_id',
-                                            $approval->factory_id
-                                        )
-                                        ->where(
-                                            'department_id',
-                                            $approval->department_id
-                                        )
-                                        ->where('approval_id', 3);
-                                });
-                            });
-                        })->get();
-                        // 承認済みをメール通知
-                        if ($approvers) {
-                            foreach ($approvers as $approver) {
-                                $approver->Approved($report);
-                            }
-                        }
+                                ->where(
+                                    'group_id',
+                                    $report->user->affiliation->group_id
+                                )
+                                ->orWhere('group_id', 1);
+                        });
+                })
+                    ->where('approval_id', 3)
+                    ->with('user')
+                    ->get();
+                // 承認済みをメール通知
+                if ($gl_approvals) {
+                    foreach ($gl_approvals as $approval) {
+                        $approval->user->Approved($report);
                     }
                 }
+                // dd($gl_approvals);
+                // $my_approvals = Auth::user()->approvals->where(
+                //     'approval_id',
+                //     2
+                // );
+                // $approvers = User::where(function ($query) use ($my_approvals) {
+                //     foreach ($my_approvals as $approval) {
+                //         $query->orWhere(function ($query) use ($approval) {
+                //             if ($approval->affiliation->department_id == 1) {
+                //                 $query->whereHas('approvals', function (
+                //                     $query
+                //                 ) use ($approval) {
+                //                     $query
+                //                         ->where('approval_id', 3)
+                //                         ->whereHas('affiliation', function (
+                //                             $query
+                //                         ) use ($approval) {
+                //                             $query->where(
+                //                                 'factory_id',
+                //                                 $approval->affiliation
+                //                                     ->factory_id
+                //                             );
+                //                         });
+                //                 });
+                //             } elseif (
+                //                 $approval->affiliation->department_id != 1 &&
+                //                 $approval->affiliation->group_id == 1
+                //             ) {
+                //                 $query->whereHas('approvals', function (
+                //                     $query
+                //                 ) use ($approval) {
+                //                     $query
+                //                         ->where('approval_id', 3)
+                //                         ->whereHas('affiliation', function (
+                //                             $query
+                //                         ) use ($approval) {
+                //                             $query
+                //                                 ->where(
+                //                                     'factory_id',
+                //                                     $approval->affiliation
+                //                                         ->factory_id
+                //                                 )
+                //                                 ->where(
+                //                                     'department_id',
+                //                                     $approval->affiliation
+                //                                         ->department_id
+                //                                 );
+                //                         });
+                //                 });
+                //             }
+                //         });
+                //     }
+                // })->get();
+                // dd($approvers);
+
+                // if ($approvers) {
+                //     foreach ($approvers as $approver) {
+                //         $approver->Approved($report);
+                //     }
+                // }
                 // リダイレクト
                 return redirect()
                     ->route('reports.show', $report)
@@ -520,7 +570,15 @@ class ReportController extends Controller
         if (
             !empty(
                 Auth::user()
-                    ->approvals->where('approval_id', 3)
+                    ->approvals->where(
+                        'affiliation.factory_id',
+                        $report->user->affiliation->factory_id
+                    )
+                    ->where(
+                        'affiliation.department_id',
+                        $report->user->affiliation->department_id
+                    )
+                    ->where('approval_id', 3)
                     ->first()
             )
         ) {
@@ -528,36 +586,32 @@ class ReportController extends Controller
             try {
                 $report->save();
 
+                // 工場長にメール
                 $approvers = User::whereHas('approvals', function ($query) use (
                     $report
                 ) {
                     $query
-                        ->where(
-                            'factory_id',
-                            $report->user->affiliation->factory_id
-                        )
-                        ->where(function ($query) use ($report) {
+                        ->where('approval_id', 2)
+                        ->whereHas('affiliation', function ($query) use (
+                            $report
+                        ) {
                             $query
-                                ->orWhere('approval_id', 2)
-                                ->orWhere(function ($query) use ($report) {
+                                ->where(
+                                    'factory_id',
+                                    $report->user->affiliation->factory_id
+                                )
+                                ->where(function ($query) use ($report) {
                                     $query
-                                        ->where(
-                                            'user_id',
-                                            '!=',
-                                            Auth::user()->id
-                                        )
-                                        ->where(
+                                        ->orWhere(
                                             'department_id',
-                                            $report->user->department_id
+                                            $report->user->affiliation
+                                                ->department_id
                                         )
-                                        ->where(
-                                            'group_id',
-                                            $report->user->group_id
-                                        )
-                                        ->where('approval_id', 3);
+                                        ->orWhere('department_id', 1);
                                 });
                         });
                 })->get();
+
                 if ($approvers) {
                     foreach ($approvers as $approver) {
                         $approver->storeReport($report);
@@ -581,80 +635,80 @@ class ReportController extends Controller
             $report->save();
 
             // TODO:権限の組み合わせにルールをつける。以下に無い組み合わせが発生する可能性あり
+            // 2はdepartmentまでgroupは必ず1
+            // 3はgroupまで　1かそれ以外
+            // 申請者のapprovers
             $approvers = User::whereHas('approvals', function ($query) use (
                 $report
             ) {
                 $query
-                    ->where('factory_id', $report->user->factory_id)
                     ->where(function ($query) use ($report) {
                         $query
-                            ->orWhere(function ($query) use ($report) {
+                            ->where('approval_id', 2)
+                            ->whereHas('affiliation', function ($query) use (
+                                $report
+                            ) {
                                 $query
-                                    ->where('approval_id', 2)
+                                    ->where(
+                                        'factory_id',
+                                        $report->user->affiliation->factory_id
+                                    )
                                     ->where(function ($query) use ($report) {
                                         $query
-                                            ->orWhere('department_id', 1)
-                                            // ->orWhere(function ($query) use (
-                                            //     $report
-                                            // ) {
-                                            //     $query
-                                            //         ->where(
-                                            //             'department_id',
-                                            //             $report->user
-                                            //                 ->department_id
-                                            //         )
-                                            //         ->where(function (
-                                            //             $query
-                                            //         ) use ($report) {
-                                            //             $query
-                                            //                 ->orWhere(
-                                            //                     'group_id',
-                                            //                     1
-                                            //                 )
-                                            //                 ->orWhere(
-                                            //                     'group_id',
-                                            //                     $report->user
-                                            //                         ->group_id
-                                            //                 );
-                                            //         });
-                                            // });
                                             ->orWhere(
                                                 'department_id',
-                                                $report->user->department_id
-                                            );
+                                                $report->user->affiliation
+                                                    ->department_id
+                                            )
+                                            ->orWhere('department_id', 1);
                                     });
-                            })
-                            ->orWhere(function ($query) use ($report) {
+                            });
+                    })
+                    ->orWhere(function ($query) use ($report) {
+                        $query
+                            ->where('approval_id', 3)
+                            ->whereHas('affiliation', function ($query) use (
+                                $report
+                            ) {
                                 $query
-                                    ->where('approval_id', 3)
                                     ->where(
-                                        'department_id',
-                                        $report->user->department_id
+                                        'factory_id',
+                                        $report->user->affiliation->factory_id
                                     )
                                     ->where(
-                                        'group_id',
-                                        $report->user->group_id
-                                    );
-                                // ->where(function ($query) use ($report) {
-                                //     $query
-                                //         ->orWhere('department_id', 1)
-                                //         ->orWhere(
-                                //             'department_id',
-                                //             $report->user->department_id
-                                //         );
-                                // });
+                                        'department_id',
+                                        $report->user->affiliation
+                                            ->department_id
+                                    )
+                                    ->where(function ($query) use ($report) {
+                                        $query
+                                            ->orWhere(
+                                                'group_id',
+                                                $report->user->affiliation
+                                                    ->group_id
+                                            )
+                                            ->orWhere('group_id', 1);
+                                    });
                             });
                     });
             })->get();
+            // dd($approvers);
+
+            if ($approvers) {
+                foreach ($approvers as $approver) {
+                    $approver->storeReport($report);
+                }
+            }
 
             return redirect(route('reports.show', $report))->with(
                 'notice',
                 'StoreReport'
             );
         } catch (\Throwable $th) {
-            return back()
-                ->withErrors($th->getMessage())
-                ->withInput();
+            // 例外情報をログに出力
+            Log::error('Exception caught: ' . $th->getMessage());
+            // エラー内容をそのまま表示しない
+            return back()->with('error', 'エラーが発生しました。');
         }
     }
 
@@ -675,6 +729,7 @@ class ReportController extends Controller
      * @param  \App\Models\Report  $report
      * @return \Illuminate\Http\Response
      */
+    // edit()
     public function edit(Report $report)
     {
         $sub_report_categories = SubReportCategory::all();
@@ -687,7 +742,7 @@ class ReportController extends Controller
             'acquisition_days',
             function ($query) {
                 $query
-                    // TODO:これも検証nullと0を判別できているか
+                    // nullと0を判別できている
                     ->where('remaining_days', '!=', 0)
                     ->where('user_id', Auth::user()->id);
             }
@@ -733,6 +788,7 @@ class ReportController extends Controller
      * @param  \App\Models\Report  $report
      * @return \Illuminate\Http\Response
      */
+    // update()
     public function update(UpdateReportRequest $request, Report $report)
     {
         // バリデーション
@@ -970,7 +1026,6 @@ class ReportController extends Controller
                 ]
             );
         }
-
         $acquisition_day = AcquisitionDay::where('user_id', Auth::user()->id)
             ->where('report_id', $request->report_id)
             ->first();
@@ -996,7 +1051,15 @@ class ReportController extends Controller
         if (
             !empty(
                 Auth::user()
-                    ->approvals->where('approval_id', 3)
+                    ->approvals->where(
+                        'affiliation.factory_id',
+                        $report->user->affiliation->factory_id
+                    )
+                    ->where(
+                        'affiliation.department_id',
+                        $report->user->affiliation->department_id
+                    )
+                    ->where('approval_id', 3)
                     ->first()
             )
         ) {
@@ -1004,33 +1067,32 @@ class ReportController extends Controller
             try {
                 $report->save();
 
+                // 工場長にメール
                 $approvers = User::whereHas('approvals', function ($query) use (
                     $report
                 ) {
                     $query
-                        ->where('factory_id', $report->user->factory_id)
-                        ->where(function ($query) use ($report) {
+                        ->where('approval_id', 2)
+                        ->whereHas('affiliation', function ($query) use (
+                            $report
+                        ) {
                             $query
-                                ->orWhere('approval_id', 2)
-                                ->orWhere(function ($query) use ($report) {
+                                ->where(
+                                    'factory_id',
+                                    $report->user->affiliation->factory_id
+                                )
+                                ->where(function ($query) use ($report) {
                                     $query
-                                        ->where(
-                                            'user_id',
-                                            '!=',
-                                            Auth::user()->id
-                                        )
-                                        ->where(
+                                        ->orWhere(
                                             'department_id',
-                                            $report->user->department_id
+                                            $report->user->affiliation
+                                                ->department_id
                                         )
-                                        ->where(
-                                            'group_id',
-                                            $report->user->group_id
-                                        )
-                                        ->where('approval_id', 3);
+                                        ->orWhere('department_id', 1);
                                 });
                         });
                 })->get();
+
                 if ($approvers) {
                     foreach ($approvers as $approver) {
                         $approver->storeReport($report);
@@ -1058,76 +1120,72 @@ class ReportController extends Controller
                 $report
             ) {
                 $query
-                    ->where('factory_id', $report->user->factory_id)
                     ->where(function ($query) use ($report) {
                         $query
-                            ->orWhere(function ($query) use ($report) {
+                            ->where('approval_id', 2)
+                            ->whereHas('affiliation', function ($query) use (
+                                $report
+                            ) {
                                 $query
-                                    ->where('approval_id', 2)
+                                    ->where(
+                                        'factory_id',
+                                        $report->user->affiliation->factory_id
+                                    )
                                     ->where(function ($query) use ($report) {
                                         $query
-                                            ->orWhere('department_id', 1)
-                                            // ->orWhere(function ($query) use (
-                                            //     $report
-                                            // ) {
-                                            //     $query
-                                            //         ->where(
-                                            //             'department_id',
-                                            //             $report->user
-                                            //                 ->department_id
-                                            //         )
-                                            //         ->where(function (
-                                            //             $query
-                                            //         ) use ($report) {
-                                            //             $query
-                                            //                 ->orWhere(
-                                            //                     'group_id',
-                                            //                     1
-                                            //                 )
-                                            //                 ->orWhere(
-                                            //                     'group_id',
-                                            //                     $report->user
-                                            //                         ->group_id
-                                            //                 );
-                                            //         });
-                                            // });
                                             ->orWhere(
                                                 'department_id',
-                                                $report->user->department_id
-                                            );
+                                                $report->user->affiliation
+                                                    ->department_id
+                                            )
+                                            ->orWhere('department_id', 1);
                                     });
-                            })
-                            ->orWhere(function ($query) use ($report) {
+                            });
+                    })
+                    ->orWhere(function ($query) use ($report) {
+                        $query
+                            ->where('approval_id', 3)
+                            ->whereHas('affiliation', function ($query) use (
+                                $report
+                            ) {
                                 $query
-                                    ->where('approval_id', 3)
                                     ->where(
-                                        'department_id',
-                                        $report->user->department_id
+                                        'factory_id',
+                                        $report->user->affiliation->factory_id
                                     )
                                     ->where(
-                                        'group_id',
-                                        $report->user->group_id
-                                    );
-                                // ->where(function ($query) use ($report) {
-                                //     $query
-                                //         ->orWhere('department_id', 1)
-                                //         ->orWhere(
-                                //             'department_id',
-                                //             $report->user->department_id
-                                //         );
-                                // });
+                                        'department_id',
+                                        $report->user->affiliation
+                                            ->department_id
+                                    )
+                                    ->where(function ($query) use ($report) {
+                                        $query
+                                            ->orWhere(
+                                                'group_id',
+                                                $report->user->affiliation
+                                                    ->group_id
+                                            )
+                                            ->orWhere('group_id', 1);
+                                    });
                             });
                     });
             })->get();
+
+            if ($approvers) {
+                foreach ($approvers as $approver) {
+                    $approver->storeReport($report);
+                }
+            }
 
             return redirect(route('reports.show', $report))->with(
                 'notice',
                 'UpdateReport'
             );
         } catch (\Throwable $th) {
-            return back()
-                ->withErrors($th->getMessage())
-                ->withInput();
+            // 例外情報をログに出力
+            Log::error('Exception caught: ' . $th->getMessage());
+            // エラー内容をそのまま表示しない
+            return back()->with('error', 'エラーが発生しました。');
         }
     }
 
@@ -1137,39 +1195,62 @@ class ReportController extends Controller
      * @param  \App\Models\Report  $report
      * @return \Illuminate\Http\Response
      */
+    // destroy()
     public function destroy(Report $report)
     {
         $report->cancel = 1; // キャンセルon
 
         // 一般の通知対象を用意
-        // 申請者のapprover1,2にメール通知
+        // 申請者のapproverが通知対象
         $approvers = User::whereHas('approvals', function ($query) use (
             $report
         ) {
             $query
-                ->where('factory_id', $report->user->factory_id)
                 ->where(function ($query) use ($report) {
                     $query
-                        ->orWhere(function ($query) use ($report) {
+                        ->where('approval_id', 2)
+                        ->whereHas('affiliation', function ($query) use (
+                            $report
+                        ) {
                             $query
-                                ->where('approval_id', 2)
+                                ->where(
+                                    'factory_id',
+                                    $report->user->affiliation->factory_id
+                                )
                                 ->where(function ($query) use ($report) {
                                     $query
-                                        ->orWhere('department_id', 1)
                                         ->orWhere(
                                             'department_id',
-                                            $report->user->department_id
-                                        );
+                                            $report->user->affiliation
+                                                ->department_id
+                                        )
+                                        ->orWhere('department_id', 1);
                                 });
-                        })
-                        ->orWhere(function ($query) use ($report) {
+                        });
+                })
+                ->orWhere(function ($query) use ($report) {
+                    $query
+                        ->where('approval_id', 3)
+                        ->whereHas('affiliation', function ($query) use (
+                            $report
+                        ) {
                             $query
-                                ->where('approval_id', 3)
+                                ->where(
+                                    'factory_id',
+                                    $report->user->affiliation->factory_id
+                                )
                                 ->where(
                                     'department_id',
-                                    $report->user->department_id
+                                    $report->user->affiliation->department_id
                                 )
-                                ->where('group_id', $report->user->group_id);
+                                ->where(function ($query) use ($report) {
+                                    $query
+                                        ->orWhere(
+                                            'group_id',
+                                            $report->user->affiliation->group_id
+                                        )
+                                        ->orWhere('group_id', 1);
+                                });
                         });
                 });
         })->get();
@@ -1181,28 +1262,41 @@ class ReportController extends Controller
         if (
             !empty(
                 Auth::user()
-                    ->approvals->where('factory_id', $report->user->factory_id)
-                    ->where('department_id', $report->user->department_id)
+                    ->approvals->where(
+                        'affiliation.factory_id',
+                        $report->user->factory_id
+                    )
+                    ->where(
+                        'affiliation.department_id',
+                        $report->user->department_id
+                    )
                     ->where('approval_id', 3)
                     ->first()
             )
         ) {
             $report->approval2 = 0;
 
-            // 部長・工場長だけ通知対象
+            // 部長・工場長だけ通知対象を上書き
             $approvers = User::whereHas('approvals', function ($query) use (
                 $report
             ) {
                 $query
                     ->where('approval_id', 2)
-                    ->where('factory_id', $report->user->factory_id)
-                    ->where(function ($query) use ($report) {
+                    ->whereHas('affiliation', function ($query) use ($report) {
                         $query
-                            ->orWhere('department_id', 1)
-                            ->orWhere(
-                                'department_id',
-                                $report->user->department_id
-                            );
+                            ->where(
+                                'factory_id',
+                                $report->user->affiliation->factory_id
+                            )
+                            ->where(function ($query) use ($report) {
+                                $query
+                                    ->orWhere(
+                                        'department_id',
+                                        $report->user->affiliation
+                                            ->department_id
+                                    )
+                                    ->orWhere('department_id', 1);
+                            });
                     });
             })->get();
         }
@@ -1232,36 +1326,66 @@ class ReportController extends Controller
             }
         } else {
             // 承認がある場合
-            // 上長が承認している場合
+            // 工場長が承認している場合
             if ($report->approval1 == 1 && $report->approval2 == 0) {
-                // 上長に通知
+                // 工場長に通知
                 $approvers = User::whereHas('approvals', function ($query) use (
                     $report
                 ) {
                     $query
                         ->where('approval_id', 2)
-                        ->where('factory_id', $report->user->factory_id)
-                        ->where(function ($query) use ($report) {
+                        ->whereHas('affiliation', function ($query) use (
+                            $report
+                        ) {
                             $query
-                                ->orWhere('department_id', 1)
-                                ->orWhere(
-                                    'department_id',
-                                    $report->user->department_id
-                                );
+                                ->where(
+                                    'factory_id',
+                                    $report->user->affiliation->factory_id
+                                )
+                                ->where(function ($query) use ($report) {
+                                    $query
+                                        ->where(
+                                            'department_id',
+                                            $report->user->affiliation
+                                                ->department_id
+                                        )
+                                        ->orWhere('department_id', 1);
+                                });
                         });
                 })->get();
+                dd($approvers);
             }
-            // 係長が承認している場合
+            // Glが承認している場合
             if ($report->approval1 == 0 && $report->approval2 == 1) {
-                // 係長に通知
+                // GLに通知
                 $approvers = User::whereHas('approvals', function ($query) use (
                     $report
                 ) {
                     $query
                         ->where('approval_id', 3)
-                        ->where('factory_id', $report->user->factory_id)
-                        ->where('department_id', $report->user->department_id);
+                        ->whereHas('affiliation', function ($query) use (
+                            $report
+                        ) {
+                            $query
+                                ->where(
+                                    'factory_id',
+                                    $report->user->affiliation->factory_id
+                                )
+                                ->where(
+                                    'department_id',
+                                    $report->user->affiliation->department_id
+                                )
+                                ->where(function ($query) use ($report) {
+                                    $query
+                                        ->where(
+                                            'group_id',
+                                            $report->user->affiliation->group_id
+                                        )
+                                        ->orWhere('group_id', 1);
+                                });
+                        });
                 })->get();
+                // dd($approvers);
             }
             // 承認したapproversに取消確認の通知メール送信
             if ($approvers) {
@@ -1275,6 +1399,7 @@ class ReportController extends Controller
         }
     }
 
+    // myIndex()
     public function myIndex()
     {
         $reports = Auth::user()
@@ -1285,6 +1410,7 @@ class ReportController extends Controller
     }
 
     /** 承認済み届出の取消申請 */
+    // approvedCancel()
     public function approvedCancel(Report $report)
     {
         $report->cancel = 1; # キャンセルon
@@ -1292,44 +1418,50 @@ class ReportController extends Controller
             $report
         ) {
             $query
-                ->whereHas('affiliation', function ($query) use ($report) {
-                    $query->where('factory_id', $report->user->factory_id);
-                })
                 ->where(function ($query) use ($report) {
                     $query
-                        ->orWhere(function ($query) use ($report) {
+                        ->where('approval_id', 2)
+                        ->whereHas('affiliation', function ($query) use (
+                            $report
+                        ) {
                             $query
-                                ->where('approval_id', 2)
-                                ->whereHas('affiliation', function (
+                                ->where(
+                                    'factory_id',
+                                    $report->user->affiliation->factory_id
+                                )
+                                ->where(function ($query) use ($report) {
                                     $query
-                                ) use ($report) {
-                                    $query->where(function ($query) use (
-                                        $report
-                                    ) {
-                                        $query
-                                            ->orWhere('department_id', 1)
-                                            ->orWhere(
-                                                'department_id',
-                                                $report->user->department_id
-                                            );
-                                    });
-                                });
-                        })
-                        ->orWhere(function ($query) use ($report) {
-                            $query
-                                ->where('approval_id', 3)
-                                ->whereHas('affiliation', function (
-                                    $query
-                                ) use ($report) {
-                                    $query
-                                        ->where(
+                                        ->orWhere(
                                             'department_id',
-                                            $report->user->department_id
+                                            $report->user->affiliation
+                                                ->department_id
                                         )
-                                        ->where(
+                                        ->orWhere('department_id', 1);
+                                });
+                        });
+                })
+                ->orWhere(function ($query) use ($report) {
+                    $query
+                        ->where('approval_id', 3)
+                        ->whereHas('affiliation', function ($query) use (
+                            $report
+                        ) {
+                            $query
+                                ->where(
+                                    'factory_id',
+                                    $report->user->affiliation->factory_id
+                                )
+                                ->where(
+                                    'department_id',
+                                    $report->user->affiliation->department_id
+                                )
+                                ->where(function ($query) use ($report) {
+                                    $query
+                                        ->orWhere(
                                             'group_id',
-                                            $report->user->group_id
-                                        );
+                                            $report->user->affiliation->group_id
+                                        )
+                                        ->orWhere('group_id', 1);
                                 });
                         });
                 });
@@ -1339,93 +1471,114 @@ class ReportController extends Controller
         if (
             !empty(
                 Auth::user()
-                    ->approvals->where('approval_id', 2)
-                    ->where('factory_id', $report->user->factory_id)
+                    ->approvals->where(
+                        'affiliation.factory_id',
+                        $report->user->affiliation->factory_id
+                    )
+                    ->where('approval_id', 2)
                     ->first()
             )
         ) {
             $report->approval1 = 0;
             $report->approval2 = 0;
-            $report->save();
 
-            $gl_approvers = User::whereHas('approvals', function ($query) {
-                $query->where('approval_id', 3);
+            $gl_approvals = Approval::whereHas('affiliation', function (
+                $query
+            ) use ($report) {
+                $query
+                    ->where(
+                        'factory_id',
+                        $report->user->affiliation->factory_id
+                    )
+                    ->where(
+                        'department_id',
+                        $report->user->affiliation->department_id
+                    )
+                    ->where(function ($query) use ($report) {
+                        $query
+                            ->where(
+                                'group_id',
+                                $report->user->affiliation->group_id
+                            )
+                            ->orWhere('group_id', 1);
+                    });
             })
-                ->whereHas('affiliation', function ($query) use ($report) {
-                    $query->where('factory_id', Auth::user()->factory_id);
-                })
+                ->where('approval_id', 3)
                 ->get();
 
-            // if ($report->approval1 == 0 && $report->approval2 == 0) {
             $acquisition_day = AcquisitionDay::all()
                 ->where('report_id', $report->report_id)
                 ->where('user_id', $report->user_id)
                 ->first();
 
-            if (empty($acquisition_day)) {
-                try {
-                    $report->delete();
-
-                    // 部下に取消通知メール送信
-                    if ($gl_approvers) {
-                        foreach ($gl_approvers as $approver) {
-                            $approver->destroyReport($report);
-                        }
-                    }
-
-                    return redirect()
-                        ->route('reports.my_index')
-                        ->with('notice', 'DestroyReport');
-                } catch (\Throwable $th) {
-                    Log::error('Exception caught: ' . $th->getMessage());
-                    return back()->with('error', 'エラーが発生しました。');
+            DB::beginTransaction(); # トランザクション開始
+            try {
+                $report->save();
+                if (!empty($acquisition_day)) {
+                    $acquisition_day->remaining_days += $report->get_days;
+                    $acquisition_day->acquisition_days -= $report->get_days;
+                    $acquisition_day->save(); # 残日数を保存
                 }
-            } else {
-                /** 残日数加算&申請取消 */
-                $acquisition_day->remaining_days += $report->get_days;
-                DB::beginTransaction(); # トランザクション開始
-                try {
-                    $acquisition_day->save();
-                    $report->delete();
-
-                    DB::commit(); # トランザクション成功終了
-                    // 部下に取消通知メール送信
-                    if ($gl_approvers) {
-                        foreach ($gl_approvers as $approver) {
-                            $approver->destroyReport($report);
-                        }
+                $report->delete();
+                DB::commit(); # トランザクション成功終了
+                // 管轄内の課長・GLにメール通知
+                if ($gl_approvals) {
+                    foreach ($gl_approvals as $approval) {
+                        $approval->user->destroyReport($report);
                     }
-
-                    return redirect()
-                        ->route('reports.my_index')
-                        ->with('notice', 'DestroyReport');
-                } catch (\Throwable $th) {
-                    DB::rollBack(); # トランザクション失敗終了
-                    Log::error('Exception caught: ' . $th->getMessage());
-                    return back()->with('error', 'エラーが発生しました。');
                 }
+                // リダイレクト
+                return redirect()
+                    ->route('reports.my_index')
+                    ->with('notice', 'DestroyReport');
+            } catch (\Exception $e) {
+                DB::rollBack(); # トランザクション失敗終了
+                // 例外情報をログに出力
+                Log::error('Exception caught: ' . $e->getMessage());
+                // エラー内容をそのまま表示しない
+                return back()->with('error', 'エラーが発生しました。');
             }
-            // }
         }
 
         /** 課長・GL承認権限をもつ者が自身の申請を取消す場合 */
         if (
             !empty(
                 Auth::user()
-                    ->approvals->where('factory_id', $report->user->factory_id)
-                    ->where('department_id', $report->user->department_id)
+                    ->approvals->where(
+                        'affiliation.factory_id',
+                        $report->user->affiliation->factory_id
+                    )
+                    ->where(
+                        'affiliation.department_id',
+                        $report->user->affiliation->department_id
+                    )
                     ->where('approval_id', 3)
                     ->first()
             )
         ) {
             $report->approval2 = 0; # 取消確認済み
-            // $report->save();
+            // 通知相手を上書き
             $approvers = User::whereHas('approvals', function ($query) use (
                 $report
             ) {
                 $query
-                    ->where('factory_id', $report->user->factory_id)
-                    ->where('approval_id', 2);
+                    ->where('approval_id', 2)
+                    ->whereHas('affiliation', function ($query) use ($report) {
+                        $query
+                            ->where(
+                                'factory_id',
+                                $report->user->affiliation->factory_id
+                            )
+                            ->where(function ($query) use ($report) {
+                                $query
+                                    ->orWhere(
+                                        'department_id',
+                                        $report->user->affiliation
+                                            ->department_id
+                                    )
+                                    ->orWhere('department_id', 1);
+                            });
+                    });
             })->get();
         }
 
@@ -1446,133 +1599,165 @@ class ReportController extends Controller
         }
     }
 
-    public function getAndRemaining()
-    {
-        $approvals = Auth::user()->approvals->where('approval_id', '!=', 1);
-        $users = User::where(function ($query) use ($approvals) {
-            foreach ($approvals as $approval) {
-                if ($approval->affiliation->department_id == 1) {
-                    $query->whereHas('affiliation', function ($query) use (
-                        $approval
-                    ) {
-                        $query->where('factory_id', $approval->affiliation->factory_id);
-                    });
-                } else {
-                    $query->whereHas('affiliation', function ($query) use (
-                        $approval
-                    ) {
-                        $query->orWhere(function ($query) use ($approval) {
-                            $query
-                                ->where('factory_id', $approval->affiliation->factory_id)
-                                ->where(
-                                    'department_id',
-                                    $approval->affiliation->department_id
-                                );
-                        });
-                    });
-                }
-            }
-        })->get();
-        if ($approvals->where('affiliation.factory_id', 1)->first()) {
-            $users = User::all();
-        }
+    // public function getAndRemaining()
+    // {
+    //     $approvals = Auth::user()->approvals->where('approval_id', '!=', 1);
+    //     $users = User::where(function ($query) use ($approvals) {
+    //         foreach ($approvals as $approval) {
+    //             if ($approval->affiliation->department_id == 1) {
+    //                 $query->whereHas('affiliation', function ($query) use (
+    //                     $approval
+    //                 ) {
+    //                     $query->where(
+    //                         'factory_id',
+    //                         $approval->affiliation->factory_id
+    //                     );
+    //                 });
+    //             } else {
+    //                 $query->whereHas('affiliation', function ($query) use (
+    //                     $approval
+    //                 ) {
+    //                     $query->orWhere(function ($query) use ($approval) {
+    //                         $query
+    //                             ->where(
+    //                                 'factory_id',
+    //                                 $approval->affiliation->factory_id
+    //                             )
+    //                             ->where(
+    //                                 'department_id',
+    //                                 $approval->affiliation->department_id
+    //                             );
+    //                     });
+    //                 });
+    //             }
+    //         }
+    //     })->get();
+    //     if ($approvals->where('affiliation.factory_id', 1)->first()) {
+    //         $users = User::all();
+    //     }
 
-        // $users = User::where(function ($query) use ($approvals) {
-        //     foreach ($approvals as $approval) {
-        //         if ($approval->affiliation->department_id == 1) {
-        //             $query->orWhere(function ($query) use ($approval) {
-        //                 $query->whereHas('affiliation', function ($query) use (
-        //                     $approval
-        //                 ) {
-        //                     $query->where('factory_id', $approval->affiliation->factory_id);
-        //                 });
-        //             });
-        //         } elseif (
-        //             $approval->department_id != 1 &&
-        //             $approval->affiliation->group_id == 1
-        //         ) {
-        //             $query->orWhere(function ($query) use ($approval) {
-        //                 $query->whereHas('affiliation', function ($query) use (
-        //                     $approval
-        //                 ) {
-        //                     $query
-        //                         ->where('factory_id', $approval->affiliation->factory_id)
-        //                         ->where(
-        //                             'department_id',
-        //                             $approval->affiliation->department_id
-        //                         );
-        //                 });
-        //             });
-        //         } elseif (
-        //             $approval->department_id != 1 &&
-        //             $approval->affiliation->group_id != 1
-        //         ) {
-        //             $query->orWhere(function ($query) use ($approval) {
-        //                 $query->whereHas('affiliation', function ($query) use (
-        //                     $approval
-        //                 ) {
-        //                     $query
-        //                         ->where('factory_id', $approval->affiliation->factory_id)
-        //                         ->where(
-        //                             'department_id',
-        //                             $approval->affiliation->department_id
-        //                         )
-        //                         ->where('group_id', $approval->affiliation->group_id);
-        //                 });
-        //             });
-        //         }
-        //     }
-        // })->get();
+    //     // $users = User::where(function ($query) use ($approvals) {
+    //     //     foreach ($approvals as $approval) {
+    //     //         if ($approval->affiliation->department_id == 1) {
+    //     //             $query->orWhere(function ($query) use ($approval) {
+    //     //                 $query->whereHas('affiliation', function ($query) use (
+    //     //                     $approval
+    //     //                 ) {
+    //     //                     $query->where('factory_id', $approval->affiliation->factory_id);
+    //     //                 });
+    //     //             });
+    //     //         } elseif (
+    //     //             $approval->department_id != 1 &&
+    //     //             $approval->affiliation->group_id == 1
+    //     //         ) {
+    //     //             $query->orWhere(function ($query) use ($approval) {
+    //     //                 $query->whereHas('affiliation', function ($query) use (
+    //     //                     $approval
+    //     //                 ) {
+    //     //                     $query
+    //     //                         ->where('factory_id', $approval->affiliation->factory_id)
+    //     //                         ->where(
+    //     //                             'department_id',
+    //     //                             $approval->affiliation->department_id
+    //     //                         );
+    //     //                 });
+    //     //             });
+    //     //         } elseif (
+    //     //             $approval->department_id != 1 &&
+    //     //             $approval->affiliation->group_id != 1
+    //     //         ) {
+    //     //             $query->orWhere(function ($query) use ($approval) {
+    //     //                 $query->whereHas('affiliation', function ($query) use (
+    //     //                     $approval
+    //     //                 ) {
+    //     //                     $query
+    //     //                         ->where('factory_id', $approval->affiliation->factory_id)
+    //     //                         ->where(
+    //     //                             'department_id',
+    //     //                             $approval->affiliation->department_id
+    //     //                         )
+    //     //                         ->where('group_id', $approval->affiliation->group_id);
+    //     //                 });
+    //     //             });
+    //     //         }
+    //     //     }
+    //     // })->get();
 
-        # 重複削除&並べ替え
-        if ($users->first()) {
-            $users = $users
-                ->unique()
-                ->load(['reports', 'acquisition_days'])
-                ->sortBy('employee')
-                ->sortBy('affiliation_id');
-        }
-        // dd($users);
+    //     # 重複削除&並べ替え
+    //     if ($users->first()) {
+    //         $users = $users
+    //             ->unique()
+    //             ->load(['reports', 'acquisition_days'])
+    //             ->sortBy('employee')
+    //             ->sortBy('affiliation_id');
+    //     }
+    //     // dd($users);
 
-        $report_categories = ReportCategory::all();
+    //     $report_categories = ReportCategory::all();
 
-        return view('reports.get_and_remaining')->with(
-            compact('users', 'report_categories')
-        );
-    }
+    //     return view('reports.get_and_remaining')->with(
+    //         compact('users', 'report_categories')
+    //     );
+    // }
 
-    # 承認
+    // approval()
     public function approval(Report $report)
     {
         $approvals = Auth::user()->approvals->whereIn('approval_id', [2, 3]);
-        $gl_approval = Approval::where('approval_id', 3)
-            ->where('factory_id', $report->user->factory_id)
-            ->where('department_id', $report->user->department_id)
-            ->where(function ($query) use ($report) {
-                $query
-                    ->orWhere('group_id', $report->user->group_id)
-                    ->orWhere('group_id', 1);
-            })
+        // $gl_approval = Approval::where('approval_id', 3)
+        //     ->where('factory_id', $report->user->factory_id)
+        //     ->where('department_id', $report->user->department_id)
+        //     ->where(function ($query) use ($report) {
+        //         $query
+        //             ->orWhere('group_id', $report->user->group_id)
+        //             ->orWhere('group_id', 1);
+        //     })
+        //     ->get();
+        $gl_approvals = Approval::whereHas('affiliation', function (
+            $query
+        ) use ($report) {
+            $query
+                ->where('factory_id', $report->user->affiliation->factory_id)
+                ->where(
+                    'department_id',
+                    $report->user->affiliation->department_id
+                )
+                ->where(function ($query) use ($report) {
+                    $query
+                        ->where(
+                            'group_id',
+                            $report->user->affiliation->group_id
+                        )
+                        ->orWhere('group_id', 1);
+                });
+        })
+            ->where('approval_id', 3)
             ->get();
+        // dd($gl_approval);
 
         foreach ($approvals as $approval) {
-            // TODO:GLがいないときは部長・工場長だけ承認を追加
             if (
                 $approval->approval_id == 2 &&
-                $approval->factory_id == $report->user->factory_id &&
-                ($approval->department_id == $report->user->department_id ||
-                    $approval->department_id == 1)
+                $approval->affiliation->factory_id ==
+                    $report->user->affiliation->factory_id &&
+                ($approval->affiliation->department_id ==
+                    $report->user->affiliation->department_id ||
+                    $approval->affiliation->department_id == 1)
             ) {
                 $report->approval1 = 1;
-                if (empty($gl_approval->first())) {
+                // GLがいないとき工場長がGL承認する
+                if (empty($gl_approvals->first())) {
                     $report->approval2 = 1;
                 }
             } elseif (
                 $approval->approval_id == 3 &&
-                $approval->factory_id == $report->user->factory_id &&
-                $approval->department_id == $report->user->department_id &&
-                ($approval->group_id == $report->user->group_id ||
-                    $approval->group_id == 1)
+                $approval->affiliation->factory_id ==
+                    $report->user->affiliation->factory_id &&
+                $approval->affiliation->department_id ==
+                    $report->user->affiliation->department_id &&
+                ($approval->affiliation->group_id ==
+                    $report->user->affiliation->group_id ||
+                    $approval->affiliation->group_id == 1)
             ) {
                 $report->approval2 = 1;
             }
@@ -1590,10 +1775,8 @@ class ReportController extends Controller
                     ->where('report_id', $report->report_id)
                     ->first();
                 if (!empty($acquisition_day)) {
-                    // TODO:これで大丈夫か検証
                     $acquisition_day->remaining_days -= $report->get_days;
-                    // $new_remaining = $acquisition_day->remaining_days - $report->get_days;
-                    // $acquisition_day->remaining_days = $new_remaining;
+                    $acquisition_day->acquisition_days += $report->get_days;
                     $acquisition_day->save(); # 残日数を保存
                 }
                 DB::commit(); # トランザクション成功終了
@@ -1621,36 +1804,62 @@ class ReportController extends Controller
     }
 
     # 承認取消
+    // approvalCancel()
     public function approvalCancel(Report $report)
     {
         $approvals = Auth::user()->approvals->whereIn('approval_id', [2, 3]);
-        $gl_approval = Approval::where('approval_id', 3)
-            ->where('factory_id', $report->user->factory_id)
-            ->where('department_id', $report->user->department_id)
-            ->where(function ($query) use ($report) {
-                $query
-                    ->orWhere('group_id', $report->user->group_id)
-                    ->orWhere('group_id', 1);
-            })
+        $gl_approvals = Approval::whereHas('affiliation', function (
+            $query
+        ) use ($report) {
+            $query
+                ->where('factory_id', $report->user->affiliation->factory_id)
+                ->where(
+                    'department_id',
+                    $report->user->affiliation->department_id
+                )
+                ->where(function ($query) use ($report) {
+                    $query
+                        ->where(
+                            'group_id',
+                            $report->user->affiliation->group_id
+                        )
+                        ->orWhere('group_id', 1);
+                });
+        })
+            ->where('approval_id', 3)
             ->get();
+        // $gl_approval = Approval::where('approval_id', 3)
+        //     ->where('factory_id', $report->user->factory_id)
+        //     ->where('department_id', $report->user->department_id)
+        //     ->where(function ($query) use ($report) {
+        //         $query
+        //             ->orWhere('group_id', $report->user->group_id)
+        //             ->orWhere('group_id', 1);
+        //     })
+        //     ->get();
 
         foreach ($approvals as $approval) {
             if (
                 $approval->approval_id == 2 &&
-                $approval->factory_id == $report->user->factory_id &&
-                ($approval->department_id == $report->user->department_id ||
-                    $approval->department_id == 1)
+                $approval->affiliation->factory_id ==
+                    $report->user->affiliation->factory_id &&
+                ($approval->affiliation->department_id ==
+                    $report->user->affiliation->department_id ||
+                    $approval->affiliation->department_id == 1)
             ) {
                 $report->approval1 = 0;
-                if (empty($gl_approval->first())) {
+                if (empty($gl_approvals->first())) {
                     $report->approval2 = 0;
                 }
             } elseif (
                 $approval->approval_id == 3 &&
-                $approval->factory_id == $report->user->factory_id &&
-                $approval->department_id == $report->user->department_id &&
-                ($approval->group_id == $report->user->group_id ||
-                    $approval->group_id == 1)
+                $approval->affiliation->factory_id ==
+                    $report->user->affiliation->factory_id &&
+                $approval->affiliation->department_id ==
+                    $report->user->affiliation->department_id &&
+                ($approval->affiliation->group_id ==
+                    $report->user->affiliation->group_id ||
+                    $approval->affiliation->group_id == 1)
             ) {
                 $report->approval2 = 0;
             }
@@ -1683,40 +1892,64 @@ class ReportController extends Controller
                 )
                     ->where('user_id', $report->user_id)
                     ->first();
-                // TODO:この存在確認はNGでは？
-                if (empty($acquisition_day)) {
-                    # remainingがない場合
-                    try {
-                        $report->delete();
-                        $report_user->destroyReport($report); // 申請者に取消メール通知
-                        return redirect()
-                            ->route('reports.index')
-                            ->with('notice', 'DestroyReport');
-                    } catch (\Throwable $th) {
-                        Log::error('Exception caught: ' . $th->getMessage());
-                        return back()->with('error', 'エラーが発生しました。');
-                    }
-                } else {
-                    # remainingがある場合
-                    /** 残日数加算&届け取消 */
-                    $acquisition_day->remaining_days += $report->get_days;
-                    DB::beginTransaction(); # トランザクション開始
-                    try {
-                        $acquisition_day->save();
-                        $report->delete();
 
-                        DB::commit(); # トランザクション成功終了
-                        // approverに申請取消を通知
-                        $report_user->destroyReport($report); // 申請者に取消メール通知
-                        return redirect()
-                            ->route('reports.index')
-                            ->with('notice', 'DestroyReport');
-                    } catch (\Throwable $th) {
-                        DB::rollBack(); # トランザクション失敗終了
-                        Log::error('Exception caught: ' . $th->getMessage());
-                        return back()->with('error', 'エラーが発生しました。');
+                DB::beginTransaction(); # トランザクション開始
+                try {
+                    $report->save();
+                    if (!empty($acquisition_day)) {
+                        $acquisition_day->remaining_days += $report->get_days;
+                        $acquisition_day->acquisition_days -= $report->get_days;
+                        $acquisition_day->save(); # 残日数を保存
                     }
+                    $report->delete();
+                    DB::commit(); # トランザクション成功終了
+                    $report_user->destroyReport($report); // 申請者に取消メール通知
+                    // リダイレクト
+                    return redirect()
+                        ->route('reports.index')
+                        ->with('notice', 'DestroyReport');
+                } catch (\Exception $e) {
+                    DB::rollBack(); # トランザクション失敗終了
+                    // 例外情報をログに出力
+                    Log::error('Exception caught: ' . $e->getMessage());
+                    // エラー内容をそのまま表示しない
+                    return back()->with('error', 'エラーが発生しました。');
                 }
+
+                //     // TODO:この存在確認はNGでは？
+                //     if (empty($acquisition_day)) {
+                //         # remainingがない場合
+                //         try {
+                //             $report->delete();
+                //             $report_user->destroyReport($report); // 申請者に取消メール通知
+                //             return redirect()
+                //                 ->route('reports.index')
+                //                 ->with('notice', 'DestroyReport');
+                //         } catch (\Throwable $th) {
+                //             Log::error('Exception caught: ' . $th->getMessage());
+                //             return back()->with('error', 'エラーが発生しました。');
+                //         }
+                //     } else {
+                //         # remainingがある場合
+                //         /** 残日数加算&届け取消 */
+                //         $acquisition_day->remaining_days += $report->get_days;
+                //         DB::beginTransaction(); # トランザクション開始
+                //         try {
+                //             $acquisition_day->save();
+                //             $report->delete();
+
+                //             DB::commit(); # トランザクション成功終了
+                //             // approverに申請取消を通知
+                //             $report_user->destroyReport($report); // 申請者に取消メール通知
+                //             return redirect()
+                //                 ->route('reports.index')
+                //                 ->with('notice', 'DestroyReport');
+                //         } catch (\Throwable $th) {
+                //             DB::rollBack(); # トランザクション失敗終了
+                //             Log::error('Exception caught: ' . $th->getMessage());
+                //             return back()->with('error', 'エラーが発生しました。');
+                //         }
+                //     }
             }
         } else {
             try {
@@ -1732,6 +1965,7 @@ class ReportController extends Controller
         }
     }
 
+    // menu()
     public function menu()
     {
         $approvals = Auth::user()->approvals;
@@ -1987,95 +2221,83 @@ class ReportController extends Controller
         );
     }
 
+    // export_form
     public function export_form()
     {
-        // 管理者権限は設定についての権限なので、一覧に影響しない
         $approvals = Auth::user()->approvals->where('approval_id', '!=', 1);
-        $reports = Report::whereHas('user', function ($query) use ($approvals) {
+        // 権限に当てはまるユーザーの申請を取得
+        $reports = Report::whereHas('user.affiliation', function ($query) use (
+            $approvals
+        ) {
             $query->where(function ($query) use ($approvals) {
                 foreach ($approvals as $approval) {
-                    if ($approval->department_id == 1) {
-                        $query->orWhere(function ($query) use ($approval) {
+                    $query->orWhere(function ($query) use ($approval) {
+                        if ($approval->affiliation->department_id == 1) {
+                            $query->where(
+                                'factory_id',
+                                $approval->affiliation->factory_id
+                            );
+                        } elseif (
+                            $approval->affiliation->department_id != 1 &&
+                            $approval->affiliation->group_id == 1
+                        ) {
                             $query
-                                ->whereHas('affiliation', function (
-                                    $query
-                                ) use ($approval) {
-                                    $query->where(
-                                        'factory_id',
-                                        $approval->affiliation->factory_id
-                                    );
-                                })
-                                ->where('approved', 1)
-                                ->where('cancel', 0);
-                        });
-                    } elseif (
-                        $approval->department_id != 1 &&
-                        $approval->affiliation->group_id == 1
-                    ) {
-                        $query->orWhere(function ($query) use ($approval) {
+                                ->where(
+                                    'factory_id',
+                                    $approval->affiliation->factory_id
+                                )
+                                ->where(
+                                    'department_id',
+                                    $approval->affiliation->department_id
+                                );
+                        } elseif (
+                            $approval->affiliation->department_id != 1 &&
+                            $approval->affiliation->group_id != 1
+                        ) {
                             $query
-                                ->whereHas('affiliation', function (
-                                    $query
-                                ) use ($approval) {
-                                    $query
-                                        ->where(
-                                            'factory_id',
-                                            $approval->affiliation->factory_id
-                                        )
-                                        ->where(
-                                            'department_id',
-                                            $approval->affiliation
-                                                ->department_id
-                                        );
-                                })
-                                ->where('approved', 1)
-                                ->where('cancel', 0);
-                        });
-                    } elseif (
-                        $approval->department_id != 1 &&
-                        $approval->affiliation->group_id != 1
-                    ) {
-                        $query->orWhere(function ($query) use ($approval) {
-                            $query
-                                ->whereHas('affiliation', function (
-                                    $query
-                                ) use ($approval) {
-                                    $query
-                                        ->where(
-                                            'factory_id',
-                                            $approval->affiliation->factory_id
-                                        )
-                                        ->where(
-                                            'department_id',
-                                            $approval->affiliation
-                                                ->department_id
-                                        )
-                                        ->where(
-                                            'group_id',
-                                            $approval->affiliation->group_id
-                                        );
-                                })
-                                ->where('approved', 1)
-                                ->where('cancel', 0);
-                        });
-                    }
+                                ->where(
+                                    'factory_id',
+                                    $approval->affiliation->factory_id
+                                )
+                                ->where(
+                                    'department_id',
+                                    $approval->affiliation->department_id
+                                )
+                                ->where(
+                                    'group_id',
+                                    $approval->affiliation->group_id
+                                );
+                        }
+                    });
                 }
             });
-        })->get();
+        })
+            ->where('approved', 1)
+            ->where('cancel', 0)
+            ->get();
+        // dd($reports);
+        // 全体の閲覧権限があるときは全てのレポートを取得
+        if ($approvals->contains('affiliation_id', 1)) {
+            $reports = Report::where('approved', 1)
+                ->where('cancel', 0)
+                ->get();
+        }
 
         # 重複削除&並べ替え
         if ($reports->first()) {
             $reports = $reports
                 ->unique()
                 ->load([
-                    'user',
                     'user.affiliation',
                     'report_category',
-                    'reason_category',
+                    'sub_report_category',
                 ])
+                ->sortBy('report_id')
                 ->sortBy('user.affiliation_id')
+                ->sortBy('start_date')
                 ->sortBy('report_date');
         }
+        $affiliations = Affiliation::all();
         $factories = FactoryCategory::all();
         $departments = DepartmentCategory::all();
         $report_categories = ReportCategory::all();
@@ -2085,6 +2307,7 @@ class ReportController extends Controller
         return view('reports.export_form')->with(
             compact(
                 'reports',
+                'affiliations',
                 'factories',
                 'departments',
                 'report_categories',
@@ -2094,6 +2317,7 @@ class ReportController extends Controller
         );
     }
 
+    // export()
     public function export(Request $request)
     {
         // 二重送信防止
@@ -2102,101 +2326,86 @@ class ReportController extends Controller
 
         // 管理者権限は設定についての権限なので、一覧に影響しない
         $approvals = Auth::user()->approvals->where('approval_id', '!=', 1);
-        $reports = Report::whereHas('user', function ($query) use ($approvals) {
+        // 権限に当てはまるユーザーの申請を取得
+        $reports = Report::whereHas('user.affiliation', function ($query) use (
+            $approvals
+        ) {
             $query->where(function ($query) use ($approvals) {
                 foreach ($approvals as $approval) {
-                    if ($approval->affiliation->department_id == 1) {
-                        $query->orWhere(function ($query) use ($approval) {
+                    $query->orWhere(function ($query) use ($approval) {
+                        if ($approval->affiliation->department_id == 1) {
+                            $query->where(
+                                'factory_id',
+                                $approval->affiliation->factory_id
+                            );
+                        } elseif (
+                            $approval->affiliation->department_id != 1 &&
+                            $approval->affiliation->group_id == 1
+                        ) {
                             $query
-                                ->whereHas('affiliation', function (
-                                    $query
-                                ) use ($approval) {
-                                    $query->where(
-                                        'factory_id',
-                                        $approval->affiliation->factory_id
-                                    );
-                                })
-                                ->where('approved', 1)
-                                ->where('cancel', 0);
-                        });
-                    } elseif (
-                        $approval->department_id != 1 &&
-                        $approval->affiliation->group_id == 1
-                    ) {
-                        $query->orWhere(function ($query) use ($approval) {
+                                ->where(
+                                    'factory_id',
+                                    $approval->affiliation->factory_id
+                                )
+                                ->where(
+                                    'department_id',
+                                    $approval->affiliation->department_id
+                                );
+                        } elseif (
+                            $approval->affiliation->department_id != 1 &&
+                            $approval->affiliation->group_id != 1
+                        ) {
                             $query
-                                ->whereHas('affiliation', function (
-                                    $query
-                                ) use ($approval) {
-                                    $query
-                                        ->where(
-                                            'factory_id',
-                                            $approval->affiliation->factory_id
-                                        )
-                                        ->where(
-                                            'department_id',
-                                            $approval->affiliation
-                                                ->department_id
-                                        );
-                                })
-                                ->where('approved', 1)
-                                ->where('cancel', 0);
-                        });
-                    } elseif (
-                        $approval->department_id != 1 &&
-                        $approval->affiliation->group_id != 1
-                    ) {
-                        $query->orWhere(function ($query) use ($approval) {
-                            $query
-                                ->whereHas('affiliation', function (
-                                    $query
-                                ) use ($approval) {
-                                    $query
-                                        ->where(
-                                            'factory_id',
-                                            $approval->affiliation->factory_id
-                                        )
-                                        ->where(
-                                            'department_id',
-                                            $approval->affiliation
-                                                ->department_id
-                                        )
-                                        ->where(
-                                            'group_id',
-                                            $approval->affiliation->group_id
-                                        );
-                                })
-                                ->where('approved', 1)
-                                ->where('cancel', 0);
-                        });
-                    }
+                                ->where(
+                                    'factory_id',
+                                    $approval->affiliation->factory_id
+                                )
+                                ->where(
+                                    'department_id',
+                                    $approval->affiliation->department_id
+                                )
+                                ->where(
+                                    'group_id',
+                                    $approval->affiliation->group_id
+                                );
+                        }
+                    });
                 }
             });
-        })->get();
+        })
+            ->where('approved', 1)
+            ->where('cancel', 0)
+            ->get();
+        // dd($reports);
+        // 全体の閲覧権限があるときは全てのレポートを取得
+        if ($approvals->contains('affiliation_id', 1)) {
+            $reports = Report::where('approved', 1)
+                ->where('cancel', 0)
+                ->get();
+        }
 
         # 重複削除&並べ替え
         if ($reports->first()) {
             $reports = $reports
                 ->unique()
                 ->load([
-                    'user',
                     'user.affiliation',
                     'report_category',
-                    'reason_category',
+                    'sub_report_category',
                 ])
+                ->sortBy('report_id')
                 ->sortBy('user.affiliation_id')
+                ->sortBy('start_date')
                 ->sortBy('report_date');
         }
 
         /** 設定条件で絞り込む
-         * factory_id 工場
-         * department_id 課
+         * affiliation_id 課
          * report_id 休暇種類
          * reason_id 理由
          * month 月
          */
-        $factory_id = $request->factory_id;
-        $department_id = $request->department_id;
+        $affiliation_id = $request->affiliation_id;
         $report_id = $request->report_category_id;
         $reason_id = $request->reason_category_id;
         $month = $request->get_month;
@@ -2212,71 +2421,46 @@ class ReportController extends Controller
         }
 
         /** 条件に従って帳票出力するreportを取得 */
+        // if (
+        //     $affiliation_id == null &&
+        //     $report_id == null &&
+        //     $reason_id == null &&
+        //     $month == null
+        // ) {
+        //     # 全て出力
+        //     $reports = $reports->where('approved', 1)->where('cancel', 0);
+        // } elseif (
         if (
-            $factory_id == null &&
-            $department_id == null &&
+            $affiliation_id != null &&
             $report_id == null &&
             $reason_id == null &&
             $month == null
         ) {
-            # 全て出力
-            $reports = $reports->where('approved', 1)->where('cancel', 0);
-        } elseif (
-            $factory_id != null &&
-            $department_id == null &&
-            $report_id == null &&
-            $reason_id == null &&
-            $month == null
-        ) {
-            # 所属1を指定
+            # 所属を指定
             $reports = $reports
-                ->filter(function ($item) use ($factory_id) {
-                    return $item->user->affiliation->factory_id == $factory_id;
-                })
-                ->where('approved', 1)
-                ->where('cancel', 0);
+                ->filter(function ($item) use ($affiliation_id) {
+                    return $item->user->affiliation_id == $affiliation_id;
+                });
         } elseif (
-            $factory_id == null &&
-            $department_id != null &&
-            $report_id == null &&
-            $reason_id == null &&
-            $month == null
-        ) {
-            # 所属2を指定
-            $reports = $reports
-                ->filter(function ($item) use ($department_id) {
-                    return $item->user->affiliation->department_id ==
-                        $department_id;
-                })
-                ->where('approved', 1)
-                ->where('cancel', 0);
-        } elseif (
-            $factory_id == null &&
-            $department_id == null &&
+            $affiliation_id == null &&
             $report_id != null &&
             $reason_id == null &&
             $month == null
         ) {
             # 休暇種類を指定
             $reports = $reports
-                ->where('report_id', $report_id)
-                ->where('approved', 1)
-                ->where('cancel', 0);
+                ->where('report_id', $report_id);
         } elseif (
-            $factory_id == null &&
-            $department_id == null &&
+            $affiliation_id == null &&
             $report_id == null &&
             $reason_id != null &&
             $month == null
         ) {
             # 理由を指定
             $reports = $reports
-                ->where('reason_id', $reason_id)
-                ->where('approved', 1)
-                ->where('cancel', 0);
+                ->where('reason_id', $reason_id);
         } elseif (
-            $factory_id == null &&
-            $department_id == null &&
+            $affiliation_id == null &&
             $report_id == null &&
             $reason_id == null &&
             $month != null
@@ -2284,125 +2468,46 @@ class ReportController extends Controller
             # 月を指定
             $reports = $reports
                 ->where('start_date', '>=', $start_date)
-                ->where('start_date', '<=', $end_date)
-                ->where('approved', 1)
-                ->where('cancel', 0);
+                ->where('start_date', '<=', $end_date);
         } elseif (
-            $factory_id != null &&
-            $department_id != null &&
-            $report_id == null &&
-            $reason_id == null &&
-            $month == null
-        ) {
-            # 所属を指定
-            $reports = $reports
-                ->filter(function ($item) use ($factory_id) {
-                    return $item->user->affiliation->factory_id == $factory_id;
-                })
-                ->filter(function ($item) use ($department_id) {
-                    return $item->user->affiliation->department_id ==
-                        $department_id;
-                })
-                ->where('approved', 1)
-                ->where('cancel', 0);
-        } elseif (
-            $factory_id != null &&
-            $department_id == null &&
+            $affiliation_id != null &&
             $report_id != null &&
             $reason_id == null &&
             $month == null
         ) {
-            # 所属1,休暇種類を指定
+            # 所属,休暇種類を指定
             $reports = $reports
-                ->filter(function ($item) use ($factory_id) {
-                    return $item->user->affiliation->factory_id == $factory_id;
+                ->filter(function ($item) use ($affiliation_id) {
+                    return $item->user->affiliation_id == $affiliation_id;
                 })
-                ->where('report_id', $report_id)
-                ->where('approved', 1)
-                ->where('cancel', 0);
+                ->where('report_id', $report_id);
         } elseif (
-            $factory_id != null &&
-            $department_id == null &&
+            $affiliation_id != null &&
             $report_id == null &&
             $reason_id != null &&
             $month == null
         ) {
-            # 所属1,理由を指定
+            # 所属,理由を指定
             $reports = $reports
-                ->filter(function ($item) use ($factory_id) {
-                    return $item->user->affiliation->factory_id == $factory_id;
+                ->filter(function ($item) use ($affiliation_id) {
+                    return $item->user->affiliation_id == $affiliation_id;
                 })
-                ->where('reason_id', $reason_id)
-                ->where('approved', 1)
-                ->where('cancel', 0);
+                ->where('reason_id', $reason_id);
         } elseif (
-            $factory_id != null &&
-            $department_id == null &&
+            $affiliation_id != null &&
             $report_id == null &&
             $reason_id == null &&
             $month != null
         ) {
-            # 所属1,月を指定
+            # 所属,月を指定
             $reports = $reports
-                ->filter(function ($item) use ($factory_id) {
-                    return $item->user->affiliation->factory_id == $factory_id;
+                ->filter(function ($item) use ($affiliation_id) {
+                    return $item->user->affiliation_id == $affiliation_id;
                 })
                 ->where('start_date', '>=', $start_date)
-                ->where('start_date', '<=', $end_date)
-                ->where('approved', 1)
-                ->where('cancel', 0);
+                ->where('start_date', '<=', $end_date);
         } elseif (
-            $factory_id == null &&
-            $department_id != null &&
-            $report_id != null &&
-            $reason_id == null &&
-            $month == null
-        ) {
-            # 所属2,休暇種類を指定
-            $reports = $reports
-                ->filter(function ($item) use ($department_id) {
-                    return $item->user->affiliation->department_id ==
-                        $department_id;
-                })
-                ->where('report_id', $report_id)
-                ->where('approved', 1)
-                ->where('cancel', 0);
-        } elseif (
-            $factory_id == null &&
-            $department_id != null &&
-            $report_id == null &&
-            $reason_id != null &&
-            $month == null
-        ) {
-            # 所属2,理由を指定
-            $reports = $reports
-                ->filter(function ($item) use ($department_id) {
-                    return $item->user->affiliation->department_id ==
-                        $department_id;
-                })
-                ->where('reason_id', $reason_id)
-                ->where('approved', 1)
-                ->where('cancel', 0);
-        } elseif (
-            $factory_id == null &&
-            $department_id != null &&
-            $report_id == null &&
-            $reason_id == null &&
-            $month != null
-        ) {
-            # 所属2,月を指定
-            $reports = $reports
-                ->filter(function ($item) use ($department_id) {
-                    return $item->user->affiliation->department_id ==
-                        $department_id;
-                })
-                ->where('start_date', '>=', $start_date)
-                ->where('start_date', '<=', $end_date)
-                ->where('approved', 1)
-                ->where('cancel', 0);
-        } elseif (
-            $factory_id == null &&
-            $department_id == null &&
+            $affiliation_id == null &&
             $report_id != null &&
             $reason_id != null &&
             $month == null
@@ -2410,12 +2515,9 @@ class ReportController extends Controller
             # 休暇種類,理由を指定
             $reports = $reports
                 ->where('report_id', $report_id)
-                ->where('reason_id', $reason_id)
-                ->where('approved', 1)
-                ->where('cancel', 0);
+                ->where('reason_id', $reason_id);
         } elseif (
-            $factory_id == null &&
-            $department_id == null &&
+            $affiliation_id == null &&
             $report_id != null &&
             $reason_id == null &&
             $month != null
@@ -2424,12 +2526,9 @@ class ReportController extends Controller
             $reports = $reports
                 ->where('report_id', $report_id)
                 ->where('start_date', '>=', $start_date)
-                ->where('start_date', '<=', $end_date)
-                ->where('approved', 1)
-                ->where('cancel', 0);
+                ->where('start_date', '<=', $end_date);
         } elseif (
-            $factory_id == null &&
-            $department_id == null &&
+            $affiliation_id == null &&
             $report_id == null &&
             $reason_id != null &&
             $month != null
@@ -2438,123 +2537,50 @@ class ReportController extends Controller
             $reports = $reports
                 ->where('start_date', '>=', $start_date)
                 ->where('start_date', '<=', $end_date)
-                ->where('reason_id', $reason_id)
-                ->where('approved', 1)
-                ->where('cancel', 0);
+                ->where('reason_id', $reason_id);
         } elseif (
-            $factory_id != null &&
-            $department_id != null &&
-            $report_id != null &&
-            $reason_id == null &&
-            $month == null
-        ) {
-            # 所属,休暇種類を指定
-            $reports = $reports
-                ->filter(function ($item) use ($factory_id) {
-                    return $item->user->affiliation->factory_id == $factory_id;
-                })
-                ->filter(function ($item) use ($department_id) {
-                    return $item->user->affiliation->department_id ==
-                        $department_id;
-                })
-                ->where('report_id', $report_id)
-                ->where('approved', 1)
-                ->where('cancel', 0);
-        } elseif (
-            $factory_id != null &&
-            $department_id != null &&
-            $report_id == null &&
-            $reason_id != null &&
-            $month == null
-        ) {
-            # 所属,理由を指定
-            $reports = $reports
-                ->filter(function ($item) use ($factory_id) {
-                    return $item->user->affiliation->factory_id == $factory_id;
-                })
-                ->filter(function ($item) use ($department_id) {
-                    return $item->user->affiliation->department_id ==
-                        $department_id;
-                })
-                ->where('reason_id', $reason_id)
-                ->where('approved', 1)
-                ->where('cancel', 0);
-        } elseif (
-            $factory_id != null &&
-            $department_id != null &&
-            $report_id == null &&
-            $reason_id == null &&
-            $month != null
-        ) {
-            # 所属,月を指定
-            $reports = $reports
-                ->filter(function ($item) use ($factory_id) {
-                    return $item->user->affiliation->factory_id == $factory_id;
-                })
-                ->filter(function ($item) use ($department_id) {
-                    return $item->user->affiliation->department_id ==
-                        $department_id;
-                })
-                ->where('start_date', '>=', $start_date)
-                ->where('start_date', '<=', $end_date)
-                ->where('approved', 1)
-                ->where('cancel', 0);
-        } elseif (
-            $factory_id == null &&
-            $department_id != null &&
+            $affiliation_id != null &&
             $report_id != null &&
             $reason_id != null &&
             $month == null
         ) {
-            # 所属2,休暇種類,理由を指定
+            # 所属,休暇種類,理由を指定
             $reports = $reports
-                ->filter(function ($item) use ($department_id) {
-                    return $item->user->affiliation->department_id ==
-                        $department_id;
+                ->filter(function ($item) use ($affiliation_id) {
+                    return $item->user->affiliation_id == $affiliation_id;
                 })
                 ->where('report_id', $report_id)
-                ->where('reason_id', $reason_id)
-                ->where('approved', 1)
-                ->where('cancel', 0);
+                ->where('reason_id', $reason_id);
         } elseif (
-            $factory_id == null &&
-            $department_id != null &&
+            $affiliation_id != null &&
             $report_id != null &&
             $reason_id == null &&
             $month != null
         ) {
-            # 所属2,休暇種類,月を指定
+            # 所属,休暇種類,月を指定
             $reports = $reports
-                ->filter(function ($item) use ($department_id) {
-                    return $item->user->affiliation->department_id ==
-                        $department_id;
+                ->filter(function ($item) use ($affiliation_id) {
+                    return $item->user->affiliation_id == $affiliation_id;
                 })
                 ->where('start_date', '>=', $start_date)
                 ->where('start_date', '<=', $end_date)
-                ->where('report_id', $report_id)
-                ->where('approved', 1)
-                ->where('cancel', 0);
+                ->where('report_id', $report_id);
         } elseif (
-            $factory_id == null &&
-            $department_id != null &&
+            $affiliation_id != null &&
             $report_id == null &&
             $reason_id != null &&
             $month != null
         ) {
-            # 所属2,理由,月を指定
+            # 所属,理由,月を指定
             $reports = $reports
-                ->filter(function ($item) use ($department_id) {
-                    return $item->user->affiliation->department_id ==
-                        $department_id;
+                ->filter(function ($item) use ($affiliation_id) {
+                    return $item->user->affiliation_id == $affiliation_id;
                 })
                 ->where('start_date', '>=', $start_date)
                 ->where('start_date', '<=', $end_date)
-                ->where('reason_id', $reason_id)
-                ->where('approved', 1)
-                ->where('cancel', 0);
+                ->where('reason_id', $reason_id);
         } elseif (
-            $factory_id == null &&
-            $department_id == null &&
+            $affiliation_id == null &&
             $report_id != null &&
             $reason_id != null &&
             $month != null
@@ -2564,428 +2590,25 @@ class ReportController extends Controller
                 ->where('start_date', '>=', $start_date)
                 ->where('start_date', '<=', $end_date)
                 ->where('report_id', $report_id)
-                ->where('reason_id', $reason_id)
-                ->where('approved', 1)
-                ->where('cancel', 0);
+                ->where('reason_id', $reason_id);
         } elseif (
-            $factory_id != null &&
-            $department_id != null &&
-            $report_id != null &&
-            $reason_id != null &&
-            $month == null
-        ) {
-            # 所属,休暇種類,理由を指定
-            $reports = $reports
-                ->filter(function ($item) use ($factory_id) {
-                    return $item->user->affiliation->factory_id == $factory_id;
-                })
-                ->filter(function ($item) use ($department_id) {
-                    return $item->user->affiliation->department_id ==
-                        $department_id;
-                })
-                ->where('report_id', $report_id)
-                ->where('reason_id', $reason_id)
-                ->where('approved', 1)
-                ->where('cancel', 0);
-        } elseif (
-            $factory_id != null &&
-            $department_id != null &&
-            $report_id != null &&
-            $reason_id == null &&
-            $month != null
-        ) {
-            # 所属,休暇種類,月を指定
-            $reports = $reports
-                ->filter(function ($item) use ($factory_id) {
-                    return $item->user->affiliation->factory_id == $factory_id;
-                })
-                ->filter(function ($item) use ($department_id) {
-                    return $item->user->affiliation->department_id ==
-                        $department_id;
-                })
-                ->where('report_id', $report_id)
-                ->where('start_date', '>=', $start_date)
-                ->where('start_date', '<=', $end_date)
-                ->where('approved', 1)
-                ->where('cancel', 0);
-        } elseif (
-            $factory_id != null &&
-            $department_id != null &&
-            $report_id == null &&
-            $reason_id != null &&
-            $month != null
-        ) {
-            # 所属,理由,月を指定
-            $reports = $reports
-                ->filter(function ($item) use ($factory_id) {
-                    return $item->user->affiliation->factory_id == $factory_id;
-                })
-                ->filter(function ($item) use ($department_id) {
-                    return $item->user->affiliation->department_id ==
-                        $department_id;
-                })
-                ->where('reason_id', $reason_id)
-                ->where('start_date', '>=', $start_date)
-                ->where('start_date', '<=', $end_date)
-                ->where('approved', 1)
-                ->where('cancel', 0);
-        } elseif (
-            $factory_id != null &&
-            $department_id == null &&
+            $affiliation_id != null &&
             $report_id != null &&
             $reason_id != null &&
             $month != null
         ) {
-            # 所属1,休暇種類,理由,月を指定
+            # すべて指定
             $reports = $reports
-                ->filter(function ($item) use ($factory_id) {
-                    return $item->user->affiliation->factory_id == $factory_id;
+                ->filter(function ($item) use ($affiliation_id) {
+                    return $item->user->affiliation_id == $affiliation_id;
                 })
                 ->where('report_id', $report_id)
                 ->where('reason_id', $reason_id)
                 ->where('start_date', '>=', $start_date)
-                ->where('start_date', '<=', $end_date)
-                ->where('approved', 1)
-                ->where('cancel', 0);
-        } elseif (
-            $factory_id == null &&
-            $department_id != null &&
-            $report_id != null &&
-            $reason_id != null &&
-            $month != null
-        ) {
-            # 所属2,休暇種類,理由,月を指定
-            $reports = $reports
-                ->filter(function ($item) use ($department_id) {
-                    return $item->user->affiliation->department_id ==
-                        $department_id;
-                })
-                ->where('report_id', $report_id)
-                ->where('reason_id', $reason_id)
-                ->where('start_date', '>=', $start_date)
-                ->where('start_date', '<=', $end_date)
-                ->where('approved', 1)
-                ->where('cancel', 0);
+                ->where('start_date', '<=', $end_date);
         }
         // $reports->load(['user', 'user.factory', 'user.department', 'report_category', 'reason_category']);
 
-        $view = view('reports.export')->with(compact('reports'));
-        return Excel::download(new ReportFormExport($view), 'reports.xlsx');
-
-        // FIXME:権限で絞り込んでいないので表示どおりに出力されない
-        /** 設定条件を定義して出力するreportを絞り込む
-         * factory_id 工場
-         * user_id ユーザー
-         * report_id 休暇種類
-         * month 月
-         */
-        $factory_id = $request->factory_id;
-        $user_id = $request->user_id;
-        $report_id = $request->report_category_id;
-        $month = $request->get_month;
-
-        # monthから月初め日、月終わり日を定義
-        if ($month) {
-            $carbon = new Carbon($month);
-            $start_date = $carbon->format('Y-m-d');
-            $end_date = $carbon
-                ->addMonth()
-                ->subDay()
-                ->format('Y-m-d');
-        }
-
-        /** 条件に従って帳票出力するreportを取得 */
-        if (
-            $factory_id == null &&
-            $report_id == null &&
-            $user_id == null &&
-            $month == null
-        ) {
-            # 全て出力
-            $reports = Report::with(
-                'user',
-                'report_category',
-                'sub_report_category',
-                'reason_category'
-            )
-                ->where('approved', 1)
-                ->where('cancel', 0)
-                ->get();
-        } elseif (
-            $factory_id != null &&
-            $report_id == null &&
-            $user_id == null &&
-            $month == null
-        ) {
-            # 工場を指定
-            $reports = Report::with(
-                'user',
-                'report_category',
-                'sub_report_category',
-                'reason_category'
-            )
-                ->whereHas('user', function ($query) use ($factory_id) {
-                    $query->where('factory_id', $factory_id);
-                })
-                ->where('approved', 1)
-                ->where('cancel', 0)
-                ->get();
-        } elseif (
-            $factory_id == null &&
-            $report_id != null &&
-            $user_id == null &&
-            $month == null
-        ) {
-            # 休暇種類を指定
-            $reports = Report::with(
-                'user',
-                'report_category',
-                'sub_report_category',
-                'reason_category'
-            )
-                ->where('report_id', $report_id)
-                ->where('approved', 1)
-                ->where('cancel', 0)
-                ->get();
-        } elseif (
-            $factory_id == null &&
-            $report_id == null &&
-            $user_id != null &&
-            $month == null
-        ) {
-            # ユーザーを指定
-            $reports = Report::with(
-                'user',
-                'report_category',
-                'sub_report_category',
-                'reason_category'
-            )
-                ->where('user_id', $user_id)
-                ->where('approved', 1)
-                ->where('cancel', 0)
-                ->get();
-        } elseif (
-            $factory_id == null &&
-            $report_id == null &&
-            $user_id == null &&
-            $month != null
-        ) {
-            # 月を指定
-            $reports = Report::with(
-                'user',
-                'report_category',
-                'sub_report_category',
-                'reason_category'
-            )
-                ->where('start_date', '>=', $start_date)
-                ->where('start_date', '<=', $end_date)
-                ->where('approved', 1)
-                ->where('cancel', 0)
-                ->get();
-        } elseif (
-            $factory_id != null &&
-            $report_id != null &&
-            $user_id == null &&
-            $month == null
-        ) {
-            # 工場,休暇種類を指定
-            $reports = Report::with(
-                'user',
-                'report_category',
-                'sub_report_category',
-                'reason_category'
-            )
-                ->whereHas('user', function ($query) use ($factory_id) {
-                    $query->where('factory_id', $factory_id);
-                })
-                ->where('report_id', $report_id)
-                ->where('approved', 1)
-                ->where('cancel', 0)
-                ->get();
-        } elseif (
-            $factory_id != null &&
-            $report_id == null &&
-            $user_id != null &&
-            $month == null
-        ) {
-            # 工場,ユーザーを指定
-            $reports = Report::with(
-                'user',
-                'report_category',
-                'sub_report_category',
-                'reason_category'
-            )
-                ->whereHas('user', function ($query) use ($factory_id) {
-                    $query->where('factory_id', $factory_id);
-                })
-                ->where('user_id', $user_id)
-                ->where('approved', 1)
-                ->where('cancel', 0)
-                ->get();
-        } elseif (
-            $factory_id != null &&
-            $report_id == null &&
-            $user_id == null &&
-            $month != null
-        ) {
-            # 工場,月を指定
-            $reports = Report::with(
-                'user',
-                'report_category',
-                'sub_report_category',
-                'reason_category'
-            )
-                ->whereHas('user', function ($query) use ($factory_id) {
-                    $query->where('factory_id', $factory_id);
-                })
-                ->where('start_date', '>=', $start_date)
-                ->where('start_date', '<=', $end_date)
-                ->where('approved', 1)
-                ->where('cancel', 0)
-                ->get();
-        } elseif (
-            $factory_id == null &&
-            $report_id != null &&
-            $user_id != null &&
-            $month == null
-        ) {
-            # 休暇種類,ユーザーを指定
-            $reports = Report::with(
-                'user',
-                'report_category',
-                'sub_report_category',
-                'reason_category'
-            )
-                ->where('report_id', $report_id)
-                ->where('user_id', $user_id)
-                ->where('approved', 1)
-                ->where('cancel', 0)
-                ->get();
-        } elseif (
-            $factory_id == null &&
-            $report_id != null &&
-            $user_id == null &&
-            $month != null
-        ) {
-            # 休暇種類,月を指定
-            $reports = Report::with(
-                'user',
-                'report_category',
-                'sub_report_category',
-                'reason_category'
-            )
-                ->where('report_id', $report_id)
-                ->where('start_date', '>=', $start_date)
-                ->where('start_date', '<=', $end_date)
-                ->where('approved', 1)
-                ->where('cancel', 0)
-                ->get();
-        } elseif (
-            $factory_id == null &&
-            $report_id == null &&
-            $user_id != null &&
-            $month != null
-        ) {
-            # ユーザー,月を指定
-            $reports = Report::with(
-                'user',
-                'report_category',
-                'sub_report_category',
-                'reason_category'
-            )
-                ->where('start_date', '>=', $start_date)
-                ->where('start_date', '<=', $end_date)
-                ->where('user_id', $user_id)
-                ->where('approved', 1)
-                ->where('cancel', 0)
-                ->get();
-        } elseif (
-            $factory_id != null &&
-            $report_id != null &&
-            $user_id != null &&
-            $month == null
-        ) {
-            # 工場,休暇種類,ユーザーを指定
-            $reports = Report::with(
-                'user',
-                'report_category',
-                'sub_report_category',
-                'reason_category'
-            )
-                ->whereHas('user', function ($query) use ($factory_id) {
-                    $query->where('factory_id', $factory_id);
-                })
-                ->where('report_id', $report_id)
-                ->where('user_id', $user_id)
-                ->where('approved', 1)
-                ->where('cancel', 0)
-                ->get();
-        } elseif (
-            $factory_id != null &&
-            $report_id != null &&
-            $user_id == null &&
-            $month != null
-        ) {
-            # 工場,休暇種類,月を指定
-            $reports = Report::with(
-                'user',
-                'report_category',
-                'sub_report_category',
-                'reason_category'
-            )
-                ->whereHas('user', function ($query) use ($factory_id) {
-                    $query->where('factory_id', $factory_id);
-                })
-                ->where('start_date', '>=', $start_date)
-                ->where('start_date', '<=', $end_date)
-                ->where('report_id', $report_id)
-                ->where('approved', 1)
-                ->where('cancel', 0)
-                ->get();
-        } elseif (
-            $factory_id != null &&
-            $report_id == null &&
-            $user_id != null &&
-            $month != null
-        ) {
-            # 工場,ユーザー,月を指定
-            $reports = Report::with(
-                'user',
-                'report_category',
-                'sub_report_category',
-                'reason_category'
-            )
-                ->whereHas('user', function ($query) use ($factory_id) {
-                    $query->where('factory_id', $factory_id);
-                })
-                ->where('start_date', '>=', $start_date)
-                ->where('start_date', '<=', $end_date)
-                ->where('user_id', $user_id)
-                ->where('approved', 1)
-                ->where('cancel', 0)
-                ->get();
-        } elseif (
-            $factory_id == null &&
-            $report_id != null &&
-            $user_id != null &&
-            $month != null
-        ) {
-            # 休暇種類,ユーザー,月を指定
-            $reports = Report::with(
-                'user',
-                'report_category',
-                'sub_report_category',
-                'reason_category'
-            )
-                ->where('start_date', '>=', $start_date)
-                ->where('start_date', '<=', $end_date)
-                ->where('report_id', $report_id)
-                ->where('user_id', $user_id)
-                ->where('approved', 1)
-                ->where('cancel', 0)
-                ->get();
-        }
-        // dd($reports);
         $view = view('reports.export')->with(compact('reports'));
         return Excel::download(new ReportFormExport($view), 'reports.xlsx');
     }

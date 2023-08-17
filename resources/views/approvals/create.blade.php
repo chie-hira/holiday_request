@@ -76,19 +76,11 @@
                                             </th>
                                             <th
                                                 class="w-24 px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                管轄工場
+                                                管轄
                                             </th>
                                             <th
                                                 class="w-24 px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                管轄課
-                                            </th>
-                                            <th
-                                                class="w-24 px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                管轄グループ
-                                            </th>
-                                            <th
-                                                class="w-24 px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                権限の種類
+                                                {{ __('Approval Category') }}
                                             </th>
                                             <th class="w-24"></th>
                                         </tr>
@@ -109,31 +101,13 @@
                                                     </x-select>
                                                 </td>
                                                 <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
-                                                    <x-select name="factory_id" class="block mt-1 w-30 text-sm"
+                                                    <x-select name="affiliation_id" class="block mt-1 w-30 text-sm"
                                                         required>
-                                                        @foreach ($factory_categories as $factory_category)
-                                                            <option value="{{ $factory_category->id }}"
-                                                                @if ($factory_category->id === (int) old('factory_id')) selected @endif>
-                                                                {{ $factory_category->factory_name }}工場</option>
-                                                        @endforeach
-                                                    </x-select>
-                                                </td>
-                                                <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
-                                                    <x-select name="department_id" class="block mt-1 w-32 text-sm"
-                                                        required>
-                                                        @foreach ($department_categories as $department_category)
-                                                            <option value="{{ $department_category->id }}"
-                                                                @if ($department_category->id === (int) old('department_id')) selected @endif>
-                                                                {{ $department_category->department_name }}</option>
-                                                        @endforeach
-                                                    </x-select>
-                                                </td>
-                                                <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
-                                                    <x-select name="group_id" class="block mt-1 w-32 text-sm" required>
-                                                        @foreach ($group_categories as $group_category)
-                                                            <option value="{{ $group_category->id }}"
-                                                                @if ($group_category->id === (int) old('group_id')) selected @endif>
-                                                                {{ $group_category->group_name }}</option>
+                                                        @foreach ($affiliations as $affiliation)
+                                                            <option value="{{ $affiliation->id }}"
+                                                                @if ($affiliation->id === (int) old('affiliation_id')) selected @endif>
+                                                                <x-affiliation-name :affiliation="$affiliation"/>
+                                                            </option>
                                                         @endforeach
                                                     </x-select>
                                                 </td>

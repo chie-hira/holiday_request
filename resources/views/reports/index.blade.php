@@ -113,11 +113,11 @@
                                                     </x-show-a-button>
                                                     {{-- //FIXME:課長,GLの設定まだ --}}
                                                     @if (
-                                                        (Auth::user()->approvals->where('approval_id', 2)->where('factory_id', $report->user->factory_id)->where('department_id', 1)->first() &&
+                                                        (Auth::user()->approvals->where('approval_id', 2)->where('affiliation.factory_id', $report->user->affiliation->factory_id)->where('affiliation.department_id', 1)->first() &&
                                                             (($report->cancel == 0 && $report->approval1 == 0) || ($report->cancel == 1 && $report->approval1 == 1))) ||
-                                                            (Auth::user()->approvals->where('approval_id', 2)->where('factory_id', $report->user->factory_id)->where('department_id', $report->user->department_id)->first() &&
+                                                            (Auth::user()->approvals->where('approval_id', 2)->where('affiliation.factory_id', $report->user->affiliation->factory_id)->where('affiliation.department_id', $report->user->affiliation->department_id)->first() &&
                                                                 (($report->cancel == 0 && $report->approval1 == 0) || ($report->cancel == 1 && $report->approval1 == 1))) ||
-                                                            (Auth::user()->approvals->where('approval_id', 3)->where('factory_id', $report->user->factory_id)->where('department_id', $report->user->department_id)->first() &&
+                                                            (Auth::user()->approvals->where('approval_id', 3)->where('affiliation.factory_id', $report->user->affiliation->factory_id)->where('affiliation.department_id', $report->user->affiliation->department_id)->first() &&
                                                                 (($report->cancel == 0 && $report->approval2 == 0) || ($report->cancel == 1 && $report->approval2 == 1))))
                                                         <div class="mt-2 -ml-2 text-red-700">
                                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
