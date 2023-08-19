@@ -46,11 +46,11 @@
                                             </th>
                                             <th scope="col" colspan="2"
                                                 class="px-4 py-3 whitespace-nowrap text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                {{ __('Lest Span') }}
+                                                {{ __('Rest Span') }}
                                             </th>
                                             <th scope="col"
                                                 class="w-32 px-2 py-3 whitespace-nowrap text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                {{ __('Lest Day') }}
+                                                {{ __('Rest Day') }}
                                             </th>
                                         </tr>
                                     </thead>
@@ -148,7 +148,7 @@
                                                         {{ $report->get_minutes }} 分
                                                     @endif
                                                 </td>
-                                                
+
                                             </tr>
                                         @endforeach
                                     </tbody>

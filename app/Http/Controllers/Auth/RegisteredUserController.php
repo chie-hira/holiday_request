@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Affiliation;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use App\Models\FactoryCategory;
@@ -25,14 +26,13 @@ class RegisteredUserController extends Controller
      */
     public function create()
     {
-        $factory_categories = FactoryCategory::where('id', '!=', 1)->get();
-        $department_categories = DepartmentCategory::all();
-        $group_categories = GroupCategory::all();
+        $affiliations = Affiliation::where('id', '!=', 1)->get();
+        // $factory_categories = FactoryCategory::where('id', '!=', 1)->get();
+        // $department_categories = DepartmentCategory::all();
+        // $group_categories = GroupCategory::all();
         return view('auth.register')->with(
             compact(
-                'factory_categories',
-                'department_categories',
-                'group_categories'
+                'affiliations'
             )
         );
     }
@@ -55,13 +55,11 @@ class RegisteredUserController extends Controller
                 'string',
                 'email',
                 'max:255',
-                'unique:users',
+                // 'unique:users',
             ],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'employee' => ['required', 'integer', 'min:0', 'unique:users'],
-            'factory_id' => ['required', 'integer'],
-            'department_id' => ['required', 'integer'],
-            'group_id' => ['required', 'integer'],
+            'affiliation_id' => ['required', 'integer'],
             'adoption_date' => ['required', 'date'],
             'birthday_month' => ['required'],
             'birthday_day' => ['required'],
@@ -75,9 +73,7 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'employee' => $request->employee,
-            'factory_id' => $request->factory_id,
-            'department_id' => $request->department_id,
-            'group_id' => $request->group_id,
+            'affiliation_id' => $request->affiliation_id,
             'adoption_date' => $request->adoption_date,
             'birthday' => $birthday,
             'remarks' => $request->password,

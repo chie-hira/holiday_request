@@ -70,24 +70,25 @@
                 </div>
             @endif
             <!-- 有給休暇失効alert -->
-            @if (now()->addMonth() >= $year_end && $lost_paid_holidays > 0)
+            @if (now()->addMonth() >= $year_end && Auth::user()->lost_paid_holidays > 0)
                 <x-alert>
                     有給休暇が失効します
                 </x-alert>
                 <div class="pl-2 -mt-1 mb-1">
                     <span class="text-xs text-blue-500">年度末で</span>
-                    <span class="font-bold text-red-600">{{ now()->diff($year_end)->days }}日間</span>
+                    <span class="font-bold text-red-600">{{ Auth::user()->lost_paid_holidays }}日間</span>
                     <span class="text-xs text-blue-500">の有給休暇が失効します</span>
                 </div>
             @endif
             <!-- 有給休暇取得推進alert -->
-            @if (now()->addMonth() >= $year_end && $get_paid_holidays < 5)
+            {{-- 3日は取得推進日として最初から差し引いている --}}
+            @if (now()->addMonth() >= $year_end && Auth::user()->acquisition_paid_holidays < 2)
                 <x-alert>
                     有給休暇を取得してください
                 </x-alert>
                 <div class="pl-2 -mt-1 mb-1">
                     <span class="text-xs text-blue-500">年度末までにあと</span>
-                    <span class="font-bold text-red-600">{{ 5 - $get_paid_holidays }}日</span>
+                    <span class="font-bold text-red-600">{{ 2 - Auth::user()->acquisition_paid_holidays }}日</span>
                     <span class="text-xs text-blue-500">取得してください</span>
                 </div>
             @endif
@@ -95,7 +96,7 @@
     </div>
 
     <!-- 通知機能 閲覧権限以上 start -->
-    @can('general_manager_gl')
+    @can('approver')
         @empty(!($pending || $approved))
             <div class="m-2 bg-red-50 border border-red-200 text-sm text-red-600 rounded-md px-4 py-2">
                 @if ($pending)
@@ -152,7 +153,7 @@
                         </div>
                     </a>
 
-                    <a href={{ route('acquisition_days.my_index') }} 
+                    <a href={{ route('acquisition_days.my_index') }}
                         class="block text-center items-center p-3 my-2 text-white rounded-xl border border-gray-500 bg-fuchsia-400 hover:text-gray-600 hover:bg-white focus:text-fuchsia-400">
                         <div class="flex justify-center items-center text-2xl">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
@@ -167,7 +168,7 @@
                         </div>
                     </a>
 
-                    <a href={{ route('reports.my_index') }} 
+                    <a href={{ route('reports.my_index') }}
                         class="block text-center items-center p-3 my-2 text-white rounded-xl border border-gray-500 bg-amber-400 hover:text-gray-600 hover:bg-white focus:text-amber-400">
                         <div class="flex justify-center items-center text-2xl">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
@@ -183,8 +184,8 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
                     <!-- 閲覧権限以上 start -->
-                    @can(['general_gl_reader'])
-                        <a href={{ route('reports.index') }} 
+                    @can('approver_reader')
+                        <a href={{ route('reports.index') }}
                             class="inline-flex items-center p-2 text-lg font-medium text-gray-600 hover:text-sky-700 hover:underline hover:underline-offset-0 hover:decoration-4 hover:decoration-sky-200">
                             <span class="mr-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -238,7 +239,7 @@
                     <!-- 閲覧権限以上 start -->
 
                     <!-- 管理者 start -->
-                    @can('admin_only')
+                    @can('admin')
                         <a href={{ route('acquisition_days.index') }}
                             class="inline-flex items-center p-2 text-lg font-medium text-gray-600 hover:text-sky-700 hover:underline hover:underline-offset-0 hover:decoration-4 hover:decoration-sky-200">
                             <span class="mr-3">
@@ -263,11 +264,7 @@
                             </span>
                             <span class="w-32">ユーザー設定</span>
                         </a>
-                    @endcan
-                    <!-- 管理者 end -->
 
-                    <!-- 上長承認 start -->
-                    @can('general_only')
                         <a href={{ route('approvals.index') }}
                             class="inline-flex items-center p-2 text-lg font-medium text-gray-600 hover:text-sky-700 hover:underline hover:underline-offset-0 hover:decoration-4 hover:decoration-sky-200">
                             <span class="mr-3">
@@ -281,53 +278,56 @@
                             </span>
                             <span class="w-32">権限設定</span>
                         </a>
-
                     @endcan
-                    <!-- 上長承認 end -->
+                    <!-- 管理者 end -->
                 </div>
             @endauth
 
-            <div class="text-left w-full my-12">
-                @if (Auth::user()->approvals->first())
-                    <ul class="text-sm">
-                        @foreach (Auth::user()->approvals->load('affiliation') as $approval)
-                            <x-list>
-                                <!-- 管理者 -->
-                                @if ($approval->approval_id == 1)
-                                    {{ $approval->affiliation->factory->factory_name }}
-                                    @if ($approval->affiliation->department_id != 1)
-                                        {{ $approval->affiliation->department->department_name }}
+            <!-- 上長承認 start -->
+            @can('approver')
+                <div class="text-left w-full my-12">
+                    {{-- @if (Auth::user()->approvals->first()) --}}
+                        <ul class="text-sm">
+                            @foreach (Auth::user()->approvals->load('affiliation') as $approval)
+                                <x-list>
+                                    <!-- 管理者 -->
+                                    @if ($approval->approval_id == 1)
+                                        {{ $approval->affiliation->factory->factory_name }}
+                                        @if ($approval->affiliation->department_id != 1)
+                                            {{ $approval->affiliation->department->department_name }}
+                                        @endif
+                                        ・{{ __('Admin') }}
                                     @endif
-                                    ・{{ __('Admin') }}
-                                @endif
-                                <!-- 承認 -->
-                                @if ($approval->approval_id == 2)
-                                    {{ $approval->affiliation->factory->factory_name }}
-                                    @if ($approval->affiliation->department_id != 1)
-                                        {{ $approval->affiliation->department->department_name }}
+                                    <!-- 承認 -->
+                                    @if ($approval->approval_id == 2)
+                                        {{ $approval->affiliation->factory->factory_name }}
+                                        @if ($approval->affiliation->department_id != 1)
+                                            {{ $approval->affiliation->department->department_name }}
+                                        @endif
+                                        ・{{ __('Approval1') }}
                                     @endif
-                                    ・{{ __('Approval1') }}
-                                @endif
-                                @if ($approval->approval_id == 3)
-                                    {{ $approval->affiliation->factory->factory_name }}
-                                    @if ($approval->affiliation->department_id != 1)
-                                        {{ $approval->affiliation->department->department_name }}
+                                    @if ($approval->approval_id == 3)
+                                        {{ $approval->affiliation->factory->factory_name }}
+                                        @if ($approval->affiliation->department_id != 1)
+                                            {{ $approval->affiliation->department->department_name }}
+                                        @endif
+                                        ・{{ __('Approval2') }}
                                     @endif
-                                    ・{{ __('Approval2') }}
-                                @endif
-                                <!-- 閲覧 -->
-                                @if ($approval->approval_id == 4)
-                                    {{ $approval->affiliation->factory->factory_name }}
-                                    @if ($approval->affiliation->department_id != 1)
-                                        {{ $approval->affiliation->department->department_name }}
+                                    <!-- 閲覧 -->
+                                    @if ($approval->approval_id == 4)
+                                        {{ $approval->affiliation->factory->factory_name }}
+                                        @if ($approval->affiliation->department_id != 1)
+                                            {{ $approval->affiliation->department->department_name }}
+                                        @endif
+                                        ・{{ __('Reader') }}
                                     @endif
-                                    ・{{ __('Reader') }}
-                                @endif
-                            </x-list>
-                        @endforeach
-                    </ul>
-                @endif
-            </div>
+                                </x-list>
+                            @endforeach
+                        </ul>
+                        {{-- @endif --}}
+                </div>
+            @endcan
+            <!-- 承認 end -->
         </div>
     </section>
 

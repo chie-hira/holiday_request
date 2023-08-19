@@ -16,6 +16,26 @@ class Affiliation extends Model
     ];
 
     /**
+     * Get all of the users for the Affiliation
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function users()
+    {
+        return $this->hasMany(User::class, 'affiliation_id', 'id');
+    }
+
+    /**
+     * Get all of the approvals for the Affiliation
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function approvals()
+    {
+        return $this->hasMany(Approval::class, 'affiliation_id', 'id');
+    }
+    
+    /**
      * Get the factory that owns the User
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

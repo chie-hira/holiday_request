@@ -6,7 +6,7 @@
     {{-- //TODO:一覧は統一&承認者見れる --}}
     <section class="text-gray-600 body-font">
         {{-- <div class="container max-w-2xl min-w-max w-full md:w-4/5 lg:w-2/3 px-5 py-24 mx-auto"> --}}
-        <div class="container px-6 py-12 mx-auto">
+        <div class="container max-w-2xl px-6 py-12 mx-auto">
             <div class="">
                 <div class="flex flex-col text-center w-full mb-12">
                     <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">届出書作成</h1>
@@ -72,7 +72,7 @@
                         <div class="hidden md:block" style="display: " id="empty_field_form"></div>
 
                         <!-- 遅刻・早退コメント - start -->
-                        <div style="display: none" id="time_form_10m">
+                        <div class="col-span-1 md:col-span-2" style="display: none" id="time_form_10m">
                             <x-info>
                                 <p class="text-sm">
                                     遅刻・早退は
@@ -84,7 +84,7 @@
                         <!-- 遅刻・早退コメント - end -->
 
                         <!-- 外出コメント - start -->
-                        <div style="display: none" id="time_form_30m">
+                        <div class="col-span-1 md:col-span-2" style="display: none" id="time_form_30m">
                             <x-info>
                                 <p class="text-sm">
                                     外出は
@@ -100,7 +100,7 @@
                             <x-info>
                                 <p class="text-sm">
                                     <span class="font-semibold text-red-500">配偶者、子、同居している父母</span>
-                                    の喪に服するとき取得できます
+                                    の喪に服するとき<span class="font-semibold text-red-500">3日間</span>取得できます
                                 </p>
                             </x-info>
                         </div>
@@ -108,7 +108,7 @@
                             <x-info>
                                 <p class="text-sm">
                                     <span class="font-semibold text-red-500">同居している配偶者の父母</span>
-                                    の喪に服するとき取得できます
+                                    の喪に服するとき<span class="font-semibold text-red-500">2日間</span>取得できます
                                 </p>
                             </x-info>
                         </div>
@@ -117,7 +117,7 @@
                                 <p class="text-sm">
                                     <span
                                         class="font-semibold text-red-500">同居していない父母、同居していない配偶者の父母、祖父母、同居している配偶者の祖父母、兄弟姉妹</span>
-                                    の喪に服するとき取得できます
+                                    の喪に服するとき<span class="font-semibold text-red-500">1日間</span>取得できます
                                 </p>
                             </x-info>
                         </div>
@@ -249,7 +249,7 @@
                         <!-- 理由 - end -->
 
                         <!-- 休日アラート - start -->
-                        <div id="holiday_alert" style="display: none">
+                        <div class="col-span-1 md:col-span-2" id="holiday_alert" style="display: none">
                             <x-info>
                                 <p class="text-sm">
                                     選択中の休暇予定日は
@@ -261,7 +261,7 @@
                         <!-- 休日アラート - end -->
 
                         <!-- 重複アラート - start -->
-                        <div id="duplication_alert" style="display: none">
+                        <div class="col-span-1 md:col-span-2" id="duplication_alert" style="display: none">
                             <x-info>
                                 <p class="text-sm">
                                     選択中の休暇予定に
@@ -273,7 +273,7 @@
                         <!-- 重複アラート - end -->
 
                         <!-- 勤務時間アラート - start -->
-                        <div id="working_alert" style="display: none">
+                        <div class="col-span-1 md:col-span-2" id="working_alert" style="display: none">
                             <x-info>
                                 <p class="text-sm">
                                     選択中の休暇予定時刻は
@@ -285,7 +285,7 @@
                         <!-- 勤務時間アラート - end -->
 
                         <!-- 遅刻アラート - start -->
-                        <div id="late_alert" style="display: none">
+                        <div class="col-span-1 md:col-span-2" id="late_alert" style="display: none">
                             <x-info>
                                 <p class="text-sm">
                                     選択中の休暇予定時刻は
@@ -306,7 +306,7 @@
                         <!-- 遅刻アラート - end -->
 
                         <!-- 外出アラート - start -->
-                        <div id="go_out_alert" style="display: none">
+                        <div class="col-span-1 md:col-span-2" id="go_out_alert" style="display: none">
                             <x-info>
                                 <p class="text-sm">
                                     選択中の休暇予定時刻は
@@ -318,7 +318,7 @@
                         <!-- 外出アラート - end -->
 
                         <!-- 早退アラート - start -->
-                        <div id="leaving_early_alert" style="display: none">
+                        <div class="col-span-1 md:col-span-2" id="leaving_early_alert" style="display: none">
                             <x-info>
                                 <p class="text-sm">
                                     選択中の休暇予定時刻は
@@ -1001,23 +1001,51 @@
                 } else if (timeCheck() == true) { // 申請時間を確認
                     getDays = 0;
                 } else {
+                    let restTime = 0;
                     // ランチタイムを挟む場合
                     if (startTimeVal < lunchTimeStart && endTimeVal >= lunchTimeStart && endTimeVal < lunchTimeEnd) {
-                        getDays = ((endTimeVal - startTimeVal - (endTimeVal - lunchTimeStart)) / 60000) / 60 * 1 / 8;
+                        restTime += endTimeVal - lunchTimeStart;
+                        // getDays = ((endTimeVal - startTimeVal - (endTimeVal - lunchTimeStart)) / 60000) / 60 * 1 / 8;
                     }
                     if (startTimeVal < lunchTimeStart && endTimeVal >= lunchTimeEnd) {
-                        getDays = ((endTimeVal - startTimeVal - (lunchTimeEnd - lunchTimeStart)) / 60000) / 60 * 1 / 8;
+                        // getDays = ((endTimeVal - startTimeVal - (lunchTimeEnd - lunchTimeStart)) / 60000) / 60 * 1 / 8;
+                        restTime += lunchTimeEnd - lunchTimeStart;
                     }
                     if (startTimeVal >= lunchTimeStart && startTimeVal < lunchTimeEnd && endTimeVal > lunchTimeEnd) {
-                        getDays = ((endTimeVal - startTimeVal - (lunchTimeEnd - startTimeVal)) / 60000) / 60 * 1 / 8;
+                        // getDays = ((endTimeVal - startTimeVal - (lunchTimeEnd - startTimeVal)) / 60000) / 60 * 1 / 8;
+                        restTime += lunchTimeEnd - startTimeVal;
                     }
-                    // ランチタイムを挟まない場合
-                    if (startTimeVal <= lunchTimeStart && endTimeVal <= lunchTimeStart) {
-                        getDays = ((endTimeVal - startTimeVal) / 60000) / 60 * 1 / 8;
+                    // 中休み1を挟む場合
+                    if (startTimeVal < rest1TimeStart && endTimeVal >= rest1TimeStart && endTimeVal < rest1TimeEnd) {
+                        restTime += endTimeVal - rest1TimeStart;
                     }
-                    if (startTimeVal >= lunchTimeEnd && endTimeVal >= lunchTimeEnd) {
-                        getDays = ((endTimeVal - startTimeVal) / 60000) / 60 * 1 / 8;
+                    if (startTimeVal < rest1TimeStart && endTimeVal >= rest1TimeEnd) {
+                        restTime += rest1TimeEnd - rest1TimeStart;
                     }
+                    if (startTimeVal >= rest1TimeStart && startTimeVal < rest1TimeEnd && endTimeVal > rest1TimeEnd) {
+                        restTime += rest1TimeEnd - startTimeVal;
+                    }
+                    // 中休み2を挟む場合
+                    if (startTimeVal < rest2TimeStart && endTimeVal >= rest2TimeStart && endTimeVal < rest2TimeEnd) {
+                        restTime += endTimeVal - rest2TimeStart;
+                    }
+                    if (startTimeVal < rest2TimeStart && endTimeVal >= rest2TimeEnd) {
+                        restTime += rest2TimeEnd - rest2TimeStart;
+                    }
+                    if (startTimeVal >= rest2TimeStart && startTimeVal < rest2TimeEnd && endTimeVal > rest2TimeEnd) {
+                        restTime += rest2TimeEnd - startTimeVal;
+                    }
+                    // 中休み3を挟む場合
+                    if (startTimeVal < rest3TimeStart && endTimeVal >= rest3TimeStart && endTimeVal < rest3TimeEnd) {
+                        restTime += endTimeVal - rest3TimeStart;
+                    }
+                    if (startTimeVal < rest3TimeStart && endTimeVal >= rest3TimeEnd) {
+                        restTime += rest3TimeEnd - rest3TimeStart;
+                    }
+                    if (startTimeVal >= rest3TimeStart && startTimeVal < rest3TimeEnd && endTimeVal > rest3TimeEnd) {
+                        restTime += rest3TimeEnd - startTimeVal;
+                    }
+                    getDays = ((endTimeVal - startTimeVal - restTime) / 60000) / 60 * 1 / 8;
                 }
 
                 // 時間換算:8時間で1日 1時間=1/8日 0.125日
@@ -1067,11 +1095,12 @@
             Object.keys(myAcquisitionDays).forEach((el) => {
                 if (myAcquisitionDays[el].report_id == reportId) {
                     // 申請中の日数を考慮した残日数を算出
-                    ownRemainingDays = myAcquisitionDays[el].remaining_days - myAcquisitionDays[el].pending_get_days;
+                    ownRemainingDays = myAcquisitionDays[el].remaining_days - myAcquisitionDays[el].pending_acquisition_days;
                 }
             });
 
             let remainingDays = ownRemainingDays - getDays;
+            console.log(remainingDays);
             // 残日数書き出し
             document.getElementById('remaining_days').setAttribute('value', remainingDays);
 
@@ -1086,6 +1115,15 @@
                 remainingMinutes = orgRound(remainingMinutes, 1);
             } else {
                 remainingHoursOnly = getHours;
+            }
+            if (remainingDaysOnly < 0) {
+                remainingDaysOnly = 0;
+            }
+            if (remainingHours < 0) {
+                remainingHours = 0;
+            }
+            if (remainingMinutes < 0) {
+                remainingMinutes = 0;
             }
             document.getElementById('remaining_days_only').setAttribute('value', remainingDaysOnly);
             document.getElementById('remaining_hours').setAttribute('value', remainingHoursOnly);

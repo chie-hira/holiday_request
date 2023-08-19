@@ -27,6 +27,7 @@ class CreateUsersTable extends Migration
                 ->cascadeOnDelete();
             $table->date('adoption_date')->nullable();
             $table->string('birthday')->nullable();
+            $table->string('remarks', 20)->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

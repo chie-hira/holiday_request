@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
 // })
@@ -33,7 +32,7 @@ Route::resource('reports', ReportController::class)
     ->only('store')
     ->middleware('auth')
     ->middleware('throttle:5, 1'); # 1分間に受け付けるリクエスト数を5回に制限
-    // ReportControllerTestを実行するときはリクエスト制限を外すこと
+// ReportControllerTestを実行するときはリクエスト制限を外すこと
 Route::resource('reports', ReportController::class)
     ->only(['edit', 'update'])
     ->middleware('auth')
@@ -53,24 +52,29 @@ Route::get('/my_reports', [ReportController::class, 'myIndex'])
 # acquisition_daysルーティング
 Route::resource('acquisition_days', AcquisitionDayController::class)
     ->middleware('auth')
-    ->middleware('can:admin_only');
+    ->middleware('can:admin');
 Route::get('/my_acquisition_days', [AcquisitionDayController::class, 'myIndex'])
     ->name('acquisition_days.my_index')
     ->middleware('auth');
-    // ->middleware('auth', 'can:view, acquisition_day');
-Route::get('/acquisition_status', [AcquisitionDayController::class, 'acquisitionStatus'])
+// ->middleware('auth', 'can:view, acquisition_day');
+Route::get('/acquisition_status', [
+    AcquisitionDayController::class,
+    'acquisitionStatus',
+])
     ->name('acquisition_days.status_index')
-    ->middleware('auth', 'can:general_gl_reader');
+    ->middleware('auth', 'can:approver_reader');
 Route::get('/update_form', function () {
     return view('acquisition_days.update_form');
 })
     ->name('acquisition_days.update_form')
     ->middleware('auth', 'can:general_admin');
-Route::post('/add_remainings', [AcquisitionDayController::class, 'addRemainings'])
+Route::post('/add_remainings', [
+    AcquisitionDayController::class,
+    'addRemainings',
+])
     ->name('acquisitions_days.add_remainings')
     ->middleware('auth', 'can:general_admin');
-    // ->middleware('auth');
-
+// ->middleware('auth');
 
 # usersルーティング
 Route::resource('users', UserController::class)->middleware('auth');
@@ -109,7 +113,9 @@ Route::get('/export_form', [ReportController::class, 'export_form'])
 Route::post('/export', [ReportController::class, 'export'])
     ->name('reports.export')
     ->middleware('auth');
-Route::get('/all_export', [ReportController::class, 'all_export'])
-    ->middleware('auth');
+Route::get('/all_export', [ReportController::class, 'all_export'])->middleware(
+    'auth'
+);
+// TODO:notAuthorizedでログイン画面にリダイレクト
 
 require __DIR__ . '/auth.php';

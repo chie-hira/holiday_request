@@ -5,10 +5,10 @@
             <th>{{ __('Employee') }}</th>
             <th>{{ __('Name') }}</th>
             <th>{{ __('Report Category') }}</th>
-            <th>{{ __('Lest Span') }}</th>
+            <th>{{ __('Rest Span') }}</th>
             <th></th>
             <th></th>
-            <th>{{ __('Lest Day') }}</th>
+            <th>{{ __('Rest Day') }}</th>
             <th>{{ __('Shift') }}</th>
             <th></th>
             <th>{{ __('Report Date') }}</th>
@@ -20,7 +20,7 @@
         @foreach ($reports as $report)
             <tr>
                 <td>
-                    {{ $report->user->team_all }}
+                    {{ $report->user->affiliation_name }}
                 </td>
                 <td>
                     @if (Str::length($report->user->employee) == 1)

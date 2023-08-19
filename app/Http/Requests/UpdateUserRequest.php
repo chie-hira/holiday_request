@@ -24,9 +24,7 @@ class UpdateUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'factory_id' => 'required|integer',
-            'department_id' => 'required|integer',
-            'group_id' => 'required|integer',
+            'affiliation_id' => 'required|integer'
         ];
     }
 }

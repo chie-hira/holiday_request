@@ -4,7 +4,7 @@
             <div class="flex flex-col text-center w-full mb-10">
                 <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">ユーザー情報の修正</h1>
 
-                <div class="mx-auto">
+                {{-- <div class="mx-auto">
                     <div class="flex text-left leading-relaxed text-sm mb-1">
                         <p>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
@@ -35,7 +35,7 @@
                             を選択してください。
                         </p>
                     </div>
-                </div>
+                </div> --}}
 
             </div>
 
@@ -58,17 +58,17 @@
                                                 氏 名
                                             </th>
                                             <th
-                                                class="w-24 px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                所属工場
+                                                class="px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                所 属
                                             </th>
-                                            <th
+                                            {{-- <th
                                                 class="w-24 px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 所属課
                                             </th>
                                             <th
                                                 class="w-24 px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 所属グループ
-                                            </th>
+                                            </th> --}}
                                             <th colspan="2" class="w-40"></th>
                                         </tr>
                                     </thead>
@@ -85,18 +85,20 @@
                                                 @csrf
                                                 @method('PUT')
                                                 <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
-                                                    <x-select name="factory_id"
-                                                        class="block mt-1 w-32 text-sm" required autofocus>
-                                                        <option value="{{ $user->affiliation->factory->id }}">
-                                                            {{ $user->affiliation->factory->factory_name }}</option>
-                                                        @foreach ($factory_categories as $factory_category)
-                                                            <option value="{{ $factory_category->id }}"
-                                                                @if ($factory_category->id === (int) old('factory_id')) selected @endif>
-                                                                {{ $factory_category->factory_name }}</option>
+                                                    <x-select name="affiliation_id"
+                                                        class="block mt-1 text-sm" required autofocus>
+                                                        <option value="{{ $user->affiliation_id }}">
+                                                            <x-affiliation-name :affiliation="$user->affiliation"/>
+                                                        </option>
+                                                        @foreach ($affiliations as $affiliation)
+                                                            <option value="{{ $affiliation->id }}"
+                                                                @if ($affiliation->id === (int) old('affiliation_id')) selected @endif>
+                                                                <x-affiliation-name :affiliation="$affiliation"/>
+                                                            </option>
                                                         @endforeach
                                                     </x-select>
                                                 </td>
-                                                <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
+                                                {{-- <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
                                                     <x-select name="department_id"
                                                         class="block mt-1 w-32 text-sm" required>
                                                         <option value="{{ $user->affiliation->department->id }}">
@@ -119,7 +121,7 @@
                                                                 {{ $group_category->group_name }}</option>
                                                         @endforeach
                                                     </x-select>
-                                                </td>
+                                                </td> --}}
                                                 <td class="px-1 py-4 whitespace-nowrap text-sm text-gray-800">
                                                     <x-edit-button >
                                                         {{ __('Update') }}

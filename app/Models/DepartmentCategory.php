@@ -14,22 +14,12 @@ class DepartmentCategory extends Model
     ];
 
     /**
-     * Get all of the users for the DepartmentCategory
+     * Get all of the affiliations for the DepartmentCategory
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function users()
+    public function affiliations()
     {
-        return $this->hasMany(User::class, 'department_id', 'id');
-    }
-
-    /**
-     * Get all of the approvals for the DepartmentCategory
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function approvals()
-    {
-        return $this->hasMany(Approval::class, 'department_id', 'id');
+        return $this->hasMany(Affiliation::class, 'department_id', 'id');
     }
 }

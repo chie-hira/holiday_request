@@ -10,6 +10,7 @@ use App\Models\Approval;
 use App\Models\ApprovalCategory;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ApprovalController extends Controller
 {
@@ -125,10 +126,6 @@ class ApprovalController extends Controller
                                 ->where(
                                     'department_id',
                                     $approval->affiliation->department_id
-                                )
-                                ->where(
-                                    'group_id',
-                                    $approval->affiliation->group_id
                                 );
                         });
                     }
@@ -136,6 +133,8 @@ class ApprovalController extends Controller
             });
         })->get();
 
+        // TODO:権限の組み合わせにルールをつける
+        // 1はdepartmentまでgroupは必ず1 
         $affiliations = Affiliation::where(function ($query) use (
             $my_approvals
         ) {
@@ -161,10 +160,6 @@ class ApprovalController extends Controller
                             ->where(
                                 'department_id',
                                 $approval->affiliation->department_id
-                            )
-                            ->where(
-                                'group_id',
-                                $approval->affiliation->group_id
                             );
                     }
                 });
@@ -180,11 +175,7 @@ class ApprovalController extends Controller
         }
 
         return view('approvals.create')->with(
-            compact(
-                'users',
-                'affiliations',
-                'approval_categories'
-            )
+            compact('users', 'affiliations', 'approval_categories')
         );
     }
 
@@ -197,6 +188,8 @@ class ApprovalController extends Controller
     // fixme:StoreApprovalRequest通らない useから書き直しで通った
     public function store(StoreApprovalRequest $request)
     {
+        Log::info('Request data:', $request->all());
+
         $approval = new Approval();
         $approval->fill($request->all());
 
@@ -206,7 +199,8 @@ class ApprovalController extends Controller
                 ->route('approvals.index')
                 ->with('notice', 'StoreApproval');
         } catch (\Throwable $th) {
-            return back()->withErrors($th->getMessage());
+            Log::error('Exception caught: ' . $th->getMessage());
+            return back()->with('error', 'エラーが発生しました。');
         }
     }
 
@@ -256,10 +250,6 @@ class ApprovalController extends Controller
                             ->where(
                                 'department_id',
                                 $approval->affiliation->department_id
-                            )
-                            ->where(
-                                'group_id',
-                                $approval->affiliation->group_id
                             );
                     }
                 });
@@ -272,13 +262,9 @@ class ApprovalController extends Controller
             $affiliations = Affiliation::all();
             $approval_categories = ApprovalCategory::all();
         }
-        
+
         return view('approvals.edit')->with(
-            compact(
-                'approval',
-                'affiliations',
-                'approval_categories'
-            )
+            compact('approval', 'affiliations', 'approval_categories')
         );
     }
 
@@ -291,6 +277,8 @@ class ApprovalController extends Controller
      */
     public function update(UpdateApprovalRequest $request, Approval $approval)
     {
+        Log::info('Request data:', $request->all());
+
         $approval->fill($request->all());
         try {
             $approval->save();
@@ -298,7 +286,8 @@ class ApprovalController extends Controller
                 ->route('approvals.index')
                 ->with('notice', 'UpdateApproval');
         } catch (\Throwable $th) {
-            return back()->withErrors($th->getMessage());
+            Log::error('Exception caught: ' . $th->getMessage());
+            return back()->with('error', 'エラーが発生しました。');
         }
     }
 
@@ -310,13 +299,16 @@ class ApprovalController extends Controller
      */
     public function destroy(Approval $approval)
     {
+        Log::info('Destroy data:', $approval->all());
+        
         try {
             $approval->delete();
             return redirect()
                 ->route('approvals.index')
                 ->with('notice', 'DestroyApproval');
         } catch (\Throwable $th) {
-            return back()->withErrors($th->getMessage());
+            Log::error('Exception caught: ' . $th->getMessage());
+            return back()->with('error', 'エラーが発生しました。');
         }
     }
 }

@@ -42,14 +42,14 @@
     </div>
 
     <section class="text-gray-600 body-font">
-        <div class="container px-5 py-16 mx-auto">
+        <div class="container max-w-7xl px-5 py-16 mx-auto">
             <div class="flex flex-col text-center w-full mb-10">
                 <h1 class="sm:text-4xl text-3xl font-medium title-font text-gray-900">{{ __('出力内容') }}</h1>
             </div>
 
             <x-notice :notice="session('notice')" />
 
-            <div class="container bg-white w-full mx-auto border-2 rounded-lg">
+            <div class="container max-w-7xl bg-white w-full mx-auto border-2 rounded-lg">
                 <div class="flex flex-col p-6">
                     <div class="-m-1.5 overflow-x-auto">
                         <div class="p-1.5 min-w-full inline-block align-middle">
@@ -75,11 +75,11 @@
                                             </th>
                                             <th scope="col" colspan="2"
                                                 class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                {{ __('Lest Span') }}
+                                                {{ __('Rest Span') }}
                                             </th>
                                             <th scope="col"
                                                 class="px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                {{ __('Lest Day') }}
+                                                {{ __('Rest Day') }}
                                             </th>
                                             <th scope="col" colspan="2"
                                                 class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
@@ -103,7 +103,7 @@
                                             <tr id="report_{{ $report->id }}" style="display:"
                                                 class="hover:bg-gray-100 ">
                                                 <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800 ">
-                                                    {{ $report->user->team_all }}
+                                                    {{ $report->user->affiliation_name }}
                                                 </td>
                                                 <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800 ">
                                                     @if (Str::length($report->user->employee) == 1)
@@ -190,8 +190,6 @@
                     <form id="myForm" action="{{ route('reports.export') }}" method="POST">
                         @csrf
                         <input type="hidden" name="affiliation_id" id="affiliation_id" value="">
-                        {{-- <input type="hidden" name="factory_id" id="factory_id" value="">
-                        <input type="hidden" name="department_id" id="department_id" value=""> --}}
                         <input type="hidden" name="user_id" id="user_id" value="">
                         <input type="hidden" name="report_category_id" id="report_category_id" value="">
                         <input type="hidden" name="reason_category_id" id="reason_category_id" value="">
@@ -222,8 +220,6 @@
 
     <script>
         let selectAffiliation = document.getElementById('select_affiliation');
-        // let selectFactory = document.getElementById('select_factory');
-        // let selectDepartment = document.getElementById('select_department');
         let selectReport = document.getElementById('select_report');
         let selectReason = document.getElementById('select_reason');
         let selectMonth = document.getElementById('select_month');
@@ -232,8 +228,6 @@
 
         function search() {
             let selectAffiliationId = selectAffiliation.value;
-            // let selectFactoryId = selectFactory.value;
-            // let selectDepartmentId = selectDepartment.value;
             let selectReportId = selectReport.value;
             let selectReasonId = selectReason.value;
             let selectGetMonth = selectMonth.value;

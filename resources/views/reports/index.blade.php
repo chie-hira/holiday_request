@@ -1,14 +1,14 @@
 <x-app-layout>
     {{-- //TODO:工場、部所で検索 --}}
     <section class="text-gray-600 body-font">
-        <div class="container px-5 py-16 mx-auto">
+        <div class="container max-w-7xl px-5 py-16 mx-auto">
             <div class="flex flex-col text-center w-full mb-10">
                 <h1 class="sm:text-4xl text-3xl font-medium title-font text-gray-900">{{ __('届出一覧') }}</h1>
             </div>
 
             <x-notice :notice="session('notice')" />
 
-            <div class="container bg-white w-full mx-auto border-2 rounded-lg">
+            <div class="container max-w-7xl bg-white border-2 rounded-lg">
                 <div class="flex flex-col p-6">
                     <div class="-m-1.5 overflow-x-auto">
                         <div class="p-1.5 min-w-full inline-block align-middle">
@@ -49,11 +49,11 @@
                                             </th>
                                             <th scope="col" colspan="2"
                                                 class="px-4 py-2 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
-                                                {{ __('Lest Span') }}
+                                                {{ __('Rest Span') }}
                                             </th>
                                             <th scope="col"
                                                 class="px-4 py-2 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
-                                                {{ __('Lest Day') }}
+                                                {{ __('Rest Day') }}
                                             </th>
                                         </tr>
                                     </thead>
@@ -146,7 +146,7 @@
                                                     <div class="text-xxs text-blue-500">
                                                         {{ $report->user->affiliation->factory->factory_name }}
                                                     </div>
-                                                    {{ $report->user->team }}
+                                                    {{ $report->user->department_group_name }}
                                                 </td>
                                                 <td
                                                     class="px-4 py-3 whitespace-nowrap text-sm text-center text-gray-800 ">

@@ -5,9 +5,9 @@
             <div class="container px-5 mx-auto text-gray-600">
                 <div class="flex flex-col text-center w-full">
                     <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">ユーザー登録</h1>
-                    <p class="mx-auto leading-relaxed text-base">
+                    {{-- <p class="mx-auto leading-relaxed text-base">
                         採用職員を登録してください。
-                    </p>
+                    </p> --}}
                 </div>
             </div>
         </x-slot>
@@ -58,7 +58,21 @@
                     required autofocus />
             </div>
 
-            <!-- Factory_id -->
+            <!-- Affiliation_id -->
+            <div class="mt-4">
+                <x-label for="affiliation_id" :value="__('Affiliation')" />
+
+                <select name="affiliation_id" id="affiliation_id"
+                    class="rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 block w-full p-2.5">
+                    @foreach ($affiliations as $affiliation)
+                        <option value="{{ $affiliation->id }}" @if ($affiliation->id === (int) old('affiliation_id')) selected @endif>
+                            <x-affiliation-name :affiliation="$affiliation" />
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            {{-- <!-- Factory_id -->
             <div class="mt-4">
                 <x-label for="factory_id" :value="__('Factory')" />
 
@@ -96,7 +110,7 @@
                             {{ $group_category->group_name }}</option>
                     @endforeach
                 </select>
-            </div>
+            </div> --}}
 
             <!-- Adoption_date -->
             <div class="mt-4">
@@ -140,16 +154,18 @@
             </div>
         </form>
     </x-auth-card>
-    <div class="flex flex-col sm:justify-center items-center">
-        <div class="w-full sm:max-w-md">
-            <div class="mb-10 flex justify-end">
-                <x-return-button class="w-24 mr-2" href="{{ route('users.index') }}">
-                    一覧
+    <div class="bg-gray-50">
+        <div class="w-full sm:max-w-md mx-auto py-8">
+            <div class="relative w-30 h-8 mb-2">
+                <x-return-button class="px-5 absolute inset-y-0 right-0" href="{{ route('users.index') }}">
+                    {{ __('一覧へ戻る') }}
                 </x-return-button>
-                <x-back-home-button class="w-30" href="{{ route('menu') }}">
+            </div>
+            <div class="relative w-30 h-8">
+                <x-back-home-button class="absolute inset-y-0 right-0" href="{{ route('menu') }}">
                     {{ __('Back') }}
                 </x-back-home-button>
             </div>
         </div>
     </div>
-    </x-guest-layout>
+</x-app-layout>

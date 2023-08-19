@@ -6,6 +6,7 @@ use App\Models\DepartmentCategory;
 use App\Models\FactoryCategory;
 use App\Models\GroupCategory;
 use App\Http\Requests\UpdateUserRequest;
+use App\Models\Affiliation;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Collection;
@@ -68,23 +69,6 @@ class UserController extends Controller
             ->sortBy('employee');
 
         return view('users.index')->with(compact('users'));
-
-        // // $users = User::all();
-        // $approvals = Auth::user()->approvals->where('approval_id', 1);
-
-        // # 工場単位で一覧作成
-        // $users = new Collection();
-        // foreach ($approvals as $approval) {
-        //     $extractions = User::with(['reports', 'remainings'])
-        //                     ->where('factory_id', $approval->factory_id)
-        //                     ->get();
-
-        //     $extractions->each(function ($extraction) use ($users) {
-        //         $users->add($extraction);
-        //     });
-        // }
-
-        // return view('users.index')->with(compact('users'));
     }
 
     /**
@@ -95,15 +79,11 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        $factory_categories = FactoryCategory::all();
-        $department_categories = DepartmentCategory::all();
-        $group_categories = GroupCategory::all();
+        $affiliations = Affiliation::all();
         return view('users.edit')->with(
             compact(
                 'user',
-                'factory_categories',
-                'department_categories',
-                'group_categories'
+                'affiliations'
             )
         );
     }

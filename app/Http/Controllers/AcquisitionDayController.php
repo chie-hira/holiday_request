@@ -11,6 +11,7 @@ use App\Models\ReportCategory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 // BUG:残日数更新
 // 取得推進日に扱い
@@ -83,31 +84,6 @@ class AcquisitionDayController extends Controller
         return view('acquisition_days.index')->with(
             compact('users', 'report_categories')
         );
-
-        // $approvals = Auth::user()->approvals->where('approval_id', 1);
-
-        // # 工場単位で一覧作成
-        // $users = new Collection();
-        // foreach ($approvals as $approval) {
-        //     $extractions = User::with(['reports', 'remainings'])
-        //         ->whereHas('affiliation', function ($query) use ($approval) {
-        //             $query->where(
-        //                 'factory_id',
-        //                 $approval->affiliation->factory_id
-        //             );
-        //         })
-        //         ->get();
-
-        //     $extractions->each(function ($extraction) use ($users) {
-        //         $users->add($extraction);
-        //     });
-        // }
-
-        // $report_categories = ReportCategory::all();
-
-        // return view('remainings.index')->with(
-        //     compact('users', 'report_categories')
-        // );
     }
 
     /**
@@ -164,21 +140,26 @@ class AcquisitionDayController extends Controller
         UpdateAcquisitionDayRequest $request,
         AcquisitionDay $acquisition_day
     ) {
+        Log::info('Request data:', $request->all());
+        
         $remaining_days = $request->remaining_days;
         $remaining_hours = $request->remaining_hours;
+        $sum_get_days = $request->sum_get_days;
+        $sum_get_hours = $request->sum_get_hours;
 
         $acquisition_day->remaining_days =
             $remaining_days * 1 + $remaining_hours * 0.125;
+        $acquisition_day->acquisition_days =
+            $sum_get_days * 1 + $sum_get_hours * 0.125;
 
         try {
             $acquisition_day->save();
             return redirect()
                 ->route('acquisition_days.index')
-                ->with('notice', '取得可能日数を更新しました');
+                ->with('notice', '休暇日数を更新しました');
         } catch (\Throwable $th) {
-            return back()
-                ->withInput()
-                ->withErrors($th->getMessage());
+            Log::error('Exception caught: ' . $th->getMessage());
+            return back()->with('error', 'エラーが発生しました。');
         }
     }
 
@@ -272,6 +253,7 @@ class AcquisitionDayController extends Controller
     /** 残日数リセット関数 */
     public function resetRemaining($report_id)
     {
+        /** 受け取ったreport_idのremainingを初期値で上書きする */
         $mourning_acquisition = Auth::user()
             ->acquisition_days->where('report_id', $report_id)
             ->first();
@@ -284,6 +266,11 @@ class AcquisitionDayController extends Controller
 
     public function addRemainings(Request $request)
     {
+        // 二重送信防止
+        $request->session()->regenerateToken();
+        Log::info('Request data:', $request->all());
+
+        // バリデーション
         $request->validate([
             'update_date' => 'required',
         ]);
@@ -297,6 +284,13 @@ class AcquisitionDayController extends Controller
         try {
             foreach ($users as $user) {
                 $acquisition_days = $user->acquisition_days;
+                
+                // 取得日数を初期化
+                foreach ($acquisition_days as $acquisition_day) {
+                    $acquisition_day->acquisition_days = 0;
+                    $acquisition_day->save();
+                }
+                
                 $report1_acquisition = $acquisition_days
                     ->where('report_id', '=', 1)
                     ->first(); # 有給休暇
@@ -306,6 +300,7 @@ class AcquisitionDayController extends Controller
                 $length_of_service = floatval($diff->y . '.' . $diff->m); # 勤続年数
                 $remaining_now = $report1_acquisition->remaining_days;
 
+                /** 有給休暇を採用年数で更新 */
                 switch ($length_of_service) {
                     case $length_of_service >= 0.5 && $length_of_service < 1.5:
                         $report1_acquisition->remaining_days = 10 - 3; # 取得推進日3日を除く
@@ -372,6 +367,8 @@ class AcquisitionDayController extends Controller
                         break;
                 }
                 $report1_acquisition->save(); #_remaining_days 有給休暇更新
+                
+                /** 有給休暇以外の休暇の残日数を初期化 */
                 $report_categories = ReportCategory::where(
                     'id',
                     '!=',
@@ -390,11 +387,10 @@ class AcquisitionDayController extends Controller
 
             return redirect()
                 ->route('acquisition_days.index')
-                ->with('notice', '取得可能日数を更新しました');
+                ->with('notice', '休暇の残日数を更新しました');
         } catch (\Throwable $th) {
-            return back()
-                ->withInput()
-                ->withErrors($th->getMessage());
+            Log::error('Exception caught: ' . $th->getMessage());
+            return back()->with('error', 'エラーが発生しました。');
         }
     }
 }

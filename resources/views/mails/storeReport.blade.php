@@ -1,9 +1,9 @@
 @component('mail::message')
-# 休暇申請がありました
-## 申請者:{{ $user_name }}さん<br>
+# 休暇の届出がありました
+## 届出者:{{ $user_name }}さん<br>
 ---
 
-- 休暇内容:{{ $report_category }}
+- 休暇種類:{{ $report_category }}
 @if ($end_date)
 - 休暇期間:{{ $start_date }}~{{ $end_date }}
 @else

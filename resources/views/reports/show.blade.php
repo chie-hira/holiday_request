@@ -27,7 +27,7 @@
                     {{ $report->user->affiliation->factory->factory_name }}
                 </p>
             </div>
-            <p class="text-gray-600 text-sm text-right">{{ $report->user->team }}</p>
+            <p class="text-gray-600 text-sm text-right">{{ $report->user->department_group_name }}</p>
             <div class="flow-root">
                 <ul role="list" class="divide-y divide-gray-200">
                     <!-- divide-y アンダーライン仕切り -->
