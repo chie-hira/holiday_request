@@ -63,7 +63,13 @@ return [
      * \BeyondCode\QueryDetector\Outputs\Log::class
      */
     'output' => [
+        // 画面上でアラート検知内容を表示
         \BeyondCode\QueryDetector\Outputs\Alert::class,
+        // ログファイルに検知内容を表示
         \BeyondCode\QueryDetector\Outputs\Log::class,
+        // コンソール上に検知内容を表示
+        \BeyondCode\QueryDetector\Outputs\Console::class,
+        // laravel-debugbarに表示させる
+        \BeyondCode\QueryDetector\Outputs\Debugbar::class
     ]
 ];
