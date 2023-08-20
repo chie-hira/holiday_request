@@ -146,8 +146,8 @@
                                 <tr>
                                     <td class="w-20 h-12 border border-gray-500 text-center">
                                         <!-- 部長・工場長承認 start -->
-                                        @if (Auth::user()->approvals->where('approval_id', 2)->where('affiliation.factory_id', $report->user->affiliation->factory_id)->where('affiliation.department_id', $report->user->affiliation->department_id)->first() ||
-                                                Auth::user()->approvals->where('approval_id', 2)->where('affiliation.factory_id', $report->user->affiliation->factory_id)->where('affiliation.department_id', 1)->first())
+                                        @if (Auth::user()->approvals->load('affiliation')->where('approval_id', 2)->where('affiliation.factory_id', $report->user->affiliation->factory_id)->where('affiliation.department_id', $report->user->affiliation->department_id)->first() ||
+                                                Auth::user()->approvals->load('affiliation')->where('approval_id', 2)->where('affiliation.factory_id', $report->user->affiliation->factory_id)->where('affiliation.department_id', 1)->first())
                                             @if ($report->cancel == 0 && $report->approval1 == 0)
                                                 <x-edit-a-button href="{{ route('approval', $report) }}"
                                                     onclick="if(!confirm('承認しますか？')){return false};" class="px-3 py-1">
@@ -186,7 +186,7 @@
                                     <td class="w-20 h-12 border border-gray-500 text-center">
                                         <!-- 課長・GL承認 start -->
                                         @if (
-                                            !empty(Auth::user()->approvals->where('approval_id', 3)->where('affiliation.factory_id', $report->user->affiliation->factory_id)->where('department_id', $report->user->department_id)->first()
+                                            !empty(Auth::user()->approvals->load('affiliation')->where('approval_id', 3)->where('affiliation.factory_id', $report->user->affiliation->factory_id)->where('department_id', $report->user->department_id)->first()
                                             ))
                                             @if ($report->cancel == 0 && $report->approval2 == 0)
                                                 <x-edit-a-button href="{{ route('approval', $report) }}"

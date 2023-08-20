@@ -27,7 +27,7 @@ class AcquisitionDayController extends Controller
      */
     public function index()
     {
-        $my_approvals = Auth::user()->approvals->where('approval_id', 1);
+        $my_approvals = Auth::user()->approvals->where('approval_id', 1)->load('affiliation');
 
         // 一部管理者の場合
         $users = User::where(function ($query) use ($my_approvals) {
@@ -75,7 +75,13 @@ class AcquisitionDayController extends Controller
         // 重複削除&並べ替え
         $users = $users
             ->unique()
-            ->load(['affiliation', 'acquisition_days'])
+            ->load([
+                'affiliation',
+                'affiliation.factory',
+                'affiliation.department',
+                'affiliation.group',
+                'acquisition_days',
+            ])
             ->sortBy('affiliation_id')
             ->sortBy('employee');
 
@@ -176,7 +182,7 @@ class AcquisitionDayController extends Controller
 
     public function myIndex()
     {
-        $acquisition_days = Auth::user()->acquisition_days;
+        $acquisition_days = Auth::user()->acquisition_days->load('report_category');
 
         /** 最後の弔事届出から14日で弔事の残日数をリセット */
         # 弔事の届出から14日で自動的にリセット
@@ -204,7 +210,7 @@ class AcquisitionDayController extends Controller
 
     public function acquisitionStatus()
     {
-        $approvals = Auth::user()->approvals->where('approval_id', '!=', 1);
+        $approvals = Auth::user()->approvals->where('approval_id', '!=', 1)->load('affiliation');
         $users = User::where(function ($query) use ($approvals) {
             foreach ($approvals as $approval) {
                 if ($approval->affiliation->department_id == 1) {
@@ -237,7 +243,14 @@ class AcquisitionDayController extends Controller
         if ($users->first()) {
             $users = $users
                 ->unique()
-                ->load(['reports', 'acquisition_days'])
+                ->load([
+                    'reports',
+                    'acquisition_days',
+                    'affiliation',
+                    'affiliation.factory',
+                    'affiliation.department',
+                    'affiliation.group',
+                ])
                 ->sortBy('employee')
                 ->sortBy('affiliation_id');
         }

@@ -20,7 +20,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $my_approvals = Auth::user()->approvals->where('approval_id', 1);
+        $my_approvals = Auth::user()->approvals->where('approval_id', 1)->load('affiliation');
 
         // 一部管理者の場合
         $users = User::where(function ($query) use ($my_approvals) {
@@ -64,7 +64,12 @@ class UserController extends Controller
         // 重複削除&並べ替え
         $users = $users
             ->unique()
-            ->load('affiliation')
+            ->load([
+                'affiliation',
+                'affiliation.factory',
+                'affiliation.department',
+                'affiliation.group',
+            ])
             ->sortBy('affiliation_id')
             ->sortBy('employee');
 
@@ -79,7 +84,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        $affiliations = Affiliation::all();
+        $affiliations = Affiliation::all()->load(['factory', 'department', 'group']);
         return view('users.edit')->with(
             compact(
                 'user',

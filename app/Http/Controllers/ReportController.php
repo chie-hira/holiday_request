@@ -38,7 +38,7 @@ class ReportController extends Controller
     {
         // 管理者権限は設定についての権限なので、一覧に影響しない
         // 管理者権限以外の権限を取得
-        $approvals = Auth::user()->approvals->where('approval_id', '!=', 1);
+        $approvals = Auth::user()->approvals->where('approval_id', '!=', 1)->load('affiliation');
         // 権限に当てはまるユーザーの申請を取得
         $reports = Report::whereHas('user.affiliation', function ($query) use (
             $approvals
@@ -98,7 +98,11 @@ class ReportController extends Controller
                 ->unique()
                 ->load([
                     'user.affiliation',
+                    'user.affiliation.factory',
+                    'user.affiliation.department',
+                    'user.affiliation.group',
                     'report_category',
+                    'shift_category',
                     'sub_report_category',
                 ])
                 ->sortBy('report_id')
@@ -1942,7 +1946,7 @@ class ReportController extends Controller
     // menu()
     public function menu()
     {
-        $approvals = Auth::user()->approvals;
+        $approvals = Auth::user()->approvals->load('affiliation');
         $birthday = new Carbon(
             Carbon::now()->year . '-' . Auth::user()->birthday
         ); # 誕生日
@@ -2055,7 +2059,6 @@ class ReportController extends Controller
                 });
             })->get();
 
-            // dd($pending_reports);
             $cancel_reports = Report::whereHas('user', function ($query) use (
                 $approvals
             ) {
@@ -2187,7 +2190,7 @@ class ReportController extends Controller
     // export_form
     public function export_form()
     {
-        $approvals = Auth::user()->approvals->where('approval_id', '!=', 1);
+        $approvals = Auth::user()->approvals->where('approval_id', '!=', 1)->load('affiliation');
         // 権限に当てはまるユーザーの申請を取得
         $reports = Report::whereHas('user.affiliation', function ($query) use (
             $approvals
@@ -2253,6 +2256,8 @@ class ReportController extends Controller
                 ->load([
                     'user.affiliation',
                     'report_category',
+                    'shift_category',
+                    'reason_category',
                     'sub_report_category',
                 ])
                 ->sortBy('report_id')
@@ -2260,7 +2265,7 @@ class ReportController extends Controller
                 ->sortBy('start_date')
                 ->sortBy('report_date');
         }
-        $affiliations = Affiliation::all();
+        $affiliations = Affiliation::all()->load(['factory', 'department', 'group']);
         $factories = FactoryCategory::all();
         $departments = DepartmentCategory::all();
         $report_categories = ReportCategory::all();

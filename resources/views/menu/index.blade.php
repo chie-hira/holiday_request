@@ -288,7 +288,7 @@
                 <div class="text-left w-full my-12">
                     {{-- @if (Auth::user()->approvals->first()) --}}
                         <ul class="text-sm">
-                            @foreach (Auth::user()->approvals->load('affiliation') as $approval)
+                            @foreach (Auth::user()->approvals->load(['affiliation.factory', 'affiliation.department', 'affiliation.group']) as $approval)
                                 <x-list>
                                     <!-- 管理者 -->
                                     @if ($approval->approval_id == 1)

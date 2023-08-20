@@ -21,7 +21,7 @@ class ApprovalController extends Controller
      */
     public function index()
     {
-        $my_approvals = Auth::user()->approvals->where('approval_id', 1);
+        $my_approvals = Auth::user()->approvals->where('approval_id', 1)->load('affiliation');
         $approvals = Approval::whereHas('user', function ($query) use (
             $my_approvals
         ) {
@@ -72,6 +72,7 @@ class ApprovalController extends Controller
                 'affiliation',
                 'affiliation.factory',
                 'affiliation.department',
+                'affiliation.group',
                 'approval_category',
             ])
             ->sortBy('affiliation_id')
@@ -87,7 +88,7 @@ class ApprovalController extends Controller
      */
     public function create()
     {
-        $my_approvals = Auth::user()->approvals->where('approval_id', 1);
+        $my_approvals = Auth::user()->approvals->where('approval_id', 1)->load('affiliation');
         $users = User::whereHas('affiliation', function ($query) use (
             $my_approvals
         ) {
@@ -170,7 +171,7 @@ class ApprovalController extends Controller
 
         if ($my_approvals->contains('affiliation_id', 1)) {
             $users = User::all();
-            $affiliations = Affiliation::all();
+            $affiliations = Affiliation::all()->load(['factory', 'department', 'group']);
             $approval_categories = ApprovalCategory::all();
         }
 
@@ -259,7 +260,7 @@ class ApprovalController extends Controller
         $approval_categories = ApprovalCategory::where('id', '!=', 1)->get();
 
         if ($my_approvals->contains('id', 1)) {
-            $affiliations = Affiliation::all();
+            $affiliations = Affiliation::all()->load(['factory', 'department', 'group']);
             $approval_categories = ApprovalCategory::all();
         }
 
