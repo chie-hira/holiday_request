@@ -33,11 +33,11 @@
                                             </th>
                                             <th scope="col" colspan="2"
                                                 class="px-4 py-2 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
-                                                {{ __('社 員') }}
+                                                {{ __('Employee Name') }}
                                             </th>
                                             <th scope="col"
                                                 class="px-4 py-2 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
-                                                {{ __('Team') }}
+                                                {{ __('Affiliation') }}
                                             </th>
                                             <th scope="col"
                                                 class="px-4 py-2 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
@@ -53,7 +53,7 @@
                                             </th>
                                             <th scope="col"
                                                 class="px-4 py-2 text-center whitespace-nowrap text-xs font-medium text-gray-500 tracking-wider">
-                                                {{ __('Rest Day') }}
+                                                {{ __('Rest Days') }}
                                             </th>
                                         </tr>
                                     </thead>
@@ -111,7 +111,6 @@
                                                         class="px-3 py-1">
                                                         {{ __('Show') }}
                                                     </x-show-a-button>
-                                                    {{-- //FIXME:課長,GLの設定まだ --}}
                                                     @if (
                                                         (Auth::user()->approvals->where('approval_id', 2)->where('affiliation.factory_id', $report->user->affiliation->factory_id)->where('affiliation.department_id', 1)->first() &&
                                                             (($report->cancel == 0 && $report->approval1 == 0) || ($report->cancel == 1 && $report->approval1 == 1))) ||

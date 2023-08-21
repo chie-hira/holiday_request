@@ -8,7 +8,7 @@
             <th>{{ __('Rest Span') }}</th>
             <th></th>
             <th></th>
-            <th>{{ __('Rest Day') }}</th>
+            <th>{{ __('Rest Days') }}</th>
             <th>{{ __('Shift') }}</th>
             <th></th>
             <th>{{ __('Report Date') }}</th>

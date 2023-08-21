@@ -1,11 +1,6 @@
 <x-app-layout>
     {{-- //TODO:メール機能届出の提出、更新、削除で通知、承認で通知 --}}
-    {{-- //TODO:半日休、シフトごとで時間違う --}}
-    {{-- //TODO:弔事の表現 --}}
-    {{-- //TODO:弔事の具体的のコメント --}}
-    {{-- //TODO:一覧は統一&承認者見れる --}}
     <section class="text-gray-600 body-font">
-        {{-- <div class="container max-w-2xl min-w-max w-full md:w-4/5 lg:w-2/3 px-5 py-24 mx-auto"> --}}
         <div class="container max-w-2xl px-6 py-12 mx-auto">
             <div class="">
                 <div class="flex flex-col text-center w-full mb-12">
@@ -27,14 +22,14 @@
                     <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                         <div>
                             <label for="report_date" class="block mb-2 text-sm font-medium text-gray-900">
-                                届出日
+                                {{ __('Report Date') }}
                             </label>
                             <x-input type="date" id="report_date" name="report_date" class="block mt-1 w-full"
                                 :value="date('Y-m-d')" required readonly />
                         </div>
                         <div>
                             <label for="user_id" class="block mb-2 text-sm font-medium text-gray-900">
-                                氏名
+                                {{ __('Name') }}
                             </label>
                             <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
                             <x-input type="text" id="user_id" class="block mt-1 w-full" :value="Auth::user()->name"
@@ -42,7 +37,7 @@
                         </div>
                         <div>
                             <label for="shift_id" class="block mb-2 text-sm font-medium text-gray-900">
-                                休暇予定日のシフト
+                                {{ __('休暇予定日のシフト') }}
                             </label>
                             <x-select name="shift_id" id="shift_id" class="block mt-1 w-full" onchange="countDays();"
                                 required autofocus>
@@ -333,7 +328,7 @@
                     <div class="flex my-6">
                         <div class="mr-4">
                             <p class="block mb-2 text-sm font-medium text-gray-900">
-                                取得日数
+                                {{ __('Acquisition Days') }}
                             </p>
                             <input type="hidden" id="get_days" name="get_days"
                                 class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
@@ -357,7 +352,7 @@
 
                         <div>
                             <p class="block mb-2 text-sm font-medium text-gray-900">
-                                残日数
+                                {{ __('Remaining Days') }}
                             </p>
                             <input type="hidden" id="remaining_days" name="remaining"
                                 class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
@@ -581,89 +576,6 @@
                 }
             })
 
-            // 選択したreport_categoryでreasonのoptionを作成&追加
-            // if (reportCategory.value == "1" || // 有給
-            //     reportCategory.value == "12" || // 欠勤
-            //     reportCategory.value == "13" || // 遅刻
-            //     reportCategory.value == "14" || // 早退
-            //     reportCategory.value == "15") { // 外出
-            //     let reasonId = [1, 2, 3, 4, 5, 6, 7, 9];
-            //     reasonId.forEach(e => {
-            //         let createId = reasons[e - 1].id;
-            //         let createReason = reasons[e - 1].reason;
-            //         createOption(createId, createReason)
-            //     });
-            // }
-            // if (reportCategory.value == "2") { // バースデイ
-            //     let reasonId = [10];
-            //     reasonId.forEach(e => {
-            //         let createId = reasons[e - 1].id;
-            //         let createReason = reasons[e - 1].reason;
-            //         createOption(createId, createReason)
-            //     });
-            // }
-            // if (reportCategory.value == "3") { // 特別休暇(慶事)
-            //     let reasonId = [11, 9];
-            //     reasonId.forEach(e => {
-            //         let createId = reasons[e - 1].id;
-            //         let createReason = reasons[e - 1].reason;
-            //         createOption(createId, createReason)
-            //     });
-            // }
-            // if (reportCategory.value == "4") { // 特別休暇(弔事・配偶者等)
-            //     let reasonId = [12, 13, 14, 9];
-            //     reasonId.forEach(e => {
-            //         let createId = reasons[e - 1].id;
-            //         let createReason = reasons[e - 1].reason;
-            //         createOption(createId, createReason)
-            //     });
-            // }
-            // if (reportCategory.value == "5") { // 特別休暇(弔事・同居の義父母)
-            //     let reasonId = [16, 9];
-            //     reasonId.forEach(e => {
-            //         let createId = reasons[e - 1].id;
-            //         let createReason = reasons[e - 1].reason;
-            //         createOption(createId, createReason)
-            //     });
-            // }
-            // if (reportCategory.value == "6") { // 特別休暇(弔事・別居父母等)
-            //     let reasonId = [15, 17, 18, 19, 20, 9];
-            //     reasonId.forEach(e => {
-            //         let createId = reasons[e - 1].id;
-            //         let createReason = reasons[e - 1].reason;
-            //         createOption(createId, createReason)
-            //     });
-            // }
-            // if (reportCategory.value == "7" || // 特別休暇(看護・対象1名)
-            //     reportCategory.value == "8") { // 特別休暇(看護・対象2名以上)
-            //     let reasonId = [21, 9];
-            //     reasonId.forEach(e => {
-            //         let createId = reasons[e - 1].id;
-            //         let createReason = reasons[e - 1].reason;
-            //         createOption(createId, createReason)
-            //     });
-            // }
-            // if (reportCategory.value == "9" || // 特別休暇(介護・対象1名)
-            //     reportCategory.value == "10" || // 特別休暇(介護・対象2名)
-            //     reportCategory.value == "16") { // 介護休業
-            //     let reasonId = [22, 23, 24, 25, 26, 27, 28, 9];
-            //     reasonId.forEach(e => {
-            //         let createId = reasons[e - 1].id;
-            //         let createReason = reasons[e - 1].reason;
-            //         createOption(createId, createReason)
-            //     });
-            // }
-            // if (reportCategory.value == "11" || // 特別休暇(短期育休)
-            //     reportCategory.value == "17" || // 育児休業
-            //     reportCategory.value == "18") { // パパ育休
-            //     let reasonId = [29, 9];
-            //     reasonId.forEach(e => {
-            //         let createId = reasons[e - 1].id;
-            //         let createReason = reasons[e - 1].reason;
-            //         createOption(createId, createReason)
-            //     });
-            // }
-
             for (let i = 0; i < reasonCategory.childNodes.length; i++) {
                 if (oldReasonId == reasonCategory.childNodes[i].value) {
                     reasonCategory.childNodes[i].selected = true;
@@ -674,28 +586,6 @@
 
         // form表示切替関数
         function reportDisplaySwitch() {
-            // if (reportCategory.value == "1" || // 有給
-            //     reportCategory.value == "7" || // 特別休暇(看護・対象1名)
-            //     reportCategory.value == "8" || // 特別休暇(看護・対象2名)
-            //     reportCategory.value == "9" || // 特別休暇(介護・対象1名)
-            //     reportCategory.value == "10") { // 特別休暇(介護・対象2名)
-            //     emptyFieldForm.style.display = "none";
-            //     subCategoryForm.style.display = "";
-            //     halfDateLabel.style.display = "none";
-            //     amPmForm.style.display = "none";
-            //     timeEmptyForm.style.display = "none";
-            //     timeForm.style.display = "none";
-            //     timeForm30.style.display = "none";
-            //     timeForm10.style.display = "none";
-            //     startTimeForm.style.display = "none";
-            //     endTimeForm.style.display = "none";
-            //     startDateLabel.style.display = "";
-            //     startDateForm.style.display = "";
-            //     endDateForm.style.display = "";
-            //     mourning1.style.display = "none";
-            //     mourning2.style.display = "none";
-            //     mourning3.style.display = "none";
-            // }
             if (
                 reportCategory.value == "4"
             ) { // 特別休暇(弔事1)

@@ -24,7 +24,7 @@
                                         <tr>
                                             <th
                                                 class="w-24 px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                {{ __('社員名') }}
+                                                {{ __('Employee Name') }}
                                             </th>
                                             <th
                                                 class="w-24 px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">

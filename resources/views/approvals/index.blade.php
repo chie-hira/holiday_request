@@ -35,13 +35,9 @@
                                 <table class="mx-auto divide-y divide-gray-200">
                                     <thead>
                                         <tr>
-                                            {{-- <th
-                                                class="px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                社員番号
-                                            </th> --}}
                                             <th
                                                 class="w-24 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                {{ __('社員名') }}
+                                                {{ __('Employee Name') }}
                                             </th>
                                             <th
                                                 class="w-24 px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
@@ -57,10 +53,6 @@
                                     <tbody class="divide-y divide-gray-200">
                                         @foreach ($approvals as $approval)
                                             <tr>
-                                                {{-- <td
-                                                    class="px-8 py-4 whitespace-nowrap text-sm text-right font-medium text-gray-800 dark:text-gray-200">
-                                                    {{ $approval->user->employee }}
-                                                </td> --}}
                                                 <td
                                                     class="px-4 py-4 whitespace-nowrap text-sm text-left text-gray-800 dark:text-gray-200">
                                                     @if (Str::length($approval->user->employee) == 1)
@@ -76,7 +68,7 @@
                                                     <x-affiliation-name :affiliation="$approval->affiliation" />
                                                 </td>
                                                 <td
-                                                    class="px-4 py-4 text-center whitespace-nowrap text-sm text-gray-800">
+                                                    class="px-4 py-4 text-left whitespace-nowrap text-sm text-gray-800">
                                                     {{ $approval->approval_category->approval_name }}
                                                 </td>
                                                 <td

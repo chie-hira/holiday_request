@@ -24,7 +24,7 @@
                                         <tr>
                                             <th
                                                 class="w-24 px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                {{ __('社員名') }}
+                                                {{ __('Employee Name') }}
                                             </th>
                                             <th
                                                 class="w-24 px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
@@ -43,10 +43,6 @@
                                                 class="px-2 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-800 dark:text-gray-200">
                                                 {{ $approval->user->employee }}&ensp;{{ $approval->user->name }}
                                             </td>
-                                            {{-- <td
-                                                class="px-4 py-4 whitespace-nowrap text-sm text-center text-gray-800 dark:text-gray-200">
-                                                {{ $approval->user->name }}
-                                            </td> --}}
                                             <form action="{{ route('approvals.update', $approval) }}" method="POST">
                                                 @csrf
                                                 @method('PUT')

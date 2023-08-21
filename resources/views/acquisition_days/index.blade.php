@@ -43,7 +43,7 @@
     <section class="text-gray-600 body-font">
         <div class="container max-w-3xl px-5 py-16 mx-auto">
             <div class="flex flex-col text-center w-full mb-6">
-                <h1 class="sm:text-4xl text-3xl font-medium title-font mb-4 text-gray-900">休暇日数一覧</h1>
+                <h1 class="sm:text-4xl text-3xl font-medium title-font mb-4 text-gray-900">{{ __('Rest Days') }}一覧</h1>
                 <p id="report_name-1" style="display: " class="lg:w-2/3 mx-auto text-lg leading-relaxed">
                     {{ $report_categories->where('id', 1)->first()->report_name }}
                 </p>
@@ -108,23 +108,19 @@
                                         <tr>
                                             <th
                                                 class="w-40 px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                所 属
+                                                {{ __('Affiliation') }}
                                             </th>
                                             <th
                                                 class="w-24 px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                社員名
+                                                {{ __('Employee Name') }}
                                             </th>
-                                            {{-- <th id="remaining_title" style="display: "
-                                                class="w-24 px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                残日数
-                                            </th> --}}
                                             <th
                                                 class="w-24 px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                {{ __('残日数') }}
+                                                {{ __('Remaining Days') }}
                                             </th>
                                             <th
                                                 class="w-24 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                {{ __('取得日数') }}
+                                                {{ __('Acquisition Days') }}
                                             </th>
                                             <th></th>
                                         </tr>
@@ -134,20 +130,11 @@
                                             <tr>
                                                 <td
                                                     class="px-4 py-4 whitespace-nowrap text-xs font-medium text-gray-800 ">
-                                                    <x-affiliation-name :affiliation="$user->affiliation" />
-                                                    {{-- {{ $user->affiliation->factory->factory_name }}工場
-                                                    @if ($user->affiliation->department->id != 1)
-                                                        ・{{ $user->affiliation->department->department_name }}
-                                                    @endif
-                                                    @if ($user->affiliation->group != null && $user->affiliation->group->id != 1)
-                                                        ・{{ $user->affiliation->group->group_name }}
-                                                    @endif --}}
+                                                    {{-- <x-affiliation-name :affiliation="$user->affiliation" /> --}}
+                                                    {{ $user->affiliation_name }}
                                                 </td>
-                                                {{-- <td
-                                                    class="px-4 py-4 whitespace-nowrap text-sm text-right text-gray-800 ">
-                                                    {{ $user->employee }}</td> --}}
                                                 <td
-                                                    class="px-4 py-4 whitespace-nowrap text-sm text-center text-gray-800 ">
+                                                    class="px-4 py-4 whitespace-nowrap text-sm text-left text-gray-800 ">
                                                     @if (Str::length($user->employee) == 1)
                                                         &ensp;&ensp;
                                                     @endif
@@ -157,7 +144,7 @@
                                                     {{ $user->employee }}&ensp;
                                                     {{ $user->name }}
                                                 </td>
-                                                <td 
+                                                <td
                                                     class="px-2 py-4 whitespace-nowrap text-sm text-right text-gray-800">
                                                     <div id="remaining-1_{{ $user->id }}" style="display: ">
                                                         <!-- 有給休暇 -->
@@ -345,36 +332,6 @@
                                                                 {{ __('Edit') }}
                                                             </x-show-a-button>
                                                         </div>
-                                                        {{-- <div id="edit-1_{{ $user->id }}" style="display: ">
-                                                        <x-edit-a-button
-                                                            href="{{ route('acquisition_days.edit', $user->acquisition(1)->id) }}">
-                                                            {{ __('Edit') }}
-                                                        </x-edit-a-button>
-                                                    </div>
-                                                    <div id="edit-4_{{ $user->id }}" style="display: none">
-                                                        <x-edit-a-button
-                                                            href="{{ route('acquisition_days.edit', $user->acquisition(4)->id) }}">
-                                                            {{ __('Edit') }}
-                                                        </x-edit-a-button>
-                                                    </div>
-                                                    <div id="edit-5_{{ $user->id }}" style="display: none">
-                                                        <x-edit-a-button
-                                                            href="{{ route('acquisition_days.edit', $user->acquisition(5)->id) }}">
-                                                            {{ __('Edit') }}
-                                                        </x-edit-a-button>
-                                                    </div>
-                                                    <div id="edit-6_{{ $user->id }}" style="display: none">
-                                                        <x-edit-a-button
-                                                            href="{{ route('acquisition_days.edit', $user->acquisition(6)->id) }}">
-                                                            {{ __('Edit') }}
-                                                        </x-edit-a-button>
-                                                    </div>
-                                                    <div id="edit-16_{{ $user->id }}" style="display: none">
-                                                        <x-edit-a-button
-                                                            href="{{ route('acquisition_days.edit', $user->acquisition(16)->id) }}">
-                                                            {{ __('Edit') }}
-                                                        </x-edit-a-button>
-                                                    </div> --}}
                                                     </td>
                                                 @else
                                                     <td id="edit"
@@ -387,29 +344,21 @@
                                                         </div>
                                                         <div id="edit-4_{{ $user->id }}" style="display: none">
                                                         </div>
-                                                        <div id="edit-5_{{ $user->id }}" hidden
-                                                            style="display: none">
+                                                        <div id="edit-5_{{ $user->id }}" style="display: none">
                                                         </div>
-                                                        <div id="edit-6_{{ $user->id }}" hidden
-                                                            style="display: none">
+                                                        <div id="edit-6_{{ $user->id }}" style="display: none">
                                                         </div>
-                                                        <div id="edit-7_{{ $user->id }}" hidden
-                                                            style="display: none">
+                                                        <div id="edit-7_{{ $user->id }}" style="display: none">
                                                         </div>
-                                                        <div id="edit-8_{{ $user->id }}" hidden
-                                                            style="display: none">
+                                                        <div id="edit-8_{{ $user->id }}" style="display: none">
                                                         </div>
-                                                        <div id="edit-9_{{ $user->id }}" hidden
-                                                            style="display: none">
+                                                        <div id="edit-9_{{ $user->id }}" style="display: none">
                                                         </div>
-                                                        <div id="edit-10_{{ $user->id }}" hidden
-                                                            style="display: none">
+                                                        <div id="edit-10_{{ $user->id }}" style="display: none">
                                                         </div>
-                                                        <div id="edit-11_{{ $user->id }}" hidden
-                                                            style="display: none">
+                                                        <div id="edit-11_{{ $user->id }}" style="display: none">
                                                         </div>
-                                                        <div id="edit-16_{{ $user->id }}" hidden
-                                                            style="display: none">
+                                                        <div id="edit-16_{{ $user->id }}" style="display: none">
                                                         </div>
                                                     </td>
                                                 @endcan
@@ -549,7 +498,8 @@
                 let getId10 = document.getElementById('get-10_' + users[el].id);
                 let getId11 = document.getElementById('get-11_' + users[el].id);
                 let getId16 = document.getElementById('get-16_' + users[el].id);
-                const remainingIds = [remainingId1, remainingId2, remainingId3, remainingId4, remainingId5, remainingId6,
+                const remainingIds = [remainingId1, remainingId2, remainingId3, remainingId4, remainingId5,
+                    remainingId6,
                     remainingId7, remainingId8, remainingId9, remainingId10, remainingId11, remainingId16
                 ];
                 const getIds = [getId1, getId2, getId3, getId4, getId5, getId6,
@@ -589,7 +539,9 @@
                 let editId10 = document.getElementById('edit-10_' + users[el].id);
                 let editId11 = document.getElementById('edit-11_' + users[el].id);
                 let editId16 = document.getElementById('edit-16_' + users[el].id);
-                const editIds = [editId1, editId2, editId3, editId4, editId5, editId6, editId7, editId8, editId9, editId10, editId11, editId16];
+                const editIds = [editId1, editId2, editId3, editId4, editId5, editId6, editId7, editId8, editId9,
+                    editId10, editId11, editId16
+                ];
 
                 editIds.forEach(id => {
                     idSplit = id.id.split('_');
@@ -603,7 +555,9 @@
         }
 
         function reportNameRemainingOn(reportName) {
-            const reportNames = [reportName1, reportName2, reportName3, reportName4, reportName5, reportName6, reportName7, reportName8, reportName9, reportName10, reportName11, reportName16];
+            const reportNames = [reportName1, reportName2, reportName3, reportName4, reportName5, reportName6, reportName7,
+                reportName8, reportName9, reportName10, reportName11, reportName16
+            ];
             reportNames.forEach(name => {
                 if (reportName == name) {
                     reportName.style.display = '';

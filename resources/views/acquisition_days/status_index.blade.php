@@ -26,7 +26,7 @@
     <section class="text-gray-600 body-font">
         <div class="container max-w-3xl px-5 py-16 mx-auto">
             <div class="flex flex-col text-center w-full mb-6">
-                <h1 class="sm:text-4xl text-3xl font-medium title-font mb-4 text-gray-900">休暇取得状況</h1>
+                <h1 class="sm:text-4xl text-3xl font-medium title-font mb-4 text-gray-900">{{ __('休暇取得状況') }}</h1>
                 <p id="report_name-1" style="display: " class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
                     {{ $report_categories->where('id', 1)->first()->report_name }}
                 </p>
@@ -57,23 +57,19 @@
                                         <tr>
                                             <th
                                                 class="w-40 px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                所 属
+                                                {{ __('Affiliation') }}
                                             </th>
                                             <th
                                                 class="w-24 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                {{ __('社員名') }}
+                                                {{ __('Employee Name') }}
                                             </th>
-                                            {{-- <th
-                                                class="w-24 px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                                                氏 名
-                                            </th> --}}
                                             <th id="remaining_title" style="display: "
                                                 class="w-24 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                {{ __('残日数') }}
+                                                {{ __('Remaining Days') }}
                                             </th>
                                             <th
                                                 class="w-24 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                {{ __('取得日数') }}
+                                                {{ __('Acquisition Days') }}
                                             </th>
                                         </tr>
                                     </thead>
@@ -151,8 +147,6 @@
         let reportName14 = document.getElementById('report_name-14');
         let reportName15 = document.getElementById('report_name-15');
         let remainingTitle = document.getElementById('remaining_title');
-        // let remainingData = document.getElementById('remaining_data');
-        // let barTitle = document.getElementById('bar_title');
         const users = @json($users);
 
         function reportChange1() {
@@ -198,7 +192,6 @@
                 let getId15 = document.getElementById('get-15_' + users[el].id);
                 let remainingId1 = document.getElementById('remaining-1_' + users[el].id);
                 let remainingId2 = document.getElementById('remaining-2_' + users[el].id);
-                // let barId = document.getElementById('bar_' + users[el].id);
                 const getIds = [getId1, getId2, getId12, getId13, getId14, getId15];
                 const remainingIds = [remainingId1, remainingId2];
 
@@ -218,42 +211,7 @@
                         id.style.display = 'none';
                     }
                 });
-                // barTitle.style.display = '';
-                // barId.style.display = '';
             });
-
-            // users.forEach(e => {
-            //     let getId1 = document.getElementById('get-1_' + e.id);
-            //     let getId2 = document.getElementById('get-2_' + e.id);
-            //     let getId12 = document.getElementById('get-12_' + e.id);
-            //     let getId13 = document.getElementById('get-13_' + e.id);
-            //     let getId14 = document.getElementById('get-14_' + e.id);
-            //     let getId15 = document.getElementById('get-15_' + e.id);
-            //     let remainingId1 = document.getElementById('remaining-1_' + e.id);
-            //     let remainingId2 = document.getElementById('remaining-2_' + e.id);
-            //     let barId = document.getElementById('bar_' + e.id);
-            //     const getIds = [getId1, getId2, getId12, getId13, getId14, getId15];
-            //     const remainingIds = [remainingId1, remainingId2];
-
-            //     getIds.forEach(id => {
-            //         idSplit = id.id.split('_');
-            //         if (getId == idSplit[0]) {
-            //             id.style.display = '';
-            //         } else {
-            //             id.style.display = 'none';
-            //         }
-            //     });
-            //     remainingIds.forEach(id => {
-            //         idSplit = id.id.split('_');
-            //         if (remainingId == idSplit[0]) {
-            //             id.style.display = '';
-            //         } else {
-            //             id.style.display = 'none';
-            //         }
-            //     });
-            //     barTitle.style.display = '';
-            //     barId.style.display = '';
-            // });
         }
 
         function reportDataRemainingOff(repoortCategoryId) {
@@ -281,34 +239,7 @@
                 });
                 remainingId1.style.display = 'none';
                 remainingId2.style.display = 'none';
-                // barTitle.style.display = 'none';
-                // barId.style.display = 'none';
             });
-            // users.forEach(e => {
-            //     let getId1 = document.getElementById('get-1_' + e.id);
-            //     let getId2 = document.getElementById('get-2_' + e.id);
-            //     let getId12 = document.getElementById('get-12_' + e.id);
-            //     let getId13 = document.getElementById('get-13_' + e.id);
-            //     let getId14 = document.getElementById('get-14_' + e.id);
-            //     let getId15 = document.getElementById('get-15_' + e.id);
-            //     let remainingId1 = document.getElementById('remaining-1_' + e.id);
-            //     let remainingId2 = document.getElementById('remaining-2_' + e.id);
-            //     let barId = document.getElementById('bar_' + e.id);
-            //     const getIds = [getId1, getId2, getId12, getId13, getId14, getId15];
-
-            //     getIds.forEach(id => {
-            //         idSplit = id.id.split('_');
-            //         if (getId == idSplit[0]) {
-            //             id.style.display = '';
-            //         } else {
-            //             id.style.display = 'none';
-            //         }
-            //     });
-            //     remainingId1.style.display = 'none';
-            //     remainingId2.style.display = 'none';
-            //     barTitle.style.display = 'none';
-            //     barId.style.display = 'none';
-            // });
         }
 
         function reportNameRemainingOn(reportName) {

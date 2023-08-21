@@ -90,7 +90,6 @@ class User extends Authenticatable
     }
 
     // アクセサ
-    // public function getTeamAllAttribute()
     public function getAffiliationNameAttribute()
     {
         // if ($this->affiliation->id == 1) {
@@ -115,26 +114,8 @@ class User extends Authenticatable
         }
 
         return $affiliation_name;
-
-        // if ($this->affiliation->group->id != 1) {
-        //     $team =
-        //         $this->affiliation->factory->factory_name .
-        //         $this->affiliation->department->department_name .
-        //         $this->affiliation->group->group_name;
-        // }
-        // if ($this->affiliation->department->id != 1 && $this->affiliation->group->id == 1) {
-        //     $team =
-        //         $this->affiliation->factory->factory_name .
-        //         $this->affiliation->department->department_name;
-        // }
-        // if ($this->affiliation->department->id == 1) {
-        //     $team =
-        //         $this->affiliation->factory->factory_name;
-        // }
-        // return $team;
     }
 
-    // public function getTeamAttribute()
     public function getDepartmentGroupNameAttribute()
     {
         if ($this->affiliation->department_id == 1) {
@@ -153,24 +134,6 @@ class User extends Authenticatable
         }
 
         return $affiliation_name;
-        
-        // if ($this->affiliation->group->id != 1) {
-        //     $team =
-        //         $this->affiliation->department->department_name .
-        //         ' ' .
-        //         $this->affiliation->group->group_name;
-        // }
-        // if (
-        //     $this->affiliation->department->id != 1 &&
-        //     $this->affiliation->group->id == 1
-        // ) {
-        //     $team = $this->affiliation->department->department_name;
-        // }
-        // if ($this->affiliation->department->id == 1) {
-        //     $team = '工場長';
-        // }
-
-        // return $team;
     }
 
     // public function getSumGetPaidHolidaysAttribute()

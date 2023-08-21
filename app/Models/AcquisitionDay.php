@@ -50,14 +50,15 @@ class AcquisitionDay extends Model
     //     return $sum_report->sum('get_days');
     // }
     /** 承認済みの取得日数集計の日数だけ */
-    public function getSumGetDaysOnlyAttribute()
+    // public function getSumGetDaysOnlyAttribute()
+    public function getAcquisitionDaysOnlyAttribute()
     {
         // $exp = explode('.', $this->sum_get_days);
         $exp = explode('.', $this->acquisition_days);
         return $exp[0];
     }
     /** 承認済みの取得日数集計の時間だけ */
-    public function getSumGetDaysHoursAttribute()
+    public function getAcquisitionHoursAttribute()
     {
         $exp = explode('.', $this->acquisition_days);
         if (array_key_exists(1, $exp)) {
@@ -119,23 +120,23 @@ class AcquisitionDay extends Model
     }
 
     // /** 残日数の日数だけ */
-    // public function getRemainingDaysOnlyAttribute()
-    // {
-    //     $exp = explode('.', $this->remaining_days);
-    //     return $exp[0];
-    // }
-    // /** 残日数の時間だけ */
-    // public function getRemainingHoursAttribute()
-    // {
-    //     $exp = explode('.', $this->remaining_days);
-    //     $exp_key1 = array_key_exists(1, $exp);
-    //     if ($exp_key1) {
-    //         $decimal_p = '0.' . $exp[1];
-    //         return $decimal_p * 8; # 8時間で1日
-    //     } else {
-    //         return 0;
-    //     }
-    // }
+    public function getRemainingDaysOnlyAttribute()
+    {
+        $exp = explode('.', $this->remaining_days);
+        return $exp[0];
+    }
+    /** 残日数の時間だけ */
+    public function getRemainingHoursAttribute()
+    {
+        $exp = explode('.', $this->remaining_days);
+        $exp_key1 = array_key_exists(1, $exp);
+        if ($exp_key1) {
+            $decimal_p = '0.' . $exp[1];
+            return $decimal_p * 8; # 8時間で1日
+        } else {
+            return 0;
+        }
+    }
 
     /** 承認待ちの取得日数 */
     // public function getGetDaysAttribute()

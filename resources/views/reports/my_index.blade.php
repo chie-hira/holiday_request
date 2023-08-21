@@ -50,7 +50,7 @@
                                             </th>
                                             <th scope="col"
                                                 class="w-32 px-2 py-3 whitespace-nowrap text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                {{ __('Rest Day') }}
+                                                {{ __('Rest Days') }}
                                             </th>
                                         </tr>
                                     </thead>

@@ -125,7 +125,7 @@
                                 <div class="flex items-center pb-1">
                                     <p
                                         class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
-                                        氏 名
+                                        {{ __('Name') }}
                                     </p>
                                     <p class="ZenKurenaido font-semibold text-gray-700 ml-4">{{ $report->user->name }}
                                     </p>

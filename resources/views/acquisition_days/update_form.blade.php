@@ -7,7 +7,7 @@
                 <div class="text-left mx-auto leading-relaxed text-sm mb-1">
                     <x-info>
                         <p>
-                            有給休暇の残日数を<span class="font-semibold">勤続年数</span>に応じて自動更新します。
+                            有給休暇の{{ __('Remaining Days') }}を<span class="font-semibold">勤続年数</span>に応じて自動更新します。
                         </p>
                     </x-info>
                     <x-info>

@@ -2,11 +2,11 @@
     <section class="text-gray-600 body-font">
         <div class="container max-w-xl px-5 py-6 mx-auto">
             <div class="flex flex-col text-center w-full mb-4">
-                <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">休暇日数</h1>
+                <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">{{ __('Rest Days') }}</h1>
                 <div class="text-left mx-auto leading-relaxed text-sm mb-1">
                     <x-info>
                         <p class="text-sm">
-                            <span class="font-semibold">{{ Auth::user()->name }}さん</span>の休暇日数です。
+                            <span class="font-semibold">{{ Auth::user()->name }}さん</span>の取得状況です。
                         </p>
                     </x-info>
                 </div>
@@ -21,26 +21,33 @@
                                     <thead>
                                         <tr>
                                             <th scope="col"
-                                                class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                                名 称</th>
+                                                class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+                                                {{ __('Report Category') }}
+                                            </th>
                                             <th scope="col"
                                                 class="px-2 pt-3 pb-1 text-center text-xs font-medium text-gray-500 uppercase">
-                                                <p class="font-semibold">{{ __('残日数') }}</p>
+                                                <p class="font-semibold">{{ __('Remaining Days') }}</p>
                                                 <p class="text-blue-400 text-xs">{{ __('申請中') }}</p>
                                             </th>
                                             <th scope="col"
                                                 class="pr-2 pt-3 pb-1 text-center text-xs font-medium text-gray-500 uppercase">
-                                                <p class="font-semibold">{{ __('取得日数') }}</p>
+                                                <p class="font-semibold">{{ __('Acquisition Days') }}</p>
                                                 <p class="text-blue-400 text-xs">{{ __('申請中') }}</p>
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-200">
                                         @foreach ($acquisition_days as $acquisition_day)
-                                            <tr class="hover:bg-gray-100">
+                                            <tr class="">
                                                 <td
                                                     class="hidden md:block pl-4 pr-2 py-3 whitespace-nowrap text-sm font-medium text-gray-800 ">
                                                     {{ $acquisition_day->report_category->report_name }}
+                                                    @if (
+                                                        $acquisition_day->report_category->report_name == '介護休業' ||
+                                                        $acquisition_day->report_category->report_name == '育児休業' 
+                                                    )
+                                                        <span class="text-blue-400 text-xs">{{ __('※') }}</span>
+                                                    @endif
                                                 </td>
                                                 <td
                                                     class="block md:hidden pl-4 pr-2 py-3 whitespace-nowrap text-xs font-medium text-gray-800 ">
@@ -50,7 +57,8 @@
                                                     class="px-4 pt-3 pb-1 whitespace-nowrap text-right text-sm font-medium">
                                                     <span class=" font-bold">
                                                         @if (isset($acquisition_day->remaining_days))
-                                                        {{ $acquisition_day->remaining_days }} 日
+                                                            {{ $acquisition_day->remaining_days_only }}
+                                                            日
                                                         @endif
                                                         @if (!empty($acquisition_day->remaining_hours))
                                                             &ensp;{{ $acquisition_day->remaining_hours }} 時間
@@ -79,9 +87,9 @@
                                                 <td
                                                     class="px-4 pt-3 pb-1 whitespace-nowrap text-right text-sm font-medium">
                                                     <span class=" font-bold">
-                                                        {{ $acquisition_day->sum_get_days_only }} 日
-                                                        @if (!empty($acquisition_day->remaining_hours))
-                                                            &ensp;{{ $acquisition_day->remaining_hours }} 時間
+                                                        {{ $acquisition_day->acquisition_days_only }} 日
+                                                        @if (!empty($acquisition_day->acquisition_hours))
+                                                            &ensp;{{ $acquisition_day->acquisition_hours }} 時間
                                                         @endif
                                                     </span>
                                                     <p class="text-blue-400 text-xs">
@@ -102,38 +110,14 @@
                                                     </p>
                                                 </td>
                                             </tr>
+                                            {{-- <tr>
+                                                <td colspan="3" class="border-b border-slate-300 -pt-2">
+                                                    <span class="text-blue-400 text-xs">
+                                                    {{ $acquisition_day->report_category->remarks }}
+                                                    </span>
+                                                </td>
+                                            </tr> --}}
                                         @endforeach
-
-                                        <tr class="hover:bg-gray-100">
-                                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-800 ">
-                                                特別休暇(短期育休)</td>
-                                            <td class="px-4 pt-3 pb-1 whitespace-nowrap text-right text-sm font-medium">
-                                            </td>
-                                            <td class="px-4 pt-3 pb-1 whitespace-nowrap text-right text-sm font-medium">
-                                                ※
-                                            </td>
-                                        </tr>
-
-                                        <tr class="hover:bg-gray-100">
-                                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-800 ">
-                                                育児休業</td>
-                                            <td class="px-4 pt-3 pb-1 whitespace-nowrap text-right text-sm font-medium">
-                                            </td>
-                                            <td class="px-4 pt-3 pb-1 whitespace-nowrap text-right text-sm font-medium">
-                                                ※
-                                            </td>
-                                        </tr>
-
-                                        <tr class="hover:bg-gray-100">
-                                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-800 ">
-                                                パパ育休</td>
-                                            <td class="px-4 pt-3 pb-1 whitespace-nowrap text-right text-sm font-medium">
-                                            </td>
-                                            <td class="px-4 pt-3 pb-1 whitespace-nowrap text-right text-sm font-medium">
-                                                ※
-                                            </td>
-                                        </tr>
-
                                     </tbody>
                                 </table>
                             </div>
@@ -163,7 +147,7 @@
                     </x-info>
                     <x-info>
                         <p>
-                            特別休暇(弔事)は近親者が喪に服すときに取得でき、<span class="font-bold">近親者によって</span>取得上限が異なります。
+                            特別休暇(弔事)は<span class="font-bold">近親者が喪に服す</span>ときに取得できます。
                         </p>
                     </x-info>
                     <x-info>
@@ -173,12 +157,7 @@
                     </x-info>
                     <x-info>
                         <p>
-                            取得可能日数は<span class="font-bold">届け出承認後の日数</span>です。
-                        </p>
-                    </x-info>
-                    <x-info>
-                        <p>
-                            ※は<span class="font-bold">対象者によって異なります</span>。詳細は総務課にお問い合わせください。
+                            ※は<span class="font-bold">対象によって休暇日数が変わります</span>。詳細は総務課にお問い合わせください。
                         </p>
                     </x-info>
                 </div>
