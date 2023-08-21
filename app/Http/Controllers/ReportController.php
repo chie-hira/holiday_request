@@ -39,7 +39,9 @@ class ReportController extends Controller
     {
         // 管理者権限は設定についての権限なので、一覧に影響しない
         // 管理者権限以外の権限を取得
-        $approvals = Auth::user()->approvals->where('approval_id', '!=', 1)->load('affiliation');
+        $approvals = Auth::user()
+            ->approvals->where('approval_id', '!=', 1)
+            ->load('affiliation');
         // 権限に当てはまるユーザーの申請を取得
         $reports = Report::whereHas('user.affiliation', function ($query) use (
             $approvals
@@ -639,6 +641,34 @@ class ReportController extends Controller
                 return back()->with('error', 'エラーが発生しました。');
             }
         }
+
+        /** GLの承認後でないと工場長は承認できないようにするための付加 start */
+        $gl_approvals = Approval::whereHas('affiliation', function (
+            $query
+        ) use ($report) {
+            $query
+                ->where('factory_id', $report->user->affiliation->factory_id)
+                ->where(
+                    'department_id',
+                    $report->user->affiliation->department_id
+                )
+                ->where(function ($query) use ($report) {
+                    $query
+                        ->where(
+                            'group_id',
+                            $report->user->affiliation->group_id
+                        )
+                        ->orWhere('group_id', 1);
+                });
+        })
+            ->where('approval_id', 3)
+            ->get();
+
+        // GLがいないとき工場長がGL承認する
+        if (empty($gl_approvals->first())) {
+            $report->approval2 = 1;
+        }
+        /** GLの承認後でないと工場長は承認できないようにするための付加 end */
 
         /** 一般的な届出 */
         try {
@@ -2196,7 +2226,9 @@ class ReportController extends Controller
     // export_form
     public function export_form()
     {
-        $approvals = Auth::user()->approvals->where('approval_id', '!=', 1)->load('affiliation');
+        $approvals = Auth::user()
+            ->approvals->where('approval_id', '!=', 1)
+            ->load('affiliation');
         // 権限に当てはまるユーザーの申請を取得
         $reports = Report::whereHas('user.affiliation', function ($query) use (
             $approvals
@@ -2271,7 +2303,11 @@ class ReportController extends Controller
                 ->sortBy('start_date')
                 ->sortBy('report_date');
         }
-        $affiliations = Affiliation::all()->load(['factory', 'department', 'group']);
+        $affiliations = Affiliation::all()->load([
+            'factory',
+            'department',
+            'group',
+        ]);
         $factories = FactoryCategory::all();
         $departments = DepartmentCategory::all();
         $report_categories = ReportCategory::all();
