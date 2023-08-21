@@ -1,16 +1,16 @@
 @props(['user', 'key'])
 
-@if ($user->remainings->first())
+{{-- @if ($user->acquisition_days->first()) --}}
     @if ($user->remainingDaysOnly($key) != 0)
-        {{ $user->remainingDaysOnly($key) }} 日&emsp;
+        {{ $user->remainingDaysOnly($key) }} 日
     @endif
     @if ($user->remainingHours($key) != 0)
         {{ $user->remainingHours($key) }} 時間
     @endif
-    @if ($user->remainingHours($key) == 0)
-        &emsp;&emsp;&emsp;
+    @if ($user->remainingMinutes($key) != 0)
+        {{ $user->remainingMinutes($key) }} 分
     @endif
-    @if ($user->remainings->where('report_id', $key)->first()->remaining == 0)
-        {{ $user->remainings->where('report_id', $key)->first()->remaining }} 日&emsp; &emsp;&emsp;&emsp;
+    @if ($user->remainingDays($key) == 0)
+        {{ 0 }} 日
     @endif
-@endif
+{{-- @endif --}}

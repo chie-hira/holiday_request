@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateArchiveRemainingsTable extends Migration
+class CreateReasonsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,21 +13,17 @@ class CreateArchiveRemainingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('archive_remainings', function (Blueprint $table) {
-            $table->id()->comment('残日数ID');
-            $table->foreignId('user_id')
-                ->constrained('users')
-                ->cascadeOnUpdate()
-                ->cascadeOnDelete();
+        Schema::create('reasons', function (Blueprint $table) {
+            $table->id()->comment('休暇理由ID');
             $table->foreignId('report_id')
                 ->constrained('report_categories')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
-            $table->float('remaining', 8, 5)->nullable();
+            $table->foreignId('reason_id')
+                ->constrained('reason_categories')
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
             $table->timestamps();
-
-            // 複合ユニーク制約
-            $table->unique(['user_id', 'report_id']);
         });
     }
 
@@ -38,6 +34,6 @@ class CreateArchiveRemainingsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('archive_remainings');
+        Schema::dropIfExists('reasons');
     }
 }

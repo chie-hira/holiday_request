@@ -1,10 +1,9 @@
 <?php
 
+use App\Http\Controllers\AcquisitionDayController;
 use App\Http\Controllers\ApprovalController;
-use App\Http\Controllers\RemainingController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
-use App\Models\ReportCategory;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,7 +17,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
 // })
@@ -28,14 +26,55 @@ use Illuminate\Support\Facades\Route;
 // TODO:policy,can設定、自分しか自分の投稿を編集、削除申請できない
 # reportルーティング
 Route::resource('reports', ReportController::class)
-    ->only(['create', 'store', 'edit', 'update'])
+    ->only(['create', 'show'])
     ->middleware('auth');
 Route::resource('reports', ReportController::class)
-    ->only(['index', 'show', 'destroy'])
+    ->only('store')
+    ->middleware('auth')
+    ->middleware('throttle:5, 1'); # 1分間に受け付けるリクエスト数を5回に制限
+// ReportControllerTestを実行するときはリクエスト制限を外すこと
+Route::resource('reports', ReportController::class)
+    ->only(['edit', 'update'])
+    ->middleware('auth')
+    ->middleware('can:update,report');
+Route::resource('reports', ReportController::class)
+    ->only('destroy')
+    ->middleware('auth')
+    ->middleware('can:delete,report');
+Route::resource('reports', ReportController::class)
+    ->only('index')
+    ->middleware('auth')
+    ->middleware('can:approver_reader');
+Route::get('/my_reports', [ReportController::class, 'myIndex'])
+    ->name('reports.my_index')
     ->middleware('auth');
 
-# remainingルーティング
-Route::resource('remainings', RemainingController::class)->middleware('auth');
+# acquisition_daysルーティング
+Route::resource('acquisition_days', AcquisitionDayController::class)
+    ->middleware('auth')
+    ->middleware('can:admin');
+Route::get('/my_acquisition_days', [AcquisitionDayController::class, 'myIndex'])
+    ->name('acquisition_days.my_index')
+    ->middleware('auth');
+// ->middleware('auth', 'can:view, acquisition_day');
+Route::get('/acquisition_status', [
+    AcquisitionDayController::class,
+    'acquisitionStatus',
+])
+    ->name('acquisition_days.status_index')
+    ->middleware('auth', 'can:approver_reader');
+Route::get('/update_form', function () {
+    return view('acquisition_days.update_form');
+})
+    ->name('acquisition_days.update_form')
+    ->middleware('auth', 'can:general_admin');
+Route::post('/add_remainings', [
+    AcquisitionDayController::class,
+    'addRemainings',
+])
+    ->name('acquisitions_days.add_remainings')
+    ->middleware('auth', 'can:general_admin');
+// ->middleware('auth');
 
 # usersルーティング
 Route::resource('users', UserController::class)->middleware('auth');
@@ -44,15 +83,6 @@ Route::resource('users', UserController::class)->middleware('auth');
 Route::resource('approvals', ApprovalController::class)->middleware('auth');
 
 # 承認ルーティング
-Route::get('/pending_approval', [ReportController::class, 'pendingApproval'])
-    ->name('reports.pending_approval')
-    ->middleware('auth', 'can:general_gl_reader');
-Route::get('/approved', [ReportController::class, 'approved'])
-    ->name('reports.approved')
-    ->middleware('auth', 'can:general_gl_reader');
-Route::get('/get_and_remaining', [ReportController::class, 'getAndRemaining'])
-    ->name('reports.get_and_remaining')
-    ->middleware('auth', 'can:general_gl_reader');
 Route::get('/approval/{report}', [ReportController::class, 'approval'])
     ->name('approval')
     ->middleware('auth');
@@ -63,28 +93,13 @@ Route::get('/approval/{report}/cancel', [
     ->name('reports.approval_cancel')
     ->middleware('auth');
 
-# remaining加算ルーティング
-Route::get('/update_remainings', function () {
-    return view('remainings.update_form');
-})
-    ->name('remainings.update_form')
-    ->middleware('auth');
-Route::post('/add_remainings', [RemainingController::class, 'addRemainings'])
-    ->name('remainings.add_remainings')
-    ->middleware('auth');
-
-# my_indexルーティング
-Route::get('/my_remainings', [RemainingController::class, 'myIndex'])
-    ->name('remainings.my_index')
-    ->middleware('auth');
-
 # menuルーティング
 Route::get('/', [ReportController::class, 'menu'])
     ->name('menu')
     ->middleware('auth');
 
 # 承認後のreport削除
-Route::delete('/reports/approved/{report}/cancel', [
+Route::put('/reports/approved/{report}/cancel', [
     ReportController::class,
     'approvedCancel',
 ])
@@ -98,8 +113,9 @@ Route::get('/export_form', [ReportController::class, 'export_form'])
 Route::post('/export', [ReportController::class, 'export'])
     ->name('reports.export')
     ->middleware('auth');
-// Route::get('/export', [ReportController::class, 'export'])
-//     ->name('reports.export')
-//     ->middleware('auth');
+Route::get('/all_export', [ReportController::class, 'all_export'])->middleware(
+    'auth'
+);
+// TODO:notAuthorizedでログイン画面にリダイレクト
 
 require __DIR__ . '/auth.php';

@@ -16,13 +16,13 @@ class ReportCategory extends Model
     ];
 
     /**
-     * Get all of the remainings for the ReportCategory
+     * Get all of the acquisition days for the ReportCategory
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function remainings()
+    public function acquisition_days()
     {
-        return $this->hasMany(Remaining::class, 'report_id', 'id');
+        return $this->hasMany(AcquisitionDay::class, 'report_id', 'id');
     }
 
     /**

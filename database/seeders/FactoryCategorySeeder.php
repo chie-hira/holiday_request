@@ -15,6 +15,7 @@ class FactoryCategorySeeder extends Seeder
     public function run()
     {
         $param = [
+            ['factory_name' => '全工場'],
             ['factory_name' => '一関本社'],
             ['factory_name' => '前沢工場'],
             ['factory_name' => '平泉工場'],

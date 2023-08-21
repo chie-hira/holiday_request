@@ -5,7 +5,7 @@
             <div class="flex flex-col text-center w-full mb-6">
                 <h1 class="sm:text-4xl text-3xl font-medium title-font text-gray-900">ユーザー一覧</h1>
                 <h2 class=" text-right">
-                    @can('admin_only')
+                    @can('admin')
                         <a href={{ route('register') }}
                             class="inline-flex items-center justify-center text-base mr-2 font-medium text-sky-600 hover:text-sky-50 p-1 rounded-full border-2 border-gray-400 bg-sky-100/60 hover:bg-sky-600">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
@@ -44,15 +44,15 @@
                                         <tr>
                                             <th
                                                 class="px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                社員番号
+                                                {{ __('Employee Name') }}
                                             </th>
-                                            <th
+                                            {{-- <th
                                                 class="w-24 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                氏 名
-                                            </th>
+                                                {{ __('Name') }}
+                                            </th> --}}
                                             <th
-                                                class="w-24 px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                                                所 属
+                                                class="w-24 px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                {{ __('Affiliation') }}
                                             </th>
                                             <th></th>
                                         </tr>
@@ -61,24 +61,22 @@
                                         @foreach ($users as $user)
                                             <tr>
                                                 <td
-                                                    class="px-8 py-4 whitespace-nowrap text-sm text-right font-medium text-gray-800 ">
-                                                    {{ $user->employee }}
-                                                </td>
-                                                <td
-                                                    class="px-4 py-4 whitespace-nowrap text-sm text-left text-gray-800 ">
+                                                    class="px-8 py-4 whitespace-nowrap text-sm text-left font-medium text-gray-800 ">
+                                                    @if (Str::length($user->employee) == 1)
+                                                        &ensp;&ensp;
+                                                    @endif
+                                                    @if (Str::length($user->employee) == 2)
+                                                        &ensp;
+                                                    @endif
+                                                    {{ $user->employee }}&ensp;
                                                     {{ $user->name }}
                                                 </td>
+                                                {{-- <td
+                                                    class="px-4 py-4 whitespace-nowrap text-sm text-left text-gray-800 ">
+                                                    {{ $user->name }}
+                                                </td> --}}
                                                 <td class="px-4 py-4 whitespace-nowrap text-xs text-gray-800 ">
-                                                    {{ $user->factory->factory_name }}
-                                                    @if ($user->department->id != 1)
-                                                        ・{{ $user->department->department_name }}
-                                                    @endif
-                                                    @if ($user->group->id != 1)
-                                                        ・{{ $user->group->group_name }}
-                                                    @endif
-                                                    @if ($user->department->id == 1)
-                                                        ・工場長
-                                                    @endif
+                                                    <x-affiliation-name :affiliation="$user->affiliation" />
                                                 </td>
                                                 <td class="pl-1 pr-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                     <x-edit-a-button href="{{ route('users.edit', $user) }}">

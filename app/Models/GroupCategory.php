@@ -14,12 +14,12 @@ class GroupCategory extends Model
     ];
 
     /**
-     * Get all of the users for the GroupCategory
+     * Get all of the affiliations for the GroupCategory
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function users()
+    public function affiliations()
     {
-        return $this->hasMany(User::class, 'group_id', 'id');
+        return $this->hasMany(Affiliation::class, 'group_id', 'id');
     }
 }

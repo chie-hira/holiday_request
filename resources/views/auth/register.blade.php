@@ -5,9 +5,9 @@
             <div class="container px-5 mx-auto text-gray-600">
                 <div class="flex flex-col text-center w-full">
                     <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">ユーザー登録</h1>
-                    <p class="mx-auto leading-relaxed text-base">
+                    {{-- <p class="mx-auto leading-relaxed text-base">
                         採用職員を登録してください。
-                    </p>
+                    </p> --}}
                 </div>
             </div>
         </x-slot>
@@ -30,7 +30,8 @@
             <div class="mt-4">
                 <x-label for="email" :value="__('Email')" />
 
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required />
+                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')"
+                    required />
             </div>
 
             <!-- Password -->
@@ -57,7 +58,21 @@
                     required autofocus />
             </div>
 
-            <!-- Factory_id -->
+            <!-- Affiliation_id -->
+            <div class="mt-4">
+                <x-label for="affiliation_id" :value="__('Affiliation')" />
+
+                <select name="affiliation_id" id="affiliation_id"
+                    class="rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 block w-full p-2.5">
+                    @foreach ($affiliations as $affiliation)
+                        <option value="{{ $affiliation->id }}" @if ($affiliation->id === (int) old('affiliation_id')) selected @endif>
+                            <x-affiliation-name :affiliation="$affiliation" />
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            {{-- <!-- Factory_id -->
             <div class="mt-4">
                 <x-label for="factory_id" :value="__('Factory')" />
 
@@ -91,47 +106,66 @@
                 <select name="group_id" id="gropu_id"
                     class="rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 block w-full p-2.5">
                     @foreach ($group_categories as $group_category)
-                        <option value="{{ $group_category->id }}"
-                            @if ($group_category->id === (int) old('group_id')) selected @endif>
+                        <option value="{{ $group_category->id }}" @if ($group_category->id === (int) old('group_id')) selected @endif>
                             {{ $group_category->group_name }}</option>
                     @endforeach
                 </select>
-            </div>
+            </div> --}}
 
             <!-- Adoption_date -->
             <div class="mt-4">
                 <x-label for="adoption_date" :value="__('Adoption')" />
-                <x-input type="date" id="adoption_date" name="adoption_date" class="block mt-1 w-full" :value="old('adoption_date')" required/>
+                <x-input type="date" id="adoption_date" name="adoption_date" class="block mt-1 w-full"
+                    :value="old('adoption_date')" required />
             </div>
 
             <!-- Birthday -->
             <div class="mt-4">
-                <x-label for="birthday" :value="__('Birthday')" />
-                <x-input type="number" id="birth_m" name="birth_m" min="1" max='12' class="mt-1 w-20" :value="old('birth_m')" required/>{{ __('月') }}
-                <x-input type="number" id="birth_d" name="birth_d" min="1" max='31' class="mt-1 ml-2 w-20" :value="old('birth_m')" required/>{{ __('日') }}
+                <p class='block font-medium text-sm text-gray-700'>{{ __('Birthday') }}</p>
+                <div class="flex mt-1">
+                    <x-select id="birthday_month"
+                        class="w-1/2 mr-2 form-control @error('birthday_month') is-invalid @enderror"
+                        name="birthday_month" required autocomplete="birthday_month" autofocus>
+                        <option value="" disabled {{ old('birthday_month') ? '' : 'selected' }}>月</option>
+                        @for ($month = 1; $month <= 12; $month++)
+                            <option value="
+                                {{ $month >= 10 ? $month : '0' . $month }}"
+                                {{ old('birthday_month') == $month ? 'selected' : '' }}>
+                                {{ $month }}</option>
+                        @endfor
+                    </x-select>
+                    <x-select id="birthday_day"
+                        class="w-1/2 ml-2 form-control @error('birthday_day') is-invalid @enderror" name="birthday_day"
+                        required autocomplete="birthday_day">
+                        <option value="" disabled {{ old('birthday_day') ? '' : 'selected' }}>日</option>
+                        @for ($day = 1; $day <= 31; $day++)
+                            <option value="{{ $day >= 10 ? $day : '0' . $day }}"
+                                {{ old('birthday_day') == $day ? 'selected' : '' }}>
+                                {{ $day }}</option>
+                        @endfor
+                    </x-select>
+                </div>
             </div>
 
             <div class="flex items-center justify-end mt-4">
-                {{-- <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('login') }}">
-                    {{ __('Already registered?') }}
-                </a> --}}
-
                 <x-button class="ml-4">
                     {{ __('Register') }}
                 </x-button>
             </div>
         </form>
     </x-auth-card>
-    <div class="flex flex-col sm:justify-center items-center">
-        <div class="w-full sm:max-w-md">
-            <div class="mb-10 flex justify-end">
-                <x-return-button class="w-24 mr-2" href="{{ route('users.index') }}">
-                    一覧
+    <div class="bg-gray-50">
+        <div class="w-full sm:max-w-md mx-auto py-8">
+            <div class="relative w-30 h-8 mb-2">
+                <x-return-button class="px-5 absolute inset-y-0 right-0" href="{{ route('users.index') }}">
+                    {{ __('一覧へ戻る') }}
                 </x-return-button>
-                <x-back-home-button class="w-30" href="{{ route('menu') }}">
+            </div>
+            <div class="relative w-30 h-8">
+                <x-back-home-button class="absolute inset-y-0 right-0" href="{{ route('menu') }}">
                     {{ __('Back') }}
                 </x-back-home-button>
             </div>
         </div>
     </div>
-    </x-guest-layout>
+</x-app-layout>

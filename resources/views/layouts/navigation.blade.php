@@ -23,12 +23,12 @@
             <div class="hidden sm:flex sm:items-center sm:ml-6">
                 @auth
                     <p class="text-sm text-white">
-                        {{ Auth::user()->factory->factory_name }}
-                        @if (Auth::user()->department->id != 1)
-                            ・{{ Auth::user()->department->department_name }}
+                        {{ Auth::user()->affiliation->factory->factory_name }}
+                        @if (Auth::user()->affiliation->department->id != 1)
+                            ・{{ Auth::user()->affiliation->department->department_name }}
                         @endif
-                        @if (Auth::user()->group != null && Auth::user()->group->id != 1)
-                            ・{{ Auth::user()->group->group_name }}
+                        @if (Auth::user()->affiliation->group != null && Auth::user()->affiliation->group->id != 1)
+                            ・{{ Auth::user()->affiliation->group->group_name }}
                         @endif
                         &emsp;/&emsp;
                     </p>

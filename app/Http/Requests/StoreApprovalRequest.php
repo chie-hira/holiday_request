@@ -25,9 +25,7 @@ class StoreApprovalRequest extends FormRequest
     {
         return [
             'user_id' => 'required|integer',
-            'factory_id' => 'required|integer',
-            'department_id' => 'required|integer',
-            'group_id' => 'required|integer',
+            'affiliation_id' => 'required|integer',
             'approval_id' => 'required|integer',
         ];
     }

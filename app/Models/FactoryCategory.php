@@ -14,22 +14,12 @@ class FactoryCategory extends Model
     ];
 
     /**
-     * Get all of the users for the CompanyCategory
+     * Get all of the affiliations for the FactoryCategory
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function users()
+    public function affiliations()
     {
-        return $this->hasMany(User::class, 'factory_id', 'id');
-    }
-
-    /**
-     * Get all of the approvals for the FactoryCategory
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function approvals()
-    {
-        return $this->hasMany(Approval::class, 'factory_id', 'id');
+        return $this->hasMany(Affiliation::class, 'factory_id', 'id');
     }
 }

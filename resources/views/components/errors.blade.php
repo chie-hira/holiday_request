@@ -24,7 +24,7 @@
                             clip-rule="evenodd" fill="" />
                     </svg>
                     <div class="font-medium">
-                        {{ $error }}
+                        {{ __($error) }}
                     </div>
                 </li>
             @endforeach

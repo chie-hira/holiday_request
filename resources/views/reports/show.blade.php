@@ -24,10 +24,10 @@
                     出 退 勤 届 け
                 </h5>
                 <p class="border-solid border-2 px-4 py-1 border-sky-500 rounded-md text-md font-medium text-sky-600">
-                    {{ $report->user->factory->factory_name }}
+                    {{ $report->user->affiliation->factory->factory_name }}
                 </p>
             </div>
-            <p class="text-gray-600 text-sm text-right">{{ $report->user->team }}</p>
+            <p class="text-gray-600 text-sm text-right">{{ $report->user->department_group_name }}</p>
             <div class="flow-root">
                 <ul role="list" class="divide-y divide-gray-200">
                     <!-- divide-y アンダーライン仕切り -->
@@ -125,7 +125,7 @@
                                 <div class="flex items-center pb-1">
                                     <p
                                         class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
-                                        氏 名
+                                        {{ __('Name') }}
                                     </p>
                                     <p class="ZenKurenaido font-semibold text-gray-700 ml-4">{{ $report->user->name }}
                                     </p>
@@ -137,19 +137,17 @@
                         <table>
                             <thead class="">
                                 <tr>
-                                    <th class="w-20 border border-gray-500 text-gray-900 text-center">工場長</th>
-                                    <th class="w-20 border border-gray-500 text-gray-900 text-center">課長</th>
-                                    <th class="w-20 border border-gray-500 text-gray-900 text-center">GL</th>
+                                    <th class="w-20 border border-gray-500 text-gray-900 text-center text-sm">部長/工場長
+                                    </th>
+                                    <th class="w-20 border border-gray-500 text-gray-900 text-center text-sm">課長/GL</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td class="w-20 h-12 border border-gray-500 text-center">
-                                        <!-- 工場長・総務部長承認 start -->
-                                        @if (!empty(
-                                            Auth::user()->approvals->where('approval_id', 2)->where('department_id', $report->user->department_id)->first() ||
-                                            Auth::user()->approvals->where('approval_id', 2)->where('factory_id', $report->user->factory_id)->where('department_id', 1)->first()
-                                            ))
+                                        <!-- 部長・工場長承認 start -->
+                                        @if (Auth::user()->approvals->load('affiliation')->where('approval_id', 2)->where('affiliation.factory_id', $report->user->affiliation->factory_id)->where('affiliation.department_id', $report->user->affiliation->department_id)->first() ||
+                                                Auth::user()->approvals->load('affiliation')->where('approval_id', 2)->where('affiliation.factory_id', $report->user->affiliation->factory_id)->where('affiliation.department_id', 1)->first())
                                             @if ($report->cancel == 0 && $report->approval1 == 0)
                                                 <x-edit-a-button href="{{ route('approval', $report) }}"
                                                     onclick="if(!confirm('承認しますか？')){return false};" class="px-3 py-1">
@@ -164,11 +162,9 @@
                                                     {{ __('CancelCheck') }}
                                                 </x-delete-a-button>
                                             @endif
-                                        @endif
-                                        <!-- 工場長・総務部長承認 end -->
-                                        <!-- 承認&確認済み start -->
-                                        @if (empty(Auth::user()->approvals->where('approval_id', 2)->where('factory_id', $report->user->factory_id)->first()
-                                            ))
+                                            <!-- 部長・工場長承認 end -->
+                                        @else
+                                            <!-- 承認&確認済み start -->
                                             @if ($report->cancel == 1 && $report->approval1 == 1)
                                                 <div class="flex justify-center">
                                                     <x-approved-stamp />
@@ -176,7 +172,7 @@
                                             @endif
                                         @endif
                                         @if ($report->cancel == 0 && $report->approval1 == 1)
-                                            <div class="flex justify-center">
+                                            <div class="flex justify-center" dusk='approved1-stamp'>
                                                 <x-approved-stamp />
                                             </div>
                                         @endif
@@ -188,9 +184,9 @@
                                         <!-- 承認&確認済み end -->
                                     </td>
                                     <td class="w-20 h-12 border border-gray-500 text-center">
-                                        <!-- 課長承認 start -->
+                                        <!-- 課長・GL承認 start -->
                                         @if (
-                                            !empty(Auth::user()->approvals->where('approval_id', 3)->where('factory_id', $report->user->factory_id)->where('department_id', $report->user->department_id)->first()
+                                            !empty(Auth::user()->approvals->load('affiliation')->where('approval_id', 3)->where('affiliation.factory_id', $report->user->affiliation->factory_id)->where('department_id', $report->user->department_id)->first()
                                             ))
                                             @if ($report->cancel == 0 && $report->approval2 == 0)
                                                 <x-edit-a-button href="{{ route('approval', $report) }}"
@@ -206,11 +202,8 @@
                                                     {{ __('CancelCheck') }}
                                                 </x-delete-a-button>
                                             @endif
-                                        @endif
-                                        <!-- 課長承認 end -->
-                                        <!-- 承認&確認済み start -->
-                                        @if (empty(Auth::user()->approvals->where('approval_id', 3)->where('factory_id', $report->user->factory_id)->first()
-                                            ))
+                                            <!-- 課長承認 end -->
+                                        @else
                                             @if ($report->cancel == 1 && $report->approval2 == 1)
                                                 <div class="flex justify-center">
                                                     <x-approved-stamp />
@@ -218,7 +211,7 @@
                                             @endif
                                         @endif
                                         @if ($report->cancel == 0 && $report->approval2 == 1)
-                                            <div class="flex justify-center">
+                                            <div class="flex justify-center" dusk='approved2-stamp'>
                                                 <x-approved-stamp />
                                             </div>
                                         @endif
@@ -228,42 +221,6 @@
                                             </div>
                                         @endif
                                         <!-- 承認&確認済み end -->
-                                    </td>
-                                    <td class="w-20 h-12 border border-gray-500 text-center">
-                                        @if (
-                                            !empty(Auth::user()->approvals->where('approval_id', 4)->where('factory_id', $report->user->factory_id)->where('department_id', $report->user->department_id)->where('group_id', $report->user->group_id)->first()
-                                            ))
-                                            @if ($report->cancel == 1 && $report->approval3 == 1)
-                                                <x-delete-a-button
-                                                    href="{{ route('reports.approval_cancel', $report) }}"
-                                                    onclick="if(!confirm('取消を確認しました')){return false};"
-                                                    class="px-1 py-1">
-                                                    {{ __('CancelCheck') }}
-                                                </x-delete-a-button>
-                                            @endif
-                                            @if ($report->cancel == 0 && $report->approval3 == 0)
-                                                <x-edit-a-button href="{{ route('approval', $report) }}"
-                                                    onclick="if(!confirm('承認しますか？')){return false};" class="px-3 py-1">
-                                                    {{ __('Approval') }}
-                                                </x-edit-a-button>
-                                            @endif
-                                        @else
-                                            @if ($report->cancel == 1 && $report->approval3 == 1)
-                                                <div class="flex justify-center">
-                                                    <x-approved-stamp />
-                                                </div>
-                                            @endif
-                                        @endif
-                                        @if ($report->cancel == 0 && $report->approval3 == 1)
-                                            <div class="flex justify-center">
-                                                <x-approved-stamp />
-                                            </div>
-                                        @endif
-                                        @if ($report->cancel == 1 && $report->approval3 == 0)
-                                            <div class="flex justify-center">
-                                                <x-cancel-stamp />
-                                            </div>
-                                        @endif
                                     </td>
                                 </tr>
                             </tbody>
@@ -278,19 +235,14 @@
 
         <div class="w-full max-w-md mx-auto mt-10 grid grid-cols-1 gap-2">
             <div class="flex justify-end">
-                <x-return-button class="w-30" href="{{ route('reports.index') }}">
-                    届出一覧
+                <x-return-button class="w-30" href="{{ route('reports.my_index') }}">
+                    My届出一覧
                 </x-return-button>
             </div>
-            @can('general_gl_reader')
+            @can('approver_reader')
                 <div class="flex justify-end">
-                    <x-return-button class="w-30" href="{{ route('reports.pending_approval') }}">
-                        承認待ち一覧
-                    </x-return-button>
-                </div>
-                <div class="flex justify-end">
-                    <x-return-button class="w-30" href="{{ route('reports.approved') }}">
-                        承認済み一覧
+                    <x-return-button class="w-30" href="{{ route('reports.index') }}">
+                        届出一覧
                     </x-return-button>
                 </div>
             @endcan

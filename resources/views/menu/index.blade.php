@@ -70,24 +70,25 @@
                 </div>
             @endif
             <!-- 有給休暇失効alert -->
-            @if (now()->addMonth() >= $year_end && $lost_paid_holidays > 0)
+            @if (now()->addMonth() >= $year_end && Auth::user()->lost_paid_holidays > 0)
                 <x-alert>
                     有給休暇が失効します
                 </x-alert>
                 <div class="pl-2 -mt-1 mb-1">
                     <span class="text-xs text-blue-500">年度末で</span>
-                    <span class="font-bold text-red-600">{{ now()->diff($year_end)->days }}日間</span>
+                    <span class="font-bold text-red-600">{{ Auth::user()->lost_paid_holidays }}日間</span>
                     <span class="text-xs text-blue-500">の有給休暇が失効します</span>
                 </div>
             @endif
             <!-- 有給休暇取得推進alert -->
-            @if (now()->addMonth() >= $year_end && $get_paid_holidays < 5)
+            {{-- 3日は取得推進日として最初から差し引いている --}}
+            @if (now()->addMonth() >= $year_end && Auth::user()->acquisition_paid_holidays < 2)
                 <x-alert>
                     有給休暇を取得してください
                 </x-alert>
                 <div class="pl-2 -mt-1 mb-1">
                     <span class="text-xs text-blue-500">年度末までにあと</span>
-                    <span class="font-bold text-red-600">{{ 5 - $get_paid_holidays }}日</span>
+                    <span class="font-bold text-red-600">{{ 2 - Auth::user()->acquisition_paid_holidays }}日</span>
                     <span class="text-xs text-blue-500">取得してください</span>
                 </div>
             @endif
@@ -95,7 +96,7 @@
     </div>
 
     <!-- 通知機能 閲覧権限以上 start -->
-    @can('general_manager_gl')
+    @can('approver')
         @empty(!($pending || $approved))
             <div class="m-2 bg-red-50 border border-red-200 text-sm text-red-600 rounded-md px-4 py-2">
                 @if ($pending)
@@ -152,7 +153,7 @@
                         </div>
                     </a>
 
-                    <a href={{ route('remainings.my_index') }} {{-- class="block text-center items-center p-3 my-2 text-base text-white rounded-xl border-2 border-gray-500 bg-fuchsia-400 hover:text-gray-600 hover:font-semibold hover:bg-white focus:text-fuchsia-400 "> --}}
+                    <a href={{ route('acquisition_days.my_index') }}
                         class="block text-center items-center p-3 my-2 text-white rounded-xl border border-gray-500 bg-fuchsia-400 hover:text-gray-600 hover:bg-white focus:text-fuchsia-400">
                         <div class="flex justify-center items-center text-2xl">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
@@ -167,7 +168,7 @@
                         </div>
                     </a>
 
-                    <a href={{ route('reports.index') }} {{-- class="block text-center items-center p-3 my-2 text-white rounded-xl border-2 border-gray-500 bg-amber-400 hover:text-gray-600 hover:font-semibold hover:bg-white focus:text-amber-400 "> --}}
+                    <a href={{ route('reports.my_index') }}
                         class="block text-center items-center p-3 my-2 text-white rounded-xl border border-gray-500 bg-amber-400 hover:text-gray-600 hover:bg-white focus:text-amber-400">
                         <div class="flex justify-center items-center text-2xl">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
@@ -175,7 +176,7 @@
                                     d="M1.5 5.625c0-1.036.84-1.875 1.875-1.875h17.25c1.035 0 1.875.84 1.875 1.875v12.75c0 1.035-.84 1.875-1.875 1.875H3.375A1.875 1.875 0 011.5 18.375V5.625zM21 9.375A.375.375 0 0020.625 9h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zm0 3.75a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zm0 3.75a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zM10.875 18.75a.375.375 0 00.375-.375v-1.5a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5zM3.375 15h7.5a.375.375 0 00.375-.375v-1.5a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375zm0-3.75h7.5a.375.375 0 00.375-.375v-1.5A.375.375 0 0010.875 9h-7.5A.375.375 0 003 9.375v1.5c0 .207.168.375.375.375z"
                                     clip-rule="evenodd" fill="" />
                             </svg>
-                            <span class="ZenMaruGothic w-40">届 出 一 覧</span>
+                            <span class="ZenMaruGothic w-40">My届出一覧</span>
                         </div>
                     </a>
                 </div>
@@ -183,8 +184,8 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
                     <!-- 閲覧権限以上 start -->
-                    @can(['general_gl_reader'])
-                        <a href={{ route('reports.pending_approval') }}
+                    @can('approver_reader')
+                        <a href={{ route('reports.index') }}
                             class="inline-flex items-center p-2 text-lg font-medium text-gray-600 hover:text-sky-700 hover:underline hover:underline-offset-0 hover:decoration-4 hover:decoration-sky-200">
                             <span class="mr-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -194,9 +195,9 @@
                                 </svg>
                             </span>
                             <span class="flex items-center w-24">
-                                承認<span class="text-red-600 font-bold">待ち</span>
+                                届出一覧
                             </span>
-                            @if ($pending)
+                            @if ($pending || $approved)
                                 <div class="flex justify-center relative -ml-4 -mt-5">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                                         class="w-6 h-6 text-red-600">
@@ -205,40 +206,13 @@
                                             clip-rule="evenodd" fill="" />
                                     </svg>
                                     <div class="absolute text-xs text-white font-bold leading-6 text-center">
-                                        {{ $pending }}
+                                        {{ $pending + $approved }}
                                     </div>
                                 </div>
                             @endif
                         </a>
 
-                        <a href={{ route('reports.approved') }}
-                            class="inline-flex items-center p-2 text-lg font-medium text-gray-600 hover:text-sky-700 hover:underline hover:underline-offset-0 hover:decoration-4 hover:decoration-sky-200">
-                            <span class="mr-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-                                </svg>
-                            </span>
-                            <span class="flex items-center w-24">
-                                承認<span class="font-bold text-sky-600">済み</span>
-                            </span>
-                            @if ($approved)
-                                <div class="flex justify-center relative -ml-4 -mt-5">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                        class="w-6 h-6 text-red-600">
-                                        <path fill-rule="evenodd"
-                                            d="M5.337 21.718a6.707 6.707 0 01-.533-.074.75.75 0 01-.44-1.223 3.73 3.73 0 00.814-1.686c.023-.115-.022-.317-.254-.543C3.274 16.587 2.25 14.41 2.25 12c0-5.03 4.428-9 9.75-9s9.75 3.97 9.75 9c0 5.03-4.428 9-9.75 9-.833 0-1.643-.097-2.417-.279a6.721 6.721 0 01-4.246.997z"
-                                            clip-rule="evenodd" fill="" />
-                                    </svg>
-                                    <div class="absolute text-xs text-white font-bold leading-6 text-center">
-                                        {{ $approved }}
-                                    </div>
-                                </div>
-                            @endif
-                        </a>
-
-                        <a href={{ route('reports.get_and_remaining') }}
+                        <a href={{ route('acquisition_days.status_index') }}
                             class="inline-flex items-center p-2 text-lg font-medium text-gray-600 hover:text-sky-700 hover:underline hover:underline-offset-0 hover:decoration-4 hover:decoration-sky-200">
                             <span class="mr-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -265,8 +239,8 @@
                     <!-- 閲覧権限以上 start -->
 
                     <!-- 管理者 start -->
-                    @can('admin_only')
-                        <a href={{ route('remainings.index') }}
+                    @can('admin')
+                        <a href={{ route('acquisition_days.index') }}
                             class="inline-flex items-center p-2 text-lg font-medium text-gray-600 hover:text-sky-700 hover:underline hover:underline-offset-0 hover:decoration-4 hover:decoration-sky-200">
                             <span class="mr-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -290,11 +264,7 @@
                             </span>
                             <span class="w-32">ユーザー設定</span>
                         </a>
-                    @endcan
-                    <!-- 管理者 end -->
 
-                    <!-- 上長承認 start -->
-                    @can('general_only')
                         <a href={{ route('approvals.index') }}
                             class="inline-flex items-center p-2 text-lg font-medium text-gray-600 hover:text-sky-700 hover:underline hover:underline-offset-0 hover:decoration-4 hover:decoration-sky-200">
                             <span class="mr-3">
@@ -308,67 +278,56 @@
                             </span>
                             <span class="w-32">権限設定</span>
                         </a>
-
                     @endcan
-                    <!-- 上長承認 end -->
+                    <!-- 管理者 end -->
                 </div>
             @endauth
 
-            <div class="text-left w-full my-12">
-                @if (Auth::user()->approvals->first())
-                    <ul class="text-sm">
-                        @foreach (Auth::user()->approvals as $approval)
-                            <li class="flex mx-auto items-center leading-relaxed">
-                                <span class="w-4 h-4 mr-2 rounded-full inline-flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                                        class="w-5 h-5 text-sky-600">
-                                        <path fill-rule="evenodd"
-                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                                            clip-rule="evenodd" fill="" />
-                                    </svg>
-                                </span>
-                                <!-- 閲覧 -->
-                                @if ($approval->approval_id == 5)
-                                    {{ Auth::user()->getApprovalFactory($approval->factory_id) }}
-                                    @if ($approval->department_id == 1)
-                                        ・{{ Auth::user()->getApprovalName($approval->approval_id) }}
-                                    @else
-                                        ・{{ Auth::user()->getApprovalDepartment($approval->department_id) }}
-                                        ・{{ Auth::user()->getApprovalGroup($approval->group_id) }}
-                                        ・{{ Auth::user()->getApprovalName($approval->approval_id) }}
+            <!-- 上長承認 start -->
+            @can('approver')
+                <div class="text-left w-full my-12">
+                    {{-- @if (Auth::user()->approvals->first()) --}}
+                        <ul class="text-sm">
+                            @foreach (Auth::user()->approvals->load(['affiliation.factory', 'affiliation.department', 'affiliation.group']) as $approval)
+                                <x-list>
+                                    <!-- 管理者 -->
+                                    @if ($approval->approval_id == 1)
+                                        {{ $approval->affiliation->factory->factory_name }}
+                                        @if ($approval->affiliation->department_id != 1)
+                                            {{ $approval->affiliation->department->department_name }}
+                                        @endif
+                                        ・{{ __('Admin') }}
                                     @endif
-                                @endif
-                                <!-- GL -->
-                                @if ($approval->approval_id == 4)
-                                    {{ Auth::user()->getApprovalDepartment($approval->department_id) }}
-                                    ・{{ Auth::user()->getApprovalGroup($approval->group_id) }}
-                                    ・{{ __('Leader') }}
-                                @endif
-                                <!-- 課長 -->
-                                @if ($approval->approval_id == 3)
-                                    {{ Auth::user()->getApprovalDepartment($approval->department_id) }}
-                                    ・{{ __('Manager') }}
-                                @endif
-                                <!-- 工場長承認:課ごと -->
-                                @if ($approval->approval_id == 2 && $approval->department_id != 1)
-                                    {{ Auth::user()->getApprovalFactory($approval->factory_id) }}
-                                    ・{{ Auth::user()->getApprovalDepartment($approval->department_id) . __('長') }}
-                                @endif
-                                <!-- 工場長承認:包括 -->
-                                @if ($approval->approval_id == 2 && $approval->department_id == 1)
-                                    {{ Auth::user()->getApprovalFactory($approval->factory_id) }}
-                                    ・{{ __('工場長') }}
-                                @endif
-                                <!-- 管理者 -->
-                                @if ($approval->approval_id == 1)
-                                    {{ Auth::user()->getApprovalFactory($approval->factory_id) }}
-                                    ・{{ Auth::user()->getApprovalName($approval->approval_id) }}
-                                @endif
-                            </li>
-                        @endforeach
-                    </ul>
-                @endif
-            </div>
+                                    <!-- 承認 -->
+                                    @if ($approval->approval_id == 2)
+                                        {{ $approval->affiliation->factory->factory_name }}
+                                        @if ($approval->affiliation->department_id != 1)
+                                            {{ $approval->affiliation->department->department_name }}
+                                        @endif
+                                        ・{{ __('Approval1') }}
+                                    @endif
+                                    @if ($approval->approval_id == 3)
+                                        {{ $approval->affiliation->factory->factory_name }}
+                                        @if ($approval->affiliation->department_id != 1)
+                                            {{ $approval->affiliation->department->department_name }}
+                                        @endif
+                                        ・{{ __('Approval2') }}
+                                    @endif
+                                    <!-- 閲覧 -->
+                                    @if ($approval->approval_id == 4)
+                                        {{ $approval->affiliation->factory->factory_name }}
+                                        @if ($approval->affiliation->department_id != 1)
+                                            {{ $approval->affiliation->department->department_name }}
+                                        @endif
+                                        ・{{ __('Reader') }}
+                                    @endif
+                                </x-list>
+                            @endforeach
+                        </ul>
+                        {{-- @endif --}}
+                </div>
+            @endcan
+            <!-- 承認 end -->
         </div>
     </section>
 

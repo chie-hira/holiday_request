@@ -16,13 +16,15 @@ class DatabaseSeeder extends Seeder
         $this->call(DepartmentCategorySeeder::class);
         $this->call(FactoryCategorySeeder::class);
         $this->call(GroupCategorySeeder::class);
+        $this->call(AffiliationSeeder::class);
         $this->call(UsersTableSeeder::class);
         $this->call(ApprovalCategorySeeder::class);
         $this->call(ApprovalSeeder::class);
         $this->call(ReportCategorySeeder::class);
         $this->call(SubReportCategorySeeder::class);
         $this->call(ReasonCategorySeeder::class);
-        $this->call(RemainingSeeder::class);
+        $this->call(ReasonSeeder::class);
+        $this->call(AcquisitionDaySeeder::class);
         $this->call(ShiftCategorySeeder::class);
     }
 }

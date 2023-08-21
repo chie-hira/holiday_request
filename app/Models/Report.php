@@ -27,7 +27,8 @@ class Report extends Model
         'am_pm',
         'approval1',
         'approval2',
-        'approval3',
+        'approved',
+        'cancel',
     ];
 
     /**

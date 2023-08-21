@@ -1,28 +1,19 @@
 <x-app-layout>
-    <div class="border-b-2 border-gray-200 dark:border-gray-700">
-        <nav class="-mb-0.5 px-4 py-1 flex space-x-6">
-            <!-- 工場選択 - start -->
-            <x-select name="select_factory" id="select_factory" class="block text-xs" onchange="search();">
-                <option value=''>全て</option>
-                @foreach ($factories as $factory)
-                    <option value="{{ $factory->id }}" @if ($factory->id === (int) old('select_factory')) selected @endif>
-                        {{ $factory->factory_name }}
+    <div class="border-b-2 border-gray-200 overflow-x-auto">
+        <nav class="px-4 py-1 flex space-x-6">
+            <!-- 所属選択 - start -->
+            <x-select name="select_affiliation" id="select_affiliation" class="block text-xs w-40" onchange="search();">
+                <option value='1'>{{ __('Affiliation') }}</option>
+                @foreach ($affiliations as $affiliation)
+                    <option value="{{ $affiliation->id }}" @if ($affiliation->id === (int) old('select_affiliation')) selected @endif>
+                        <x-affiliation-name :affiliation="$affiliation" />
                     </option>
                 @endforeach
             </x-select>
-            <!-- 工場選択 - end -->
-            <!-- 理由選択 - start -->
-            <x-select name="select_user" id="select_user" class="block text-xs" onchange="search();">
-                <option value=''>全て</option>
-                @foreach ($users as $user)
-                    <option value="{{ $user->id }}" @if ($user->id === (int) old('select_user')) selected @endif>
-                        {{ $user->employee }}
-                    </option>
-                @endforeach
-            </x-select>
-            <!-- 理由選択 - end -->
+            <!-- 属性選択 - end -->
             <!-- 休暇種類選択 - start -->
-            <x-select name="select_report" id="select_report" class="block text-xs" onchange="search();">
+            <x-select name="select_report" id="select_report" class="block text-xs w-40" onchange="search();">
+                <option value=''>{{ __('Report Category') }}</option>
                 <option value=''>全て</option>
                 @foreach ($report_categories as $report_category)
                     <option value="{{ $report_category->id }}" @if ($report_category->id === (int) old('select_report')) selected @endif>
@@ -31,22 +22,34 @@
                 @endforeach
             </x-select>
             <!-- 休暇種類選択 - end -->
+            <!-- 理由選択 - start -->
+            <x-select name="select_reason" id="select_reason" class="block text-xs w-40" onchange="search();">
+                <option value=''>{{ __('Reason') }}</option>
+                <option value=''>全て</option>
+                @foreach ($reason_categories as $reason_category)
+                    <option value="{{ $reason_category->id }}" @if ($reason_category->id === (int) old('select_reason')) selected @endif>
+                        {{ $reason_category->reason }}
+                    </option>
+                @endforeach
+            </x-select>
+            <!-- 理由選択 - end -->
             <!-- 取得日選択 - start -->
-            <x-input type="month" id="select_month" name="select_month" onchange="search();" class="block text-xs"
-                :value="old('month')" required />
+            <x-input type="month" id="select_month" name="select_month" onchange="search();"
+                class="block text-xs w-40" :value="old('month')" />
             <!-- 取得日選択 - end -->
+
         </nav>
     </div>
 
     <section class="text-gray-600 body-font">
-        <div class="container px-5 py-16 mx-auto">
+        <div class="container max-w-7xl px-5 py-16 mx-auto">
             <div class="flex flex-col text-center w-full mb-10">
                 <h1 class="sm:text-4xl text-3xl font-medium title-font text-gray-900">{{ __('出力内容') }}</h1>
             </div>
 
             <x-notice :notice="session('notice')" />
 
-            <div class="container bg-white w-full mx-auto border-2 rounded-lg">
+            <div class="container max-w-7xl bg-white w-full mx-auto border-2 rounded-lg">
                 <div class="flex flex-col p-6">
                     <div class="-m-1.5 overflow-x-auto">
                         <div class="p-1.5 min-w-full inline-block align-middle">
@@ -55,7 +58,7 @@
                                     <thead>
                                         <tr>
                                             <th scope="col"
-                                                class="pl-4 pr-1 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Team') }}
                                             </th>
                                             <th scope="col"
@@ -63,32 +66,32 @@
                                                 {{ __('Employee') }}
                                             </th>
                                             <th scope="col"
-                                                class="pl-1 pr-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Name') }}
                                             </th>
                                             <th scope="col"
                                                 class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                休暇種類
+                                                {{ __('Report Category') }}
                                             </th>
                                             <th scope="col" colspan="2"
                                                 class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                取得期間
+                                                {{ __('Rest Span') }}
                                             </th>
                                             <th scope="col"
                                                 class="px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                日数・時間
+                                                {{ __('Rest Days') }}
+                                            </th>
+                                            <th scope="col" colspan="2"
+                                                class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                {{ __('Shift') }}
                                             </th>
                                             <th scope="col"
                                                 class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                シフト
+                                                {{ __('Report Date') }}
                                             </th>
                                             <th scope="col"
                                                 class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                届出日
-                                            </th>
-                                            <th scope="col"
-                                                class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                理 由
+                                                {{ __('Reason') }}
                                             </th>
                                             <th scope="col"
                                                 class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
@@ -99,10 +102,10 @@
                                         @foreach ($reports as $report)
                                             <tr id="report_{{ $report->id }}" style="display:"
                                                 class="hover:bg-gray-100 ">
-                                                <td class="pl-4 pr-1 py-4 whitespace-nowrap text-sm text-gray-800 ">
-                                                    {{ $report->user->team_all }}
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800 ">
+                                                    {{ $report->user->affiliation_name }}
                                                 </td>
-                                                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800 ">
                                                     @if (Str::length($report->user->employee) == 1)
                                                         &ensp;&ensp;
                                                     @endif
@@ -111,13 +114,13 @@
                                                     @endif
                                                     {{ $report->user->employee }}
                                                 </td>
-                                                <td class="pl-1 pr-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800 ">
                                                     {{ $report->user->name }}
                                                 </td>
-                                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800 ">
                                                     <x-report-name :report="$report" />
                                                 </td>
-                                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                <td class="pl-4 pr-2 py-3 whitespace-nowrap text-sm text-gray-800 ">
                                                     @if ($report->start_date != null)
                                                         {{ $report->start_date }}
                                                     @else
@@ -127,19 +130,19 @@
                                                         &emsp;{{ Str::substr($report->start_time, 0, 5) }}
                                                     @endif
                                                 </td>
-                                                <td class="pr-6 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                <td class="pr-4 py-3 whitespace-nowrap text-sm text-gray-800 ">
                                                     @if ($report->end_date != null)
-                                                        ~&emsp;&emsp;{{ $report->end_date }}
+                                                        ~&emsp;{{ $report->end_date }}
                                                     @endif
                                                     @if ($report->end_time != null)
-                                                        ~&emsp;&emsp;{{ Str::substr($report->end_time, 0, 5) }}
+                                                        ~&emsp;{{ Str::substr($report->end_time, 0, 5) }}
                                                     @endif
                                                     @if ($report->am_pm != null)
-                                                        {{ $report->am_pm == 1 ? '午 前' : '午 後' }}
+                                                        {{ $report->am_pm == 1 ? '前半' : '後半' }}
                                                     @endif
                                                 </td>
                                                 <td
-                                                    class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-800 ">
+                                                    class="px-4 py-3 whitespace-nowrap text-sm text-right text-gray-800 ">
                                                     @if ($report->get_days_only != 0)
                                                         {{ $report->get_days_only }} 日&emsp;
                                                     @endif
@@ -151,23 +154,29 @@
                                                     @endif
                                                 </td>
                                                 <td
-                                                    class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-800 ">
-                                                    ナンバー{{ $report->shift_category->shift_code }}
+                                                    class="pl-4 pr-2 py-3 whitespace-nowrap text-sm text-right text-gray-800 ">
+                                                    {{ __('Shift') }} {{ $report->shift_category->shift_code }}
                                                 </td>
                                                 <td
-                                                    class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">
+                                                    class="pr-4 py-3 whitespace-nowrap text-sm text-right text-gray-800 ">
+                                                    {{ $report->shift_category->start_time_hm }} ~
+                                                    {{ $report->shift_category->end_time_hm }}
+                                                </td>
+                                                <td
+                                                    class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-800 ">
                                                     {{ $report->report_date }}
                                                 </td>
                                                 <td
-                                                    class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">
+                                                    class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-800 ">
                                                     {{ $report->reason_category->reason }}
                                                 </td>
                                                 <td
-                                                    class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">
+                                                    class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-800 ">
                                                     {{ $report->reason_detail }}
                                                 </td>
                                             </tr>
                                         @endforeach
+                                        <tr></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -178,14 +187,15 @@
 
             <div class="w-full mx-auto mt-4 grid grid-cols-1 gap-2">
                 <div class="flex justify-end mb-4">
-                    <form action="{{ route('reports.export') }}" method="POST">
+                    <form id="myForm" action="{{ route('reports.export') }}" method="POST">
                         @csrf
-                        <input type="hidden" name="factory_id" id="factory_id" value="">
+                        <input type="hidden" name="affiliation_id" id="affiliation_id" value="">
                         <input type="hidden" name="user_id" id="user_id" value="">
                         <input type="hidden" name="report_category_id" id="report_category_id" value="">
+                        <input type="hidden" name="reason_category_id" id="reason_category_id" value="">
                         <input type="hidden" name="get_month" id="get_month" value="">
                         <div class="flex flex-row-reverse">
-                            <x-button class="w-full flex">
+                            <x-button id="submitButton" class="w-full flex">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                                     class="w-5 h-5 mr-2 leading-6">
                                     <path fill-rule="evenodd"
@@ -209,122 +219,231 @@
     </section>
 
     <script>
-        let selectFactory = document.getElementById('select_factory');
-        let selectUser = document.getElementById('select_user');
+        let selectAffiliation = document.getElementById('select_affiliation');
         let selectReport = document.getElementById('select_report');
+        let selectReason = document.getElementById('select_reason');
         let selectMonth = document.getElementById('select_month');
         const reports = @json($reports);
+        const affiliations = @json($affiliations);
 
         function search() {
-            let selectFactoryId = selectFactory.value;
-            let selectUserId = selectUser.value;
+            let selectAffiliationId = selectAffiliation.value;
             let selectReportId = selectReport.value;
+            let selectReasonId = selectReason.value;
             let selectGetMonth = selectMonth.value;
             console.log('search'); // 起動確認
             // 条件書き出し
-            document.getElementById('factory_id').setAttribute('value', selectFactoryId);
-            document.getElementById('user_id').setAttribute('value', selectUserId);
+            document.getElementById('affiliation_id').setAttribute('value', selectAffiliationId);
             document.getElementById('report_category_id').setAttribute('value', selectReportId);
+            document.getElementById('reason_category_id').setAttribute('value', selectReasonId);
             document.getElementById('get_month').setAttribute('value', selectGetMonth);
-            reportDataChange(selectFactoryId, selectUserId, selectReportId, selectGetMonth);
+            reportDataChange(selectAffiliationId, selectReportId, selectReasonId, selectGetMonth);
         }
 
-        function reportDataChange(selectFactoryId, selectUserId, selectReportId, selectGetMonth) {
+        function reportDataChange(selectAffiliationId, selectReportId, selectReasonId, selectGetMonth) {
+            const department1Affiliations = affiliations.filter((affiliation) => affiliation.department_id == 1);
+            const department1Ids = department1Affiliations.map(object => object.id);
+
+            const selectAffiliationObject = affiliations.filter((affiliation) => affiliation.id == selectAffiliationId);
+            const factories = affiliations.filter((affiliation) => affiliation.factory_id == selectAffiliationObject[0]
+                .factory_id);
+            const factoryIds = factories.map(object => object.id);
+
             Object.keys(reports).forEach(key => {
                 const value = reports[key];
-                let reportFactoryId = value.user.factory_id;
+                let reportAffiliationId = value.user.affiliation_id;
                 let reportCartegoryId = value.report_id;
-                let reportUserId = value.user_id;
+                let reportReasonId = value.reason_id;
                 let reportGetMonth = value.start_date.substr(0, 7);
                 let reportId = document.getElementById('report_' + value.id);
                 console.log(key, value);
 
                 // 選択された値と一致する場合は表示、そうでなければ非表示
-                if (selectFactoryId == reportFactoryId &&
+                if (selectAffiliationId == 1) {
+                    if (
+                        selectReportId == reportCartegoryId &&
+                        selectReasonId == reportReasonId &&
+                        selectGetMonth == reportGetMonth || // 全て選択
+
+                        !selectReportId &&
+                        selectReasonId == reportReasonId &&
+                        selectGetMonth == reportGetMonth || // 所属,理由,月 選択
+
+                        selectReportId == reportCartegoryId &&
+                        !selectReasonId &&
+                        selectGetMonth == reportGetMonth || // 所属,休暇種類,月 選択
+
+                        selectReportId == reportCartegoryId &&
+                        selectReasonId == reportReasonId &&
+                        !selectGetMonth || // 所属,休暇種類,理由 選択
+
+                        !selectReportId &&
+                        !selectReasonId &&
+                        selectGetMonth == reportGetMonth || // 所属,月 選択
+
+                        !selectReportId &&
+                        selectReasonId == reportReasonId &&
+                        !selectGetMonth || // 所属,理由 選択
+
+                        selectReportId == reportCartegoryId &&
+                        !selectReasonId &&
+                        !selectGetMonth || // 所属,休暇種類 選択
+
+                        !selectReportId &&
+                        !selectReasonId &&
+                        !selectGetMonth // 全て未選択
+                    ) {
+                        reportId.style.display = '';
+                    } else {
+                        reportId.style.display = 'none';
+                    }
+                } else if (department1Ids.includes(Number(selectAffiliationId))) {
+                    if (
+                        factoryIds.includes(Number(reportAffiliationId)) &&
+                        selectReportId == reportCartegoryId &&
+                        selectReasonId == reportReasonId &&
+                        selectGetMonth == reportGetMonth || // 全て選択
+
+                        factoryIds.includes(Number(reportAffiliationId)) &&
+                        !selectReportId &&
+                        selectReasonId == reportReasonId &&
+                        selectGetMonth == reportGetMonth || // 所属,理由,月 選択
+
+                        factoryIds.includes(Number(reportAffiliationId)) &&
+                        selectReportId == reportCartegoryId &&
+                        !selectReasonId &&
+                        selectGetMonth == reportGetMonth || // 所属,休暇種類,月 選択
+
+                        factoryIds.includes(Number(reportAffiliationId)) &&
+                        selectReportId == reportCartegoryId &&
+                        selectReasonId == reportReasonId &&
+                        !selectGetMonth || // 所属,休暇種類,理由 選択
+
+                        factoryIds.includes(Number(reportAffiliationId)) &&
+                        !selectReportId &&
+                        !selectReasonId &&
+                        selectGetMonth == reportGetMonth || // 所属,月 選択
+
+                        factoryIds.includes(Number(reportAffiliationId)) &&
+                        !selectReportId &&
+                        selectReasonId == reportReasonId &&
+                        !selectGetMonth || // 所属,理由 選択
+
+                        factoryIds.includes(Number(reportAffiliationId)) &&
+                        selectReportId == reportCartegoryId &&
+                        !selectReasonId &&
+                        !selectGetMonth || // 所属,休暇種類 選択
+
+                        factoryIds.includes(Number(reportAffiliationId)) &&
+                        !selectReportId &&
+                        !selectReasonId &&
+                        !selectGetMonth // 全て未選択
+                    ) {
+                        reportId.style.display = '';
+                    } else {
+                        reportId.style.display = 'none';
+                    }
+                } else if (
+                    selectAffiliationId == reportAffiliationId &&
                     selectReportId == reportCartegoryId &&
-                    selectUserId == reportUserId &&
+                    selectReasonId == reportReasonId &&
                     selectGetMonth == reportGetMonth || // 全て選択
 
-                    !selectFactoryId &&
+                    !selectAffiliationId &&
                     selectReportId == reportCartegoryId &&
-                    selectUserId == reportUserId &&
-                    selectGetMonth == reportGetMonth || // 休暇種類,ユーザー,月 選択
+                    selectReasonId == reportReasonId &&
+                    selectGetMonth == reportGetMonth || // 所属2,休暇種類,理由,月 選択
 
-                    selectFactoryId == reportFactoryId &&
+                    selectAffiliationId == reportAffiliationId &&
                     !selectReportId &&
-                    selectUserId == reportUserId &&
-                    selectGetMonth == reportGetMonth || // 工場,ユーザー,月 選択
+                    selectReasonId == reportReasonId &&
+                    selectGetMonth == reportGetMonth || // 所属,理由,月 選択
 
-                    selectFactoryId == reportFactoryId &&
+                    selectAffiliationId == reportAffiliationId &&
                     selectReportId == reportCartegoryId &&
-                    !selectUserId &&
-                    selectGetMonth == reportGetMonth || // 工場,休暇種類,月 選択
+                    !selectReasonId &&
+                    selectGetMonth == reportGetMonth || // 所属,休暇種類,月 選択
 
-                    selectFactoryId == reportFactoryId &&
+                    selectAffiliationId == reportAffiliationId &&
                     selectReportId == reportCartegoryId &&
-                    selectUserId == reportUserId &&
-                    !selectGetMonth || // 工場,休暇種類,ユーザー 選択
+                    selectReasonId == reportReasonId &&
+                    !selectGetMonth || // 所属,休暇種類,理由 選択
 
-                    !selectFactoryId &&
+                    !selectAffiliationId &&
                     !selectReportId &&
-                    selectUserId == reportUserId &&
-                    selectGetMonth == reportGetMonth || // ユーザー,月 選択
+                    selectReasonId == reportReasonId &&
+                    selectGetMonth == reportGetMonth || // 所属2,理由,月 選択
 
-                    !selectFactoryId &&
+                    !selectAffiliationId &&
                     selectReportId == reportCartegoryId &&
-                    !selectUserId &&
-                    selectGetMonth == reportGetMonth || // 休暇種類,月 選択
+                    !selectReasonId &&
+                    selectGetMonth == reportGetMonth || // 所属2,休暇種類,月 選択
 
-                    !selectFactoryId &&
+                    !selectAffiliationId &&
                     selectReportId == reportCartegoryId &&
-                    selectUserId == reportUserId &&
-                    !selectGetMonth || // 休暇種類,ユーザー 選択
+                    selectReasonId == reportReasonId &&
+                    !selectGetMonth || // 所属2,休暇種類,理由 選択
 
-                    selectFactoryId == reportFactoryId &&
+                    selectAffiliationId == reportAffiliationId &&
                     !selectReportId &&
-                    !selectUserId &&
-                    selectGetMonth == reportGetMonth || // 工場,月 選択
+                    !selectReasonId &&
+                    selectGetMonth == reportGetMonth || // 所属,月 選択
 
-                    selectFactoryId == reportFactoryId &&
+                    selectAffiliationId == reportAffiliationId &&
                     !selectReportId &&
-                    selectUserId == reportUserId &&
-                    !selectGetMonth || // 工場,ユーザー 選択
+                    selectReasonId == reportReasonId &&
+                    !selectGetMonth || // 所属,理由 選択
 
-                    selectFactoryId == reportFactoryId &&
+                    selectAffiliationId == reportAffiliationId &&
                     selectReportId == reportCartegoryId &&
-                    !selectUserId &&
-                    !selectGetMonth || // 工場,休暇種類 選択
+                    !selectReasonId &&
+                    !selectGetMonth || // 所属,休暇種類 選択
 
-                    !selectFactoryId &&
+                    selectAffiliationId == reportAffiliationId &&
                     !selectReportId &&
-                    !selectUserId &&
-                    selectGetMonth == reportGetMonth || // 月 選択
+                    !selectReasonId &&
+                    !selectGetMonth || // 所属 選択
 
-                    !selectFactoryId &&
+                    !selectAffiliationId &&
                     selectReportId == reportCartegoryId &&
-                    !selectUserId &&
-                    !selectGetMonth || // 休暇種類 選択
+                    !selectReasonId &&
+                    !selectGetMonth || // 所属1,休暇種類 選択
 
-                    !selectFactoryId &&
+                    !selectAffiliationId &&
                     !selectReportId &&
-                    selectUserId == reportUserId &&
-                    !selectGetMonth || // ユーザー 選択
+                    selectReasonId == reportReasonId &&
+                    !selectGetMonth || // 所属1,理由 選択
 
-                    selectFactoryId == reportFactoryId &&
+                    !selectAffiliationId &&
                     !selectReportId &&
-                    !selectUserId &&
-                    !selectGetMonth || // 工場 選択
-
-                    !selectFactoryId &&
-                    !selectReportId &&
-                    !selectUserId &&
+                    !selectReasonId &&
                     !selectGetMonth // 全て未選択
                 ) {
                     reportId.style.display = '';
                 } else {
                     reportId.style.display = 'none';
                 }
+
             });
         }
+
+        /* 二重送信防止start */
+        // 送信ボタンをクリックした後に非活性化する関数
+        var submitButton = document.getElementById('submitButton');
+
+        function disableSubmitButton() {
+            submitButton.disabled = true; // ボタンを非活性にする
+        }
+
+        function enableSubmitButton() {
+            document.getElementById('submitButton').disabled = false;
+        }
+
+        // フォームが送信される前にdisableSubmitButton関数を呼び出す
+        document.getElementById('myForm').addEventListener('submit', function() {
+            disableSubmitButton();
+            setTimeout(enableSubmitButton, 5000);
+        });
+        /* 二重送信防止end */
     </script>
 </x-app-layout>

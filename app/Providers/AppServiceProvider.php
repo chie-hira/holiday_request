@@ -24,8 +24,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Password::defaults(fn() => Password::min(5)
-            ->mixedCase()
-            ->numbers());
+        Password::defaults(fn() => Password::min(5) # 5文字以上
+            // ->mixedCase() # 大文字小文字
+            ->numbers()); # 数字
     }
 }

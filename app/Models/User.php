@@ -8,6 +8,8 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Notifications\Registered;
 use App\Notifications\Approved;
+use App\Notifications\CancelReport;
+use App\Notifications\DestroyReport;
 use App\Notifications\StoreReport;
 use App\Notifications\UpdateReport;
 use Carbon\Carbon;
@@ -26,9 +28,7 @@ class User extends Authenticatable
         'email',
         'password',
         'employee',
-        'factory_id',
-        'department_id',
-        'group_id',
+        'affiliation_id',
         'adoption_date',
         'birthday',
     ];
@@ -50,13 +50,13 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get all of the remainings for the User
+     * Get all of the acquisition days for the User
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function remainings()
+    public function acquisition_days()
     {
-        return $this->hasMany(Remaining::class, 'user_id', 'id');
+        return $this->hasMany(AcquisitionDay::class, 'user_id', 'id');
     }
 
     /**
@@ -80,103 +80,79 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the factory that owns the User
+     * Get the affiliation that owns the User
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function factory()
+    public function affiliation()
     {
-        return $this->belongsTo(FactoryCategory::class, 'factory_id', 'id');
-    }
-
-    /**
-     * Get the department that owns the User
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function department()
-    {
-        return $this->belongsTo(
-            DepartmentCategory::class,
-            'department_id',
-            'id'
-        );
-    }
-
-    /**
-     * Get the group that owns the User
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function group()
-    {
-        return $this->belongsTo(GroupCategory::class, 'group_id', 'id');
+        return $this->belongsTo(Affiliation::class, 'affiliation_id', 'id');
     }
 
     // アクセサ
-    public function getTeamAllAttribute()
+    public function getAffiliationNameAttribute()
     {
-        if ($this->group->id != 1) {
-            $team =
-                $this->factory->factory_name .
-                $this->department->department_name .
-                $this->group->group_name;
-        }
-        if ($this->department->id != 1 && $this->group->id == 1) {
-            $team =
-                $this->factory->factory_name .
-                $this->department->department_name;
-        }
-        if ($this->department->id == 1) {
-            $team =
-                $this->factory->factory_name;
-        }
-        return $team;
-    }
-
-    public function getTeamAttribute()
-    {
-        if ($this->group->id != 1) {
-            $team =
-                $this->department->department_name .
+        // if ($this->affiliation->id == 1) {
+        //     $affiliation_name = $this->affiliation->factory->factory_name;
+        if ($this->affiliation->department_id == 1) {
+            $affiliation_name = $this->affiliation->factory->factory_name;
+        } elseif (
+            $this->affiliation->department_id != 1 &&
+            $this->affiliation->group_id == 1
+        ) {
+            $affiliation_name =
+                $this->affiliation->factory->factory_name .
                 ' ' .
-                $this->group->group_name;
-        }
-        if ($this->department->id != 1 && $this->group->id == 1) {
-            $team = $this->department->department_name;
-        }
-        if ($this->department->id == 1) {
-            $team = '工場長';
+                $this->affiliation->department->department_name;
+        } else {
+            $affiliation_name =
+                $this->affiliation->factory->factory_name .
+                ' ' .
+                $this->affiliation->department->department_name .
+                ' ' .
+                $this->affiliation->group->group_name;
         }
 
-        return $team;
+        return $affiliation_name;
     }
 
-    public function getSumGetDaysAttribute()
+    public function getDepartmentGroupNameAttribute()
     {
-        # 取得日数集計
-        $sum_get_days = $this->reports
-            ->where('approved', 1)
-            ->where('cancel', 0)
-            ->groupBy('report_id')
-            ->map(function ($report_id) {
-                return $report_id->sum('get_days');
-            });
+        if ($this->affiliation->department_id == 1) {
+            $affiliation_name = '工場長';
+        } elseif (
+            $this->affiliation->department_id != 1 &&
+            $this->affiliation->group_id == 1
+        ) {
+            $affiliation_name =
+                $this->affiliation->department->department_name;
+        } else {
+            $affiliation_name =
+                $this->affiliation->department->department_name .
+                ' ' .
+                $this->affiliation->group->group_name;
+        }
 
-        return $sum_get_days;
+        return $affiliation_name;
     }
 
-    public function getSumGetPaidHolidaysAttribute()
+    // public function getSumGetPaidHolidaysAttribute()
+    public function getAcquisitionPaidHolidaysAttribute()
     {
         # 取得日数集計
-        $sum_get_days = $this->reports
+        $acquisition_paid_holidays = $this->acquisition_days
             ->where('report_id', 1)
-            ->where('sub_report_id', '!=', 4) # 時間休み以外をカウント
-            ->where('approved', 1)
-            ->where('cancel', 0)
-            ->sum('get_days');
+            ->first();
+        return $acquisition_paid_holidays->acquisition_days;
+            
+        // $sum_get_days = $this->reports
+        //     ->where('report_id', 1)
+        //     ->where('sub_report_id', '!=', 4) # 時間休み以外をカウント
+        //     ->where('approved', 1)
+        //     ->where('cancel', 0)
+        //     ->sum('get_days');
 
-        return $sum_get_days;
+        // return $sum_get_days;
     }
 
     public function getLostPaidHolidaysAttribute()
@@ -189,13 +165,15 @@ class User extends Authenticatable
         }
 
         # 有休残日数
-        $paid_holidays = $this->remainings->where('report_id', 1)->first();
+        $paid_holidays = $this->acquisition_days()
+            ->where('report_id', 1)
+            ->first();
 
         /** 有休失効日数 */
         $adoption_date_carbon = new Carbon($this->adoption_date); # 採用年月日
         $diff = $adoption_date_carbon->diff($year_end); # 年度末-採用年月日
         $length_of_service = floatval($diff->y . '.' . $diff->m); # 年度末の勤続年数
-        $remaining_now = $paid_holidays->remaining;
+        $remaining_now = $paid_holidays->remaining_days;
 
         switch ($length_of_service) {
             case $length_of_service < 1.5:
@@ -260,46 +238,57 @@ class User extends Authenticatable
     }
 
     // メソッド(関数)
-    public function getApprovalName($approval_id)
+    // public function getApprovalName($approval_id)
+    // {
+    //     $approval = ApprovalCategory::find($approval_id);
+    //     return $approval->approval_name;
+    // }
+    // public function getApprovalFactory($factory_id)
+    // {
+    //     $factory = FactoryCategory::find($factory_id);
+    //     return $factory->factory_name;
+    // }
+    // public function getApprovalDepartment($department_id)
+    // {
+    //     $department = DepartmentCategory::find($department_id);
+    //     return $department->department_name;
+    // }
+    // public function getApprovalGroup($group_id)
+    // {
+    //     $group = GroupCategory::find($group_id);
+    //     return $group->group_name;
+    // }
+    public function acquisitionDays($key)
     {
-        $approval = ApprovalCategory::find($approval_id);
-        return $approval->approval_name;
-    }
-    public function getApprovalFactory($factory_id)
-    {
-        $factory = FactoryCategory::find($factory_id);
-        return $factory->factory_name;
-    }
-    public function getApprovalDepartment($department_id)
-    {
-        $department = DepartmentCategory::find($department_id);
-        return $department->department_name;
-    }
-    public function getApprovalGroup($group_id)
-    {
-        $group = GroupCategory::find($group_id);
-        return $group->group_name;
+        $acquisition_day = $this->acquisition_days
+            ->where('report_id', $key)
+            ->first();
+        return $acquisition_day->acquisition_days;
     }
 
-    public function sumGetDaysOnly($key)
+    public function acquisitionDaysOnly($key)
     {
-        # 取得日数だけ
-        $sum_get_days = $this->sum_get_days;
-        if ($sum_get_days->has($key)) {
+        // $acquisition_days = $this->acquisition_days
+        //     ->where('report_id', $key)
+        //     ->first();
+        $acquisition_days = $this->acquisitionDays($key);
+
+        if ($acquisition_days) {
             # keyの存在確認
-            $exp = explode('.', $sum_get_days[$key]);
+            $exp = explode('.', $acquisition_days);
+            // $exp = explode('.', $acquisition_days->acquisition_days);
             return $exp[0];
         } else {
             return 0;
         }
     }
-    public function sumGetHours($key)
+    public function acquisitionHours($key)
     {
         # 取得時間だけ
-        $sum_get_days = $this->sum_get_days;
-        if ($sum_get_days->has($key)) {
+        $acquisition_days = $this->acquisitionDays($key);
+        if ($acquisition_days) {
             # keyの存在確認
-            $exp = explode('.', $sum_get_days[$key]);
+            $exp = explode('.', $acquisition_days);
         } else {
             return 0;
         }
@@ -313,13 +302,13 @@ class User extends Authenticatable
             return 0;
         }
     }
-    public function sumGetMinutes($key)
+    public function acquisitionMinutes($key)
     {
+        $acquisition_days = $this->acquisitionDays($key);
         # 取得分だけ
-        $sum_get_days = $this->sum_get_days;
-        if ($sum_get_days->has($key)) {
+        if ($acquisition_days) {
             # keyの存在確認
-            $exp = explode('.', $sum_get_days[$key]);
+            $exp = explode('.', $acquisition_days);
         } else {
             return 0;
         }
@@ -338,12 +327,97 @@ class User extends Authenticatable
         }
     }
 
+
+    // public function getSumGetDaysAttribute()
+    // {
+    //     # 取得日数集計
+    //     $sum_get_days = $this->reports
+    //         ->where('approved', 1)
+    //         ->where('cancel', 0)
+    //         ->groupBy('report_id')
+    //         ->map(function ($report_id) {
+    //             return $report_id->sum('get_days');
+    //         });
+
+    //     return $sum_get_days;
+    // }
+    
+    // public function sumGetDaysOnly($key)
+    // {
+    //     # 取得日数だけ
+    //     $sum_get_days = $this->sum_get_days;
+    //     if ($sum_get_days->has($key)) {
+    //         # keyの存在確認
+    //         $exp = explode('.', $sum_get_days[$key]);
+    //         return $exp[0];
+    //     } else {
+    //         return 0;
+    //     }
+    // }
+    // public function sumGetHours($key)
+    // {
+    //     # 取得時間だけ
+    //     $sum_get_days = $this->sum_get_days;
+    //     if ($sum_get_days->has($key)) {
+    //         # keyの存在確認
+    //         $exp = explode('.', $sum_get_days[$key]);
+    //     } else {
+    //         return 0;
+    //     }
+
+    //     if (array_key_exists(1, $exp)) {
+    //         # 小数点以下あり(1日未満)
+    //         $decimal_p = '0.' . $exp[1];
+    //         $exp_hour = explode('.', $decimal_p * 8); # 8時間で1日
+    //         return $exp_hour[0];
+    //     } else {
+    //         return 0;
+    //     }
+    // }
+    // public function sumGetMinutes($key)
+    // {
+    //     # 取得分だけ
+    //     $sum_get_days = $this->sum_get_days;
+    //     if ($sum_get_days->has($key)) {
+    //         # keyの存在確認
+    //         $exp = explode('.', $sum_get_days[$key]);
+    //     } else {
+    //         return 0;
+    //     }
+
+    //     if (array_key_exists(1, $exp)) {
+    //         # 小数点以下あり(1日未満)
+    //         $decimal_p = '0.' . $exp[1];
+    //         $exp_hour = explode('.', $decimal_p * 8);
+    //         if (array_key_exists(1, $exp_hour)) {
+    //             # 小数点以下あり(1時間未満)
+    //             $decimal_p = '0.' . $exp_hour[1];
+    //             return round($decimal_p * 60);
+    //         }
+    //     } else {
+    //         return 0;
+    //     }
+    // }
+
+    public function remainingDays($key)
+    {
+        $acquisition_day = $this->acquisition_days
+            ->where('report_id', $key)
+            ->first();
+        return $acquisition_day->remaining_days;
+    }
+
     public function remainingDaysOnly($key)
     {
         # 残日数だけ
-        $remaining = $this->remainings->where('report_id', $key)->first();
-        if ($remaining) {
-            $exp = explode('.', $remaining->remaining);
+        // $acquisition_day = $this->acquisition_days
+        //     ->where('report_id', $key)
+        //     ->first();
+        $remaining_days = $this->remainingDays($key);
+        // if ($acquisition_day) {
+        if ($remaining_days) {
+            $exp = explode('.', $remaining_days);
+            // $exp = explode('.', $acquisition_day->remaining_days);
             return $exp[0];
         } else {
             return 0;
@@ -353,9 +427,9 @@ class User extends Authenticatable
     public function remainingHours($key)
     {
         # 残時間だけ
-        $remaining = $this->remainings->where('report_id', $key)->first();
-        if ($remaining) {
-            $exp = explode('.', $remaining->remaining);
+        $remaining_days = $this->remainingDays($key);
+        if ($remaining_days) {
+            $exp = explode('.', $remaining_days);
 
             if (array_key_exists(1, $exp)) {
                 # 小数点以下あり(1日未満)
@@ -370,9 +444,9 @@ class User extends Authenticatable
     public function remainingMinutes($key)
     {
         # 残分だけ
-        $remaining = $this->remainings->where('report_id', $key)->first();
-        if ($remaining) {
-            $exp = explode('.', $remaining->remaining);
+        $remaining_days = $this->remainingDays($key);
+        if ($remaining_days) {
+            $exp = explode('.', $remaining_days);
 
             if (array_key_exists(1, $exp)) {
                 # 小数点以下あり(1日未満)
@@ -389,12 +463,13 @@ class User extends Authenticatable
         }
     }
 
-    public function remaining($report_category_id)
+    // public function remaining($report_category_id)
+    public function acquisition($report_category_id)
     {
-        $remainings = $this->remainings;
-        return $remainings
-            ->where('report_id', '=', $report_category_id)
+        $acquisition_days = $this->acquisition_days
+            ->where('report_id', $report_category_id)
             ->first();
+        return $acquisition_days;
     }
 
     // メール通知
@@ -420,5 +495,19 @@ class User extends Authenticatable
     public function updateReport($report)
     {
         $this->notify(new UpdateReport($report));
+    }
+
+    /** 削除申請 */
+
+    public function cancelReport($report)
+    {
+        $this->notify(new CancelReport($report));
+    }
+
+    /** 申請削除 */
+
+    public function destroyReport($report)
+    {
+        $this->notify(new DestroyReport($report));
     }
 }

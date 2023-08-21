@@ -1,25 +1,26 @@
 <table>
     <thead>
         <tr>
-            <th>{{ __('所属') }}</th>
-            <th>{{ __('社員番号') }}</th>
-            <th>{{ __('氏名') }}</th>
-            <th>{{ __('休暇の種類') }}</th>
-            <th>{{ __('取得期間') }}</th>
+            <th>{{ __('Team') }}</th>
+            <th>{{ __('Employee') }}</th>
+            <th>{{ __('Name') }}</th>
+            <th>{{ __('Report Category') }}</th>
+            <th>{{ __('Rest Span') }}</th>
             <th></th>
             <th></th>
-            <th>{{ __('取得日数') }}</th>
-            <th>{{ __('シフト') }}</th>
-            <th>{{ __('届出日') }}</th>
-            <th>{{ __('理由') }}</th>
-            <th>{{ __('理由詳細') }}</th>
+            <th>{{ __('Rest Days') }}</th>
+            <th>{{ __('Shift') }}</th>
+            <th></th>
+            <th>{{ __('Report Date') }}</th>
+            <th>{{ __('Reason') }}</th>
+            <th>{{ __('Reason Detail') }}</th>
         </tr>
     </thead>
     <tbody>
         @foreach ($reports as $report)
             <tr>
                 <td>
-                    {{ $report->user->team_all }}
+                    {{ $report->user->affiliation_name }}
                 </td>
                 <td>
                     @if (Str::length($report->user->employee) == 1)
@@ -37,16 +38,14 @@
                     <x-report-name :report="$report" />
                 </td>
                 <td>
-                    @if ($report->start_date != null)
-                        {{ $report->start_date }}
-                    @endif
+                    {{ $report->start_date }}
                 </td>
                 <td>
                     @if ($report->start_time != null)
                         {{ Str::substr($report->start_time, 0, 5) }}
                     @endif
                     @if ($report->am_pm != null)
-                        {{ $report->am_pm == 1 ? '午 前' : '午 後' }}
+                        {{ $report->am_pm == 1 ? '前半' : '後半' }}
                     @endif
                     @if ($report->end_date != null)
                         {{ $report->end_date }}
@@ -69,7 +68,11 @@
                     @endif
                 </td>
                 <td>
-                    ナンバー{{ $report->shift_category->shift_code }}
+                    シフト{{ $report->shift_category->shift_code }}
+                </td>
+                <td>
+                    {{ $report->shift_category->start_time_hm }} ~
+                    {{ $report->shift_category->end_time_hm }}
                 </td>
                 <td>
                     {{ $report->report_date }}

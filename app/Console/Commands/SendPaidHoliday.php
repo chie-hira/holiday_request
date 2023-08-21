@@ -21,20 +21,20 @@ class SendPaidHoliday extends Command
     {
         /** 有給休暇の取得日数が5日未満のユーザーを抽出 */
         $all_users = User::all();
-        $users = $all_users->filter(function ($user)
-        {
-            return $user->sum_get_paid_holidays < 5;
+        $users = $all_users->filter(function ($user) {
+            return $user->acquisition_paid_holidays < 5;
         });
 
         foreach ($users as $user) {
-            $get_paid_holidays = $user->sum_get_paid_holidays;
+            $get_paid_holidays = $user->acquisition_paid_holidays;
             Mail::send(
                 'mails.paidHoliday',
-                ['name' => $user->name, 'get_paid_holidays' => $get_paid_holidays],
+                [
+                    'name' => $user->name,
+                    'get_paid_holidays' => $get_paid_holidays,
+                ],
                 function ($message) use ($user) {
-                    $message
-                        ->to($user->email)
-                        ->subject('有給休暇の取得推進');
+                    $message->to($user->email)->subject('有給休暇の取得推進');
                 }
             );
         }

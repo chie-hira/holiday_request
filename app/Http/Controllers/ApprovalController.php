@@ -5,14 +5,12 @@ namespace App\Http\Controllers;
 // use App\Http\Requests\StoreApprovalRequest;
 use App\Http\Requests\StoreApprovalRequest;
 use App\Http\Requests\UpdateApprovalRequest;
+use App\Models\Affiliation;
 use App\Models\Approval;
 use App\Models\ApprovalCategory;
-use App\Models\FactoryCategory;
-use App\Models\DepartmentCategory;
-use App\Models\GroupCategory;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class ApprovalController extends Controller
 {
@@ -23,20 +21,62 @@ class ApprovalController extends Controller
      */
     public function index()
     {
-        // $approvals = Approval::all();
-        $admin_approvals = Auth::user()->approvals->where('approval_id', 1);
-
-        # 工場単位で一覧作成
-        $approvals = new Collection();
-        foreach ($admin_approvals as $approval) {
-            $extractions = Approval::with('user')
-                            ->where('factory_id', $approval->factory_id)
-                            ->get();
-
-            $extractions->each(function ($extraction) use ($approvals) {
-                $approvals->add($extraction);
+        $my_approvals = Auth::user()->approvals->where('approval_id', 1)->load('affiliation');
+        $approvals = Approval::whereHas('user', function ($query) use (
+            $my_approvals
+        ) {
+            $query->where(function ($query) use ($my_approvals) {
+                foreach ($my_approvals as $approval) {
+                    if ($approval->affiliation->department_id == 1) {
+                        $query->orWhere(function ($query) use ($approval) {
+                            $query->whereHas('affiliation', function (
+                                $query
+                            ) use ($approval) {
+                                $query->where(
+                                    'factory_id',
+                                    $approval->affiliation->factory_id
+                                );
+                            });
+                        });
+                    } else {
+                        $query->orWhere(function ($query) use ($approval) {
+                            $query->whereHas('affiliation', function (
+                                $query
+                            ) use ($approval) {
+                                $query
+                                    ->where(
+                                        'factory_id',
+                                        $approval->affiliation->factory_id
+                                    )
+                                    ->where(
+                                        'department_id',
+                                        $approval->affiliation->department_id
+                                    );
+                            });
+                        });
+                    }
+                }
             });
+        })->get();
+
+        if ($my_approvals->contains('affiliation_id', 1)) {
+            $approvals = Approval::all();
         }
+
+        // 重複削除&並べ替え
+        $approvals = $approvals
+            ->unique()
+            ->load([
+                'user',
+                'user.affiliation',
+                'affiliation',
+                'affiliation.factory',
+                'affiliation.department',
+                'affiliation.group',
+                'approval_category',
+            ])
+            ->sortBy('affiliation_id')
+            ->sortBy('user.employee');
 
         return view('approvals.index')->with(compact('approvals'));
     }
@@ -48,12 +88,96 @@ class ApprovalController extends Controller
      */
     public function create()
     {
-        $users = User::all();
-        $factory_categories = FactoryCategory::all();
-        $department_categories = DepartmentCategory::all();
-        $group_categories = GroupCategory::all();
-        $approval_categories = ApprovalCategory::all();
-        return view('approvals.create')->with(compact('users', 'factory_categories', 'department_categories', 'group_categories', 'approval_categories'));
+        $my_approvals = Auth::user()->approvals->where('approval_id', 1)->load('affiliation');
+        $users = User::whereHas('affiliation', function ($query) use (
+            $my_approvals
+        ) {
+            $query->where(function ($query) use ($my_approvals) {
+                foreach ($my_approvals as $approval) {
+                    if ($approval->affiliation->department_id == 1) {
+                        $query->orWhere(
+                            'factory_id',
+                            $approval->affiliation->factory_id
+                        );
+                    } elseif (
+                        $approval->affiliation->department_id != 1 &&
+                        $approval->affiliation->group_id == 1
+                    ) {
+                        $query->orWhere(function ($query) use ($approval) {
+                            $query
+                                ->where(
+                                    'factory_id',
+                                    $approval->affiliation->factory_id
+                                )
+                                ->where(
+                                    'department_id',
+                                    $approval->affiliation->department_id
+                                );
+                        });
+                    } elseif (
+                        $approval->affiliation->department_id != 1 &&
+                        $approval->affiliation->group_id != 1
+                    ) {
+                        $query->orWhere(function ($query) use ($approval) {
+                            $query
+                                ->where(
+                                    'factory_id',
+                                    $approval->affiliation->factory_id
+                                )
+                                ->where(
+                                    'department_id',
+                                    $approval->affiliation->department_id
+                                );
+                        });
+                    }
+                }
+            });
+        })->get();
+
+        // TODO:権限の組み合わせにルールをつける
+        // 1はdepartmentまでgroupは必ず1 
+        $affiliations = Affiliation::where(function ($query) use (
+            $my_approvals
+        ) {
+            foreach ($my_approvals as $approval) {
+                $query->orWhere(function ($query) use ($approval) {
+                    if (
+                        $approval->affiliation->factory_id != 1 &&
+                        $approval->affiliation->department_id == 1
+                    ) {
+                        $query->where(
+                            'factory_id',
+                            $approval->affiliation->factory_id
+                        );
+                    } elseif (
+                        $approval->affiliation->factory_id != 1 &&
+                        $approval->affiliation->department_id != 1
+                    ) {
+                        $query
+                            ->where(
+                                'factory_id',
+                                $approval->affiliation->factory_id
+                            )
+                            ->where(
+                                'department_id',
+                                $approval->affiliation->department_id
+                            );
+                    }
+                });
+            }
+        })->get();
+
+        $approval_categories = ApprovalCategory::where('id', '!=', 1)->get();
+
+        if ($my_approvals->contains('affiliation_id', 1)) {
+            $users = User::all();
+            $affiliations = Affiliation::all()->load(['factory', 'department', 'group']);
+            $approval_categories = ApprovalCategory::all();
+        }
+
+        return view('approvals.create')->with(
+            compact('users', 'affiliations', 'approval_categories')
+        );
     }
 
     /**
@@ -65,6 +189,8 @@ class ApprovalController extends Controller
     // fixme:StoreApprovalRequest通らない useから書き直しで通った
     public function store(StoreApprovalRequest $request)
     {
+        Log::info('Request data:', $request->all());
+
         $approval = new Approval();
         $approval->fill($request->all());
 
@@ -72,10 +198,10 @@ class ApprovalController extends Controller
             $approval->save();
             return redirect()
                 ->route('approvals.index')
-                ->with('notice', '権限を追加しました');
+                ->with('notice', 'StoreApproval');
         } catch (\Throwable $th) {
-            return back()
-                ->withErrors($th->getMessage());
+            Log::error('Exception caught: ' . $th->getMessage());
+            return back()->with('error', 'エラーが発生しました。');
         }
     }
 
@@ -98,11 +224,49 @@ class ApprovalController extends Controller
      */
     public function edit(Approval $approval)
     {
-        $factory_categories = FactoryCategory::all();
-        $department_categories = DepartmentCategory::all();
-        $group_categories = GroupCategory::all();
-        $approval_categories = ApprovalCategory::all();
-        return view('approvals.edit')->with(compact('approval', 'factory_categories', 'department_categories', 'group_categories', 'approval_categories'));
+        $my_approvals = Auth::user()->approvals->where('approval_id', 1);
+
+        $affiliations = Affiliation::where(function ($query) use (
+            $my_approvals
+        ) {
+            foreach ($my_approvals as $approval) {
+                $query->orWhere(function ($query) use ($approval) {
+                    if (
+                        $approval->affiliation->factory_id != 1 &&
+                        $approval->affiliation->department_id == 1
+                    ) {
+                        $query->where(
+                            'factory_id',
+                            $approval->affiliation->factory_id
+                        );
+                    } elseif (
+                        $approval->affiliation->factory_id != 1 &&
+                        $approval->affiliation->department_id != 1
+                    ) {
+                        $query
+                            ->where(
+                                'factory_id',
+                                $approval->affiliation->factory_id
+                            )
+                            ->where(
+                                'department_id',
+                                $approval->affiliation->department_id
+                            );
+                    }
+                });
+            }
+        })->get();
+
+        $approval_categories = ApprovalCategory::where('id', '!=', 1)->get();
+
+        if ($my_approvals->contains('id', 1)) {
+            $affiliations = Affiliation::all()->load(['factory', 'department', 'group']);
+            $approval_categories = ApprovalCategory::all();
+        }
+
+        return view('approvals.edit')->with(
+            compact('approval', 'affiliations', 'approval_categories')
+        );
     }
 
     /**
@@ -114,15 +278,17 @@ class ApprovalController extends Controller
      */
     public function update(UpdateApprovalRequest $request, Approval $approval)
     {
+        Log::info('Request data:', $request->all());
+
         $approval->fill($request->all());
         try {
             $approval->save();
             return redirect()
                 ->route('approvals.index')
-                ->with('notice', '権限を更新しました');
+                ->with('notice', 'UpdateApproval');
         } catch (\Throwable $th) {
-            return back()
-                ->withErrors($th->getMessage());
+            Log::error('Exception caught: ' . $th->getMessage());
+            return back()->with('error', 'エラーが発生しました。');
         }
     }
 
@@ -134,13 +300,16 @@ class ApprovalController extends Controller
      */
     public function destroy(Approval $approval)
     {
+        Log::info('Destroy data:', $approval->all());
+        
         try {
             $approval->delete();
             return redirect()
                 ->route('approvals.index')
-                ->with('notice', '権限を取り消しました');
+                ->with('notice', 'DestroyApproval');
         } catch (\Throwable $th) {
-            return back()->withErrors($th->getMessage());
+            Log::error('Exception caught: ' . $th->getMessage());
+            return back()->with('error', 'エラーが発生しました。');
         }
     }
 }

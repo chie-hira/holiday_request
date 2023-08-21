@@ -16,24 +16,18 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->unique();
+            $table->string('email');
+            // $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->integer('employee')->nullable()->unique();
-            $table->foreignId('factory_id') # メインの所属工場
-                ->constrained('factory_categories')
-                ->cascadeOnUpdate()
-                ->cascadeOnDelete();
-            $table->foreignId('department_id') # メインの所属課、同列複数の場合(工場長)は無所属
-                ->constrained('department_categories')
-                ->cascadeOnUpdate()
-                ->cascadeOnDelete();
-            $table->foreignId('group_id') # メインのグループ、同列複数の場合は無所属
-                ->constrained('group_categories')
+            $table->foreignId('affiliation_id') # 所属
+                ->constrained('affiliations')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
             $table->date('adoption_date')->nullable();
             $table->string('birthday')->nullable();
+            $table->string('remarks', 20)->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

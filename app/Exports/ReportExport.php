@@ -4,24 +4,14 @@ namespace App\Exports;
 
 use App\Models\Report;
 use Maatwebsite\Excel\Concerns\FromCollection;
-use Illuminate\Contracts\View\View;
-use Maatwebsite\Excel\Concerns\FromView;
 
-class ReportExport implements FromView
+class ReportExport implements FromCollection
 {
-
-    private $view;
-
-    public function __construct(View $view)
-    {
-        $this->view = $view;
-    }
-
     /**
-     * @return View
-     */
-    public function view(): View
+    * @return \Illuminate\Support\Collection
+    */
+    public function collection()
     {
-        return $this->view;
+        return Report::all();
     }
 }

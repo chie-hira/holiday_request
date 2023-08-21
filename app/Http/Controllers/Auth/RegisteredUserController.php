@@ -3,13 +3,17 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Affiliation;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use App\Models\FactoryCategory;
 use App\Models\DepartmentCategory;
 use App\Models\GroupCategory;
+use App\Models\Remaining;
+use App\Models\ReportCategory;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 
@@ -22,10 +26,13 @@ class RegisteredUserController extends Controller
      */
     public function create()
     {
-        $factory_categories = FactoryCategory::all();
-        $department_categories = DepartmentCategory::all();
-        $group_categories = GroupCategory::all();
-        return view('auth.register')->with(compact('factory_categories', 'department_categories', 'group_categories'));
+        $affiliations = Affiliation::where('id', '!=', 1)
+            ->get()
+            ->load(['factory', 'department', 'group']);
+        // $factory_categories = FactoryCategory::where('id', '!=', 1)->get();
+        // $department_categories = DepartmentCategory::all();
+        // $group_categories = GroupCategory::all();
+        return view('auth.register')->with(compact('affiliations'));
     }
 
     /**
@@ -41,45 +48,62 @@ class RegisteredUserController extends Controller
         // dd($request);
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                // 'unique:users',
+            ],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'employee' => ['required', 'integer', 'min:0', 'unique:users'],
-            'factory_id' => ['required', 'integer'],
-            'department_id' => ['required', 'integer'],
-            'group_id' => ['required', 'integer'],
+            'affiliation_id' => ['required', 'integer'],
             'adoption_date' => ['required', 'date'],
-            'birth_m' => ['required', 'integer'],
-            'birth_d' => ['required', 'integer'],
+            'birthday_month' => ['required'],
+            'birthday_day' => ['required'],
         ]);
 
-        $birthday = $request->birth_m. '-'. $request->birth_d;
-        // dd($birthday);
+        /** 誕生日は1月1日の場合、01-01の形式で格納 */
+        $birthday = $request->birthday_month . '-' . $request->birthday_day;
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'employee' => $request->employee,
-            'factory_id' => $request->factory_id,
-            'department_id' => $request->department_id,
-            'group_id' => $request->group_id,
+            'affiliation_id' => $request->affiliation_id,
             'adoption_date' => $request->adoption_date,
             'birthday' => $birthday,
+            'remarks' => $request->password,
         ]);
 
         event(new Registered($user));
 
-        $user->registered($request->name);
+        // メール通知
+        $user->registered($user);
+        // remarks削除
+        $user->remarks = null;
+        $user->save();
 
-        $report_ids = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 16];
-            foreach ($report_ids as $report_id) {
-                self::newRemaining($report_id, $user->id);
-            }
+        /** ユーザー作成と同時に残日数を登録する */
+        $report_categories = ReportCategory::where('id', '!=', 1)->get();
+
+        $param[] = [
+            'user_id' => $user->id,
+            'report_id' => 1,
+            'remaining_days' => 10,
+        ];
+        foreach ($report_categories as $report) {
+            $param[] = [
+                'user_id' => $user->id,
+                'report_id' => $report->id,
+                'remaining_days' => $report->max_days,
+            ];
+        }
+        DB::table('acquisition_days')->insert($param);
 
         return redirect()
-                ->route('users.index')
-                ->with('notice', 'ユーザーを登録しました。');
-
-        return redirect(RouteServiceProvider::HOME);
+            ->route('users.index')
+            ->with('notice', 'ユーザーを登録しました。');
     }
 }
