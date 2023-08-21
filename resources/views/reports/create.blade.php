@@ -24,7 +24,6 @@
                 <form id="myForm" action="{{ route('reports.store') }}" method="POST">
                     @csrf
 
-                    {{-- <div class="grid gap-6 mb-6 md:grid-cols-2"> --}}
                     <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                         <div>
                             <label for="report_date" class="block mb-2 text-sm font-medium text-gray-900">
@@ -571,88 +570,99 @@
                 reasonCategory.removeChild(reasonCategory.childNodes[0]);
             }
 
+            const reportReasons = @json($report_reasons);
+
+            // reasonCategoryをセット=option要素を追加
+            Object.keys(reportReasons).forEach((el) => {
+                if (reportCategory.value == reportReasons[el].report_id) {
+                    let createId = reasons[reportReasons[el].reason_id - 1].id;
+                    let createReason = reasons[reportReasons[el].reason_id - 1].reason;
+                    createOption(createId, createReason)
+                }
+            })
+
             // 選択したreport_categoryでreasonのoptionを作成&追加
-            if (reportCategory.value == "1" || // 有給
-                reportCategory.value == "12" || // 欠勤
-                reportCategory.value == "13" || // 遅刻
-                reportCategory.value == "14" || // 早退
-                reportCategory.value == "15") { // 外出
-                let reasonId = [1, 2, 3, 4, 5, 6, 7, 9];
-                reasonId.forEach(e => {
-                    let createId = reasons[e - 1].id;
-                    let createReason = reasons[e - 1].reason;
-                    createOption(createId, createReason)
-                });
-            }
-            if (reportCategory.value == "2") { // バースデイ
-                let reasonId = [10];
-                reasonId.forEach(e => {
-                    let createId = reasons[e - 1].id;
-                    let createReason = reasons[e - 1].reason;
-                    createOption(createId, createReason)
-                });
-            }
-            if (reportCategory.value == "3") { // 特別休暇(慶事)
-                let reasonId = [11, 9];
-                reasonId.forEach(e => {
-                    let createId = reasons[e - 1].id;
-                    let createReason = reasons[e - 1].reason;
-                    createOption(createId, createReason)
-                });
-            }
-            if (reportCategory.value == "4") { // 特別休暇(弔事・配偶者等)
-                let reasonId = [12, 13, 14, 9];
-                reasonId.forEach(e => {
-                    let createId = reasons[e - 1].id;
-                    let createReason = reasons[e - 1].reason;
-                    createOption(createId, createReason)
-                });
-            }
-            if (reportCategory.value == "5") { // 特別休暇(弔事・同居の義父母)
-                let reasonId = [16, 9];
-                reasonId.forEach(e => {
-                    let createId = reasons[e - 1].id;
-                    let createReason = reasons[e - 1].reason;
-                    createOption(createId, createReason)
-                });
-            }
-            if (reportCategory.value == "6") { // 特別休暇(弔事・別居父母等)
-                let reasonId = [15, 17, 18, 19, 20, 9];
-                reasonId.forEach(e => {
-                    let createId = reasons[e - 1].id;
-                    let createReason = reasons[e - 1].reason;
-                    createOption(createId, createReason)
-                });
-            }
-            if (reportCategory.value == "7" || // 特別休暇(看護・対象1名)
-                reportCategory.value == "8") { // 特別休暇(看護・対象2名以上)
-                let reasonId = [21, 9];
-                reasonId.forEach(e => {
-                    let createId = reasons[e - 1].id;
-                    let createReason = reasons[e - 1].reason;
-                    createOption(createId, createReason)
-                });
-            }
-            if (reportCategory.value == "9" || // 特別休暇(介護・対象1名)
-                reportCategory.value == "10" || // 特別休暇(介護・対象2名)
-                reportCategory.value == "16") { // 介護休業
-                let reasonId = [22, 23, 24, 25, 26, 27, 28, 9];
-                reasonId.forEach(e => {
-                    let createId = reasons[e - 1].id;
-                    let createReason = reasons[e - 1].reason;
-                    createOption(createId, createReason)
-                });
-            }
-            if (reportCategory.value == "11" || // 特別休暇(短期育休)
-                reportCategory.value == "17" || // 育児休業
-                reportCategory.value == "18") { // パパ育休
-                let reasonId = [29, 9];
-                reasonId.forEach(e => {
-                    let createId = reasons[e - 1].id;
-                    let createReason = reasons[e - 1].reason;
-                    createOption(createId, createReason)
-                });
-            }
+            // if (reportCategory.value == "1" || // 有給
+            //     reportCategory.value == "12" || // 欠勤
+            //     reportCategory.value == "13" || // 遅刻
+            //     reportCategory.value == "14" || // 早退
+            //     reportCategory.value == "15") { // 外出
+            //     let reasonId = [1, 2, 3, 4, 5, 6, 7, 9];
+            //     reasonId.forEach(e => {
+            //         let createId = reasons[e - 1].id;
+            //         let createReason = reasons[e - 1].reason;
+            //         createOption(createId, createReason)
+            //     });
+            // }
+            // if (reportCategory.value == "2") { // バースデイ
+            //     let reasonId = [10];
+            //     reasonId.forEach(e => {
+            //         let createId = reasons[e - 1].id;
+            //         let createReason = reasons[e - 1].reason;
+            //         createOption(createId, createReason)
+            //     });
+            // }
+            // if (reportCategory.value == "3") { // 特別休暇(慶事)
+            //     let reasonId = [11, 9];
+            //     reasonId.forEach(e => {
+            //         let createId = reasons[e - 1].id;
+            //         let createReason = reasons[e - 1].reason;
+            //         createOption(createId, createReason)
+            //     });
+            // }
+            // if (reportCategory.value == "4") { // 特別休暇(弔事・配偶者等)
+            //     let reasonId = [12, 13, 14, 9];
+            //     reasonId.forEach(e => {
+            //         let createId = reasons[e - 1].id;
+            //         let createReason = reasons[e - 1].reason;
+            //         createOption(createId, createReason)
+            //     });
+            // }
+            // if (reportCategory.value == "5") { // 特別休暇(弔事・同居の義父母)
+            //     let reasonId = [16, 9];
+            //     reasonId.forEach(e => {
+            //         let createId = reasons[e - 1].id;
+            //         let createReason = reasons[e - 1].reason;
+            //         createOption(createId, createReason)
+            //     });
+            // }
+            // if (reportCategory.value == "6") { // 特別休暇(弔事・別居父母等)
+            //     let reasonId = [15, 17, 18, 19, 20, 9];
+            //     reasonId.forEach(e => {
+            //         let createId = reasons[e - 1].id;
+            //         let createReason = reasons[e - 1].reason;
+            //         createOption(createId, createReason)
+            //     });
+            // }
+            // if (reportCategory.value == "7" || // 特別休暇(看護・対象1名)
+            //     reportCategory.value == "8") { // 特別休暇(看護・対象2名以上)
+            //     let reasonId = [21, 9];
+            //     reasonId.forEach(e => {
+            //         let createId = reasons[e - 1].id;
+            //         let createReason = reasons[e - 1].reason;
+            //         createOption(createId, createReason)
+            //     });
+            // }
+            // if (reportCategory.value == "9" || // 特別休暇(介護・対象1名)
+            //     reportCategory.value == "10" || // 特別休暇(介護・対象2名)
+            //     reportCategory.value == "16") { // 介護休業
+            //     let reasonId = [22, 23, 24, 25, 26, 27, 28, 9];
+            //     reasonId.forEach(e => {
+            //         let createId = reasons[e - 1].id;
+            //         let createReason = reasons[e - 1].reason;
+            //         createOption(createId, createReason)
+            //     });
+            // }
+            // if (reportCategory.value == "11" || // 特別休暇(短期育休)
+            //     reportCategory.value == "17" || // 育児休業
+            //     reportCategory.value == "18") { // パパ育休
+            //     let reasonId = [29, 9];
+            //     reasonId.forEach(e => {
+            //         let createId = reasons[e - 1].id;
+            //         let createReason = reasons[e - 1].reason;
+            //         createOption(createId, createReason)
+            //     });
+            // }
 
             for (let i = 0; i < reasonCategory.childNodes.length; i++) {
                 if (oldReasonId == reasonCategory.childNodes[i].value) {
@@ -1100,7 +1110,6 @@
             });
 
             let remainingDays = ownRemainingDays - getDays;
-            console.log(remainingDays);
             // 残日数書き出し
             document.getElementById('remaining_days').setAttribute('value', remainingDays);
 

@@ -17,6 +17,7 @@ use App\Models\FactoryCategory;
 use App\Exports\ReportFormExport;
 use App\Models\Affiliation;
 use App\Models\DepartmentCategory;
+use App\Models\Reason;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -125,6 +126,7 @@ class ReportController extends Controller
     {
         $sub_report_categories = SubReportCategory::all();
         $reasons = ReasonCategory::all();
+        $report_reasons = Reason::all();
         $shifts = ShiftCategory::all();
         $my_acquisition_days = Auth::user()->acquisition_days;
         $my_reports = Auth::user()->reports;
@@ -165,6 +167,7 @@ class ReportController extends Controller
                 'report_categories',
                 'sub_report_categories',
                 'reasons',
+                'report_reasons',
                 'shifts',
                 'my_acquisition_days',
                 'my_reports'
@@ -436,6 +439,7 @@ class ReportController extends Controller
                 ]);
             }
         }
+        // dd($request);
 
         # reportsレコード作成
         $report = new Report();
@@ -740,6 +744,7 @@ class ReportController extends Controller
     {
         $sub_report_categories = SubReportCategory::all();
         $reasons = ReasonCategory::all();
+        $report_reasons = Reason::all();
         $shifts = ShiftCategory::all();
         $my_acquisition_days = Auth::user()->acquisition_days;
         $my_reports = Auth::user()->reports->where('id', '!=', $report->id);
@@ -780,6 +785,7 @@ class ReportController extends Controller
                 'report_categories',
                 'sub_report_categories',
                 'reasons',
+                'report_reasons',
                 'shifts',
                 'my_acquisition_days',
                 'my_reports'
