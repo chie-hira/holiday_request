@@ -2683,6 +2683,10 @@ class ReportController extends Controller
         return Excel::download(new MultipleExport(), 'pp.xlsx');
     }
 
+    public function import_form(){
+        return view('menu.import_form');
+    }
+
     // public function source_export()
     // {
     //     # 全データ出力

@@ -2,17 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DepartmentCategory;
-use App\Models\FactoryCategory;
-use App\Models\GroupCategory;
 use App\Http\Requests\UpdateUserRequest;
 use App\Imports\UserImport;
 use App\Models\Affiliation;
+use App\Models\ReportCategory;
 use App\Models\User;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
@@ -24,7 +22,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        $my_approvals = Auth::user()->approvals->where('approval_id', 1)->load('affiliation');
+        $my_approvals = Auth::user()
+            ->approvals->where('approval_id', 1)
+            ->load('affiliation');
 
         // 一部管理者の場合
         $users = User::where(function ($query) use ($my_approvals) {
@@ -61,7 +61,11 @@ class UserController extends Controller
         })->get();
 
         // 全体管理者の場合
-        if ($my_approvals->where('affiliation_id', 1)->contains('approval_id', 1)) {
+        if (
+            $my_approvals
+                ->where('affiliation_id', 1)
+                ->contains('approval_id', 1)
+        ) {
             $users = User::all();
         }
 
@@ -88,13 +92,12 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        $affiliations = Affiliation::all()->load(['factory', 'department', 'group']);
-        return view('users.edit')->with(
-            compact(
-                'user',
-                'affiliations'
-            )
-        );
+        $affiliations = Affiliation::all()->load([
+            'factory',
+            'department',
+            'group',
+        ]);
+        return view('users.edit')->with(compact('user', 'affiliations'));
     }
 
     /**
@@ -135,14 +138,34 @@ class UserController extends Controller
         }
     }
 
-    public function import_form(){
-        return view('users.import_form');
-    }
-
-    public function import(HttpRequest $request){
+    public function import(Request $request)
+    {
+        // ユーザー情報インサート
         $excel_file = $request->file('excel_file');
         $excel_file->store('excels');
-        Excel::import(new UserImport, $excel_file);
-        return view('users.import_form');
+        Excel::import(new UserImport(), $excel_file);
+
+        // 休暇日数インサート
+        $users = User::all();
+        $param = [];
+
+        for ($i = 0; $i < count($users); $i++) {
+            $user_id = $users[$i]->id;
+            $report_categories = ReportCategory::all();
+
+            foreach ($report_categories as $report) {
+                $param[] = [
+                    'user_id' => $user_id,
+                    'report_id' => $report->id,
+                    'remaining_days' => $report->max_days,
+                ];
+            }
+        }
+
+        DB::table('acquisition_days')->insert($param);
+
+        return redirect()
+                ->route('menu.import_form')
+                ->with('notice', 'ユーザー情報インポート完了！');
     }
 }

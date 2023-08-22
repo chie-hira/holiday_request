@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 // use App\Http\Requests\StoreApprovalRequest;
 use App\Http\Requests\StoreApprovalRequest;
 use App\Http\Requests\UpdateApprovalRequest;
+use App\Imports\ApprovalImport;
 use App\Models\Affiliation;
 use App\Models\Approval;
 use App\Models\ApprovalCategory;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ApprovalController extends Controller
 {
@@ -311,5 +314,15 @@ class ApprovalController extends Controller
             Log::error('Exception caught: ' . $th->getMessage());
             return back()->with('error', 'エラーが発生しました。');
         }
+    }
+
+    public function import(Request $request){
+        $excel_file = $request->file('excel_file');
+        $excel_file->store('excels');
+        Excel::import(new ApprovalImport, $excel_file);
+
+        return redirect()
+                ->route('menu.import_form')
+                ->with('notice', '権限インポート完了！');
     }
 }
