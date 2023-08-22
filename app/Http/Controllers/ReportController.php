@@ -15,6 +15,7 @@ use App\Models\User;
 use App\Models\Approval;
 use App\Models\FactoryCategory;
 use App\Exports\ReportFormExport;
+use App\Imports\UserImport;
 use App\Models\Affiliation;
 use App\Models\DepartmentCategory;
 use App\Models\Reason;

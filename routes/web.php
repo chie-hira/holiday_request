@@ -4,6 +4,7 @@ use App\Http\Controllers\AcquisitionDayController;
 use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
+use App\Imports\UserImport;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -116,6 +117,12 @@ Route::post('/export', [ReportController::class, 'export'])
 Route::get('/all_export', [ReportController::class, 'all_export'])->middleware(
     'auth'
 );
+
+# インポート
+// Excelインポート
+Route::get('/users_import_form',[UserController::class, 'import_form'])->name('import_form');
+Route::post('/users_import',[UserController::class, 'import'])->name('import');
+
 // TODO:notAuthorizedでログイン画面にリダイレクト
 
 require __DIR__ . '/auth.php';

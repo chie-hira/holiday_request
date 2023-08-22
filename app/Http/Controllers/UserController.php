@@ -6,10 +6,14 @@ use App\Models\DepartmentCategory;
 use App\Models\FactoryCategory;
 use App\Models\GroupCategory;
 use App\Http\Requests\UpdateUserRequest;
+use App\Imports\UserImport;
 use App\Models\Affiliation;
 use App\Models\User;
+use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -129,5 +133,16 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             return back()->withErrors($th->getMessage());
         }
+    }
+
+    public function import_form(){
+        return view('users.import_form');
+    }
+
+    public function import(HttpRequest $request){
+        $excel_file = $request->file('excel_file');
+        $excel_file->store('excels');
+        Excel::import(new UserImport, $excel_file);
+        return view('users.import_form');
     }
 }
