@@ -121,7 +121,8 @@ Route::get('/all_export', [ReportController::class, 'all_export'])->middleware(
 # インポート
 // Excelインポート
 Route::get('/import_form',[ReportController::class, 'import_form'])->name('import_form');
-Route::post('/users_import',[UserController::class, 'import'])->name('import');
+Route::post('/users_import',[UserController::class, 'import'])->name('users_import');
+Route::post('/approvals_import',[ApprovalController::class, 'import'])->name('approvals_import');
 
 // TODO:notAuthorizedでログイン画面にリダイレクト
 

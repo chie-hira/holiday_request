@@ -3,7 +3,6 @@
 
         <x-notice :notice="session('notice')" />
 
-        {{-- <p>migrate&seed後に取り込み</p> --}}
         <h2 class="mb-6 text-lg font-bold text-gray-700"><span class="text-blue-600">migrate&seed</span>後に<span class="text-blue-600">users→approvals</span>の順で取り込み</h2>
 
         <form method="post" action="/users_import" enctype="multipart/form-data" class="mb-4">

@@ -322,7 +322,7 @@ class ApprovalController extends Controller
         Excel::import(new ApprovalImport, $excel_file);
 
         return redirect()
-                ->route('menu.import_form')
+                ->route('import_form')
                 ->with('notice', '権限インポート完了！');
     }
 }

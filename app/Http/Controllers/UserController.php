@@ -7,7 +7,6 @@ use App\Imports\UserImport;
 use App\Models\Affiliation;
 use App\Models\ReportCategory;
 use App\Models\User;
-use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -165,7 +164,7 @@ class UserController extends Controller
         DB::table('acquisition_days')->insert($param);
 
         return redirect()
-                ->route('menu.import_form')
+                ->route('import_form')
                 ->with('notice', 'ユーザー情報インポート完了！');
     }
 }
