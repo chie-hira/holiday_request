@@ -284,7 +284,7 @@
             @endauth
 
             <!-- 上長承認 start -->
-            @can('approver')
+            @can('admin')
                 <div class="text-left w-full my-12">
                     {{-- @if (Auth::user()->approvals->first()) --}}
                         <ul class="text-sm">

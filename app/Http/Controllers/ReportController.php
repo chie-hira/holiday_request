@@ -15,6 +15,7 @@ use App\Models\User;
 use App\Models\Approval;
 use App\Models\FactoryCategory;
 use App\Exports\ReportFormExport;
+use App\Imports\UserImport;
 use App\Models\Affiliation;
 use App\Models\DepartmentCategory;
 use App\Models\Reason;
@@ -2680,6 +2681,10 @@ class ReportController extends Controller
     {
         # 全データ出力
         return Excel::download(new MultipleExport(), 'pp.xlsx');
+    }
+
+    public function import_form(){
+        return view('menu.import_form');
     }
 
     // public function source_export()

@@ -22,6 +22,7 @@ class ReasonSeeder extends Seeder
             ['report_id' =>  1, 'reason_id' =>  5], # 5
             ['report_id' =>  1, 'reason_id' =>  6], # 6
             ['report_id' =>  1, 'reason_id' =>  7], # 7
+            ['report_id' =>  1, 'reason_id' =>  8], # 7
             ['report_id' =>  1, 'reason_id' =>  9], # 8
             ['report_id' => 12, 'reason_id' =>  1], # 9
             ['report_id' => 12, 'reason_id' =>  2], # 10
@@ -30,6 +31,7 @@ class ReasonSeeder extends Seeder
             ['report_id' => 12, 'reason_id' =>  5], # 13
             ['report_id' => 12, 'reason_id' =>  6], # 14
             ['report_id' => 12, 'reason_id' =>  7], # 15
+            ['report_id' => 12, 'reason_id' =>  8], # 15
             ['report_id' => 12, 'reason_id' =>  9], # 16
             ['report_id' => 12, 'reason_id' =>  1], # 17
             ['report_id' => 13, 'reason_id' =>  2], # 18
@@ -38,6 +40,7 @@ class ReasonSeeder extends Seeder
             ['report_id' => 13, 'reason_id' =>  5], # 21
             ['report_id' => 13, 'reason_id' =>  6], # 22
             ['report_id' => 13, 'reason_id' =>  7], # 23
+            ['report_id' => 13, 'reason_id' =>  8], # 23
             ['report_id' => 13, 'reason_id' =>  9], # 24
             ['report_id' => 14, 'reason_id' =>  2], # 25
             ['report_id' => 14, 'reason_id' =>  3], # 26
@@ -45,6 +48,7 @@ class ReasonSeeder extends Seeder
             ['report_id' => 14, 'reason_id' =>  5], # 28
             ['report_id' => 14, 'reason_id' =>  6], # 29
             ['report_id' => 14, 'reason_id' =>  7], # 30
+            ['report_id' => 14, 'reason_id' =>  8], # 30
             ['report_id' => 14, 'reason_id' =>  9], # 31
             ['report_id' => 15, 'reason_id' =>  2], # 32
             ['report_id' => 15, 'reason_id' =>  3], # 33
@@ -52,6 +56,7 @@ class ReasonSeeder extends Seeder
             ['report_id' => 15, 'reason_id' =>  5], # 35
             ['report_id' => 15, 'reason_id' =>  6], # 36
             ['report_id' => 15, 'reason_id' =>  7], # 37
+            ['report_id' => 15, 'reason_id' =>  8], # 37
             ['report_id' => 15, 'reason_id' =>  9], # 38
             ['report_id' =>  2, 'reason_id' => 10], # 39
             ['report_id' =>  3, 'reason_id' => 11], # 40
