@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\RemainingExport;
 use App\Http\Requests\StoreAcquisitionDayRequest;
 use App\Http\Requests\UpdateAcquisitionDayRequest;
+use App\Imports\AcquisitionDayImport;
 use App\Models\User;
 use App\Models\AcquisitionDay;
 use App\Models\ReportCategory;
@@ -405,5 +406,15 @@ class AcquisitionDayController extends Controller
             Log::error('Exception caught: ' . $th->getMessage());
             return back()->with('error', 'エラーが発生しました。');
         }
+    }
+
+    public function import(Request $request){
+        $excel_file = $request->file('excel_file');
+        $excel_file->store('excels');
+        Excel::import(new AcquisitionDayImport, $excel_file);
+
+        return redirect()
+                ->route('import_form')
+                ->with('notice', '休暇日数インポート完了！');
     }
 }
