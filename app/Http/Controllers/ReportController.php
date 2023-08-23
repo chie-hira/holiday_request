@@ -201,6 +201,7 @@ class ReportController extends Controller
             $request->report_id == 10 # 特別休暇(介護・対象2名)
         ) {
             $request->validate([
+                'start_date' => 'after:today',
                 'sub_report_id' => 'required|integer',
             ]);
             if ($request->sub_report_id == 1) {
@@ -256,18 +257,6 @@ class ReportController extends Controller
                             'multiple_of:0.125',
                             Rule::notIn([1]),
                         ],
-                        // 'get_days' => [
-                        //     'required',
-                        //     Rule::in([
-                        //         0.125,
-                        //         0.25,
-                        //         0.375,
-                        //         0.5,
-                        //         0.625,
-                        //         0.75,
-                        //         0.825,
-                        //     ]),
-                        // ],
                     ],
                     [
                         'get_days.max' => '時間給は:max日未満で届出できます。',
@@ -284,6 +273,7 @@ class ReportController extends Controller
         ) {
             $request->validate(
                 [
+                    'start_date' => 'after:today',
                     'get_days' => ['required', Rule::in(1.0)],
                 ],
                 [
@@ -293,13 +283,27 @@ class ReportController extends Controller
         }
         if (
             $request->report_id == 3 || # 特別休暇(慶事)
-            $request->report_id == 4 || # 特別休暇(弔事)
-            $request->report_id == 5 || # 特別休暇(弔事)
-            $request->report_id == 6 || # 特別休暇(弔事)
             $request->report_id == 11 || # 特別休暇(短期育休)
             $request->report_id == 16 || # 介護休業
             $request->report_id == 17 || # 育児休業
             $request->report_id == 18 # パパ育休
+        ) {
+            $request->validate(
+                [
+                    'start_date' => 'after:today',
+                    'end_date' => 'required',
+                    'get_days' => 'min:1',
+                ],
+                [
+                    'get_days.min' =>
+                        ':attributeは:min日以上で届出してください。',
+                ]
+            );
+        }
+        if (
+            $request->report_id == 4 || # 特別休暇(弔事)
+            $request->report_id == 5 || # 特別休暇(弔事)
+            $request->report_id == 6 # 特別休暇(弔事)
         ) {
             $request->validate(
                 [
@@ -506,66 +510,6 @@ class ReportController extends Controller
                         $approval->user->Approved($report);
                     }
                 }
-                // dd($gl_approvals);
-                // $my_approvals = Auth::user()->approvals->where(
-                //     'approval_id',
-                //     2
-                // );
-                // $approvers = User::where(function ($query) use ($my_approvals) {
-                //     foreach ($my_approvals as $approval) {
-                //         $query->orWhere(function ($query) use ($approval) {
-                //             if ($approval->affiliation->department_id == 1) {
-                //                 $query->whereHas('approvals', function (
-                //                     $query
-                //                 ) use ($approval) {
-                //                     $query
-                //                         ->where('approval_id', 3)
-                //                         ->whereHas('affiliation', function (
-                //                             $query
-                //                         ) use ($approval) {
-                //                             $query->where(
-                //                                 'factory_id',
-                //                                 $approval->affiliation
-                //                                     ->factory_id
-                //                             );
-                //                         });
-                //                 });
-                //             } elseif (
-                //                 $approval->affiliation->department_id != 1 &&
-                //                 $approval->affiliation->group_id == 1
-                //             ) {
-                //                 $query->whereHas('approvals', function (
-                //                     $query
-                //                 ) use ($approval) {
-                //                     $query
-                //                         ->where('approval_id', 3)
-                //                         ->whereHas('affiliation', function (
-                //                             $query
-                //                         ) use ($approval) {
-                //                             $query
-                //                                 ->where(
-                //                                     'factory_id',
-                //                                     $approval->affiliation
-                //                                         ->factory_id
-                //                                 )
-                //                                 ->where(
-                //                                     'department_id',
-                //                                     $approval->affiliation
-                //                                         ->department_id
-                //                                 );
-                //                         });
-                //                 });
-                //             }
-                //         });
-                //     }
-                // })->get();
-                // dd($approvers);
-
-                // if ($approvers) {
-                //     foreach ($approvers as $approver) {
-                //         $approver->Approved($report);
-                //     }
-                // }
                 // リダイレクト
                 return redirect()
                     ->route('reports.show', $report)
@@ -843,6 +787,7 @@ class ReportController extends Controller
             $request->report_id == 10 # 特別休暇(介護・対象2名)
         ) {
             $request->validate([
+                'start_date' => 'after:today',
                 'sub_report_id' => 'required|integer',
             ]);
             if ($request->sub_report_id == 1) {
@@ -926,6 +871,7 @@ class ReportController extends Controller
         ) {
             $request->validate(
                 [
+                    'start_date' => 'after:today',
                     'get_days' => ['required', Rule::in(1.0)],
                 ],
                 [
@@ -935,13 +881,27 @@ class ReportController extends Controller
         }
         if (
             $request->report_id == 3 || # 特別休暇(慶事)
-            $request->report_id == 4 || # 特別休暇(弔事)
-            $request->report_id == 5 || # 特別休暇(弔事)
-            $request->report_id == 6 || # 特別休暇(弔事)
             $request->report_id == 11 || # 特別休暇(短期育休)
             $request->report_id == 16 || # 介護休業
             $request->report_id == 17 || # 育児休業
             $request->report_id == 18 # パパ育休
+        ) {
+            $request->validate(
+                [
+                    'start_date' => 'after:today',
+                    'end_date' => 'required',
+                    'get_days' => 'min:1',
+                ],
+                [
+                    'get_days.min' =>
+                        ':attributeは:min日以上で届出してください。',
+                ]
+            );
+        }
+        if (
+            $request->report_id == 4 || # 特別休暇(弔事)
+            $request->report_id == 5 || # 特別休暇(弔事)
+            $request->report_id == 6 # 特別休暇(弔事)
         ) {
             $request->validate(
                 [

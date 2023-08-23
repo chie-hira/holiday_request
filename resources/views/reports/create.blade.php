@@ -858,36 +858,41 @@
                 } else if (duplicationCheck() == true) {
                     getDays = 0;
                 } else {
+                    getDays = 0.5;
                     // パート,アルバイトはコードで休時間が変わる
                     // フルタイムは4時間
-                    if (shiftId == 19 || // コード43
-                        (shiftId == 15 && amPmVal == 2)) { // コード11後半
-                        getDays = 0.25; // 2時間
-                    } else if (
-                        (shiftId == 21 && amPmVal == 2) || // コード58後半
-                        (shiftId == 14 && amPmVal == 2) || // コード8後半
-                        shiftId == 22 || // コード59
-                        (shiftId == 16 && amPmVal == 1)) { // コード14前半
-                        getDays = 0.3125; // 2時間半
-                    } else if (
-                        (shiftId == 17 && amPmVal == 2) || // コード19後半
-                        shiftId == 18 || // コード42
-                        (shiftId == 13 && amPmVal == 1) || // コード5前半
-                        (shiftId == 16 && amPmVal == 2)) { // コード14後半
-                        getDays = 0.375; // 3時間
-                    } else if (
-                        (shiftId == 15 && amPmVal == 1) || // コード11前半
-                        shiftId == 20 || // コード53
-                        (shiftId == 14 && amPmVal == 1) || // コード8前半
-                        (shiftId == 17 && amPmVal == 1)) { // コード19前半
-                        getDays = 0.4375; // 3時間半
-                    } else {
-                        getDays = 0.5;
-                    }
+                    // if (shiftId == 19 || // コード43
+                    //     (shiftId == 15 && amPmVal == 2)) { // コード11後半
+                    //     getDays = 0.25; // 2時間
+                    // } else if (
+                    //     (shiftId == 21 && amPmVal == 2) || // コード58後半
+                    //     (shiftId == 14 && amPmVal == 2) || // コード8後半
+                    //     shiftId == 22 || // コード59
+                    //     (shiftId == 16 && amPmVal == 1)) { // コード14前半
+                    //     getDays = 0.3125; // 2時間半
+                    // } else if (
+                    //     (shiftId == 17 && amPmVal == 2) || // コード19後半
+                    //     shiftId == 18 || // コード42
+                    //     (shiftId == 13 && amPmVal == 1) || // コード5前半
+                    //     (shiftId == 16 && amPmVal == 2)) { // コード14後半
+                    //     getDays = 0.375; // 3時間
+                    // } else if (
+                    //     (shiftId == 15 && amPmVal == 1) || // コード11前半
+                    //     shiftId == 20 || // コード53
+                    //     (shiftId == 14 && amPmVal == 1) || // コード8前半
+                    //     (shiftId == 17 && amPmVal == 1)) { // コード19前半
+                    //     getDays = 0.4375; // 3時間半
+                    // } else {
+                    //     getDays = 0.5;
+                    // }
                 }
             }
 
-            if (subReportCategories[3].checked ||
+            if (
+                // WORNING:時間休にを有効にする場合、シフトによって1時間の重みが違う
+                // 4時間労働の2時間休み=8時間労働の4時間休み
+                // これがシフトが変わったとき、どのように扱うのか
+                // subReportCategories[3].checked ||
                 reportCategory.value == 13 || // 遅刻
                 reportCategory.value == 14 || // 早退
                 reportCategory.value == 15) { // 外出

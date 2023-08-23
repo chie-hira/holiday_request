@@ -29,7 +29,7 @@ class StoreReportRequest extends FormRequest
             'report_id' => 'required|integer',
             'reason_id' => 'required|integer',
             'reason_detail' => 'max:50', # ここにstringはNG。stringはnullを許容しないのでrequiredをかねる。
-            'start_date' => 'required|date|after:today|after_or_equal:report_date',
+            'start_date' => 'required|date|after_or_equal:report_date',
             'end_date' => 'nullable|date|after_or_equal:start_date|sameMonth:start_date', # nullableがないとafter_or_equalでrequired
             'start_time' => 'nullable|date_format:H:i',
             'end_time' => 'nullable|date_format:H:i',
