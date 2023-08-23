@@ -4,7 +4,6 @@ use App\Http\Controllers\AcquisitionDayController;
 use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
-use App\Imports\UserImport;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,7 +26,11 @@ use Illuminate\Support\Facades\Route;
 // TODO:policy,can設定、自分しか自分の投稿を編集、削除申請できない
 # reportルーティング
 Route::resource('reports', ReportController::class)
-    ->only(['create', 'show'])
+    ->only('create')
+    ->middleware('auth')
+    ->middleware('block.datetime');
+Route::resource('reports', ReportController::class)
+    ->only('show')
     ->middleware('auth');
 Route::resource('reports', ReportController::class)
     ->only('store')
