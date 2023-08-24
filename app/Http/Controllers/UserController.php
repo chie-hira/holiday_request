@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
@@ -140,9 +141,13 @@ class UserController extends Controller
     public function import(Request $request)
     {
         // ユーザー情報インサート
+        // $excel_file = $request->file('excel_file');
+        // $excel_file->store('excels');
+        // Excel::import(new UserImport(), $excel_file);
         $excel_file = $request->file('excel_file');
-        $excel_file->store('excels');
-        Excel::import(new UserImport(), $excel_file);
+        $stored_path = $excel_file->store('excels');
+        $full_path = Storage::path($stored_path);
+        Excel::import(new UserImport(), $full_path);
 
         // 休暇日数インサート
         $users = User::all();
