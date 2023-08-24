@@ -115,7 +115,7 @@ class UserController extends Controller
                 ->route('users.index')
                 ->with('notice', 'ユーザー情報を更新しました');
         } catch (\Throwable $th) {
-            return back()->withErrors($th->getMessage());
+            return back()->withErrors('エラーが発生しました');
         }
     }
 
@@ -133,7 +133,7 @@ class UserController extends Controller
                 ->route('users.index')
                 ->with('notice', 'ユーザー情報を削除しました。');
         } catch (\Throwable $th) {
-            return back()->withErrors($th->getMessage());
+            return back()->withErrors('エラーが発生しました');
         }
     }
 

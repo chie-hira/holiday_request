@@ -68,4 +68,14 @@ class Affiliation extends Model
     {
         return $this->belongsTo(GroupCategory::class, 'group_id', 'id');
     }
+
+    /**
+     * Get the calender_category that owns the Affiliation
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function calender_category()
+    {
+        return $this->belongsTo(CalenderCategory::class, 'calender_id', 'id');
+    }
 }

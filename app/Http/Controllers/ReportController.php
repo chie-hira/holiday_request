@@ -17,6 +17,7 @@ use App\Models\FactoryCategory;
 use App\Exports\ReportFormExport;
 use App\Imports\UserImport;
 use App\Models\Affiliation;
+use App\Models\Calender;
 use App\Models\DepartmentCategory;
 use App\Models\Reason;
 use Carbon\Carbon;
@@ -133,6 +134,14 @@ class ReportController extends Controller
         $shifts = ShiftCategory::all();
         $my_acquisition_days = Auth::user()->acquisition_days;
         $my_reports = Auth::user()->reports;
+        $holiday_calender = Calender::whereHas('calender_category', function ($query) {
+            $query->where('calender_id', Auth::user()->affiliation->calender_category->id)
+                ->where('date_id', 1);
+        })->get('date');
+        $business_day_calender = Calender::whereHas('calender_category', function ($query) {
+            $query->where('calender_id', Auth::user()->affiliation->calender_category->id)
+                ->where('date_id', 2);
+        })->get('date');
 
         /** 残日数が0ではないreport_categoryを取得 */
         $report_categories = ReportCategory::whereHas(
@@ -173,7 +182,9 @@ class ReportController extends Controller
                 'report_reasons',
                 'shifts',
                 'my_acquisition_days',
-                'my_reports'
+                'my_reports',
+                'holiday_calender',
+                'business_day_calender',
             )
         );
     }
@@ -201,6 +212,7 @@ class ReportController extends Controller
             $request->report_id == 10 # 特別休暇(介護・対象2名)
         ) {
             $request->validate([
+                'start_date' => 'after:today',
                 'sub_report_id' => 'required|integer',
             ]);
             if ($request->sub_report_id == 1) {
@@ -256,18 +268,6 @@ class ReportController extends Controller
                             'multiple_of:0.125',
                             Rule::notIn([1]),
                         ],
-                        // 'get_days' => [
-                        //     'required',
-                        //     Rule::in([
-                        //         0.125,
-                        //         0.25,
-                        //         0.375,
-                        //         0.5,
-                        //         0.625,
-                        //         0.75,
-                        //         0.825,
-                        //     ]),
-                        // ],
                     ],
                     [
                         'get_days.max' => '時間給は:max日未満で届出できます。',
@@ -284,6 +284,7 @@ class ReportController extends Controller
         ) {
             $request->validate(
                 [
+                    'start_date' => 'after:today',
                     'get_days' => ['required', Rule::in(1.0)],
                 ],
                 [
@@ -293,13 +294,27 @@ class ReportController extends Controller
         }
         if (
             $request->report_id == 3 || # 特別休暇(慶事)
-            $request->report_id == 4 || # 特別休暇(弔事)
-            $request->report_id == 5 || # 特別休暇(弔事)
-            $request->report_id == 6 || # 特別休暇(弔事)
             $request->report_id == 11 || # 特別休暇(短期育休)
             $request->report_id == 16 || # 介護休業
             $request->report_id == 17 || # 育児休業
             $request->report_id == 18 # パパ育休
+        ) {
+            $request->validate(
+                [
+                    'start_date' => 'after:today',
+                    'end_date' => 'required',
+                    'get_days' => 'min:1',
+                ],
+                [
+                    'get_days.min' =>
+                        ':attributeは:min日以上で届出してください。',
+                ]
+            );
+        }
+        if (
+            $request->report_id == 4 || # 特別休暇(弔事)
+            $request->report_id == 5 || # 特別休暇(弔事)
+            $request->report_id == 6 # 特別休暇(弔事)
         ) {
             $request->validate(
                 [
@@ -506,66 +521,6 @@ class ReportController extends Controller
                         $approval->user->Approved($report);
                     }
                 }
-                // dd($gl_approvals);
-                // $my_approvals = Auth::user()->approvals->where(
-                //     'approval_id',
-                //     2
-                // );
-                // $approvers = User::where(function ($query) use ($my_approvals) {
-                //     foreach ($my_approvals as $approval) {
-                //         $query->orWhere(function ($query) use ($approval) {
-                //             if ($approval->affiliation->department_id == 1) {
-                //                 $query->whereHas('approvals', function (
-                //                     $query
-                //                 ) use ($approval) {
-                //                     $query
-                //                         ->where('approval_id', 3)
-                //                         ->whereHas('affiliation', function (
-                //                             $query
-                //                         ) use ($approval) {
-                //                             $query->where(
-                //                                 'factory_id',
-                //                                 $approval->affiliation
-                //                                     ->factory_id
-                //                             );
-                //                         });
-                //                 });
-                //             } elseif (
-                //                 $approval->affiliation->department_id != 1 &&
-                //                 $approval->affiliation->group_id == 1
-                //             ) {
-                //                 $query->whereHas('approvals', function (
-                //                     $query
-                //                 ) use ($approval) {
-                //                     $query
-                //                         ->where('approval_id', 3)
-                //                         ->whereHas('affiliation', function (
-                //                             $query
-                //                         ) use ($approval) {
-                //                             $query
-                //                                 ->where(
-                //                                     'factory_id',
-                //                                     $approval->affiliation
-                //                                         ->factory_id
-                //                                 )
-                //                                 ->where(
-                //                                     'department_id',
-                //                                     $approval->affiliation
-                //                                         ->department_id
-                //                                 );
-                //                         });
-                //                 });
-                //             }
-                //         });
-                //     }
-                // })->get();
-                // dd($approvers);
-
-                // if ($approvers) {
-                //     foreach ($approvers as $approver) {
-                //         $approver->Approved($report);
-                //     }
-                // }
                 // リダイレクト
                 return redirect()
                     ->route('reports.show', $report)
@@ -575,7 +530,7 @@ class ReportController extends Controller
                 // 例外情報をログに出力
                 Log::error('Exception caught: ' . $e->getMessage());
                 // エラー内容をそのまま表示しない
-                return back()->with('error', 'エラーが発生しました。');
+                return back()->withErrors('エラーが発生しました');
             }
         }
 
@@ -639,7 +594,7 @@ class ReportController extends Controller
                 // 例外情報をログに出力
                 Log::error('Exception caught: ' . $th->getMessage());
                 // エラー内容をそのまま表示しない
-                return back()->with('error', 'エラーが発生しました。');
+                return back()->withErrors('エラーが発生しました');
             }
         }
 
@@ -749,7 +704,7 @@ class ReportController extends Controller
             // 例外情報をログに出力
             Log::error('Exception caught: ' . $th->getMessage());
             // エラー内容をそのまま表示しない
-            return back()->with('error', 'エラーが発生しました。');
+            return back()->withErrors('エラーが発生しました');
         }
     }
 
@@ -779,6 +734,14 @@ class ReportController extends Controller
         $shifts = ShiftCategory::all();
         $my_acquisition_days = Auth::user()->acquisition_days;
         $my_reports = Auth::user()->reports->where('id', '!=', $report->id);
+        $holiday_calender = Calender::whereHas('calender_category', function ($query) {
+            $query->where('calender_id', Auth::user()->affiliation->calender_category->id)
+                ->where('date_id', 1);
+        })->get('date');
+        $business_day_calender = Calender::whereHas('calender_category', function ($query) {
+            $query->where('calender_id', Auth::user()->affiliation->calender_category->id)
+                ->where('date_id', 2);
+        })->get('date');
 
         $report_categories = ReportCategory::whereHas(
             'acquisition_days',
@@ -819,7 +782,9 @@ class ReportController extends Controller
                 'report_reasons',
                 'shifts',
                 'my_acquisition_days',
-                'my_reports'
+                'my_reports',
+                'holiday_calender',
+                'business_day_calender',
             )
         );
     }
@@ -843,6 +808,7 @@ class ReportController extends Controller
             $request->report_id == 10 # 特別休暇(介護・対象2名)
         ) {
             $request->validate([
+                'start_date' => 'after:today',
                 'sub_report_id' => 'required|integer',
             ]);
             if ($request->sub_report_id == 1) {
@@ -926,6 +892,7 @@ class ReportController extends Controller
         ) {
             $request->validate(
                 [
+                    'start_date' => 'after:today',
                     'get_days' => ['required', Rule::in(1.0)],
                 ],
                 [
@@ -935,13 +902,27 @@ class ReportController extends Controller
         }
         if (
             $request->report_id == 3 || # 特別休暇(慶事)
-            $request->report_id == 4 || # 特別休暇(弔事)
-            $request->report_id == 5 || # 特別休暇(弔事)
-            $request->report_id == 6 || # 特別休暇(弔事)
             $request->report_id == 11 || # 特別休暇(短期育休)
             $request->report_id == 16 || # 介護休業
             $request->report_id == 17 || # 育児休業
             $request->report_id == 18 # パパ育休
+        ) {
+            $request->validate(
+                [
+                    'start_date' => 'after:today',
+                    'end_date' => 'required',
+                    'get_days' => 'min:1',
+                ],
+                [
+                    'get_days.min' =>
+                        ':attributeは:min日以上で届出してください。',
+                ]
+            );
+        }
+        if (
+            $request->report_id == 4 || # 特別休暇(弔事)
+            $request->report_id == 5 || # 特別休暇(弔事)
+            $request->report_id == 6 # 特別休暇(弔事)
         ) {
             $request->validate(
                 [
@@ -1150,7 +1131,7 @@ class ReportController extends Controller
                 // 例外情報をログに出力
                 Log::error('Exception caught: ' . $th->getMessage());
                 // エラー内容をそのまま表示しない
-                return back()->with('error', 'エラーが発生しました。');
+                return back()->withErrors('エラーが発生しました');
             }
         }
 
@@ -1228,7 +1209,7 @@ class ReportController extends Controller
             // 例外情報をログに出力
             Log::error('Exception caught: ' . $th->getMessage());
             // エラー内容をそのまま表示しない
-            return back()->with('error', 'エラーが発生しました。');
+            return back()->withErrors('エラーが発生しました');
         }
     }
 
@@ -1365,7 +1346,7 @@ class ReportController extends Controller
                     ->with('notice', 'DestroyReport');
             } catch (\Throwable $th) {
                 Log::error('Exception caught: ' . $th->getMessage());
-                return back()->with('error', 'エラーが発生しました。');
+                return back()->withErrors('エラーが発生しました');
             }
         } else {
             // 承認がある場合
@@ -1581,7 +1562,7 @@ class ReportController extends Controller
                 // 例外情報をログに出力
                 Log::error('Exception caught: ' . $e->getMessage());
                 // エラー内容をそのまま表示しない
-                return back()->with('error', 'エラーが発生しました。');
+                return back()->withErrors('エラーが発生しました');
             }
         }
 
@@ -1640,7 +1621,7 @@ class ReportController extends Controller
                 ->with('notice', 'CancelReport');
         } catch (\Throwable $th) {
             Log::error('Exception caught: ' . $th->getMessage());
-            return back()->with('error', 'エラーが発生しました。');
+            return back()->withErrors('エラーが発生しました');
         }
     }
 
@@ -1835,7 +1816,7 @@ class ReportController extends Controller
             } catch (\Exception $e) {
                 DB::rollBack(); # トランザクション失敗終了
                 Log::error('Exception caught: ' . $e->getMessage());
-                return back()->with('error', 'エラーが発生しました。');
+                return back()->withErrors('エラーが発生しました');
             }
         } else {
             try {
@@ -1845,7 +1826,7 @@ class ReportController extends Controller
                     ->with('msg', 'Approved');
             } catch (\Throwable $th) {
                 Log::error('Exception caught: ' . $th->getMessage());
-                return back()->with('error', 'エラーが発生しました。');
+                return back()->withErrors('エラーが発生しました');
             }
         }
     }
@@ -1930,7 +1911,7 @@ class ReportController extends Controller
                         ->with('notice', 'DestroyReport');
                 } catch (\Throwable $th) {
                     Log::error('Exception caught: ' . $th->getMessage());
-                    return back()->with('error', 'エラーが発生しました。');
+                    return back()->withErrors('エラーが発生しました');
                 }
             } elseif ($report->approved == 1) {
                 $acquisition_day = AcquisitionDay::where(
@@ -1963,7 +1944,7 @@ class ReportController extends Controller
                     // 例外情報をログに出力
                     Log::error('Exception caught: ' . $e->getMessage());
                     // エラー内容をそのまま表示しない
-                    return back()->with('error', 'エラーが発生しました。');
+                    return back()->withErrors('エラーが発生しました');
                 }
             }
         } else {
@@ -1975,7 +1956,7 @@ class ReportController extends Controller
                     ->with('msg', 'CheckedReport');
             } catch (\Throwable $th) {
                 Log::error('Exception caught: ' . $th->getMessage());
-                return back()->with('error', 'エラーが発生しました。');
+                return back()->withErrors('エラーが発生しました');
             }
         }
     }

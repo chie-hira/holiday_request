@@ -166,7 +166,7 @@ class AcquisitionDayController extends Controller
                 ->with('notice', '休暇日数を更新しました');
         } catch (\Throwable $th) {
             Log::error('Exception caught: ' . $th->getMessage());
-            return back()->with('error', 'エラーが発生しました。');
+            return back()->withErrors('エラーが発生しました');
         }
     }
 
@@ -404,7 +404,7 @@ class AcquisitionDayController extends Controller
                 ->with('notice', '休暇の残日数を更新しました');
         } catch (\Throwable $th) {
             Log::error('Exception caught: ' . $th->getMessage());
-            return back()->with('error', 'エラーが発生しました。');
+            return back()->withErrors('エラーが発生しました');
         }
     }
 
