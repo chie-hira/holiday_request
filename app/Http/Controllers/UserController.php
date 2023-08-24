@@ -141,41 +141,56 @@ class UserController extends Controller
     public function import(Request $request)
     {
         // ユーザー情報インサート
-        // $excel_file = $request->file('excel_file');
-        // $excel_file->store('excels');
-        // Excel::import(new UserImport(), $excel_file);
         $excel_file = $request->file('excel_file');
-        $stored_path = $excel_file->store('excels');
-        $full_path = Storage::path($stored_path);
-        Excel::import(new UserImport(), $full_path);
+        $excel_file->store('excels');
+        Excel::import(new UserImport(), $excel_file);
 
         // 休暇日数インサート
         $users = User::all();
-        $param = [];
+        $report_categories = ReportCategory::all();
+        // $param = [];
         $chunkSize = 100; // チャンクのサイズ
 
-        for ($i = 0; $i < count($users); $i++) {
-            $user_id = $users[$i]->id;
-            $report_categories = ReportCategory::all();
+        foreach ($users as $user) {
+            $param = [];
 
             foreach ($report_categories as $report) {
                 $param[] = [
-                    'user_id' => $user_id,
+                    'user_id' => $user->id,
                     'report_id' => $report->id,
                     'remaining_days' => $report->max_days,
                 ];
+            }
 
-                // パラム数がチャンク数を超えたらインサート
-                if (count($param) >= $chunkSize) {
-                    DB::table('acquisition_days')->insert($param);
-                    $param = [];
-                }
+            // パラムをバッチサイズごとに分割してインサート
+            $chunks = array_chunk($param, $chunkSize);
+            foreach ($chunks as $chunk) {
+                DB::table('acquisition_days')->insert($chunk);
             }
         }
 
-        if (!empty($param)) {
-            DB::table('acquisition_days')->insert($param);
-        }
+        // for ($i = 0; $i < count($users); $i++) {
+        //     $user_id = $users[$i]->id;
+        //     $report_categories = ReportCategory::all();
+
+        //     foreach ($report_categories as $report) {
+        //         $param[] = [
+        //             'user_id' => $user_id,
+        //             'report_id' => $report->id,
+        //             'remaining_days' => $report->max_days,
+        //         ];
+
+        //         // パラム数がチャンク数を超えたらインサート
+        //         if (count($param) >= $chunkSize) {
+        //             DB::table('acquisition_days')->insert($param);
+        //             $param = [];
+        //         }
+        //     }
+        // }
+
+        // if (!empty($param)) {
+        //     DB::table('acquisition_days')->insert($param);
+        // }
 
         return redirect()
             ->route('import_form')
