@@ -147,6 +147,7 @@ class UserController extends Controller
         // 休暇日数インサート
         $users = User::all();
         $param = [];
+        $chunkSize = 100; // チャンクのサイズ
 
         for ($i = 0; $i < count($users); $i++) {
             $user_id = $users[$i]->id;
@@ -158,13 +159,21 @@ class UserController extends Controller
                     'report_id' => $report->id,
                     'remaining_days' => $report->max_days,
                 ];
+
+                // パラム数がチャンク数を超えたらインサート
+                if (count($param) >= $chunkSize) {
+                    DB::table('acquisition_days')->insert($param);
+                    $param = [];
+                }
             }
         }
 
-        DB::table('acquisition_days')->insert($param);
+        if (!empty($param)) {
+            DB::table('acquisition_days')->insert($param);
+        }
 
         return redirect()
-                ->route('import_form')
-                ->with('notice', 'ユーザー情報インポート完了！');
+            ->route('import_form')
+            ->with('notice', 'ユーザー情報インポート完了！');
     }
 }
