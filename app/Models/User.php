@@ -31,6 +31,7 @@ class User extends Authenticatable
         'affiliation_id',
         'adoption_date',
         'birthday',
+        'remarks',
     ];
 
     /**
