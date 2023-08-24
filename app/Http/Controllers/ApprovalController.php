@@ -204,7 +204,7 @@ class ApprovalController extends Controller
                 ->with('notice', 'StoreApproval');
         } catch (\Throwable $th) {
             Log::error('Exception caught: ' . $th->getMessage());
-            return back()->with('error', 'エラーが発生しました。');
+            return back()->withErrors('エラーが発生しました');
         }
     }
 
@@ -291,7 +291,7 @@ class ApprovalController extends Controller
                 ->with('notice', 'UpdateApproval');
         } catch (\Throwable $th) {
             Log::error('Exception caught: ' . $th->getMessage());
-            return back()->with('error', 'エラーが発生しました。');
+            return back()->withErrors('エラーが発生しました');
         }
     }
 
@@ -312,7 +312,7 @@ class ApprovalController extends Controller
                 ->with('notice', 'DestroyApproval');
         } catch (\Throwable $th) {
             Log::error('Exception caught: ' . $th->getMessage());
-            return back()->with('error', 'エラーが発生しました。');
+            return back()->withErrors('エラーが発生しました');
         }
     }
 

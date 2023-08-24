@@ -530,7 +530,7 @@ class ReportController extends Controller
                 // 例外情報をログに出力
                 Log::error('Exception caught: ' . $e->getMessage());
                 // エラー内容をそのまま表示しない
-                return back()->with('error', 'エラーが発生しました。');
+                return back()->withErrors('エラーが発生しました');
             }
         }
 
@@ -594,7 +594,7 @@ class ReportController extends Controller
                 // 例外情報をログに出力
                 Log::error('Exception caught: ' . $th->getMessage());
                 // エラー内容をそのまま表示しない
-                return back()->with('error', 'エラーが発生しました。');
+                return back()->withErrors('エラーが発生しました');
             }
         }
 
@@ -704,7 +704,7 @@ class ReportController extends Controller
             // 例外情報をログに出力
             Log::error('Exception caught: ' . $th->getMessage());
             // エラー内容をそのまま表示しない
-            return back()->with('error', 'エラーが発生しました。');
+            return back()->withErrors('エラーが発生しました');
         }
     }
 
@@ -1131,7 +1131,7 @@ class ReportController extends Controller
                 // 例外情報をログに出力
                 Log::error('Exception caught: ' . $th->getMessage());
                 // エラー内容をそのまま表示しない
-                return back()->with('error', 'エラーが発生しました。');
+                return back()->withErrors('エラーが発生しました');
             }
         }
 
@@ -1209,7 +1209,7 @@ class ReportController extends Controller
             // 例外情報をログに出力
             Log::error('Exception caught: ' . $th->getMessage());
             // エラー内容をそのまま表示しない
-            return back()->with('error', 'エラーが発生しました。');
+            return back()->withErrors('エラーが発生しました');
         }
     }
 
@@ -1346,7 +1346,7 @@ class ReportController extends Controller
                     ->with('notice', 'DestroyReport');
             } catch (\Throwable $th) {
                 Log::error('Exception caught: ' . $th->getMessage());
-                return back()->with('error', 'エラーが発生しました。');
+                return back()->withErrors('エラーが発生しました');
             }
         } else {
             // 承認がある場合
@@ -1562,7 +1562,7 @@ class ReportController extends Controller
                 // 例外情報をログに出力
                 Log::error('Exception caught: ' . $e->getMessage());
                 // エラー内容をそのまま表示しない
-                return back()->with('error', 'エラーが発生しました。');
+                return back()->withErrors('エラーが発生しました');
             }
         }
 
@@ -1621,7 +1621,7 @@ class ReportController extends Controller
                 ->with('notice', 'CancelReport');
         } catch (\Throwable $th) {
             Log::error('Exception caught: ' . $th->getMessage());
-            return back()->with('error', 'エラーが発生しました。');
+            return back()->withErrors('エラーが発生しました');
         }
     }
 
@@ -1816,7 +1816,7 @@ class ReportController extends Controller
             } catch (\Exception $e) {
                 DB::rollBack(); # トランザクション失敗終了
                 Log::error('Exception caught: ' . $e->getMessage());
-                return back()->with('error', 'エラーが発生しました。');
+                return back()->withErrors('エラーが発生しました');
             }
         } else {
             try {
@@ -1826,7 +1826,7 @@ class ReportController extends Controller
                     ->with('msg', 'Approved');
             } catch (\Throwable $th) {
                 Log::error('Exception caught: ' . $th->getMessage());
-                return back()->with('error', 'エラーが発生しました。');
+                return back()->withErrors('エラーが発生しました');
             }
         }
     }
@@ -1911,7 +1911,7 @@ class ReportController extends Controller
                         ->with('notice', 'DestroyReport');
                 } catch (\Throwable $th) {
                     Log::error('Exception caught: ' . $th->getMessage());
-                    return back()->with('error', 'エラーが発生しました。');
+                    return back()->withErrors('エラーが発生しました');
                 }
             } elseif ($report->approved == 1) {
                 $acquisition_day = AcquisitionDay::where(
@@ -1944,7 +1944,7 @@ class ReportController extends Controller
                     // 例外情報をログに出力
                     Log::error('Exception caught: ' . $e->getMessage());
                     // エラー内容をそのまま表示しない
-                    return back()->with('error', 'エラーが発生しました。');
+                    return back()->withErrors('エラーが発生しました');
                 }
             }
         } else {
@@ -1956,7 +1956,7 @@ class ReportController extends Controller
                     ->with('msg', 'CheckedReport');
             } catch (\Throwable $th) {
                 Log::error('Exception caught: ' . $th->getMessage());
-                return back()->with('error', 'エラーが発生しました。');
+                return back()->withErrors('エラーが発生しました');
             }
         }
     }
