@@ -4,7 +4,8 @@
         <x-notice :notice="session('notice')" />
 
         <h2 class="mb-2 text-lg font-bold text-gray-700">1.&ensp;初期設定&emsp;<span class="text-blue-600">migrate&seed</span>後に<span class="text-blue-600">users→approvals</span>の順でinsertする</h2>
-        <p class="mb-6 text-gray-700">インポート後に休暇日数をアプリの管理メニューから設定する</p>
+        <p class="mb-6 text-gray-700">インポート後に休暇日数をアプリの管理メニューから設定する<br>
+        1度に読み込むデータは100件以内に分割する</p>
         <form method="post" action="{{ route('users_import') }}" enctype="multipart/form-data" class="mb-4">
             @csrf
             <label for="users" class="block text-sm text-gray-500">users</label>

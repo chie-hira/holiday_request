@@ -20,25 +20,20 @@ class UserImport implements ToModel, WithHeadingRow
 
     public function model(array $row)
     {
-        try {
-            return new User([
-                'name' => $row['name'],
-                'email' => $row['email'],
-                'password' => Hash::make($row['password']),
-                'employee' => $row['employee'],
-                'affiliation_id' => $row['affiliation_id'],
-                'adoption_date' => $row['adoption_date'],
-                'birthday' => $row['birthday'],
-                'remarks' => $row['remarks'],
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Error processing row: ' . $e->getMessage());
-            return null; // もしくは適切なエラーハンドリングを行う
-        }
+        return new User([
+            'name' => $row['name'],
+            'email' => $row['email'],
+            'password' => Hash::make($row['password']),
+            'employee' => $row['employee'],
+            'affiliation_id' => $row['affiliation_id'],
+            'adoption_date' => $row['adoption_date'],
+            'birthday' => $row['birthday'],
+            'remarks' => $row['remarks'],
+        ]);
     }
 
     public function chunkSize(): int
     {
-        return 10;
+        return 50;
     }
 }
