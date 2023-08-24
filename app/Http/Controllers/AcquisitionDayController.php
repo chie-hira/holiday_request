@@ -12,6 +12,7 @@ use App\Models\ReportCategory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 // BUG:残日数更新
@@ -406,6 +407,36 @@ class AcquisitionDayController extends Controller
             Log::error('Exception caught: ' . $th->getMessage());
             return back()->withErrors('エラーが発生しました');
         }
+    }
+
+    public function initial_import()
+    {
+        // 休暇日数インサート
+        $users = User::all();
+        $report_categories = ReportCategory::all();
+        $chunkSize = 100; // チャンクのサイズ
+
+        foreach ($users as $user) {
+            $param = [];
+
+            foreach ($report_categories as $report) {
+                $param[] = [
+                    'user_id' => $user->id,
+                    'report_id' => $report->id,
+                    'remaining_days' => $report->max_days,
+                ];
+            }
+
+            // パラムをバッチサイズごとに分割してインサート
+            $chunks = array_chunk($param, $chunkSize);
+            foreach ($chunks as $chunk) {
+                DB::table('acquisition_days')->insert($chunk);
+            }
+        }
+
+        return redirect()
+            ->route('import_form')
+            ->with('notice', '休暇日数初期設定完了！');
     }
 
     public function import(Request $request){

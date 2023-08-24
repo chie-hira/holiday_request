@@ -127,6 +127,7 @@ Route::get('/import_form',[ReportController::class, 'import_form'])->name('impor
 Route::post('/users_import',[UserController::class, 'import'])->name('users_import');
 Route::post('/approvals_import',[ApprovalController::class, 'import'])->name('approvals_import');
 Route::post('/acquisition_days_import',[AcquisitionDayController::class, 'import'])->name('acquisition_days_import');
+Route::get('/initial_import',[AcquisitionDayController::class, 'initial_import'])->name('initial_import');
 
 // TODO:notAuthorizedでログイン画面にリダイレクト
 

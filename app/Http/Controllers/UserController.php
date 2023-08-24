@@ -145,29 +145,6 @@ class UserController extends Controller
         $excel_file->store('excels');
         Excel::import(new UserImport(), $excel_file);
 
-        // 休暇日数インサート
-        $users = User::all();
-        $report_categories = ReportCategory::all();
-        $chunkSize = 100; // チャンクのサイズ
-
-        foreach ($users as $user) {
-            $param = [];
-
-            foreach ($report_categories as $report) {
-                $param[] = [
-                    'user_id' => $user->id,
-                    'report_id' => $report->id,
-                    'remaining_days' => $report->max_days,
-                ];
-            }
-
-            // パラムをバッチサイズごとに分割してインサート
-            $chunks = array_chunk($param, $chunkSize);
-            foreach ($chunks as $chunk) {
-                DB::table('acquisition_days')->insert($chunk);
-            }
-        }
-
         return redirect()
             ->route('import_form')
             ->with('notice', 'ユーザー情報インポート完了！');
