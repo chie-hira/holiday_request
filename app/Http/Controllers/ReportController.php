@@ -17,6 +17,7 @@ use App\Models\FactoryCategory;
 use App\Exports\ReportFormExport;
 use App\Imports\UserImport;
 use App\Models\Affiliation;
+use App\Models\Calender;
 use App\Models\DepartmentCategory;
 use App\Models\Reason;
 use Carbon\Carbon;
@@ -133,6 +134,14 @@ class ReportController extends Controller
         $shifts = ShiftCategory::all();
         $my_acquisition_days = Auth::user()->acquisition_days;
         $my_reports = Auth::user()->reports;
+        $holiday_calender = Calender::whereHas('calender_category', function ($query) {
+            $query->where('calender_id', Auth::user()->affiliation->calender_category->id)
+                ->where('date_id', 1);
+        })->get('date');
+        $business_day_calender = Calender::whereHas('calender_category', function ($query) {
+            $query->where('calender_id', Auth::user()->affiliation->calender_category->id)
+                ->where('date_id', 2);
+        })->get('date');
 
         /** 残日数が0ではないreport_categoryを取得 */
         $report_categories = ReportCategory::whereHas(
@@ -173,7 +182,9 @@ class ReportController extends Controller
                 'report_reasons',
                 'shifts',
                 'my_acquisition_days',
-                'my_reports'
+                'my_reports',
+                'holiday_calender',
+                'business_day_calender',
             )
         );
     }
@@ -1943,6 +1954,13 @@ class ReportController extends Controller
     // menu()
     public function menu()
     {
+        // $DateTime = Carbon::now();
+        // $holiday_calender = Calender::whereHas('calender_category', function ($query) {
+        //     $query->where('calender_id', Auth::user()->affiliation->calender_category->id)
+        //         ->where('date_id', 1);
+        // })->get('date');
+        // dd($holiday_calender->contains('date',$DateTime->format('Ymd')));
+        // dd($DateTime->format('Ymd'));
         $approvals = Auth::user()->approvals->load('affiliation');
         $birthday = new Carbon(
             Carbon::now()->year . '-' . Auth::user()->birthday

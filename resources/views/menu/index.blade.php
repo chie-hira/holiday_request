@@ -92,6 +92,8 @@
                     <span class="text-xs text-blue-500">取得してください</span>
                 </div>
             @endif
+            <!-- error -->
+            <x-errors :errors="$errors" />
         </nav>
     </div>
 

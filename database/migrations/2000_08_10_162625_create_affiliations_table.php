@@ -30,6 +30,10 @@ class CreateAffiliationsTable extends Migration
                 ->constrained('group_categories')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
+            $table->foreignId('calender_id')
+                ->constrained('calender_categories')
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
             $table->timestamps();
 
             // 複合ユニーク制約

@@ -2,9 +2,11 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Calender;
 use Closure;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class BlockRouteByDateTime
 {
@@ -30,9 +32,40 @@ class BlockRouteByDateTime
         // }
         // TODO:休日は申請NG
         $DateTime = Carbon::now();
+        $holiday_calender = Calender::whereHas('calender_category', function (
+            $query
+        ) {
+            $query
+                ->where(
+                    'calender_id',
+                    Auth::user()->affiliation->calender_category->id
+                )
+                ->where('date_id', 1);
+        })->get('date');
+        $business_day_calender = Calender::whereHas(
+            'calender_category',
+            function ($query) {
+                $query
+                    ->where(
+                        'calender_id',
+                        Auth::user()->affiliation->calender_category->id
+                    )
+                    ->where('date_id', 2);
+            }
+        )->get('date');
 
-        if ($DateTime->dayName == '土曜日' || $DateTime->dayName == '日曜日') {
-            return redirect()->route('menu'); // リダイレクト先のルート名を指定
+        if ($holiday_calender->contains('date', $DateTime->format('Ymd'))) {
+            return back()->withErrors('休日は申請できません');
+        } elseif (
+            $DateTime->dayName == '土曜日' &&
+            !$business_day_calender->contains('date', $DateTime->format('Ymd'))
+        ) {
+            return back()->withErrors('休日は申請できません');
+        } elseif (
+            $DateTime->dayName == '日曜日' &&
+            !$business_day_calender->contains('date', $DateTime->format('Ymd'))
+        ) {
+            return back()->withErrors('休日は申請できません');
         }
 
         return $next($request);

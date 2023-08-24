@@ -16,6 +16,9 @@ class DatabaseSeeder extends Seeder
         $this->call(DepartmentCategorySeeder::class);
         $this->call(FactoryCategorySeeder::class);
         $this->call(GroupCategorySeeder::class);
+        $this->call(CalenderCategorySeeder::class);
+        $this->call(DateCategorySeeder::class);
+        $this->call(CalenderSeeder::class);
         $this->call(AffiliationSeeder::class);
         // $this->call(UsersTableSeeder::class);
         $this->call(ApprovalCategorySeeder::class);

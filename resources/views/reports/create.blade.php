@@ -710,8 +710,8 @@
             if (startTime.value > endTime.value) {
                 endTimeVal.setDate(endTimeVal.getDate() + 1);
             }
-            console.log(startTimeVal);
-            console.log(endTimeVal);
+            // console.log(startTimeVal);
+            // console.log(endTimeVal);
             let diffDays = (endVal - startVal) / 86400000 + 1; // 単純な差
             let startYMD = startVal.getFullYear() +
                 ('0' + (startVal.getMonth() + 1)).slice(-2) +
@@ -723,12 +723,18 @@
             let dayOffs = 0;
 
             // 土曜日の営業日
-            const saturdays = [
-                '20230819',
-                '20240309',
-            ];
+            const businessDayCalender = @json($business_day_calender);
+            const saturdays = businessDayCalender.map(item => item.date);
+            // console.log(businessDay);
+            // console.log(businessDay.map(item => item.date))
+            // const saturdays = [
+            //     '20230819',
+            //     '20240309',
+            // ];
 
             // 祝祭日等(休暇取得推進日含む)
+            const holidayCalender = @json($holiday_calender);
+            // const holidays = holidayCalender.map(item => item.date);
             const holidays = [
                 '20230503',
                 '20230504',
@@ -742,6 +748,9 @@
                 '20240103',
                 '20240104',
                 '20240223',
+                '20230829',
+                '20230830',
+                '20230831',
             ];
 
             //土曜日、日曜日をdayOffsに集計
@@ -759,11 +768,12 @@
                 let dYMD = d.getFullYear() + ('0' + (d.getMonth() + 1)).slice(-2) + ('0' + d
                     .getDate()).slice(-2);
                 // 土曜日の営業日をdayOffsから減算
+                // BUG:atart_dateが営業日、その後2日以上休業日で1日しか減算されない
                 if (saturdays.includes(dYMD)) {
                     dayOffs--;
                 }
                 // 祝祭日等の休業日をdayOffsに加算
-                if (holidays.indexOf(dYMD) != -1) {
+                if (holidays.includes(dYMD)) {
                     dayOffs++;
                 }
             }
@@ -839,7 +849,9 @@
                 if (duplicationCheck() == true) {
                     getDays = 0;
                 } else {
+                    // この順番を変えてはいけない
                     getDays = diffDays - dayOffs;
+                    holidayCheck();
                 }
             }
 
@@ -1000,7 +1012,8 @@
             Object.keys(myAcquisitionDays).forEach((el) => {
                 if (myAcquisitionDays[el].report_id == reportId) {
                     // 申請中の日数を考慮した残日数を算出
-                    ownRemainingDays = myAcquisitionDays[el].remaining_days - myAcquisitionDays[el].pending_acquisition_days;
+                    ownRemainingDays = myAcquisitionDays[el].remaining_days - myAcquisitionDays[el]
+                        .pending_acquisition_days;
                 }
             });
 
@@ -1038,15 +1051,29 @@
             function holidayCheck() {
                 console.log('holidayCheck'); // 起動確認
                 let holiday = false;
+                // これは必要:土曜営業日はfalse
                 if (saturdays.includes(startYMD)) {
                     holiday = false;
                 } else if (startWeek + i == 0 || startWeek + i == 6 || startWeek + i == 7) {
                     holiday = true;
                 } else if (holidays.includes(startYMD)) {
                     holiday = true;
+                } else if (endDate.value) {
+                    for (let d = new Date(startDate.value); d <= endVal; d.setDate(d.getDate() + 1)) {
+                        const Y_M_D = d.getFullYear() +
+                            ('0' + (d.getMonth() + 1)).slice(-2) +
+                            ('0' + d.getDate()).slice(-2);
+                        if (holidays.includes(Y_M_D) && getDays == 0) {
+                            console.log(Y_M_D);
+                            holiday = true;
+                        }
+                    }
                 } else {
                     holiday = false;
                 }
+                // console.log(startDate.value);
+                // console.log(endDate.value);
+                // startTime.value != '' && workTimeStart < startTimeVal && endTime.value != '' && workTimeEnd
 
                 if (holiday == true) {
                     holidayAlert.style.display = '';
