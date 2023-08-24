@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\Importable; //追加
 use Maatwebsite\Excel\Concerns\WithHeadingRow; //追加
@@ -19,16 +20,21 @@ class UserImport implements ToModel, WithHeadingRow
 
     public function model(array $row)
     {
-        return new User([
-            'name' => $row['name'],
-            'email' => $row['email'],
-            'password' => Hash::make($row['password']),
-            'employee' => $row['employee'],
-            'affiliation_id' => $row['affiliation_id'],
-            'adoption_date' => $row['adoption_date'],
-            'birthday' => $row['birthday'],
-            'remarks' => $row['remarks'],
-        ]);
+        try {
+            return new User([
+                'name' => $row['name'],
+                'email' => $row['email'],
+                'password' => Hash::make($row['password']),
+                'employee' => $row['employee'],
+                'affiliation_id' => $row['affiliation_id'],
+                'adoption_date' => $row['adoption_date'],
+                'birthday' => $row['birthday'],
+                'remarks' => $row['remarks'],
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error processing row: ' . $e->getMessage());
+            return null; // もしくは適切なエラーハンドリングを行う
+        }
     }
 
     public function chunkSize(): int
