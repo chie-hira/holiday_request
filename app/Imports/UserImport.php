@@ -33,6 +33,6 @@ class UserImport implements ToModel, WithHeadingRow
 
     public function chunkSize(): int
     {
-        return 50;
+        return 10;
     }
 }
