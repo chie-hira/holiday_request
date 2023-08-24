@@ -323,7 +323,6 @@
                         </div>
                         <!-- 早退アラート - end -->
                     </div>
-                    {{-- </div> --}}
 
                     <div class="flex my-6">
                         <div class="mr-4">
@@ -432,7 +431,6 @@
             displayReset();
             reportDisplaySwitch(); // reportでform表示切替
             reportReasonSwitch(); // reportでreason種類切替
-            // reasonDisplaySwitch(); // reasonで理由:その他表示切替
             let subReportCategory = document.querySelector('input[name=sub_report_id]:checked');
             if (subReportCategory) {
                 console.log(subReportCategory.value);
@@ -710,8 +708,7 @@
             if (startTime.value > endTime.value) {
                 endTimeVal.setDate(endTimeVal.getDate() + 1);
             }
-            // console.log(startTimeVal);
-            // console.log(endTimeVal);
+            
             let diffDays = (endVal - startVal) / 86400000 + 1; // 単純な差
             let startYMD = startVal.getFullYear() +
                 ('0' + (startVal.getMonth() + 1)).slice(-2) +
@@ -725,33 +722,10 @@
             // 土曜日の営業日
             const businessDayCalender = @json($business_day_calender);
             const saturdays = businessDayCalender.map(item => item.date);
-            // console.log(businessDay);
-            // console.log(businessDay.map(item => item.date))
-            // const saturdays = [
-            //     '20230819',
-            //     '20240309',
-            // ];
 
             // 祝祭日等(休暇取得推進日含む)
             const holidayCalender = @json($holiday_calender);
-            // const holidays = holidayCalender.map(item => item.date);
-            const holidays = [
-                '20230503',
-                '20230504',
-                '20230505',
-                '20230814',
-                '20230815',
-                '20230816',
-                '20231103',
-                '20240101',
-                '20240102',
-                '20240103',
-                '20240104',
-                '20240223',
-                '20230829',
-                '20230830',
-                '20230831',
-            ];
+            const holidays = holidayCalender.map(item => item.date);
 
             //土曜日、日曜日をdayOffsに集計
             let remainderDays = diffDays % 7
@@ -768,7 +742,6 @@
                 let dYMD = d.getFullYear() + ('0' + (d.getMonth() + 1)).slice(-2) + ('0' + d
                     .getDate()).slice(-2);
                 // 土曜日の営業日をdayOffsから減算
-                // BUG:atart_dateが営業日、その後2日以上休業日で1日しか減算されない
                 if (saturdays.includes(dYMD)) {
                     dayOffs--;
                 }
@@ -831,7 +804,6 @@
                     }
                 }
             }
-            // console.log(workTimeEnd);
 
             if (reportCategory.value == 1 || // 有給
                 reportCategory.value == 3 || // 特別休暇(慶事)
@@ -1071,9 +1043,6 @@
                 } else {
                     holiday = false;
                 }
-                // console.log(startDate.value);
-                // console.log(endDate.value);
-                // startTime.value != '' && workTimeStart < startTimeVal && endTime.value != '' && workTimeEnd
 
                 if (holiday == true) {
                     holidayAlert.style.display = '';

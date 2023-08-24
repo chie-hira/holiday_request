@@ -40,7 +40,7 @@
                     </div>
                     <div>
                         <label for="shift_id" class="block mb-2 text-sm font-medium text-gray-900">
-                            休暇予定日のシフト
+                            {{ __('休暇予定日のシフト') }}
                         </label>
                         <x-select name="shift_id" id="shift_id" class="block mt-1 w-full" onchange="countDays();"
                             required autofocus>
@@ -584,7 +584,6 @@
                 }
             })
 
-
             for (let i = 0; i < reasonCategory.childNodes.length; i++) {
                 if (oldReasonId == reasonCategory.childNodes[i].value) {
                     reasonCategory.childNodes[i].selected = true;
@@ -719,8 +718,7 @@
             if (startTime.value > endTime.value) {
                 endTimeVal.setDate(endTimeVal.getDate() + 1);
             }
-            console.log(startTimeVal);
-            console.log(endTimeVal);
+
             let diffDays = (endVal - startVal) / 86400000 + 1; // 単純な差
             let startYMD = startVal.getFullYear() +
                 ('0' + (startVal.getMonth() + 1)).slice(-2) +
@@ -732,26 +730,12 @@
             let dayOffs = 0;
 
             // 土曜日の営業日
-            const saturdays = [
-                '20230819',
-                '20240309',
-            ];
+            const businessDayCalender = @json($business_day_calender);
+            const saturdays = businessDayCalender.map(item => item.date);
 
             // 祝祭日等(休暇取得推進日含む)
-            const holidays = [
-                '20230503',
-                '20230504',
-                '20230505',
-                '20230814',
-                '20230815',
-                '20230816',
-                '20231103',
-                '20240101',
-                '20240102',
-                '20240103',
-                '20240104',
-                '20240223',
-            ];
+            const holidayCalender = @json($holiday_calender);
+            const holidays = holidayCalender.map(item => item.date);
 
             //土曜日、日曜日をdayOffsに集計
             let remainderDays = diffDays % 7
@@ -772,7 +756,7 @@
                     dayOffs--;
                 }
                 // 祝祭日等の休業日をdayOffsに加算
-                if (holidays.indexOf(dYMD) != -1) {
+                if (holidays.includes(dYMD)) {
                     dayOffs++;
                 }
             }
@@ -847,7 +831,9 @@
                 if (duplicationCheck() == true) {
                     getDays = 0;
                 } else {
+                    // この順番を変えてはいけない
                     getDays = diffDays - dayOffs;
+                    holidayCheck();
                 }
             }
 
@@ -866,36 +852,41 @@
                 } else if (duplicationCheck() == true) {
                     getDays = 0;
                 } else {
+                    getDays = 0.5;
                     // パート,アルバイトはコードで休時間が変わる
                     // フルタイムは4時間
-                    if (shiftId == 19 || // コード43
-                        (shiftId == 15 && amPmVal == 2)) { // コード11後半
-                        getDays = 0.25; // 2時間
-                    } else if (
-                        (shiftId == 21 && amPmVal == 2) || // コード58後半
-                        (shiftId == 14 && amPmVal == 2) || // コード8後半
-                        shiftId == 22 || // コード59
-                        (shiftId == 16 && amPmVal == 1)) { // コード14前半
-                        getDays = 0.3125; // 2時間半
-                    } else if (
-                        (shiftId == 17 && amPmVal == 2) || // コード19後半
-                        shiftId == 18 || // コード42
-                        (shiftId == 13 && amPmVal == 1) || // コード5前半
-                        (shiftId == 16 && amPmVal == 2)) { // コード14後半
-                        getDays = 0.375; // 3時間
-                    } else if (
-                        (shiftId == 15 && amPmVal == 1) || // コード11前半
-                        shiftId == 20 || // コード53
-                        (shiftId == 14 && amPmVal == 1) || // コード8前半
-                        (shiftId == 17 && amPmVal == 1)) { // コード19前半
-                        getDays = 0.4375; // 3時間半
-                    } else {
-                        getDays = 0.5;
-                    }
+                    // if (shiftId == 19 || // コード43
+                    //     (shiftId == 15 && amPmVal == 2)) { // コード11後半
+                    //     getDays = 0.25; // 2時間
+                    // } else if (
+                    //     (shiftId == 21 && amPmVal == 2) || // コード58後半
+                    //     (shiftId == 14 && amPmVal == 2) || // コード8後半
+                    //     shiftId == 22 || // コード59
+                    //     (shiftId == 16 && amPmVal == 1)) { // コード14前半
+                    //     getDays = 0.3125; // 2時間半
+                    // } else if (
+                    //     (shiftId == 17 && amPmVal == 2) || // コード19後半
+                    //     shiftId == 18 || // コード42
+                    //     (shiftId == 13 && amPmVal == 1) || // コード5前半
+                    //     (shiftId == 16 && amPmVal == 2)) { // コード14後半
+                    //     getDays = 0.375; // 3時間
+                    // } else if (
+                    //     (shiftId == 15 && amPmVal == 1) || // コード11前半
+                    //     shiftId == 20 || // コード53
+                    //     (shiftId == 14 && amPmVal == 1) || // コード8前半
+                    //     (shiftId == 17 && amPmVal == 1)) { // コード19前半
+                    //     getDays = 0.4375; // 3時間半
+                    // } else {
+                    //     getDays = 0.5;
+                    // }
                 }
             }
 
-            if (subReportCategories[3].checked ||
+            if (
+                // WORNING:時間休にを有効にする場合、シフトによって1時間の重みが違う
+                // 4時間労働の2時間休み=8時間労働の4時間休み
+                // これがシフトが変わったとき、どのように扱うのか
+                // subReportCategories[3].checked ||
                 reportCategory.value == 13 || // 遅刻
                 reportCategory.value == 14 || // 早退
                 reportCategory.value == 15) { // 外出
@@ -1041,12 +1032,23 @@
             function holidayCheck() {
                 console.log('holidayCheck'); // 起動確認
                 let holiday = false;
+                // これは必要:土曜営業日はfalse
                 if (saturdays.includes(startYMD)) {
                     holiday = false;
                 } else if (startWeek + i == 0 || startWeek + i == 6 || startWeek + i == 7) {
                     holiday = true;
                 } else if (holidays.includes(startYMD)) {
                     holiday = true;
+                } else if (endDate.value) {
+                    for (let d = new Date(startDate.value); d <= endVal; d.setDate(d.getDate() + 1)) {
+                        const Y_M_D = d.getFullYear() +
+                            ('0' + (d.getMonth() + 1)).slice(-2) +
+                            ('0' + d.getDate()).slice(-2);
+                        if (holidays.includes(Y_M_D) && getDays == 0) {
+                            console.log(Y_M_D);
+                            holiday = true;
+                        }
+                    }
                 } else {
                     holiday = false;
                 }
