@@ -134,14 +134,27 @@ class ReportController extends Controller
         $shifts = ShiftCategory::all();
         $my_acquisition_days = Auth::user()->acquisition_days;
         $my_reports = Auth::user()->reports;
-        $holiday_calender = Calender::whereHas('calender_category', function ($query) {
-            $query->where('calender_id', Auth::user()->affiliation->calender_category->id)
+        $holiday_calender = Calender::whereHas('calender_category', function (
+            $query
+        ) {
+            $query
+                ->where(
+                    'calender_id',
+                    Auth::user()->affiliation->calender_category->id
+                )
                 ->where('date_id', 1);
         })->get('date');
-        $business_day_calender = Calender::whereHas('calender_category', function ($query) {
-            $query->where('calender_id', Auth::user()->affiliation->calender_category->id)
-                ->where('date_id', 2);
-        })->get('date');
+        $business_day_calender = Calender::whereHas(
+            'calender_category',
+            function ($query) {
+                $query
+                    ->where(
+                        'calender_id',
+                        Auth::user()->affiliation->calender_category->id
+                    )
+                    ->where('date_id', 2);
+            }
+        )->get('date');
 
         /** 残日数が0ではないreport_categoryを取得 */
         $report_categories = ReportCategory::whereHas(
@@ -184,7 +197,7 @@ class ReportController extends Controller
                 'my_acquisition_days',
                 'my_reports',
                 'holiday_calender',
-                'business_day_calender',
+                'business_day_calender'
             )
         );
     }
@@ -734,14 +747,27 @@ class ReportController extends Controller
         $shifts = ShiftCategory::all();
         $my_acquisition_days = Auth::user()->acquisition_days;
         $my_reports = Auth::user()->reports->where('id', '!=', $report->id);
-        $holiday_calender = Calender::whereHas('calender_category', function ($query) {
-            $query->where('calender_id', Auth::user()->affiliation->calender_category->id)
+        $holiday_calender = Calender::whereHas('calender_category', function (
+            $query
+        ) {
+            $query
+                ->where(
+                    'calender_id',
+                    Auth::user()->affiliation->calender_category->id
+                )
                 ->where('date_id', 1);
         })->get('date');
-        $business_day_calender = Calender::whereHas('calender_category', function ($query) {
-            $query->where('calender_id', Auth::user()->affiliation->calender_category->id)
-                ->where('date_id', 2);
-        })->get('date');
+        $business_day_calender = Calender::whereHas(
+            'calender_category',
+            function ($query) {
+                $query
+                    ->where(
+                        'calender_id',
+                        Auth::user()->affiliation->calender_category->id
+                    )
+                    ->where('date_id', 2);
+            }
+        )->get('date');
 
         $report_categories = ReportCategory::whereHas(
             'acquisition_days',
@@ -784,7 +810,7 @@ class ReportController extends Controller
                 'my_acquisition_days',
                 'my_reports',
                 'holiday_calender',
-                'business_day_calender',
+                'business_day_calender'
             )
         );
     }
@@ -2664,13 +2690,32 @@ class ReportController extends Controller
         return Excel::download(new MultipleExport(), 'pp.xlsx');
     }
 
-    public function import_form(){
+    public function import_form()
+    {
         return view('menu.import_form');
     }
 
-    // public function source_export()
-    // {
-    //     # 全データ出力
-    //     return Excel::download(new ReportSourceExport(), 'reports.xlsx');
-    // }
+    function monitor()
+    {
+        $pending_reports = Report::with('user')
+            ->where('approved', 0)
+            ->where('cancel', 0)
+            ->get()
+            ->load([
+                'user',
+                'user.affiliation',
+                'user.affiliation.factory',
+                'user.affiliation.department',
+                'user.affiliation.group',
+            ])
+            ->groupBy('user.affiliation.id')
+            ->map(function ($query) {
+                return [
+                    'affiliation' => $query->first()->user->affiliation_name,
+                    'count' => $query->count(),
+                ];
+            });
+            // dd(count($pending_reports));
+        return view('reports.monitor')->with(compact('pending_reports'));
+    }
 }

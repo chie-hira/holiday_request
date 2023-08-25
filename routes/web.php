@@ -101,6 +101,9 @@ Route::get('/approval/{report}/cancel', [
 Route::get('/', [ReportController::class, 'menu'])
     ->name('menu')
     ->middleware('auth');
+# monitorルーティング
+Route::get('/monitor', [ReportController::class, 'monitor'])
+    ->name('monitor');
 
 # 承認後のreport削除
 Route::put('/reports/approved/{report}/cancel', [
@@ -122,12 +125,25 @@ Route::get('/all_export', [ReportController::class, 'all_export'])->middleware(
 );
 
 # インポート
-// Excelインポート
-Route::get('/import_form',[ReportController::class, 'import_form'])->name('import_form');
-Route::post('/users_import',[UserController::class, 'import'])->name('users_import');
-Route::post('/approvals_import',[ApprovalController::class, 'import'])->name('approvals_import');
-Route::post('/acquisition_days_import',[AcquisitionDayController::class, 'import'])->name('acquisition_days_import');
-Route::get('/initial_import',[AcquisitionDayController::class, 'initial_import'])->name('initial_import');
+Route::get('/import_form', function () {
+    return view('menu.import_form');
+})->name(
+    'import_form'
+);
+Route::post('/users_import', [UserController::class, 'import'])->name(
+    'users_import'
+);
+Route::post('/approvals_import', [ApprovalController::class, 'import'])->name(
+    'approvals_import'
+);
+Route::post('/acquisition_days_import', [
+    AcquisitionDayController::class,
+    'import',
+])->name('acquisition_days_import');
+Route::get('/initial_import', [
+    AcquisitionDayController::class,
+    'initial_import',
+])->name('initial_import');
 
 // TODO:notAuthorizedでログイン画面にリダイレクト
 
