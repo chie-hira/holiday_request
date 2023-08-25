@@ -1,7 +1,7 @@
 <table>
     <thead>
         <tr>
-            <th>{{ __('Team') }}</th>
+            <th>{{ __('Affiliation') }}</th>
             <th>{{ __('Employee') }}</th>
             <th>{{ __('Name') }}</th>
             <th>{{ __('Report Category') }}</th>
