@@ -16,6 +16,7 @@ class CreateSubReportCategoriesTable extends Migration
         Schema::create('sub_report_categories', function (Blueprint $table) {
             $table->id();
             $table->string('sub_report_name')->unique();
+            $table->string('remarks')->nullable();
             $table->timestamps();
         });
     }

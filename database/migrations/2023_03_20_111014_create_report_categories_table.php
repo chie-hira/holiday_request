@@ -18,6 +18,7 @@ class CreateReportCategoriesTable extends Migration
             $table->string('report_name')->unique();
             $table->integer('max_days')->nullable();
             $table->integer('max_times')->nullable();
+            $table->string('remarks')->nullable();
             $table->timestamps();
         });
     }

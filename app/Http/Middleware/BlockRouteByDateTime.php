@@ -57,7 +57,7 @@ class BlockRouteByDateTime
         if ($holiday_calender->contains('date', $DateTime->format('Ymd'))) {
             return back()->withErrors('休日は申請できません');
         } elseif (
-            $DateTime->dayName == '土曜日' &&
+            $DateTime->dayName == '水曜日' &&
             !$business_day_calender->contains('date', $DateTime->format('Ymd'))
         ) {
             return back()->withErrors('休日は申請できません');
