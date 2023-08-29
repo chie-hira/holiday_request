@@ -544,14 +544,19 @@ class ReportController extends Controller
                 $acquisition_day->remaining_days -
                 $acquisition_day->pending_acquisition_days -
                 $request->get_days; // 残日数-申請中日数-申請日数
-
             if ($result < 0) {
                 throw ValidationException::withMessages([
                     'get_days' => ['取得上限を超えています'],
                 ]);
             }
         }
-        // dd($request);
+        $start_date = new Carbon($request->start_date);
+        $now = Carbon::now();
+        if ($now->addDay() >= $start_date->addHour(16)) {
+                throw ValidationException::withMessages([
+                    'start_date' => ['翌日の休暇は16時までに提出してください'],
+                ]);
+        }
 
         # reportsレコード作成
         $report = new Report();
