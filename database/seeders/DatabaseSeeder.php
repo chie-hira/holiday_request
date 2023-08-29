@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
         // $this->call(UsersTableSeeder::class);
         $this->call(ApprovalCategorySeeder::class);
         // $this->call(ApprovalSeeder::class);
+        $this->call(AcquisitionFormSeeder::class);
         $this->call(ReportCategorySeeder::class);
         $this->call(SubReportCategorySeeder::class);
         $this->call(ReasonCategorySeeder::class);

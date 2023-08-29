@@ -22,4 +22,14 @@ class ReasonCategory extends Model
     {
         return $this->hasMany(Report::class, 'reason_id', 'id');
     }
+
+    /**
+     * Get all of the reasons for the ReasonCategory
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function reasons()
+    {
+        return $this->hasMany(Reason::class, 'reason_id', 'id');
+    }
 }

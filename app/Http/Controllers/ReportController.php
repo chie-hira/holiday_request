@@ -130,7 +130,7 @@ class ReportController extends Controller
     {
         $sub_report_categories = SubReportCategory::all();
         $reasons = ReasonCategory::all();
-        $report_reasons = Reason::all();
+        $report_reasons = Reason::with('reason_category')->get();
         $shifts = ShiftCategory::all();
         $my_acquisition_days = Auth::user()->acquisition_days;
         $my_reports = Auth::user()->reports;
@@ -174,7 +174,9 @@ class ReportController extends Controller
                     ->orWhere('id', 17)
                     ->orWhere('id', 18);
             })
-            ->get();
+            ->get()
+            ->load('acquisition_form');
+        // dd($report_categories);
 
         /** バースデイ休暇の取得期間外の場合は、バースデイ休暇をreport_categoriesから除く */
         $birthday = new Carbon(
@@ -217,129 +219,208 @@ class ReportController extends Controller
         Log::info('Request data:', $request->all());
 
         // バリデーション
-        if (
-            $request->report_id == 1 || # 有給
-            $request->report_id == 7 || # 特別休暇(看護・対象1名)
-            $request->report_id == 8 || # 特別休暇(看護・対象2名)
-            $request->report_id == 9 || # 特別休暇(介護・対象1名)
-            $request->report_id == 10 # 特別休暇(介護・対象2名)
-        ) {
-            $request->validate([
-                'start_date' => 'after:today',
-                'sub_report_id' => 'required|integer',
-            ]);
-            if ($request->sub_report_id == 1) {
-                # 終日休暇
-                $request->validate(
-                    [
-                        'get_days' => [Rule::in(1.0)],
-                    ],
-                    [
-                        'get_days.in' => '終日休は1日で届出してください。',
-                    ]
-                );
-            }
-            if ($request->sub_report_id == 2) {
-                # 連休
-                $request->validate(
-                    [
-                        'end_date' => 'required',
-                        'get_days' => 'integer|min:2',
-                    ],
-                    [
-                        'get_days.min' =>
-                            '連休は:attributeが:min日以上で届出してください。',
-                    ]
-                );
-            }
-            if ($request->sub_report_id == 3) {
-                # 半日休暇
-                $request->validate(
-                    [
-                        'am_pm' => 'required',
-                        'get_days' => [
-                            'required',
-                            Rule::in(0.25, 0.3125, 0.375, 0.4375, 0.5),
-                        ],
-                    ],
-                    [
-                        'get_days.in' =>
-                            '半日休は2時間、2.5時間、3時間、3.5時間、4時間で届出してください。',
-                        'am_pm.required' => '前半・後半を選択してください。',
-                    ]
-                );
-            }
-            if ($request->sub_report_id == 4) {
-                # 時間休
-                $request->validate(
-                    [
-                        'start_time' => 'required',
-                        'end_time' => 'required',
-                        'get_days' => [
-                            'numeric',
-                            'max:1',
-                            'multiple_of:0.125',
-                            Rule::notIn([1]),
-                        ],
-                    ],
-                    [
-                        'get_days.max' => '時間給は:max日未満で届出できます。',
-                        'get_days.multiple_of' =>
-                            '時間休は1時間単位で届出してください。',
-                        'get_days.not_in' => '時間給は1日未満で届出できます。',
-                    ]
-                );
-            }
+        if ($request->sub_report_id == 1) {
+            # 終日休
+            $request->validate(
+                [
+                    'get_days' => [Rule::in(1.0)],
+                ],
+                [
+                    'get_days.in' => '終日休は1日で届出してください。',
+                ]
+            );
         }
+        if ($request->sub_report_id == 2) {
+            # 連休
+            $request->validate(
+                [
+                    'end_date' => 'required',
+                    'get_days' => 'integer|min:1',
+                ],
+                [
+                    'get_days.min' =>
+                        '連休は:attributeが:min日以上で届出してください。',
+                ]
+            );
+        }
+        if ($request->sub_report_id == 3) {
+            # 半日休暇
+            $request->validate(
+                [
+                    'am_pm' => 'required',
+                    'get_days' => [
+                        'required',
+                        Rule::in(0.25, 0.3125, 0.375, 0.4375, 0.5),
+                    ],
+                ],
+                [
+                    'get_days.in' =>
+                        '半日休は2時間、2.5時間、3時間、3.5時間、4時間で届出してください。',
+                    'am_pm.required' => '前半・後半を選択してください。',
+                ]
+            );
+        }
+        if ($request->sub_report_id == 4) {
+            # 時間休
+            $request->validate(
+                [
+                    'start_time' => 'required',
+                    'end_time' => 'required',
+                    'get_days' => [
+                        'numeric',
+                        'max:1',
+                        'multiple_of:0.125',
+                        Rule::notIn([1]),
+                    ],
+                ],
+                [
+                    'get_days.max' => '時間給は:max日未満で届出できます。',
+                    'get_days.multiple_of' =>
+                        '時間休は1時間単位で届出してください。',
+                    'get_days.not_in' => '時間給は1日未満で届出できます。',
+                ]
+            );
+        }
+
         if (
-            $request->report_id == 2 || # バースデイ
-            $request->report_id == 12 # 欠勤
+            $request->report_id != 12 || # 欠勤
+            $request->report_id != 13 || # 遅刻
+            $request->report_id != 14 || # 早退
+            $request->report_id != 15 || # 外出
+            $request->report_id != 4 || # 特別休暇(弔事)
+            $request->report_id != 5 || # 特別休暇(弔事)
+            $request->report_id != 6 # 特別休暇(弔事)
         ) {
             $request->validate(
                 [
                     'start_date' => 'after:today',
-                    'get_days' => ['required', Rule::in(1.0)],
                 ],
-                [
-                    'get_days.in' => ':attributeは1日にしてください',
-                ]
             );
         }
-        if (
-            $request->report_id == 3 || # 特別休暇(慶事)
-            $request->report_id == 11 || # 特別休暇(短期育休)
-            $request->report_id == 16 || # 介護休業
-            $request->report_id == 17 || # 育児休業
-            $request->report_id == 18 # パパ育休
-        ) {
-            $request->validate(
-                [
-                    'start_date' => 'after:today',
-                    'end_date' => 'required',
-                    'get_days' => 'min:1',
-                ],
-                [
-                    'get_days.min' =>
-                        ':attributeは:min日以上で届出してください。',
-                ]
-            );
-        }
-        if (
-            $request->report_id == 4 || # 特別休暇(弔事)
-            $request->report_id == 5 || # 特別休暇(弔事)
-            $request->report_id == 6 # 特別休暇(弔事)
-        ) {
-            $request->validate(
-                [
-                    'end_date' => 'required',
-                    'get_days' => 'min:1',
-                ],
-                [
-                    'get_days.min' =>
-                        ':attributeは:min日以上で届出してください。',
-                ]
-            );
-        }
+
+        // if (
+        //     $request->report_id == 1 || # 有給
+        //     $request->report_id == 7 || # 特別休暇(看護・対象1名)
+        //     $request->report_id == 8 || # 特別休暇(看護・対象2名)
+        //     $request->report_id == 9 || # 特別休暇(介護・対象1名)
+        //     $request->report_id == 10 # 特別休暇(介護・対象2名)
+        // ) {
+        //     $request->validate([
+        //         'start_date' => 'after:today',
+        //         'sub_report_id' => 'required|integer',
+        //     ]);
+        //     if ($request->sub_report_id == 1) {
+        //         # 終日休暇
+        //         $request->validate(
+        //             [
+        //                 'get_days' => [Rule::in(1.0)],
+        //             ],
+        //             [
+        //                 'get_days.in' => '終日休は1日で届出してください。',
+        //             ]
+        //         );
+        //     }
+        //     if ($request->sub_report_id == 2) {
+        //         # 連休
+        //         $request->validate(
+        //             [
+        //                 'end_date' => 'required',
+        //                 'get_days' => 'integer|min:2',
+        //             ],
+        //             [
+        //                 'get_days.min' =>
+        //                     '連休は:attributeが:min日以上で届出してください。',
+        //             ]
+        //         );
+        //     }
+        //     if ($request->sub_report_id == 3) {
+        //         # 半日休暇
+        //         $request->validate(
+        //             [
+        //                 'am_pm' => 'required',
+        //                 'get_days' => [
+        //                     'required',
+        //                     Rule::in(0.25, 0.3125, 0.375, 0.4375, 0.5),
+        //                 ],
+        //             ],
+        //             [
+        //                 'get_days.in' =>
+        //                     '半日休は2時間、2.5時間、3時間、3.5時間、4時間で届出してください。',
+        //                 'am_pm.required' => '前半・後半を選択してください。',
+        //             ]
+        //         );
+        //     }
+        //     if ($request->sub_report_id == 4) {
+        //         # 時間休
+        //         $request->validate(
+        //             [
+        //                 'start_time' => 'required',
+        //                 'end_time' => 'required',
+        //                 'get_days' => [
+        //                     'numeric',
+        //                     'max:1',
+        //                     'multiple_of:0.125',
+        //                     Rule::notIn([1]),
+        //                 ],
+        //             ],
+        //             [
+        //                 'get_days.max' => '時間給は:max日未満で届出できます。',
+        //                 'get_days.multiple_of' =>
+        //                     '時間休は1時間単位で届出してください。',
+        //                 'get_days.not_in' => '時間給は1日未満で届出できます。',
+        //             ]
+        //         );
+        //     }
+        // }
+        // if (
+        //     $request->report_id == 2 || # バースデイ
+        //     $request->report_id == 12 # 欠勤
+        // ) {
+        //     $request->validate(
+        //         [
+        //             'start_date' => 'after:today',
+        //             'get_days' => ['required', Rule::in(1.0)],
+        //         ],
+        //         [
+        //             'get_days.in' => ':attributeは1日にしてください',
+        //         ]
+        //     );
+        // }
+        // if (
+        //     $request->report_id == 3 || # 特別休暇(慶事)
+        //     $request->report_id == 11 || # 特別休暇(短期育休)
+        //     $request->report_id == 16 || # 介護休業
+        //     $request->report_id == 17 || # 育児休業
+        //     $request->report_id == 18 # パパ育休
+        // ) {
+        //     $request->validate(
+        //         [
+        //             'start_date' => 'after:today',
+        //             'end_date' => 'required',
+        //             'get_days' => 'min:1',
+        //         ],
+        //         [
+        //             'get_days.min' =>
+        //                 ':attributeは:min日以上で届出してください。',
+        //         ]
+        //     );
+        // }
+        // if (
+        //     $request->report_id == 4 || # 特別休暇(弔事)
+        //     $request->report_id == 5 || # 特別休暇(弔事)
+        //     $request->report_id == 6 # 特別休暇(弔事)
+        // ) {
+        //     $request->validate(
+        //         [
+        //             'end_date' => 'required',
+        //             'get_days' => 'min:1',
+        //         ],
+        //         [
+        //             'get_days.min' =>
+        //                 ':attributeは:min日以上で届出してください。',
+        //         ]
+        //     );
+        // }
         if (
             $request->report_id == 13 || # 遅刻
             $request->report_id == 14 # 早退
@@ -2715,7 +2796,7 @@ class ReportController extends Controller
                     'count' => $query->count(),
                 ];
             });
-            // dd(count($pending_reports));
+        // dd(count($pending_reports));
         return view('reports.monitor')->with(compact('pending_reports'));
     }
 }

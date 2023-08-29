@@ -27,6 +27,7 @@ class StoreReportRequest extends FormRequest
             'report_date' => 'required|date',
             'user_id' => 'required|integer',
             'report_id' => 'required|integer',
+            'sub_report_id' => 'required|integer',
             'reason_id' => 'required|integer',
             'reason_detail' => 'max:50', # ここにstringはNG。stringはnullを許容しないのでrequiredをかねる。
             'start_date' => 'required|date|after_or_equal:report_date',

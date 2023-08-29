@@ -63,9 +63,9 @@
                                 @endforeach
                             </x-select>
                         </div>
-                        <div class="hidden md:block" style="display:" id="empty_field_form"></div>
+                        {{-- <div class="hidden md:block" style="display:" id="empty_field_form"></div> --}}
 
-                        <!-- 遅刻・早退コメント - start -->
+                        {{-- <!-- 遅刻・早退コメント - start -->
                         <div class="col-span-1 md:col-span-2" style="display: none" id="comment_contener_1">
                             <x-info style="display: none" id="time_form_10m">
                                 <p class="text-sm">
@@ -85,7 +85,7 @@
                                 </p>
                             </x-info>
                         </div>
-                        <!-- 外出コメント - end -->
+                        <!-- 外出コメント - end --> --}}
 
                         <div style="display: none" id="sub_category_form">
                             <p class="block mb-2 text-sm font-medium text-gray-900">
@@ -119,7 +119,7 @@
                                 </p>
                             </x-info>
                         </div>
-                        <div class="col-span-1 md:col-span-2" style="display: none" id="comment_contener_2">
+                        {{-- <div class="col-span-1 md:col-span-2" style="display: none" id="comment_contener_2">
                             <x-info style="display: none" id="auspicious">
                                 <p class="text-sm">
                                     <span class="font-semibold text-red-500">本人</span>
@@ -196,7 +196,7 @@
                                 </p>
                             </x-info>
                         </div>
-                        <!-- 時間休コメント - end -->
+                        <!-- 時間休コメント - end --> --}}
 
                         <!-- 有給休暇 - start -->
                         <div>
@@ -225,8 +225,7 @@
                             <label for="am_pm" class="block mb-2 text-sm font-medium text-gray-900">
                                 前半・後半
                             </label>
-                            <x-select name="am_pm" id="am_pm" class="block mt-1 w-full"
-                                onchange="countDays();">
+                            <x-select name="am_pm" id="am_pm" class="block mt-1 w-full" onchange="countDays();">
                                 <option value="">選択してください</option>
                                 <option value="1" @if (1 === (int) old('am_pm')) selected @endif>前半</option>
                                 <option value="2" @if (2 === (int) old('am_pm')) selected @endif>後半</option>
@@ -420,32 +419,32 @@
         let subReport = document.getElementById('sub_report_id');
         let reasonCategory = document.getElementById('reason_id');
         let subCategoryForm = document.getElementById('sub_category_form');
-        let emptyFieldForm = document.getElementById('empty_field_form');
+        // let emptyFieldForm = document.getElementById('empty_field_form');
         let reasonDetail = document.getElementById('reason_detail');
         let emptyReasonForm = document.getElementById('empty_reason_form');
         let startDateLabel = document.getElementById('start_date_label');
         let startDateForm = document.getElementById('start_date');
         let endDateForm = document.getElementById('end_date_form');
         let timeEmptyForm = document.getElementById('time_empty_form');
-        let timeForm = document.getElementById('time_form');
-        let commentContener1 = document.getElementById('comment_contener_1');
-        let timeForm30 = document.getElementById('time_form_30m');
-        let timeForm10 = document.getElementById('time_form_10m');
+        // let timeForm = document.getElementById('time_form');
+        // let commentContener1 = document.getElementById('comment_contener_1');
+        // let timeForm30 = document.getElementById('time_form_30m');
+        // let timeForm10 = document.getElementById('time_form_10m');
         let startTimeForm = document.getElementById('start_time_form');
         let endTimeForm = document.getElementById('end_time_form');
         let halfDateLabel = document.getElementById('half_date_label');
         let amPmForm = document.getElementById('am_pm_form');
-        let amPmComment = document.getElementById('am_pm_comment');
-        let commentContener2 = document.getElementById('comment_contener_2');
-        let auspicious = document.getElementById('auspicious');
-        let mourning1 = document.getElementById('mourning_1');
-        let mourning2 = document.getElementById('mourning_2');
-        let mourning3 = document.getElementById('mourning_3');
-        let nurse1 = document.getElementById('nurse_1');
-        let nurse2 = document.getElementById('nurse_2');
-        let care1 = document.getElementById('care_1');
-        let care2 = document.getElementById('care_2');
-        let shortChildCare = document.getElementById('short_child_care');
+        // let amPmComment = document.getElementById('am_pm_comment');
+        // let commentContener2 = document.getElementById('comment_contener_2');
+        // let auspicious = document.getElementById('auspicious');
+        // let mourning1 = document.getElementById('mourning_1');
+        // let mourning2 = document.getElementById('mourning_2');
+        // let mourning3 = document.getElementById('mourning_3');
+        // let nurse1 = document.getElementById('nurse_1');
+        // let nurse2 = document.getElementById('nurse_2');
+        // let care1 = document.getElementById('care_1');
+        // let care2 = document.getElementById('care_2');
+        // let shortChildCare = document.getElementById('short_child_care');
         let amPm = document.getElementById('am_pm');
         let remarksContener = document.getElementById('remarks_contener');
         let reportRemarksContener = document.getElementById('report_remarks_contener');
@@ -459,7 +458,8 @@
         // リダイレクト時の表示切替
         window.addEventListener('load', function() {
             displayReset();
-            reportDisplaySwitch(); // reportでform表示切替
+            radioChange();
+            // reportDisplaySwitch(); // reportでform表示切替
             subReportDisplaySwitch(); // sub_reportでform表示切替
             reportReasonSwitch(); // reportでreason種類切替
             // reasonDisplaySwitch(); // reasonで理由:その他表示切替
@@ -469,15 +469,16 @@
         // 届出内容変更時の表示切替
         function reportChange() {
             displayReset();
-            subDisplayReset();
-            reportDisplaySwitch(); // reportでform表示切替
+            // subDisplayReset();
+            // reportDisplaySwitch(); // reportでform表示切替
             reportReasonSwitch(); // reportでreason種類切替
             radioChange();
-            let subReportCategory = document.querySelector('input[name=sub_report_id]:checked');
-            if (subReportCategory) {
-                // ラジオボタンの選択を解除
-                subReportCategory.checked = false;
-            }
+            subReportDisplaySwitch();
+            // let subReportCategory = document.querySelector('input[name=sub_report_id]:checked');
+            // if (subReportCategory) {
+            //     // ラジオボタンの選択を解除
+            //     subReportCategory.checked = false;
+            // }
             timeReset(); // end_date,start_time,end_timeリセット
             dateChange(); // get_daysリセット
             alertReset(); // アラートリセット
@@ -485,21 +486,13 @@
             //     countDays();
             // }
             // emptyReasonForm.style.display = "none";
-            
-            reoprtRemarksSwitch();
-            // remarksContener.style.display = "none";
-            // let reportId = reportCategory.value;
-            // Object.keys(reportCategories).forEach(el => {
-            //     if (reportCategories[el].id == reportId && reportCategories[el].remarks != null) {
-            //         remarksContener.style.display = ""; // remarksコンテナ表示
-            //         reportRemarksContener.style.display = ""; // 表示
-            //         reportRemarks.textContent = reportCategories[el].remarks; // コメント表示
-            //     }
-            // })
+
+            reoprtRemarksSwitch(); // 届出種類ごとの説明コメント切り替え
         }
 
+        // 届出種類ごとの説明コメント切り替え関数
         function reoprtRemarksSwitch() {
-            remarksContener.style.display = "none";
+            reportRemarksContener.style.display = "none";
             let reportId = reportCategory.value;
             Object.keys(reportCategories).forEach(el => {
                 if (reportCategories[el].id == reportId && reportCategories[el].remarks != null) {
@@ -510,11 +503,11 @@
             })
         }
 
+        // 取得形態ごとの説明コメント切り替え関数
         function subReportRemarksSwitch() {
             let subReportId = document.querySelector('input[name=sub_report_id]:checked').value;
             Object.keys(subReportCategories).forEach(el => {
                 if (subReportCategories[el].id == subReportId && subReportCategories[el].remarks != null) {
-                console.log(subReportId);
                     remarksContener.style.display = ""; // remarksコンテナ表示
                     subReportRemarksContener.style.display = ""; // 表示
                     subReportRemarks.textContent = subReportCategories[el].remarks; // コメント表示
@@ -558,82 +551,229 @@
             // if (subReportCategory[0].checked) {
             //     countDays();
             // }
-            // let subReportCategory = document.querySelector('input[name=sub_report_id]:checked');
             let subReportId = document.querySelector('input[name=sub_report_id]:checked').value;
-            // let subReportId = subReportCategory.value;
             if (subReportId == 1) {
                 countDays();
             }
 
-            subReportRemarksSwitch();
-            // subReportRemarksContener.style.display = "none";
-            // Object.keys(subReportCategories).forEach(el => {
-            //     if (subReportCategories[el].id == subReportId && subReportCategories[el].remarks != null) {
-            //     console.log(subReportId);
-            //         remarksContener.style.display = ""; // remarksコンテナ表示
-            //         subReportRemarksContener.style.display = ""; // 表示
-            //         subReportRemarks.textContent = subReportCategories[el].remarks; // コメント表示
-            //     }
-            // })
+            subReportRemarksSwitch(); // 取得形態ごとの説明コメント切り替え
         }
 
         // 表示初期化関数
         function displayReset() {
-            emptyFieldForm.style.display = "none";
+            // emptyFieldForm.style.display = "none";
             subCategoryForm.style.display = "";
             halfDateLabel.style.display = "none";
             amPmForm.style.display = "none";
             timeEmptyForm.style.display = "none";
-            timeForm.style.display = "none";
-            // reportRemarksContener.style.display = "none";
+            // timeForm.style.display = "none";
             subReportRemarksContener.style.display = "none";
-            commentContener1.style.display = "none";
-            timeForm30.style.display = "none";
-            timeForm10.style.display = "none";
+            // commentContener1.style.display = "none";
+            // timeForm30.style.display = "none";
+            // timeForm10.style.display = "none";
             startTimeForm.style.display = "none";
             endTimeForm.style.display = "none";
             startDateLabel.style.display = "";
             startDateForm.style.display = "";
             endDateForm.style.display = "";
-            amPmComment.style.display = "none";
+            // amPmComment.style.display = "none";
             emptyReasonForm.style.display = "none";
         }
 
-        function subDisplayReset() {
-            commentContener2.style.display = "none";
-            auspicious.style.display = "none";
-            mourning1.style.display = "none";
-            mourning2.style.display = "none";
-            mourning3.style.display = "none";
-            nurse1.style.display = "none";
-            nurse2.style.display = "none";
-            care1.style.display = "none";
-            care2.style.display = "none";
-            shortChildCare.style.display = "none";
-        }
+        // function subDisplayReset() {
+        //     commentContener2.style.display = "none";
+        //     auspicious.style.display = "none";
+        //     mourning1.style.display = "none";
+        //     mourning2.style.display = "none";
+        //     mourning3.style.display = "none";
+        //     nurse1.style.display = "none";
+        //     nurse2.style.display = "none";
+        //     care1.style.display = "none";
+        //     care2.style.display = "none";
+        //     shortChildCare.style.display = "none";
+        // }
 
         function radioChange() {
-            var selectedReportId = reportCategory.value;
+            let selectedReportId = reportCategory.value; // 選択中のreportCategory
+            const radioOptions = document.querySelectorAll('[name="sub_report_id"]'); // すべてのラジオボタン要素
+            const reportCategoryArray = Object.values(reportCategories); // オブジェクト変換
+            let findReport = reportCategoryArray.find((re) => re.id == selectedReportId);
+            let oldSubReportCategory = document.querySelector('input[name=sub_report_id]:checked');
+            // let firstSubReportCategory = document.querySelector('input[name=sub_report_id]:first-child');
+            let firstSubReportCategory = document.querySelector('input[name=sub_report_id][value="1"]');
+            let secondSubReportCategory = document.querySelector('input[name=sub_report_id][value="2"]');
+            let thirdSubReportCategory = document.querySelector('input[name=sub_report_id][value="3"]');
+            let fourthSubReportCategory = document.querySelector('input[name=sub_report_id][value="4"]');
+            let oldSubReportId = '';
+            if (oldSubReportCategory) {
+                oldSubReportId = oldSubReportCategory.value;
+            }
 
-            // ラジオボタン要素を取得
-            var radioOptions = document.querySelectorAll('[name="sub_report_id"]');
+            switch (findReport.acquisition_id) {
+                case 1:
+                    radioOptions.forEach(function(radio) {
+                        let radioLabel = document.querySelector('label[for="' + radio.id + '"]'); // ラジオボタンのラベル要素を取得
+                        // radio.style.display = ''; // 表示
+                        // radioLabel.style.display = ''; // 表示
+                        if (radio.value == 4) {
+                            radio.style.display = 'none'; // 非表示
+                            radioLabel.style.display = 'none'; // 非表示
+                            // 非表示が選択されていた場合、チェックを解除
+                            if (oldSubReportId == 4) {
+                                oldSubReportCategory.checked = false;
+                            }
+                        } else {
+                            radio.style.display = '';
+                            radioLabel.style.display = '';
+                        }
+                    });
+                    if (secondSubReportCategory.checked == false && thirdSubReportCategory.checked == false) {
+                        firstSubReportCategory.checked = true;
+                    }
+                    break;
+
+                case 2:
+                    radioOptions.forEach(function(radio) {
+                        let radioLabel = document.querySelector('label[for="' + radio.id + '"]'); // ラジオボタンのラベル要素を取得
+                        if (radio.value == 2) {
+                            radio.style.display = 'none'; // 非表示
+                            radioLabel.style.display = 'none'; // 非表示
+                            // 非表示が選択されていた場合、チェックを解除
+                            if (oldSubReportId == 2) {
+                                oldSubReportCategory.checked = false;
+                            }
+                        } else {
+                            radio.style.display = '';
+                            radioLabel.style.display = '';
+                        }
+                    });
+                    if (secondSubReportCategory.checked == false && fourthSubReportCategory.checked == false) {
+                        firstSubReportCategory.checked = true;
+                    }
+                    break;
+
+                case 3:
+                    radioOptions.forEach(function(radio) {
+                        let radioLabel = document.querySelector('label[for="' + radio.id + '"]'); // ラジオボタンのラベル要素を取得
+                        if (radio.value == 2 || radio.value == 4) {
+                            radio.style.display = 'none';
+                            radioLabel.style.display = 'none';
+                            if (oldSubReportId == 2 || oldSubReportId == 4) {
+                                oldSubReportCategory.checked = false;
+                            }
+                        } else {
+                            radio.style.display = '';
+                            radioLabel.style.display = '';
+                        }
+                    });
+                    if (secondSubReportCategory.checked == false) {
+                        firstSubReportCategory.checked = true;
+                    }
+                    break;
+
+                case 4:
+                    radioOptions.forEach(function(radio) {
+                        let radioLabel = document.querySelector('label[for="' + radio.id + '"]'); // ラジオボタンのラベル要素を取得
+                        if (radio.value == 3 || radio.value == 4) {
+                            radio.style.display = 'none';
+                            radioLabel.style.display = 'none';
+                            if (oldSubReportId == 3 || oldSubReportId == 4) {
+                                oldSubReportCategory.checked = false;
+                            }
+                        } else {
+                            radio.style.display = '';
+                            radioLabel.style.display = '';
+                        }
+                    });
+                    if (secondSubReportCategory.checked == false) {
+                        firstSubReportCategory.checked = true;
+                    }
+                    break;
+
+                case 5:
+                    radioOptions.forEach(function(radio) {
+                        let radioLabel = document.querySelector('label[for="' + radio.id + '"]'); // ラジオボタンのラベル要素を取得
+                        if (radio.value > 1) {
+                            radio.style.display = 'none';
+                            radioLabel.style.display = 'none';
+                            if (oldSubReportId > 1) {
+                                oldSubReportCategory.checked = false;
+                            }
+                        } else {
+                            radio.style.display = '';
+                            radioLabel.style.display = '';
+                        }
+                    });
+                    firstSubReportCategory.checked = true;
+                    break;
+
+                case 6: // 連休
+                    radioOptions.forEach(function(radio) {
+                        let radioLabel = document.querySelector('label[for="' + radio.id + '"]'); // ラジオボタンのラベル要素を取得
+                        if (radio.value != 2) {
+                            radio.style.display = 'none';
+                            radioLabel.style.display = 'none';
+                            if (oldSubReportId != '' && oldSubReportId != 2) {
+                                oldSubReportCategory.checked = false;
+                            }
+                        } else {
+                            radio.style.display = '';
+                            radioLabel.style.display = '';
+                        }
+                    });
+                    secondSubReportCategory.checked = true;
+                    break;
+
+                case 7: // 時間
+                    radioOptions.forEach(function(radio) {
+                        let radioLabel = document.querySelector('label[for="' + radio.id + '"]'); // ラジオボタンのラベル要素を取得
+                        if (radio.value != 4) {
+                            radio.style.display = 'none';
+                            radioLabel.style.display = 'none';
+                            if (oldSubReportId != '' && oldSubReportId != 4) {
+                                oldSubReportCategory.checked = false;
+                            }
+                        } else {
+                            radio.style.display = '';
+                            radioLabel.style.display = '';
+                        }
+                    });
+                    fourthSubReportCategory.checked = true;
+                    break;
+
+                default:
+                    break;
+            }
+
+            // 選択項目を保持
+            // let selectRadio = document.querySelector('input[name=sub_report_id]:checked');
+            // if (selectRadio) {
+            //     let selectRadioId = selectRadio.value;
+            //     radioOptions.forEach(el => {
+            //         if (selectRadioId == el.value) {
+            //             el.checked = true;
+            //         }
+            //     });
+            // }
+
 
             // 各ラジオボタンの選択項目を更新
-            radioOptions.forEach(function(radio) {
-                var radioLabel = document.querySelector('label[for="' + radio.id + '"]'); // ラジオボタンのラベル要素を取得
-                if (selectedReportId == '3' || selectedReportId == '11') {
-                    if (radio.value == 3) {
-                        radio.style.display = 'none';
-                        radioLabel.style.display = 'none';
-                    } else {
-                        radio.style.display = ''; // それ以外の項目は表示する
-                        radioLabel.style.display = '';
-                    }
-                } else {
-                    radio.style.display = ''; // それ以外の項目は表示する
-                    radioLabel.style.display = '';
-                }
-            });
+            // radioOptions.forEach(function(radio) {
+            //     var radioLabel = document.querySelector('label[for="' + radio.id + '"]'); // ラジオボタンのラベル要素を取得
+
+            //     if (selectedReportId == '3' || selectedReportId == '11') {
+            //         if (radio.value == 3) {
+            //             radio.style.display = 'none';
+            //             radioLabel.style.display = 'none';
+            //         } else {
+            //             radio.style.display = ''; // それ以外の項目は表示する
+            //             radioLabel.style.display = '';
+            //         }
+            //     } else {
+            //         radio.style.display = ''; // それ以外の項目は表示する
+            //         radioLabel.style.display = '';
+            //     }
+            // });
         }
 
         function subReportDisplaySwitch() {
@@ -641,29 +781,29 @@
             if (subReportCategory) {
                 let subReportCategoryValue = subReportCategory.value;
                 if (subReportCategoryValue == 1) { // 終日休
-                    commentContener2.style.display = "none";
+                    // commentContener2.style.display = "none";
                     halfDateLabel.style.display = "";
                     startDateLabel.style.display = "none";
                     endDateForm.style.display = "none";
                     emptyReasonForm.style.display = "";
                 }
                 if (subReportCategoryValue == 2) { // 連休
-                    commentContener2.style.display = "none";
+                    // commentContener2.style.display = "none";
                     holidayAlert.style.display = "none";
                 }
                 if (subReportCategoryValue == 3) { // 半日休
-                    commentContener2.style.display = "";
+                    // commentContener2.style.display = "";
                     halfDateLabel.style.display = "";
                     amPmForm.style.display = "";
-                    amPmComment.style.display = "";
+                    // amPmComment.style.display = "";
                     startDateLabel.style.display = "none";
                     endDateForm.style.display = "none";
                 }
                 if (subReportCategoryValue == 4) { // 時間休
-                    commentContener2.style.display = "";
+                    // commentContener2.style.display = "";
                     halfDateLabel.style.display = "";
                     timeEmptyForm.style.display = "";
-                    timeForm.style.display = "";
+                    // timeForm.style.display = "";
                     startTimeForm.style.display = "";
                     endTimeForm.style.display = "";
                     startDateLabel.style.display = "none";
@@ -698,16 +838,26 @@
             }
 
             const reportReasons = @json($report_reasons);
+            const reportReasonsArray = Object.values(reportReasons);
+            let selectReportId = reportCategory.value;
 
             // reasonCategoryをセット=option要素を追加
-            Object.keys(reportReasons).forEach((el) => {
-                if (reportCategory.value == reportReasons[el].report_id) {
-                    let createId = reasons[reportReasons[el].reason_id - 1].id;
-                    let createReason = reasons[reportReasons[el].reason_id - 1].reason;
-                    createOption(createId, createReason)
+            // Object.keys(reportReasons).forEach((el) => {
+            //     if (reportCategory.value == reportReasons[el].report_id) {
+            //         let createId = reasons[reportReasons[el].reason_id - 1].id;
+            //         let createReason = reasons[reportReasons[el].reason_id - 1].reason;
+            //         createOption(createId, createReason)
+            //     }
+            // })
+            reportReasonsArray.forEach((el) => {
+                if (el.report_id == selectReportId) {
+                    let createId = el.reason_id;
+                    let createReason = el.reason_category.reason;
+                    createOption(createId, createReason);
                 }
             })
 
+            // 選択項目を保持
             for (let i = 0; i < reasonCategory.childNodes.length; i++) {
                 if (oldReasonId == reasonCategory.childNodes[i].value) {
                     reasonCategory.childNodes[i].selected = true;
@@ -718,110 +868,110 @@
 
         // form表示切替関数
         function reportDisplaySwitch() {
-            if (
-                reportCategory.value == "3"
-            ) {
-                commentContener2.style.display = "";
-                auspicious.style.display = "";
-            }
-            if (
-                reportCategory.value == "4"
-            ) { // 特別休暇(弔事1)
-                commentContener2.style.display = "";
-                mourning1.style.display = "";
-            }
-            if (
-                reportCategory.value == "5"
-            ) { // 特別休暇(弔事2)
-                commentContener2.style.display = "";
-                mourning2.style.display = "";
-            }
-            if (
-                reportCategory.value == "6"
-            ) { // 特別休暇(弔事3)
-                commentContener2.style.display = "";
-                mourning3.style.display = "";
-            }
-            if (
-                reportCategory.value == "7"
-            ) {
-                commentContener2.style.display = "";
-                nurse1.style.display = "";
-            }
-            if (
-                reportCategory.value == "8"
-            ) {
-                commentContener2.style.display = "";
-                nurse2.style.display = "";
-            }
-            if (
-                reportCategory.value == "9"
-            ) {
-                commentContener2.style.display = "";
-                care1.style.display = "";
-            }
-            if (
-                reportCategory.value == "10"
-            ) {
-                commentContener2.style.display = "";
-                care2.style.display = "";
-            }
-            if (
-                reportCategory.value == "11" // 特別休暇
-            ) {
-                commentContener2.style.display = "";
-                shortChildCare.style.display = "";
-            }
-            if (
-                // reportCategory.value == "11" || // 特別休暇(短期育休)
-                reportCategory.value == "16" || // 介護休業
-                reportCategory.value == "17" || // 育児休業
-                reportCategory.value == "18") { // パパ育休
-                emptyFieldForm.style.display = "";
-                subCategoryForm.style.display = "none";
-            }
-            if (reportCategory.value == "13" || // 遅刻
-                reportCategory.value == "14") { // 早退
-                emptyFieldForm.style.display = "";
-                subCategoryForm.style.display = "none";
-                halfDateLabel.style.display = "";
-                timeEmptyForm.style.display = "";
-                commentContener1.style.display = "";
-                timeForm10.style.display = "";
-                startTimeForm.style.display = "";
-                endTimeForm.style.display = "";
-                startDateLabel.style.display = "none";
-                endDateForm.style.display = "none";
-            }
-            if (reportCategory.value == "15") { // 外出
-                emptyFieldForm.style.display = "";
-                subCategoryForm.style.display = "none";
-                halfDateLabel.style.display = "";
-                timeEmptyForm.style.display = "";
-                commentContener1.style.display = "";
-                timeForm30.style.display = "";
-                startTimeForm.style.display = "";
-                endTimeForm.style.display = "";
-                startDateLabel.style.display = "none";
-                endDateForm.style.display = "none";
-            }
-            if (reportCategory.value == "2") { // バースデイ
-                emptyFieldForm.style.display = "";
-                subCategoryForm.style.display = "none";
-                halfDateLabel.style.display = "";
-                timeEmptyForm.style.display = "";
-                startDateLabel.style.display = "none";
-                endDateForm.style.display = "none";
-            }
-            if (
-                reportCategory.value == "12") { // 欠勤
-                // emptyFieldForm.style.display = "";
-                // subCategoryForm.style.display = "";
-                halfDateLabel.style.display = "";
-                timeEmptyForm.style.display = "";
-                startDateLabel.style.display = "none";
-                endDateForm.style.display = "none";
-            }
+            // if (
+            //     reportCategory.value == "3"
+            // ) {
+            //     commentContener2.style.display = "";
+            //     auspicious.style.display = "";
+            // }
+            // if (
+            //     reportCategory.value == "4"
+            // ) { // 特別休暇(弔事1)
+            //     commentContener2.style.display = "";
+            //     mourning1.style.display = "";
+            // }
+            // if (
+            //     reportCategory.value == "5"
+            // ) { // 特別休暇(弔事2)
+            //     commentContener2.style.display = "";
+            //     mourning2.style.display = "";
+            // }
+            // if (
+            //     reportCategory.value == "6"
+            // ) { // 特別休暇(弔事3)
+            //     commentContener2.style.display = "";
+            //     mourning3.style.display = "";
+            // }
+            // if (
+            //     reportCategory.value == "7"
+            // ) {
+            //     commentContener2.style.display = "";
+            //     nurse1.style.display = "";
+            // }
+            // if (
+            //     reportCategory.value == "8"
+            // ) {
+            //     commentContener2.style.display = "";
+            //     nurse2.style.display = "";
+            // }
+            // if (
+            //     reportCategory.value == "9"
+            // ) {
+            //     commentContener2.style.display = "";
+            //     care1.style.display = "";
+            // }
+            // if (
+            //     reportCategory.value == "10"
+            // ) {
+            //     commentContener2.style.display = "";
+            //     care2.style.display = "";
+            // }
+            // if (
+            //     reportCategory.value == "11" // 特別休暇
+            // ) {
+            //     commentContener2.style.display = "";
+            //     shortChildCare.style.display = "";
+            // }
+            // if (
+            //     // reportCategory.value == "11" || // 特別休暇(短期育休)
+            //     reportCategory.value == "16" || // 介護休業
+            //     reportCategory.value == "17" || // 育児休業
+            //     reportCategory.value == "18") { // パパ育休
+            //     emptyFieldForm.style.display = "";
+            //     subCategoryForm.style.display = "none";
+            // }
+            // if (reportCategory.value == "13" || // 遅刻
+            //     reportCategory.value == "14") { // 早退
+            //     emptyFieldForm.style.display = "";
+            //     subCategoryForm.style.display = "none";
+            //     halfDateLabel.style.display = "";
+            //     timeEmptyForm.style.display = "";
+            //     // commentContener1.style.display = "";
+            //     // timeForm10.style.display = "";
+            //     startTimeForm.style.display = "";
+            //     endTimeForm.style.display = "";
+            //     startDateLabel.style.display = "none";
+            //     endDateForm.style.display = "none";
+            // }
+            // if (reportCategory.value == "15") { // 外出
+            //     emptyFieldForm.style.display = "";
+            //     subCategoryForm.style.display = "none";
+            //     halfDateLabel.style.display = "";
+            //     timeEmptyForm.style.display = "";
+            //     // commentContener1.style.display = "";
+            //     // timeForm30.style.display = "";
+            //     startTimeForm.style.display = "";
+            //     endTimeForm.style.display = "";
+            //     startDateLabel.style.display = "none";
+            //     endDateForm.style.display = "none";
+            // }
+            // if (reportCategory.value == "2") { // バースデイ
+            //     emptyFieldForm.style.display = "";
+            //     subCategoryForm.style.display = "none";
+            //     halfDateLabel.style.display = "";
+            //     timeEmptyForm.style.display = "";
+            //     startDateLabel.style.display = "none";
+            //     endDateForm.style.display = "none";
+            // }
+            // if (
+            //     reportCategory.value == "12") { // 欠勤
+            //     // emptyFieldForm.style.display = "";
+            //     // subCategoryForm.style.display = "";
+            //     halfDateLabel.style.display = "";
+            //     timeEmptyForm.style.display = "";
+            //     startDateLabel.style.display = "none";
+            //     endDateForm.style.display = "none";
+            // }
         }
 
         // 理由詳細placeholder切替関数
@@ -987,6 +1137,43 @@
                 }
             }
 
+            // ここから計算式
+            // 取得形態がある場合
+            let subReportCategory = document.querySelector('input[name=sub_report_id]:checked');
+            let subReportId = '';
+            if (subReportCategory) {
+                subReportId = subReportCategory.value;
+            }
+
+            // Object.keys(reportCategories).forEach(el => {
+            //     if (reportId == reportCategories[el].id) {
+            //         switch (reportCategories[el].acquisition_id) {
+            //             case 1:
+            //                 if (duplicationCheck() == true) {
+            //                     getDays = 0;
+            //                 } else {
+            //                     // この順番を変えてはいけない
+            //                     getDays = diffDays - dayOffs;
+            //                     holidayCheck();
+            //                 }
+            //                 break;
+
+            //             case 2:
+            //                 if (duplicationCheck() == true) {
+            //                     getDays = 0;
+            //                 } else {
+            //                     // この順番を変えてはいけない
+            //                     getDays = diffDays - dayOffs;
+            //                     holidayCheck();
+            //                 }
+            //                 break;
+
+            //             default:
+            //                 break;
+            //         }
+            //     }
+            // });
+
             if (reportCategory.value == 1 || // 有給
                 reportCategory.value == 3 || // 特別休暇(慶事)
                 reportCategory.value == 4 || // 特別休暇(弔事)
@@ -1010,9 +1197,7 @@
                 }
             }
 
-            let subReportCategory = document.querySelector('input[name=sub_report_id]:checked');
-            // if (subReportCategory[0].checked) { // 終日休
-            if (subReportCategory.value == 1) { // 終日休
+            if (subReportId == 1 ) { // 終日休
                 if (holidayCheck() == true) {
                     getDays = 0;
                 } else if (duplicationCheck() == true) {
@@ -1021,25 +1206,20 @@
                     getDays = 1.0;
                 }
             }
-            // if (subReportCategory[2].checked) { // 半日休
-            if (subReportCategory.value == 3) { // 半日休
+            if (subReportId == 3) { // 半日休
                 if (holidayCheck() == true) {
                     getDays = 0;
                 } else if (duplicationCheck() == true) {
                     getDays = 0;
                 } else {
                     getDays = 0.5;
-                    // パート,アルバイトはコードで休時間が変わる
-                    // フルタイムは4時間
                 }
             }
 
             if (
-                // WORNING:時間休にを有効にする場合、シフトによって1時間の重みが違う
+                // WORNING:時間休にを有効にする場合、シフトによって1時間の重みが違うので注意
                 // 4時間労働の2時間休み=8時間労働の4時間休み
-                // これがシフトが変わったとき、どのように扱うのか
-                // subReportCategory[3].checked ||
-                // subReportCategory.value == 4 ||
+                subReportId == 4 ||
                 reportCategory.value == 13 || // 遅刻
                 reportCategory.value == 14 || // 早退
                 reportCategory.value == 15) { // 外出
@@ -1048,8 +1228,8 @@
                     getDays = 0;
                 } else if (duplicationCheck() == true) {
                     getDays = 0;
-                // } else if (workingTimeCheck() == true && subReportCategory[3].checked) {
-                } else if (workingTimeCheck() == true && subReportCategory.value == 4) {
+                    // } else if (workingTimeCheck() == true && subReportCategory[3].checked) {
+                } else if (workingTimeCheck() == true && subReportId == 4) {
                     getDays = 0;
                 } else if (timeCheck() == true) { // 申請時間を確認
                     getDays = 0;
@@ -1104,15 +1284,6 @@
                 // 時間換算:8時間で1日 1時間=1/8日 0.125日
                 getDays = orgRound(getDays, 100000); // 小数点以下切り捨て
             }
-            if (reportCategory.value == 2) { // バースデイ休暇
-                if (holidayCheck() == true) {
-                    getDays = 0;
-                } else if (duplicationCheck() == true) {
-                    getDays = 0;
-                } else {
-                    getDays = 1.0;
-                }
-            }
 
             // get_days書き出し
             document.getElementById('get_days').setAttribute('value', getDays);
@@ -1134,7 +1305,7 @@
 
             // 半日休みの場合シフトによって表示時間変更
             // if (subReportCategory[2].checked) {
-            if (subReportCategory.value == 3) {
+            if (subReportId == 3) {
                 if (amPmVal == 1) {
                     getDaysOnly = 0;
                     getHours = workTime1;
@@ -1184,12 +1355,10 @@
                 // 半日休みの場合シフトによって表示時間変更
             } else {
                 // if (subReportCategory[2].checked) {
-                if (subReportCategory.value == 3) {
+                if (subReportId == 3) {
                     if (amPmVal == 1) {
                         remainingHoursOnly = workTime2 - decimalPart(workTime2, 5);
                         remainingMinutes = decimalPart(workTime2, 5) * 60;
-                        console.log(workTime2);
-                        console.log(remainingHoursOnly);
                     } else if (amPmVal == 2) {
                         remainingHoursOnly = workTime1 - decimalPart(workTime1, 5);
                         remainingMinutes = decimalPart(workTime1, 5) * 60;
@@ -1219,9 +1388,9 @@
                 // これは必要:土曜営業日はfalse
                 if (saturdays.includes(startYMD)) {
                     holiday = false;
-                } else if (startWeek + i == 0 || startWeek + i == 6 || startWeek + i == 7) {
-                    holiday = true;
                 } else if (holidays.includes(startYMD)) {
+                    holiday = true;
+                } else if (startWeek == 0 || startWeek == 6 || startWeek == 7) {
                     holiday = true;
                 } else if (endDate.value) {
                     for (let d = new Date(startDate.value); d <= endVal; d.setDate(d.getDate() + 1)) {
@@ -1229,7 +1398,6 @@
                             ('0' + (d.getMonth() + 1)).slice(-2) +
                             ('0' + d.getDate()).slice(-2);
                         if (holidays.includes(Y_M_D) && getDays == 0) {
-                            console.log(Y_M_D);
                             holiday = true;
                         }
                     }
@@ -1310,7 +1478,7 @@
                 console.log('workingTimeCheck'); // 起動確認
                 let workingTime = false; // 勤務時間判定
                 // if (subReportCategory[3].checked ||
-                // if (subReportCategory.value == 4 ||
+                // if (subReportId == 4 ||
                 //     reportCategory.value == 13 ||
                 //     reportCategory.value == 14 ||
                 //     reportCategory.value == 15
@@ -1341,7 +1509,7 @@
                 Object.keys(myReports).forEach((el) => {
                     // 終日選択
                     // if (subReportCategory[0].checked || subReportCategory[1].checked) {
-                    if (subReportCategory.value == 1 || subReportCategory.value == 2) {
+                    if (subReportId == 1 || subReportId == 2) {
                         if (myReports[el].start_date == startY_M_D) {
                             duplication = true;
                         }
