@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
+        $schedule->command('send:list')->dailyAt('9:00');
         $schedule->command('send:birthday-greetings')->dailyAt('9:00');
         $schedule->command('send:birthday-holiday')->dailyAt('9:00');
         $schedule->command('send:birthday-holiday-lost')->dailyAt('9:00');

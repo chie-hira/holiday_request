@@ -17,6 +17,8 @@ class ShiftCategorySeeder extends Seeder
         $param = [
             [
                 'shift_code' => 1,
+                'work_time1' => 4,
+                'work_time2' => 4,
                 'start_time' => '08:00:00',
                 'end_time' => '17:00:00',
                 'rest1_start_time' => '10:00:00',
@@ -30,6 +32,8 @@ class ShiftCategorySeeder extends Seeder
             ],
             [
                 'shift_code' => 4,
+                'work_time1' => 4,
+                'work_time2' => 4,
                 'start_time' => '12:10:00',
                 'end_time' => '21:10:00',
                 'rest1_start_time' => '14:10:00',
@@ -43,6 +47,8 @@ class ShiftCategorySeeder extends Seeder
             ],
             [
                 'shift_code' => 6,
+                'work_time1' => 4,
+                'work_time2' => 4,
                 'start_time' => '10:10:00',
                 'end_time' => '19:10:00',
                 'rest1_start_time' => '12:10:00',
@@ -56,6 +62,8 @@ class ShiftCategorySeeder extends Seeder
             ],
             [
                 'shift_code' => 7,
+                'work_time1' => 4,
+                'work_time2' => 4,
                 'start_time' => '17:10:00',
                 'end_time' => '02:10:00',
                 'rest1_start_time' => '19:10:00',
@@ -69,6 +77,8 @@ class ShiftCategorySeeder extends Seeder
             ],
             [
                 'shift_code' => 10,
+                'work_time1' => 4,
+                'work_time2' => 4,
                 'start_time' => '19:10:00',
                 'end_time' => '04:10:00',
                 'rest1_start_time' => '21:10:00',
@@ -82,6 +92,8 @@ class ShiftCategorySeeder extends Seeder
             ],
             [
                 'shift_code' => 13,
+                'work_time1' => 4,
+                'work_time2' => 4,
                 'start_time' => '15:00:00',
                 'end_time' => '00:00:00',
                 'rest1_start_time' => '17:00:00',
@@ -95,6 +107,8 @@ class ShiftCategorySeeder extends Seeder
             ],
             [
                 'shift_code' => 15,
+                'work_time1' => 4,
+                'work_time2' => 4,
                 'start_time' => '09:00:00',
                 'end_time' => '18:10:00',
                 'rest1_start_time' => '10:00:00',
@@ -108,6 +122,8 @@ class ShiftCategorySeeder extends Seeder
             ],
             [
                 'shift_code' => 16,
+                'work_time1' => 4,
+                'work_time2' => 4,
                 'start_time' => '05:00:00',
                 'end_time' => '14:50:00',
                 'rest1_start_time' => '07:50:00',
@@ -121,6 +137,8 @@ class ShiftCategorySeeder extends Seeder
             ],
             [
                 'shift_code' => 18,
+                'work_time1' => 4,
+                'work_time2' => 4,
                 'start_time' => '12:50:00',
                 'end_time' => '21:50:00',
                 'rest1_start_time' => '14:50:00',
@@ -134,6 +152,8 @@ class ShiftCategorySeeder extends Seeder
             ],
             [
                 'shift_code' => 29,
+                'work_time1' => 4,
+                'work_time2' => 4,
                 'start_time' => '11:00:00',
                 'end_time' => '20:00:00',
                 'rest1_start_time' => '13:00:00',
@@ -147,6 +167,8 @@ class ShiftCategorySeeder extends Seeder
             ],
             [
                 'shift_code' => 30,
+                'work_time1' => 4,
+                'work_time2' => 4,
                 'start_time' => '18:10:00',
                 'end_time' => '03:10:00',
                 'rest1_start_time' => '20:10:00',
@@ -160,6 +182,8 @@ class ShiftCategorySeeder extends Seeder
             ],
             [
                 'shift_code' => 33,
+                'work_time1' => 4,
+                'work_time2' => 4,
                 'start_time' => '20:00:00',
                 'end_time' => '05:00:00',
                 'rest1_start_time' => '22:00:00',
@@ -173,6 +197,8 @@ class ShiftCategorySeeder extends Seeder
             ],
             [
                 'shift_code' => 5,
+                'work_time1' => 3,
+                'work_time2' => 4,
                 'start_time' => '09:00:00',
                 'end_time' => '17:00:00',
                 'rest1_start_time' => '10:00:00',
@@ -186,6 +212,8 @@ class ShiftCategorySeeder extends Seeder
             ],
             [
                 'shift_code' => 8,
+                'work_time1' => 3.5,
+                'work_time2' => 2.5,
                 'start_time' => '08:30:00',
                 'end_time' => '15:30:00',
                 'rest1_start_time' => '10:00:00',
@@ -199,6 +227,8 @@ class ShiftCategorySeeder extends Seeder
             ],
             [
                 'shift_code' => 11,
+                'work_time1' => 3.5,
+                'work_time2' => 2,
                 'start_time' => '08:30:00',
                 'end_time' => '14:50:00',
                 'rest1_start_time' => '10:00:00',
@@ -212,6 +242,8 @@ class ShiftCategorySeeder extends Seeder
             ],
             [
                 'shift_code' => 14,
+                'work_time1' => 2.5,
+                'work_time2' => 3,
                 'start_time' => '09:30:00',
                 'end_time' => '16:00:00',
                 'rest1_start_time' => '10:00:00',
@@ -225,6 +257,8 @@ class ShiftCategorySeeder extends Seeder
             ],
             [
                 'shift_code' => 19,
+                'work_time1' => 3.5,
+                'work_time2' => 3,
                 'start_time' => '08:30:00',
                 'end_time' => '16:00:00',
                 'rest1_start_time' => '10:00:00',
@@ -238,6 +272,8 @@ class ShiftCategorySeeder extends Seeder
             ],
             [
                 'shift_code' => 42,
+                'work_time1' => 3,
+                'work_time2' => 3,
                 'start_time' => '09:00:00',
                 'end_time' => '16:00:00',
                 'rest1_start_time' => '10:00:00',
@@ -251,6 +287,8 @@ class ShiftCategorySeeder extends Seeder
             ],
             [
                 'shift_code' => 43,
+                'work_time1' => 2,
+                'work_time2' => 2,
                 'start_time' => '08:00:00',
                 'end_time' => '12:10:00',
                 'rest1_start_time' => '10:00:00',
@@ -264,6 +302,8 @@ class ShiftCategorySeeder extends Seeder
             ],
             [
                 'shift_code' => 53,
+                'work_time1' => 3.5,
+                'work_time2' => 3.5,
                 'start_time' => '08:30:00',
                 'end_time' => '16:30:00',
                 'rest1_start_time' => '10:00:00',
@@ -277,6 +317,8 @@ class ShiftCategorySeeder extends Seeder
             ],
             [
                 'shift_code' => 58,
+                'work_time1' => 4,
+                'work_time2' => 2.5,
                 'start_time' => '08:00:00',
                 'end_time' => '15:30:00',
                 'rest1_start_time' => '10:00:00',
@@ -290,6 +332,8 @@ class ShiftCategorySeeder extends Seeder
             ],
             [
                 'shift_code' => 59,
+                'work_time1' => 2.5,
+                'work_time2' => 2.5,
                 'start_time' => '09:30:00',
                 'end_time' => '15:30:00',
                 'rest1_start_time' => '10:00:00',

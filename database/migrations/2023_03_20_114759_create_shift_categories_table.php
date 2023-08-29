@@ -16,6 +16,8 @@ class CreateShiftCategoriesTable extends Migration
         Schema::create('shift_categories', function (Blueprint $table) {
             $table->id()->comment('シフト');
             $table->integer('shift_code')->unique();
+            $table->float('work_time1');
+            $table->float('work_time2');
             $table->time('start_time');
             $table->time('end_time');
             $table->time('rest1_start_time');

@@ -34,4 +34,14 @@ class ReportCategory extends Model
     {
         return $this->hasMany(Report::class, 'report_id', 'id');
     }
+
+    /**
+     * Get the acquisition_form that owns the ReportCategory
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function acquisition_form()
+    {
+        return $this->belongsTo(AcquisitionForm::class, 'acquisition_id', 'id');
+    }
 }

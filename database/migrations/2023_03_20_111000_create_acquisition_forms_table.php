@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSubReportCategoriesTable extends Migration
+class CreateAcquisitionFormsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,9 @@ class CreateSubReportCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('sub_report_categories', function (Blueprint $table) {
+        Schema::create('acquisition_forms', function (Blueprint $table) {
             $table->id();
-            $table->string('sub_report_name')->unique();
-            $table->string('remarks')->nullable();
+            $table->string('acquisition_name');
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ class CreateSubReportCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sub_report_categories');
+        Schema::dropIfExists('acquisition_forms');
     }
 }
