@@ -34,7 +34,9 @@ class UpdateReportRequest extends FormRequest
             'end_date' => 'nullable|date|after_or_equal:start_date|sameMonth:start_date', # nullableがないとafter_or_equalでrequired
             'start_time' => 'nullable|date_format:H:i',
             'end_time' => 'nullable|date_format:H:i',
-            'get_days' => 'required',
+            'acquisition_days' => 'required|integer|min:0',
+            'acquisition_hours' => 'required|integer|min:0',
+            'acquisition_minutes' => 'required|integer|min:0',
             'am_pm' => 'nullable|integer',
             'remarks' => 'max:50',
         ];

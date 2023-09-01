@@ -183,7 +183,7 @@
                                 理由の詳細・備考
                             </label>
                             <x-input type="text" id="reason_detail" name="reason_detail"
-                                class="block mt-1 w-full" placeholder="詳細・備考があれば記載してください" :value="old('reason_detail', $report->reason_detail)" />
+                                placeholder="詳細・備考があれば記載してください" :value="old('reason_detail', $report->reason_detail)" />
                         </div>
                         <!-- 理由 - end -->
 
@@ -262,22 +262,19 @@
                             <p class="block mb-2 text-sm font-medium text-gray-900">
                                 {{ __('Acquisition Days') }}
                             </p>
-                            <input type="hidden" id="get_days" name="get_days"
-                                class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                value="{{ old('get_days') }}" readonly required>
                             <div class="flex items-center mb-1">
-                                <x-input type="number" id="get_days_only" class="block mt-1 w-20" :value="old('get_days_only')"
-                                    readonly />
+                                <x-input type="number" id="acquisition_days" name="acquisition_days"
+                                    class="block mt-1 w-20" :value="old('get_days_only')" readonly />
                                 <p class="ml-2">日</p>
                             </div>
                             <div class="flex items-center mb-1">
-                                <x-input type="number" id="get_hours" class="block mt-1 w-20" :value="old('get_hours')"
-                                    readonly />
+                                <x-input type="number" id="acquisition_hours" name="acquisition_hours"
+                                    class="block mt-1 w-20" :value="old('acquisition_hours')" readonly />
                                 <p class="ml-2">時間</p>
                             </div>
                             <div class="flex items-center">
-                                <x-input type="number" id="get_minutes" class="block mt-1 w-20" :value="old('get_minutes')"
-                                    readonly />
+                                <x-input type="number" id="acquisition_minutes" name="acquisition_minutes"
+                                    class="block mt-1 w-20" :value="old('acquisition_minutes')" readonly />
                                 <p class="ml-2">分</p>
                             </div>
                         </div>
@@ -286,22 +283,19 @@
                             <p class="block mb-2 text-sm font-medium text-gray-900">
                                 {{ __('Remaining Days') }}
                             </p>
-                            <input type="hidden" id="remaining_days" name="remaining"
-                                class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                value="{{ old('remaining_days') }}" readonly required>
                             <div class="flex items-center mb-1">
-                                <x-input type="number" id="remaining_days_only" class="block mt-1 w-20"
-                                    :value="old('remaining_days_only')" readonly />
+                                <x-input type="number" id="remaining_days" name="remaining_days"
+                                    class="block mt-1 w-20" :value="old('remaining_days')" readonly />
                                 <p class="ml-2">日</p>
                             </div>
                             <div class="flex items-center mb-1">
-                                <x-input type="number" id="remaining_hours" class="block mt-1 w-20"
-                                    :value="old('remaining_hours')" readonly />
+                                <x-input type="number" id="remaining_hours" name="remaining_hours"
+                                    class="block mt-1 w-20" :value="old('remaining_hours')" readonly />
                                 <p class="ml-2">時間</p>
                             </div>
                             <div class="flex items-center">
-                                <x-input type="number" id="remaining_minutes" class="block mt-1 w-20"
-                                    :value="old('remaining_minutes')" readonly />
+                                <x-input type="number" id="remaining_minutes" name="remaining_minutes"
+                                    class="block mt-1 w-20" :value="old('remaining_minutes')" readonly />
                                 <p class="ml-2">分</p>
                             </div>
                         </div>
@@ -368,7 +362,7 @@
         function reportChange() {
             displayReset();
             timeReset(); // end_date,start_time,end_timeリセット
-            dateChange(); // get_daysリセット
+            daysReset(); // get_daysリセット
             alertReset(); // アラートリセット
             reportReasonSwitch(); // reportでreason種類切替
             radioChange();
@@ -417,12 +411,11 @@
         }
 
         // get_daysリセット関数
-        function dateChange() {
-            document.getElementById('get_days').setAttribute('value', 0);
-            document.getElementById('get_days_only').setAttribute('value', 0);
-            document.getElementById('get_hours').setAttribute('value', 0);
-            document.getElementById('get_minutes').setAttribute('value', 0);
-            document.getElementById('remaining_days_only').setAttribute('value', 0);
+        function daysReset() {
+            document.getElementById('acquisition_days').setAttribute('value', 0);
+            document.getElementById('acquisition_hours').setAttribute('value', 0);
+            document.getElementById('acquisition_minutes').setAttribute('value', 0);
+            document.getElementById('remaining_days').setAttribute('value', 0);
             document.getElementById('remaining_hours').setAttribute('value', 0);
             document.getElementById('remaining_minutes').setAttribute('value', 0);
         }
@@ -435,7 +428,7 @@
         // subカテゴリーによるフォーム切替関数
         function subReportChange() {
             displayReset();
-            dateChange();
+            daysReset();
             subReportDisplaySwitch();
             timeReset();
             alertReset();
@@ -725,14 +718,7 @@
 
         /* --日数カウント-- */
         function countDays() {
-            // get_daysリセット
-            document.getElementById('get_days').setAttribute('value', 0);
-            document.getElementById('get_days_only').setAttribute('value', 0);
-            document.getElementById('get_hours').setAttribute('value', 0);
-            document.getElementById('get_minutes').setAttribute('value', 0);
-            document.getElementById('remaining_days_only').setAttribute('value', 0);
-            document.getElementById('remaining_hours').setAttribute('value', 0);
-            document.getElementById('remaining_minutes').setAttribute('value', 0);
+            daysReset();
 
             const startVal = new Date(startDate.value);
             const endVal = new Date(endDate.value);
@@ -753,6 +739,9 @@
             let startY_M_D = startVal.getFullYear() +
                 '-' + ('0' + (startVal.getMonth() + 1)).slice(-2) +
                 '-' + ('0' + startVal.getDate()).slice(-2);
+            let endY_M_D = endVal.getFullYear() +
+                '-' + ('0' + (endVal.getMonth() + 1)).slice(-2) +
+                '-' + ('0' + endVal.getDate()).slice(-2);
             let getDays = 0;
             let halfDays = 0;
             let dayOffs = 0;
@@ -791,7 +780,11 @@
 
             // シフトごとに変わる時間を定義
             let workTime1 = '';
+            let workHours1 = 0;
+            let workMinutes1 = 0;
             let workTime2 = '';
+            let workHours2 = 0;
+            let workMinutes2 = 0;
             let workTimeStart = '';
             let workTimeEnd = '';
             let rest1TimeStart = '';
@@ -807,8 +800,21 @@
                 if (shift.id == shiftId) {
                     workTime1 = shift.work_time1;
                     workTime2 = shift.work_time2;
+                    if (Number.isInteger(workTime1)) {
+                        workHours1 = workTime1;
+                    } else {
+                        workHours1 = Math.floor(workTime1);
+                        workMinutes1 = 30;
+                    }
+                    if (Number.isInteger(workTime2)) {
+                        workHours2 = workTime2;
+                    } else {
+                        workHours2 = Math.floor(workTime2);
+                        workMinutes2 = 30;
+                    }
                     workTimeStart = new Date(startDate.value + ' ' + shift.start_time);
                     workTimeEnd = new Date(startDate.value + ' ' + shift.end_time);
+                    amPmSwitch = new Date(startDate.value + ' ' + shift.am_pm_switch);
                     rest1TimeStart = new Date(startDate.value + ' ' + shift.rest1_start_time);
                     rest1TimeEnd = new Date(startDate.value + ' ' + shift.rest1_end_time);
                     rest2TimeStart = new Date(startDate.value + ' ' + shift.rest2_start_time);
@@ -819,6 +825,9 @@
                     lunchTimeEnd = new Date(startDate.value + ' ' + shift.lunch_end_time);
                     if (shift.start_time > shift.end_time) {
                         workTimeEnd.setDate(workTimeEnd.getDate() + 1);
+                    }
+                    if (shift.start_time > shift.am_pm_switch) {
+                        amPmSwitch.setDate(amPmSwitch.getDate() + 1);
                     }
                     if (shift.start_time > shift.rest1_start_time) {
                         rest1TimeStart.setDate(rest1TimeStart.getDate() + 1);
@@ -848,30 +857,41 @@
             }
 
             // ここから計算式
+            let acquisitionDays = 0;
+            let acquisitionHours = 0;
+            let acquisitionMinutes = 0;
+            let validateMinutes = 0;
             let selectSubReportId = document.querySelector('input[name=sub_report_id]:checked').value;
             if (selectSubReportId == 1) { // 終日休
                 if (holidayCheck() == true) {
-                    getDays = 0;
+                    acquisitionDays = 0;
                 } else if (duplicationCheck() == true) {
-                    getDays = 0;
+                    acquisitionDays = 0;
                 } else {
-                    getDays = 1.0;
+                    acquisitionDays = 1;
                 }
             } else if (selectSubReportId == 2) { // 連休
                 if (duplicationCheck() == true) {
-                    getDays = 0;
+                    acquisitionDays = 0;
                 } else {
                     // この順番を変えてはいけない
-                    getDays = diffDays - dayOffs;
+                    acquisitionDays = diffDays - dayOffs;
                     holidayCheck();
                 }
             } else if (selectSubReportId == 3) { // 半日休
                 if (holidayCheck() == true) {
-                    getDays = 0;
+                    acquisitionDays = 0;
                 } else if (duplicationCheck() == true) {
-                    getDays = 0;
+                    acquisitionDays = 0;
                 } else {
-                    getDays = 0.5;
+                    acquisitionDays = 0;
+                    if (amPmVal == 1) {
+                        acquisitionHours = workHours1;
+                        acquisitionMinutes = workMinutes1;
+                    } else if (amPmVal == 2) {
+                        acquisitionHours = workHours2;
+                        acquisitionMinutes = workMinutes2;
+                    }
                 }
             } else if (
                 // WORNING:時間休にを有効にする場合、シフトによって1時間の重みが違うので注意
@@ -879,13 +899,13 @@
                 selectSubReportId == 4) { // 時間休
 
                 if (holidayCheck() == true) {
-                    getDays = 0;
+                    acquisitionDays = 0;
                 } else if (duplicationCheck() == true) {
-                    getDays = 0;
+                    acquisitionDays = 0;
                 } else if (workingTimeCheck() == true && selectSubReportId == 4) {
-                    getDays = 0;
+                    acquisitionDays = 0;
                 } else if (timeCheck() == true) { // 申請時間を確認
-                    getDays = 0;
+                    acquisitionDays = 0;
                 } else {
                     let restTime = 0;
                     // ランチタイムを挟む場合
@@ -928,104 +948,62 @@
                     if (startTimeVal >= rest3TimeStart && startTimeVal < rest3TimeEnd && endTimeVal > rest3TimeEnd) {
                         restTime += rest3TimeEnd - startTimeVal;
                     }
-                    getDays = ((endTimeVal - startTimeVal - restTime) / 60000) / 60 * 1 / 8;
+                    validateMinutes = (endTimeVal - startTimeVal - restTime) / 60000;
+
+                    if (validateMinutes < 60) {
+                        acquisitionMinutes = validateMinutes;
+                    } else {
+                        acquisitionMinutes = validateMinutes % 60;
+                        acquisitionHours = (validateMinutes - acquisitionMinutes) / 60;
+                    }
                 }
-                // 時間換算:8時間で1日 1時間=1/8日 0.125日
-                getDays = orgRound(getDays, 100000); // 小数点以下切り捨て
             }
 
             // get_days書き出し
-            document.getElementById('get_days').setAttribute('value', getDays);
-
-            // get時間&get日数作成&書き出し
-            function orgRound(value, base) { // 小数点以下を丸める関数
-                return Math.round(value * base) / base;
-            }
-
-            function decimalPart(num, decDigits) { // 指定した桁数の小数点以下を取り出す関数
-                var decPart = num - ((num >= 0) ? Math.floor(num) : Math.ceil(num));
-                return decPart.toFixed(decDigits);
-            }
-
-            // console.log(orgRound(getDays, 100000)); // 小数5桁
-            let getDaysOnly = getDays - decimalPart(getDays, 5);
-            let getHours = decimalPart(getDays, 5) * 8;
-            let getMinutes = 0;
-
-            // 半日休みの場合シフトによって表示時間変更
-            if (selectSubReportId == 3) {
-                if (amPmVal == 1) {
-                    getDaysOnly = 0;
-                    getHours = workTime1;
-                } else if (amPmVal == 2) {
-                    getDaysOnly = 0;
-                    getHours = workTime2;
-                }
-            }
-
-            if (decimalPart(getHours, 5) != 0 && decimalPart(getHours, 5) < 1) {
-                getHoursOnly = getHours - decimalPart(getHours, 5);
-                getHoursOnly = orgRound(getHoursOnly, 1);
-                getMinutes = decimalPart(getHours, 5) * 60;
-                getMinutes = orgRound(getMinutes, 1);
-            } else {
-                getHoursOnly = getHours;
-            }
-            document.getElementById('get_days_only').setAttribute('value', getDaysOnly);
-            document.getElementById('get_hours').setAttribute('value', getHoursOnly);
-            document.getElementById('get_minutes').setAttribute('value', getMinutes);
+            document.getElementById('acquisition_days').setAttribute('value', acquisitionDays);
+            document.getElementById('acquisition_hours').setAttribute('value', acquisitionHours);
+            document.getElementById('acquisition_minutes').setAttribute('value', acquisitionMinutes);
 
             const myAcquisitionDays = @json($my_acquisition_days);
             const myAcquisitionDaysArray = Object.values(myAcquisitionDays);
             let selectReportId = reportCategory.value;
-            let ownRemainingDays = 0;
+            let remainingDays = 0;
+            let remainingHours = 0;
+            let remainingMinutes = 0;
             myAcquisitionDaysArray.forEach(el => {
                 if (el.report_id == selectReportId) {
-                    // 申請中の日数を考慮した残日数を算出
-                    ownRemainingDays = el.remaining_days;
+                    if (el.remaining_days != null) {
+                        // 申請中の日数を考慮した残日数を算出
+                        remainingDays = el.expectation_remaining_days - acquisitionDays;
+                        remainingHours = el.expectation_remaining_hours - acquisitionHours;
+                        remainingMinutes = el.expectation_remaining_minutes - acquisitionMinutes;
+                        // シフトによって半日の時間が異なるため、半日休は0.5日で管理
+                        if (selectSubReportId == 3) {
+                            remainingDays = el.expectation_remaining_days - 0.5;
+                            remainingHours = el.expectation_remaining_hours;
+                            remainingMinutes = el.expectation_remaining_minutes;
+                        } else {
+                            if (remainingMinutes < 0) {
+                                remainingMinutes += 60;
+                                remainingHours -= 1;
+                            }
+                            if (remainingHours < 0) {
+                                remainingHours += (workHours1 + workHours2);
+                                remainingMinutes += (workMinutes1 + workMinutes2);
+                                remainingDays -= 1;
+                            }
+                        }
+                    } else {
+                        remainderDays = 0;
+                        remainingHours = 0;
+                        remainingMinutes = 0;
+                    }
                 }
             })
 
-            let remainingDays = ownRemainingDays - getDays;
             // 残日数書き出し
             document.getElementById('remaining_days').setAttribute('value', remainingDays);
-
-            // console.log(orgRound(remainingDays, 100000)); // 小数5桁
-            let remainingDaysOnly = remainingDays - decimalPart(remainingDays, 5);
-            let remainingHours = decimalPart(remainingDays, 5) * 8;
-            let remainingMinutes = 0;
-
-            if (decimalPart(remainingHours, 5) != 0 && decimalPart(remainingHours, 5) < 1) {
-                remainingHoursOnly = remainingHours - decimalPart(remainingHours, 5);
-                remainingHoursOnly = orgRound(remainingHoursOnly, 1);
-                remainingMinutes = decimalPart(remainingHours, 5) * 60;
-                remainingMinutes = orgRound(remainingMinutes, 1);
-
-                // 半日休みの場合シフトによって表示時間変更
-            } else {
-                if (selectSubReportId == 3) {
-                    if (amPmVal == 1) {
-                        remainingHoursOnly = workTime2 - decimalPart(workTime2, 5);
-                        remainingMinutes = decimalPart(workTime2, 5) * 60;
-                    } else if (amPmVal == 2) {
-                        remainingHoursOnly = workTime1 - decimalPart(workTime1, 5);
-                        remainingMinutes = decimalPart(workTime1, 5) * 60;
-                    }
-                } else {
-                    remainingHoursOnly = getHours;
-                }
-            }
-            if (remainingDaysOnly < 0) {
-                remainingDaysOnly = 0;
-            }
-            if (remainingHours < 0) {
-                remainingHours = 0;
-            }
-            if (remainingMinutes < 0) {
-                remainingMinutes = 0;
-            }
-            document.getElementById('remaining_days_only').setAttribute('value', remainingDaysOnly);
-            document.getElementById('remaining_hours').setAttribute('value', remainingHoursOnly);
+            document.getElementById('remaining_hours').setAttribute('value', remainingHours);
             document.getElementById('remaining_minutes').setAttribute('value', remainingMinutes);
 
             /* --functions-- */
@@ -1149,58 +1127,244 @@
                 const myReportsArray = Object.values(myReports);
                 let duplication = false;
                 myReportsArray.forEach(el => {
-                    // 終日選択
-                    if (selectSubReportId == 1 || selectSubReportId == 2) {
+                    let elStartTime = '';
+                    let elEndTime = '';
+                    let selectStartTime = '';
+                    let selectEndTime = '';
+
+                    // 届出済み・終日休
+                    if (el.sub_report_id == 1) {
+                        // 同日NG
                         if (el.start_date == startY_M_D) {
                             duplication = true;
                         }
                     }
-                    // 終日休み
-                    if (el.am_pm == null &&
-                        el.start_time == null &&
-                        el.start_date == startY_M_D) {
-                        duplication = true;
-                    }
-                    // 時間休み
-                    if (el.start_time != null &&
-                        el.start_date == startY_M_D) {
-                        for (let t = new Date(startDate.value + ' ' + startTime.value); t <= endTimeVal; t.setTime(t
-                                .getTime() + 5 * 60 * 1000)) {
-                            if (el.start_time == convertTime(t.getTime())) {
+
+                    // 届出済み・連休
+                    if (el.sub_report_id == 2) {
+                        for (let d = new Date(el.start_date); d <= new Date(el.end_date); d.setDate(d.getDate() +
+                                1)) {
+                            const Y_M_D = d.getFullYear() +
+                                '-' + ('0' + (d.getMonth() + 1)).slice(-2) +
+                                '-' + ('0' + d.getDate()).slice(-2);
+                            // = el.start_date
+                            // = el.end_date
+                            // - 連休 Y_M_D
+                            // * startY_M_D
+                            // * endY_M_D
+                            // =-----=
+                            //   *
+                            //   *~~*
+                            //   *~~~~~*
+                            if (startY_M_D == Y_M_D) {
                                 duplication = true;
                             }
-                            if (el.end_time == convertTime(t.getTime())) {
+                            //   =-----=
+                            //      *
+                            // *~~*
+                            // *~~~~~*
+                            if (endY_M_D == Y_M_D) {
                                 duplication = true;
                             }
-                            if (el.start_time <= convertTime(t.getTime()) &&
-                                el.end_time >= convertTime(t.getTime())) {
+                            //   =-----=
+                            // *~~~~~~~~~*
+                            if (startY_M_D <= Y_M_D && endY_M_D >= Y_M_D) {
                                 duplication = true;
                             }
                         }
                     }
-                    // 半日休み
-                    if (el.am_pm != null && el.start_date == startY_M_D) {
-                        if (el.am_pm == amPmVal) {
+
+                    // 届出済み・半日休
+                    if (el.sub_report_id == 3) {
+                        if (selectSubReportId == 1 && el.start_date == startY_M_D) {
                             duplication = true;
                         }
+                        if (selectSubReportId == 2) {
+                            for (let d = new Date(startDate.value); d <= endVal; d.setDate(d.getDate() + 1)) {
+                                const Y_M_D = d.getFullYear() +
+                                    '-' + ('0' + (d.getMonth() + 1)).slice(-2) +
+                                    '-' + ('0' + d.getDate()).slice(-2);
+                                // = 連休予定開始
+                                // = 連休予定終了
+                                // - 連休 Y_M_D
+                                // * el.start_date
+                                // =-----=
+                                //   *
+                                if (el.start_date == Y_M_D) {
+                                    duplication = true;
+                                }
+                            }
+                        }
+
+                        // 届出済みの半日の開始時刻、終了時刻
                         if (el.am_pm == 1) {
-                            var sTime = workTimeStart;
-                            var eTime = lunchTimeStart;
+                            elStartTime = new Date(el.start_date + ' ' + el.shift_category.start_time);
+                            elEndTime = new Date(el.start_date + ' ' + el.shift_category.am_pm_switch);
+                            // 後半の開始時刻との一致を防ぐために5分前の時刻とする
+                            elEndTime.setTime(elEndTime.getTime() - 5 * 60 * 1000);
+                            if (elStartTime > elEndTime) {
+                                elEndTime.setDate(elEndTime.getDate() + 1);
+                            }
                         }
                         if (el.am_pm == 2) {
-                            var sTime = lunchTimeEnd;
-                            var eTime = workTimeEnd;
+                            elStartTime = new Date(el.start_date + ' ' + el.shift_category.am_pm_switch);
+                            elEndTime = new Date(el.start_date + ' ' + el.shift_category.end_time);
+                            if (elStartTime > elEndTime) {
+                                elEndTime.setDate(elEndTime.getDate() + 1);
+                            }
                         }
-                        for (let t = new Date(startDate.value + ' ' + startTime.value); t <= endTimeVal; t.setTime(t
-                                .getTime() + 5 * 60 * 1000)) {
-                            if (sTime == t) {
-                                duplication = true;
+
+
+                        if (selectSubReportId == 3 && el.start_date == startY_M_D) {
+                            // 取得予定の半日の開始時刻、終了時刻
+                            if (amPmVal == 1) {
+                                selectStartTime = workTimeStart;
+                                selectEndTime = amPmSwitch;
                             }
-                            if (eTime == t) {
-                                duplication = true;
+                            if (amPmVal == 2) {
+                                selectStartTime = amPmSwitch;
+                                selectEndTime = workTimeEnd;
                             }
-                            if (sTime <= t && eTime >= t) {
-                                duplication = true;
+                            // // 時間確認
+                            // console.log(elStartTime);
+                            // console.log(elEndTime);
+                            // console.log(selectStartTime);
+                            // console.log(selectEndTime);
+                            for (let t = new Date(selectStartTime); t < selectEndTime; t
+                                .setTime(t
+                                    .getTime() + 5 * 60 * 1000)) {
+                                // = 開始時間
+                                // = 終了時間
+                                // - 5分刻み時間 t
+                                // * elStartTime
+                                // * elEndTime
+                                // =-----=
+                                //   *
+                                //   *~~*
+                                //   *~~~~~*
+                                if (elStartTime == t) {
+                                    duplication = true;
+                                }
+                                //   =-----=
+                                //      *
+                                // *~~*
+                                // *~~~~~*
+                                if (elEndTime == t) {
+                                    duplication = true;
+                                }
+                                //   =-----=
+                                // *~~~~~~~~~*
+                                if (elStartTime <= t && elEndTime >= t) {
+                                    duplication = true;
+                                }
+                            }
+                            // // これはシフトが違うときはNG
+                            // // シフトが無いときは使用可能
+                            // if (el.am_pm == amPmVal) {
+                            //     duplication = true;
+                            // }
+                        }
+                        if (selectSubReportId == 4 && el.start_date == startY_M_D) {
+                            selectStartTime = startTimeVal;
+                            selectEndTime = endTimeVal;
+                            for (let t = new Date(selectStartTime); t <= selectEndTime; t
+                                .setTime(t
+                                    .getTime() + 5 * 60 * 1000)) {
+                                // = 開始時間
+                                // = 終了時間
+                                // - 5分刻み時間 t
+                                // * elStartTime
+                                // * elEndTime
+                                // =-----=
+                                //   *
+                                //   *~~*
+                                //   *~~~~~*
+                                if (elStartTime == t) {
+                                    duplication = true;
+                                }
+                                //   =-----=
+                                //      *
+                                // *~~*
+                                // *~~~~~*
+                                if (elEndTime == t) {
+                                    duplication = true;
+                                }
+                                //   =-----=
+                                // *~~~~~~~~~*
+                                if (elStartTime <= t && elEndTime >= t) {
+                                    duplication = true;
+                                }
+                            }
+                        }
+                    }
+
+                    // 届出済み・時間休
+                    if (el.sub_report_id == 4) {
+                        if (selectSubReportId == 1 && el.start_date == startY_M_D) {
+                            duplication = true;
+                        }
+                        if (selectSubReportId == 2) {
+                            for (let d = new Date(startDate.value); d <= endVal; d.setDate(d.getDate() + 1)) {
+                                const Y_M_D = d.getFullYear() +
+                                    '-' + ('0' + (d.getMonth() + 1)).slice(-2) +
+                                    '-' + ('0' + d.getDate()).slice(-2);
+                                if (el.start_date == Y_M_D) {
+                                    duplication = true;
+                                }
+                            }
+                        }
+
+                        elStartTime = new Date(el.start_date + ' ' + el.start_time);
+                        elEndTime = new Date(el.start_date + ' ' + el.end_time);
+                        // console.log(elStartTime);
+                        // console.log(elEndTime);
+
+                        if (selectSubReportId == 3 && el.start_date == startY_M_D) {
+                            // 取得予定の半日の開始時刻、終了時刻
+                            if (amPmVal == 1) {
+                                selectStartTime = workTimeStart;
+                                selectEndTime = amPmSwitch;
+                            }
+                            if (amPmVal == 2) {
+                                selectStartTime = amPmSwitch;
+                                selectEndTime = workTimeEnd;
+                            }
+
+                            for (let t = new Date(selectStartTime); t <= selectEndTime; t
+                                .setTime(t
+                                    .getTime() + 5 * 60 * 1000)) {
+                                if (elStartTime == t) {
+                                    duplication = true;
+                                }
+                                if (elEndTime == t) {
+                                    duplication = true;
+                                }
+                                if (elStartTime <= t && elEndTime >= t) {
+                                    duplication = true;
+                                }
+                            }
+                            // // これはシフトが違うときはNG
+                            // // シフトが無いときは使用可能
+                            // if (el.am_pm == amPmVal) {
+                            //     duplication = true;
+                            // }
+                        }
+
+                        if (selectSubReportId == 4 && el.start_date == startY_M_D) {
+                            selectStartTime = startTimeVal;
+                            selectEndTime = endTimeVal;
+                            for (let t = new Date(selectStartTime); t <= selectEndTime; t
+                                .setTime(t
+                                    .getTime() + 5 * 60 * 1000)) {
+                                if (elStartTime == t) {
+                                    duplication = true;
+                                }
+                                if (elEndTime == t) {
+                                    duplication = true;
+                                }
+                                if (elStartTime <= t && elEndTime >= t) {
+                                    duplication = true;
+                                }
                             }
                         }
                     }

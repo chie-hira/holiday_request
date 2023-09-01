@@ -953,7 +953,6 @@
             let remainingMinutes = 0;
             myAcquisitionDaysArray.forEach(el => {
                 if (el.report_id == selectReportId) {
-                    console.log(el.remaining_days);
                     if (el.remaining_days != null) {
                         // 申請中の日数を考慮した残日数を算出
                         remainingDays = el.expectation_remaining_days - acquisitionDays;
