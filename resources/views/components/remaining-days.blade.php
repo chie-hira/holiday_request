@@ -1,8 +1,8 @@
 @props(['user', 'key'])
 
 {{-- @if ($user->acquisition_days->first()) --}}
-    @if ($user->remainingDaysOnly($key) != 0)
-        {{ $user->remainingDaysOnly($key) }} 日
+    @if ($user->remainingDays($key) != 0)
+        {{ $user->remainingDays($key) }} 日
     @endif
     @if ($user->remainingHours($key) != 0)
         {{ $user->remainingHours($key) }} 時間

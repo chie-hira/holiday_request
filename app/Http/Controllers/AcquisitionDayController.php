@@ -185,6 +185,7 @@ class AcquisitionDayController extends Controller
     public function myIndex()
     {
         $acquisition_days = Auth::user()->acquisition_days->load('report_category');
+        // $acquisition_days = Auth::user()->acquisition_days->load('report_category.reports.shift_category');
 
         /** 最後の弔事届出から14日で弔事の残日数をリセット */
         # 弔事の届出から14日で自動的にリセット
@@ -424,6 +425,7 @@ class AcquisitionDayController extends Controller
                     'user_id' => $user->id,
                     'report_id' => $report->id,
                     'remaining_days' => $report->max_days,
+                    // 'remaining_days' => ($report->max_days != null ? $report->max_days : 0),
                 ];
             }
 

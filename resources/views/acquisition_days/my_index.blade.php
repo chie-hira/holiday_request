@@ -57,28 +57,31 @@
                                                     class="px-4 pt-3 pb-1 whitespace-nowrap text-right text-sm font-medium">
                                                     <span class=" font-bold">
                                                         @if (isset($acquisition_day->remaining_days))
-                                                            {{ $acquisition_day->remaining_days_only }}
-                                                            日
+                                                            {{ $acquisition_day->remaining_days }}日
                                                         @endif
                                                         @if (!empty($acquisition_day->remaining_hours))
                                                             &ensp;{{ $acquisition_day->remaining_hours }} 時間
                                                         @endif
+                                                        @if (!empty($acquisition_day->remaining_minutes))
+                                                            &ensp;{{ $acquisition_day->remaining_minutes }} 分
+                                                        @endif
                                                     </span>
                                                     <p class="text-blue-400 text-xs">
-                                                        @if ($acquisition_day->pending_acquisition_days != 0)
-                                                            @if ($acquisition_day->remaining - $acquisition_day->pending_acquisition_days == 0)
-                                                                {{ 0 }} 日
+                                                        @if (Auth::user()->reports->where('report_id', $acquisition_day->report_id)->where('approved', 0)->where('cancel', 0)->first())
+                                                            @if (
+                                                                $acquisition_day->expectation_remaining_days == 0 &&
+                                                                $acquisition_day->expectation_remaining_hours == 0 &&
+                                                                $acquisition_day->expectation_remaining_minutes == 0 ||
+                                                                $acquisition_day->expectation_remaining_days != 0
+                                                            )
+                                                                {{ $acquisition_day->expectation_remaining_days }} 日
                                                             @endif
-                                                            @if ($acquisition_day->expectation_days != 0)
-                                                                {{ $acquisition_day->expectation_days }}
-                                                                日
-                                                            @endif
-                                                            @if ($acquisition_day->expectation_hours != 0)
-                                                                {{ $acquisition_day->expectation_hours }}
+                                                            @if ($acquisition_day->expectation_remaining_hours != 0)
+                                                                {{ $acquisition_day->expectation_remaining_hours }}
                                                                 時間
                                                             @endif
-                                                            @if ($acquisition_day->expectation_minutes != 0)
-                                                                {{ $acquisition_day->expectation_minutes }}
+                                                            @if ($acquisition_day->expectation_remaining_minutes != 0)
+                                                                {{ $acquisition_day->expectation_remaining_minutes }}
                                                                 分
                                                             @endif
                                                         @endif
@@ -87,9 +90,12 @@
                                                 <td
                                                     class="px-4 pt-3 pb-1 whitespace-nowrap text-right text-sm font-medium">
                                                     <span class=" font-bold">
-                                                        {{ $acquisition_day->acquisition_days_only }} 日
+                                                        {{ $acquisition_day->acquisition_days }} 日
                                                         @if (!empty($acquisition_day->acquisition_hours))
                                                             &ensp;{{ $acquisition_day->acquisition_hours }} 時間
+                                                        @endif
+                                                        @if (!empty($acquisition_day->acquisition_minutes))
+                                                            &ensp;{{ $acquisition_day->acquisition_minutes }} 時間
                                                         @endif
                                                     </span>
                                                     <p class="text-blue-400 text-xs">
@@ -110,13 +116,6 @@
                                                     </p>
                                                 </td>
                                             </tr>
-                                            {{-- <tr>
-                                                <td colspan="3" class="border-b border-slate-300 -pt-2">
-                                                    <span class="text-blue-400 text-xs">
-                                                    {{ $acquisition_day->report_category->remarks }}
-                                                    </span>
-                                                </td>
-                                            </tr> --}}
                                         @endforeach
                                     </tbody>
                                 </table>

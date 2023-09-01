@@ -1,8 +1,8 @@
 @props(['user', 'key'])
 
 {{-- @if ($user->sum_get_days->first()) --}}
-    @if ($user->acquisitionDaysOnly($key) != 0)
-        {{ $user->acquisitionDaysOnly($key) }} 日
+    @if ($user->acquisitionDays($key) != 0)
+        {{ $user->acquisitionDays($key) }} 日
     @endif
     @if ($user->acquisitionHours($key) != 0)
         {{ $user->acquisitionHours($key) }} 時間

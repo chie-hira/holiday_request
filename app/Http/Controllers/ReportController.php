@@ -132,8 +132,10 @@ class ReportController extends Controller
         $reasons = ReasonCategory::all();
         $report_reasons = Reason::with('reason_category')->get();
         $shifts = ShiftCategory::all();
-        $my_acquisition_days = Auth::user()->acquisition_days;
-        $my_reports = Auth::user()->reports;
+        $my_acquisition_days = Auth::user()->acquisition_days->load(
+            'report_category.reports.shift_category'
+        );
+        $my_reports = Auth::user()->reports->load('shift_category');
         $holiday_calender = Calender::whereHas('calender_category', function (
             $query
         ) {
@@ -223,10 +225,10 @@ class ReportController extends Controller
             # 終日休
             $request->validate(
                 [
-                    'get_days' => [Rule::in(1.0)],
+                    'acquisition_days' => [Rule::in(1.0)],
                 ],
                 [
-                    'get_days.in' => '終日休は1日で届出してください。',
+                    'acquisition_days.in' => '終日休は1日で届出してください。',
                 ]
             );
         }
@@ -235,10 +237,12 @@ class ReportController extends Controller
             $request->validate(
                 [
                     'end_date' => 'required',
-                    'get_days' => 'integer|min:1',
+                    'acquisition_days' => 'integer|min:1',
+                    'acquisition_hours' => [Rule::in(0)],
+                    'acquisition_minutes' => [Rule::in(0)],
                 ],
                 [
-                    'get_days.min' =>
+                    'acquisition_days.min' =>
                         '連休は:attributeが:min日以上で届出してください。',
                 ]
             );
@@ -248,14 +252,17 @@ class ReportController extends Controller
             $request->validate(
                 [
                     'am_pm' => 'required',
-                    'get_days' => [
-                        'required',
-                        Rule::in(0.25, 0.3125, 0.375, 0.4375, 0.5),
-                    ],
+                    'acquisition_days' => [Rule::in(0)],
+                    'acquisition_hours' => [Rule::in(4, 3, 2)],
+                    'acquisition_minutes' => [Rule::in(0, 30)],
+                    // 'get_days' => [
+                    //     'required',
+                    //     Rule::in(0.25, 0.3125, 0.375, 0.4375, 0.5),
+                    // ],
                 ],
                 [
-                    'get_days.in' =>
-                        '半日休は2時間、2.5時間、3時間、3.5時間、4時間で届出してください。',
+                    'acquisition_hours.in' =>
+                        '半日休は2時間、2時間半、3時間、3時間半、4時間で届出してください。',
                     'am_pm.required' => '前半・後半を選択してください。',
                 ]
             );
@@ -266,18 +273,22 @@ class ReportController extends Controller
                 [
                     'start_time' => 'required',
                     'end_time' => 'required',
-                    'get_days' => [
-                        'numeric',
-                        'max:1',
-                        'multiple_of:0.125',
-                        Rule::notIn([1]),
-                    ],
+                    'acquisition_days' => [Rule::in(0)],
+                    'acquisition_hours' => [Rule::in(0, 1, 2, 3, 4, 5, 6, 7)],
+                    // 'get_days' => [
+                    //     'numeric',
+                    //     'max:1',
+                    //     'multiple_of:0.125',
+                    //     Rule::notIn([1]),
+                    // ],
                 ],
                 [
-                    'get_days.max' => '時間給は:max日未満で届出できます。',
-                    'get_days.multiple_of' =>
+                    'acquisition_hours.in' =>
                         '時間休は1時間単位で届出してください。',
-                    'get_days.not_in' => '時間給は1日未満で届出できます。',
+                    // 'get_days.max' => '時間給は:max日未満で届出できます。',
+                    // 'get_days.multiple_of' =>
+                    //     '時間休は1時間単位で届出してください。',
+                    // 'get_days.not_in' => '時間給は1日未満で届出できます。',
                 ]
             );
         }
@@ -291,11 +302,9 @@ class ReportController extends Controller
             $request->report_id != 5 || # 特別休暇(弔事)
             $request->report_id != 6 # 特別休暇(弔事)
         ) {
-            $request->validate(
-                [
-                    'start_date' => 'after:today',
-                ],
-            );
+            $request->validate([
+                'start_date' => 'after:today',
+            ]);
         }
 
         if (
@@ -306,61 +315,65 @@ class ReportController extends Controller
                 [
                     'start_time' => 'required',
                     'end_time' => 'required',
-                    'get_days' => [
-                        'required',
-                        Rule::in([
-                            0.02083,
-                            0.04167,
-                            0.0625,
-                            0.08333,
-                            0.10417,
-                            0.125,
-                            0.14583,
-                            0.16667,
-                            0.1875,
-                            0.20833,
-                            0.22917,
-                            0.25,
-                            0.27083,
-                            0.29167,
-                            0.3125,
-                            0.33333,
-                            0.35417,
-                            0.375,
-                            0.39583,
-                            0.41667,
-                            0.4375,
-                            0.45833,
-                            0.47917,
-                            0.5,
-                            0.52083,
-                            0.54167,
-                            0.5625,
-                            0.58333,
-                            0.60417,
-                            0.625,
-                            0.64583,
-                            0.66667,
-                            0.6875,
-                            0.70833,
-                            0.72917,
-                            0.75,
-                            0.77083,
-                            0.79167,
-                            0.8125,
-                            0.83333,
-                            0.85417,
-                            0.825,
-                            0.89583,
-                            0.91667,
-                            0.9375,
-                            0.95833,
-                            0.97917,
-                        ]),
-                    ],
+                    'acquisition_days' => [Rule::in(0)],
+                    'acquisition_minutes' => [Rule::in(0, 10, 20, 30, 40, 50)],
+                    // 'get_days' => [
+                    //     'required',
+                    //     Rule::in([
+                    //         0.02083,
+                    //         0.04167,
+                    //         0.0625,
+                    //         0.08333,
+                    //         0.10417,
+                    //         0.125,
+                    //         0.14583,
+                    //         0.16667,
+                    //         0.1875,
+                    //         0.20833,
+                    //         0.22917,
+                    //         0.25,
+                    //         0.27083,
+                    //         0.29167,
+                    //         0.3125,
+                    //         0.33333,
+                    //         0.35417,
+                    //         0.375,
+                    //         0.39583,
+                    //         0.41667,
+                    //         0.4375,
+                    //         0.45833,
+                    //         0.47917,
+                    //         0.5,
+                    //         0.52083,
+                    //         0.54167,
+                    //         0.5625,
+                    //         0.58333,
+                    //         0.60417,
+                    //         0.625,
+                    //         0.64583,
+                    //         0.66667,
+                    //         0.6875,
+                    //         0.70833,
+                    //         0.72917,
+                    //         0.75,
+                    //         0.77083,
+                    //         0.79167,
+                    //         0.8125,
+                    //         0.83333,
+                    //         0.85417,
+                    //         0.825,
+                    //         0.89583,
+                    //         0.91667,
+                    //         0.9375,
+                    //         0.95833,
+                    //         0.97917,
+                    //     ]),
+                    // ],
                 ],
                 [
-                    'get_days.in' => '遅刻・早退は10分単位で届出してください。',
+                    'acquisition_minutes.in' =>
+                        '遅刻・早退は10分単位で届出してください。',
+                    // 'get_days.in' => '遅刻・早退は10分単位で届出してください。',
                 ]
             );
         }
@@ -370,18 +383,22 @@ class ReportController extends Controller
                 [
                     'start_time' => 'required',
                     'end_time' => 'required',
-                    'get_days' => [
-                        'numeric',
-                        'max:1',
-                        'multiple_of:0.0625',
-                        Rule::notIn([1]),
-                    ],
+                    'acquisition_days' => [Rule::in(0)],
+                    'acquisition_minutes' => [Rule::in(0, 30)],
+                    // 'get_days' => [
+                    //     'numeric',
+                    //     'max:1',
+                    //     'multiple_of:0.0625',
+                    //     Rule::notIn([1]),
+                    // ],
                 ],
                 [
-                    'get_days.max' => '外出は:max日未満で届出できます。',
-                    'get_days.multiple_of' =>
+                    'acquisition_minutes.in' =>
                         '外出は30分単位で届出してください。',
-                    'get_days.not_in' => '外出は1日未満で届出できます。',
+                    // 'get_days.max' => '外出は:max日未満で届出できます。',
+                    // 'get_days.multiple_of' =>
+                    //     '外出は30分単位で届出してください。',
+                    // 'get_days.not_in' => '外出は1日未満で届出できます。',
                 ]
             );
         }
@@ -400,22 +417,36 @@ class ReportController extends Controller
             ->where('report_id', $request->report_id)
             ->first();
         if (!empty($acquisition_day->remaining_days)) {
-            $result =
+            $remaining_days =
                 $acquisition_day->remaining_days -
                 $acquisition_day->pending_acquisition_days -
-                $request->get_days; // 残日数-申請中日数-申請日数
-            if ($result < 0) {
+                $request->acquisition_days;
+            $remaining_hours =
+                $acquisition_day->remaining_hours -
+                $acquisition_day->pending_acquisition_hours -
+                $request->acquisition_hours;
+            $remaining_minutes =
+                $acquisition_day->remaining_minutes -
+                $acquisition_day->pending_acquisition_minutes -
+                $request->acquisition_minutes;
+            if ($remaining_minutes < 0) {
+                $remaining_hours -= 1;
+            }
+            if ($remaining_hours < 0) {
+                $remaining_days -= 1;
+            }
+            if ($remaining_days < 0) {
                 throw ValidationException::withMessages([
-                    'get_days' => ['取得上限を超えています'],
+                    'acquisition_days' => ['取得上限を超えています'],
                 ]);
             }
         }
         $start_date = new Carbon($request->start_date);
         $now = Carbon::now();
         if ($now->addDay() >= $start_date->addHour(16)) {
-                throw ValidationException::withMessages([
-                    'start_date' => ['翌日の休暇は16時までに提出してください'],
-                ]);
+            throw ValidationException::withMessages([
+                'start_date' => ['翌日の休暇は16時までに提出してください'],
+            ]);
         }
 
         # reportsレコード作成
@@ -441,11 +472,101 @@ class ReportController extends Controller
             DB::beginTransaction(); # トランザクション開始
             try {
                 $report->save();
+                $work_hours = $report->shift_category->work_hours;
+                $work_minutes = $report->shift_category->work_minutes;
                 if (!empty($acquisition_day)) {
-                    if (!empty($acquisition_day->remaining_days)) {
-                        $acquisition_day->remaining_days -= $report->get_days;
+                    // if (!empty($acquisition_day->remaining_days)) {
+                    //     if (
+                    //         $acquisition_day->remaining_minutes <
+                    //         $report->acquisition_minutes
+                    //     ) {
+                    //         // hoursからminutesに1時間繰下げ
+                    //         $acquisition_day->remaining_minutes += 60;
+                    //         $acquisition_day->remaining_hours -= 1;
+                    //     }
+                    //     // のこり分確定
+                    //     $acquisition_day->remaining_minutes -=
+                    //         $report->acquisition_minutes;
+
+                    //     if (
+                    //         $acquisition_day->remaining_hours <
+                    //         $report->acquisition_hours
+                    //     ) {
+                    //         // daysからhoursに1日繰下げ
+                    //         $acquisition_day->remaining_hours += $work_time;
+                    //         $acquisition_day->remaining_days -= 1;
+                    //     }
+                    //     // のこり時間確定
+                    //     $acquisition_day->remaining_hours -=
+                    //         $report->acquisition_hours;
+
+                    //     // のこり日数確定
+                    //     $acquisition_day->remaining_days -=
+                    //         $report->acquisition_days;
+                    // }
+
+                    // 半日休の場合、0.5日で格納
+                    if ($report->sub_report_id == 3) {
+                        $acquisition_day->acquisition_days += 0.5;
+                        $acquisition_day->remaining_days -= 0.5;
+                    } elseif ($report->sub_report_id == 4) {
+                        // 時間休みは時間で格納
+                        $acquisition_day->acquisition_minutes +=
+                            $report->acquisition_minutes;
+                        if ($acquisition_day->acquisition_minutes > 60) {
+                            // minutesからhoursに1時間繰上げ
+                            $acquisition_day->acquisition_minutes -= 60;
+                            $acquisition_day->acquisition_hours += 1;
+                        }
+                        $acquisition_day->acquisition_hours += $report->acquisition_hours;
+                    } else {
+                    // TODO:ここから下、精査必要 不要なコードの可能性あり
+                        // のこり日数を登録
+                        $acquisition_day->remaining_minutes -=
+                            $report->acquisition_minutes;
+                        if ($acquisition_day->remaining_minutes < 0) {
+                            // hoursからminutesに1時間繰下げ
+                            $acquisition_day->remaining_hours -= 1;
+                            $acquisition_day->remaining_minutes += 60;
+                        }
+
+                        $acquisition_day->remaining_hours -=
+                            $report->acquisition_hours;
+                        if ($acquisition_day->remaining_hours < 0) {
+                            // daysからhoursに1日繰下げ
+                            $acquisition_day->remaining_days -= 1;
+                            $acquisition_day->remaining_hours += $work_hours;
+                            $acquisition_day->remaining_minutes += $work_minutes;
+                        }
+                        $acquisition_day->remaining_days -=
+                            $report->acquisition_days;
+
+                        // 取得日数を登録
+                        $acquisition_day->acquisition_minutes +=
+                            $report->acquisition_minutes;
+                        if ($acquisition_day->acquisition_minutes > 60) {
+                            // minutesからhoursに1時間繰上げ
+                            $acquisition_day->acquisition_minutes -= 60;
+                            $acquisition_day->acquisition_hours += 1;
+                        }
+
+                        $acquisition_day->acquisition_hours +=
+                            $report->acquisition_hours;
+                        if (
+                            $acquisition_day->acquisition_hours > $work_hours ||
+                            ($acquisition_day->acquisition_hours ==
+                                $work_hours &&
+                                $acquisition_day->acquisition_minutes ==
+                                    $work_minutes)
+                        ) {
+                            // hoursからdaysに1日繰上げ
+                            $acquisition_day->acquisition_hours -= $work_hours;
+                            $acquisition_day->acquisition_minutes -= $work_minutes;
+                            $acquisition_day->acquisition_days += 1;
+                        }
+                        $acquisition_day->acquisition_days +=
+                            $report->acquisition_days;
                     }
-                    $acquisition_day->acquisition_days += $report->get_days;
                     $acquisition_day->save(); # 残日数を保存
                 }
                 DB::commit(); # トランザクション成功終了
@@ -489,7 +610,8 @@ class ReportController extends Controller
                 // 例外情報をログに出力
                 Log::error('Exception caught: ' . $e->getMessage());
                 // エラー内容をそのまま表示しない
-                return back()->withErrors('エラーが発生しました');
+                return back()->with($e);
+                // return back()->withErrors('エラーが発生しました');
             }
         }
 
@@ -844,11 +966,9 @@ class ReportController extends Controller
             $request->report_id != 5 || # 特別休暇(弔事)
             $request->report_id != 6 # 特別休暇(弔事)
         ) {
-            $request->validate(
-                [
-                    'start_date' => 'after:today',
-                ],
-            );
+            $request->validate([
+                'start_date' => 'after:today',
+            ]);
         }
 
         if (
@@ -1310,7 +1430,7 @@ class ReportController extends Controller
                                 });
                         });
                 })->get();
-                dd($approvers);
+                // dd($approvers);
             }
             // Glが承認している場合
             if ($report->approval1 == 0 && $report->approval2 == 1) {

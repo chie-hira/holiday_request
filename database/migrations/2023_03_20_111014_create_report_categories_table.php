@@ -14,7 +14,7 @@ class CreateReportCategoriesTable extends Migration
     public function up()
     {
         Schema::create('report_categories', function (Blueprint $table) {
-            $table->id()->index()->comment('届け種類ID');
+            $table->id()->index()->comment('届出種類ID');
             $table->string('report_name')->unique();
             $table->integer('max_days')->nullable();
             $table->integer('max_times')->nullable();

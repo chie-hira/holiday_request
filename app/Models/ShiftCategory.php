@@ -34,6 +34,38 @@ class ShiftCategory extends Model
     }
 
     // アクセサ
+    public function getWorkTimeAttribute()
+    {
+        return $this->work_time1 + $this->work_time2;
+    }
+
+    public function getWorkHoursAttribute()
+    {
+        if (
+            is_int($this->work_time) ||
+            (is_float($this->work_time) &&
+                $this->work_time == (int) $this->work_time)
+        ) {
+            return $this->work_time;
+        } else {
+            return intval($this->work_time);
+        }
+    }
+
+    public function getWorkMinutesAttribute()
+    {
+        // dd($this->work_time);
+        if (
+            is_int($this->work_time) ||
+            (is_float($this->work_time) &&
+                $this->work_time == (int) $this->work_time)
+        ) {
+            return 0;
+        } else {
+            return 30;
+        }
+    }
+
     public function getStartTimeHmAttribute()
     {
         $start_time = $this->start_time;

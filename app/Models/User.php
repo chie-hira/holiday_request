@@ -266,6 +266,20 @@ class User extends Authenticatable
             ->first();
         return $acquisition_day->acquisition_days;
     }
+    public function acquisitionHours($key)
+    {
+        $acquisition_day = $this->acquisition_days
+            ->where('report_id', $key)
+            ->first();
+        return $acquisition_day->acquisition_hours;
+    }
+    public function acquisitionMinutes($key)
+    {
+        $acquisition_day = $this->acquisition_days
+            ->where('report_id', $key)
+            ->first();
+        return $acquisition_day->acquisition_minutes;
+    }
 
     public function acquisitionDaysOnly($key)
     {
@@ -283,51 +297,50 @@ class User extends Authenticatable
             return 0;
         }
     }
-    public function acquisitionHours($key)
-    {
-        # 取得時間だけ
-        $acquisition_days = $this->acquisitionDays($key);
-        if ($acquisition_days) {
-            # keyの存在確認
-            $exp = explode('.', $acquisition_days);
-        } else {
-            return 0;
-        }
+    // public function acquisitionHours($key)
+    // {
+    //     # 取得時間だけ
+    //     $acquisition_days = $this->acquisitionDays($key);
+    //     if ($acquisition_days) {
+    //         # keyの存在確認
+    //         $exp = explode('.', $acquisition_days);
+    //     } else {
+    //         return 0;
+    //     }
 
-        if (array_key_exists(1, $exp)) {
-            # 小数点以下あり(1日未満)
-            $decimal_p = '0.' . $exp[1];
-            $exp_hour = explode('.', $decimal_p * 8); # 8時間で1日
-            return $exp_hour[0];
-        } else {
-            return 0;
-        }
-    }
-    public function acquisitionMinutes($key)
-    {
-        $acquisition_days = $this->acquisitionDays($key);
-        # 取得分だけ
-        if ($acquisition_days) {
-            # keyの存在確認
-            $exp = explode('.', $acquisition_days);
-        } else {
-            return 0;
-        }
+    //     if (array_key_exists(1, $exp)) {
+    //         # 小数点以下あり(1日未満)
+    //         $decimal_p = '0.' . $exp[1];
+    //         $exp_hour = explode('.', $decimal_p * 8); # 8時間で1日
+    //         return $exp_hour[0];
+    //     } else {
+    //         return 0;
+    //     }
+    // }
+    // public function acquisitionMinutes($key)
+    // {
+    //     $acquisition_days = $this->acquisitionDays($key);
+    //     # 取得分だけ
+    //     if ($acquisition_days) {
+    //         # keyの存在確認
+    //         $exp = explode('.', $acquisition_days);
+    //     } else {
+    //         return 0;
+    //     }
 
-        if (array_key_exists(1, $exp)) {
-            # 小数点以下あり(1日未満)
-            $decimal_p = '0.' . $exp[1];
-            $exp_hour = explode('.', $decimal_p * 8);
-            if (array_key_exists(1, $exp_hour)) {
-                # 小数点以下あり(1時間未満)
-                $decimal_p = '0.' . $exp_hour[1];
-                return round($decimal_p * 60);
-            }
-        } else {
-            return 0;
-        }
-    }
-
+    //     if (array_key_exists(1, $exp)) {
+    //         # 小数点以下あり(1日未満)
+    //         $decimal_p = '0.' . $exp[1];
+    //         $exp_hour = explode('.', $decimal_p * 8);
+    //         if (array_key_exists(1, $exp_hour)) {
+    //             # 小数点以下あり(1時間未満)
+    //             $decimal_p = '0.' . $exp_hour[1];
+    //             return round($decimal_p * 60);
+    //         }
+    //     } else {
+    //         return 0;
+    //     }
+    // }
 
     // public function getSumGetDaysAttribute()
     // {
@@ -407,6 +420,20 @@ class User extends Authenticatable
             ->first();
         return $acquisition_day->remaining_days;
     }
+    public function remainingHours($key)
+    {
+        $acquisition_day = $this->acquisition_days
+            ->where('report_id', $key)
+            ->first();
+        return $acquisition_day->remaining_hours;
+    }
+    public function remainingMinutes($key)
+    {
+        $acquisition_day = $this->acquisition_days
+            ->where('report_id', $key)
+            ->first();
+        return $acquisition_day->remaining_minutes;
+    }
 
     public function remainingDaysOnly($key)
     {
@@ -425,44 +452,44 @@ class User extends Authenticatable
         }
     }
 
-    public function remainingHours($key)
-    {
-        # 残時間だけ
-        $remaining_days = $this->remainingDays($key);
-        if ($remaining_days) {
-            $exp = explode('.', $remaining_days);
+    // public function remainingHours($key)
+    // {
+    //     # 残時間だけ
+    //     $remaining_days = $this->remainingDays($key);
+    //     if ($remaining_days) {
+    //         $exp = explode('.', $remaining_days);
 
-            if (array_key_exists(1, $exp)) {
-                # 小数点以下あり(1日未満)
-                $decimal_p = '0.' . $exp[1];
-                $exp_hour = explode('.', $decimal_p * 8); # 8時間で1日
-                return $exp_hour[0];
-            } else {
-                return 0;
-            }
-        }
-    }
-    public function remainingMinutes($key)
-    {
-        # 残分だけ
-        $remaining_days = $this->remainingDays($key);
-        if ($remaining_days) {
-            $exp = explode('.', $remaining_days);
+    //         if (array_key_exists(1, $exp)) {
+    //             # 小数点以下あり(1日未満)
+    //             $decimal_p = '0.' . $exp[1];
+    //             $exp_hour = explode('.', $decimal_p * 8); # 8時間で1日
+    //             return $exp_hour[0];
+    //         } else {
+    //             return 0;
+    //         }
+    //     }
+    // }
+    // public function remainingMinutes($key)
+    // {
+    //     # 残分だけ
+    //     $remaining_days = $this->remainingDays($key);
+    //     if ($remaining_days) {
+    //         $exp = explode('.', $remaining_days);
 
-            if (array_key_exists(1, $exp)) {
-                # 小数点以下あり(1日未満)
-                $decimal_p = '0.' . $exp[1];
-                $exp_hour = explode('.', $decimal_p * 8);
-                if (array_key_exists(1, $exp_hour)) {
-                    # 小数点以下あり(1時間未満)
-                    $decimal_p = '0.' . $exp_hour[1];
-                    return round($decimal_p * 60);
-                }
-            } else {
-                return 0;
-            }
-        }
-    }
+    //         if (array_key_exists(1, $exp)) {
+    //             # 小数点以下あり(1日未満)
+    //             $decimal_p = '0.' . $exp[1];
+    //             $exp_hour = explode('.', $decimal_p * 8);
+    //             if (array_key_exists(1, $exp_hour)) {
+    //                 # 小数点以下あり(1時間未満)
+    //                 $decimal_p = '0.' . $exp_hour[1];
+    //                 return round($decimal_p * 60);
+    //             }
+    //         } else {
+    //             return 0;
+    //         }
+    //     }
+    // }
 
     // public function remaining($report_category_id)
     public function acquisition($report_category_id)
