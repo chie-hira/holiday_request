@@ -251,9 +251,6 @@
                             <p class="block mb-2 text-sm font-medium text-gray-900">
                                 {{ __('Acquisition Days') }}
                             </p>
-                            {{-- <input type="hidden" id="get_days" name="get_days"
-                                class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                value="{{ old('get_days') }}" readonly required> --}}
                             <div class="flex items-center mb-1">
                                 <x-input type="number" id="acquisition_days" name="acquisition_days"
                                     class="block mt-1 w-20" :value="old('acquisition_days')" readonly required />
@@ -275,9 +272,6 @@
                             <p class="block mb-2 text-sm font-medium text-gray-900">
                                 {{ __('Remaining Days') }}
                             </p>
-                            {{-- <input type="hidden" id="remaining_days" name="remaining"
-                                class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                value="{{ old('remaining_days') }}" readonly required> --}}
                             <div class="flex items-center mb-1">
                                 <x-input type="number" id="remaining_days" name="remaining_days"
                                     class="block mt-1 w-20" :value="old('remaining_days')" readonly required />
@@ -404,13 +398,6 @@
             document.getElementById('remaining_days').setAttribute('value', 0);
             document.getElementById('remaining_hours').setAttribute('value', 0);
             document.getElementById('remaining_minutes').setAttribute('value', 0);
-            // document.getElementById('get_days').setAttribute('value', 0);
-            // document.getElementById('get_days_only').setAttribute('value', 0);
-            // document.getElementById('get_hours').setAttribute('value', 0);
-            // document.getElementById('get_minutes').setAttribute('value', 0);
-            // document.getElementById('remaining_days_only').setAttribute('value', 0);
-            // document.getElementById('remaining_hours').setAttribute('value', 0);
-            // document.getElementById('remaining_minutes').setAttribute('value', 0);
         }
 
         // その他理由選択時のplaceholder表示切替
@@ -711,21 +698,7 @@
 
         /* --日数カウント-- */
         function countDays() {
-            // get_daysリセット
-            // document.getElementById('get_days').setAttribute('value', 0);
-            // document.getElementById('get_days_only').setAttribute('value', 0);
-            // document.getElementById('get_hours').setAttribute('value', 0);
-            // document.getElementById('get_minutes').setAttribute('value', 0);
-            // document.getElementById('remaining_days_only').setAttribute('value', 0);
-            // document.getElementById('remaining_hours').setAttribute('value', 0);
-            // document.getElementById('remaining_minutes').setAttribute('value', 0);
             daysReset();
-            // document.getElementById('acquitision_days').setAttribute('value', 0);
-            // document.getElementById('acquisition_hours').setAttribute('value', 0);
-            // document.getElementById('acquisition_minutes').setAttribute('value', 0);
-            // document.getElementById('remaining_days').setAttribute('value', 0);
-            // document.getElementById('remaining_hours').setAttribute('value', 0);
-            // document.getElementById('remaining_minutes').setAttribute('value', 0);
 
             const startVal = new Date(startDate.value);
             const endVal = new Date(endDate.value);
@@ -872,31 +845,24 @@
             if (selectSubReportId == 1) { // 終日休
                 if (holidayCheck() == true) {
                     acquisitionDays = 0;
-                    // getDays = 0;
                 } else if (duplicationCheck() == true) {
                     acquisitionDays = 0;
-                    // getDays = 0;
                 } else {
                     acquisitionDays = 1;
-                    // getDays = 1.0;
                 }
             } else if (selectSubReportId == 2) { // 連休
                 if (duplicationCheck() == true) {
                     acquisitionDays = 0;
-                    // getDays = 0;
                 } else {
                     // この順番を変えてはいけない
                     acquisitionDays = diffDays - dayOffs;
-                    // getDays = diffDays - dayOffs;
                     holidayCheck();
                 }
             } else if (selectSubReportId == 3) { // 半日休
                 if (holidayCheck() == true) {
                     acquisitionDays = 0;
-                    // getDays = 0;
                 } else if (duplicationCheck() == true) {
                     acquisitionDays = 0;
-                    // getDays = 0;
                 } else {
                     acquisitionDays = 0;
                     if (amPmVal == 1) {
@@ -906,7 +872,6 @@
                         acquisitionHours = workHours2;
                         acquisitionMinutes = workMinutes2;
                     }
-                    // getDays = 0.5;
                 }
             } else if (
                 // WORNING:時間休にを有効にする場合、シフトによって1時間の重みが違うので注意
@@ -915,16 +880,12 @@
 
                 if (holidayCheck() == true) {
                     acquisitionDays = 0;
-                    // getDays = 0;
                 } else if (duplicationCheck() == true) {
                     acquisitionDays = 0;
-                    // getDays = 0;
                 } else if (workingTimeCheck() == true && selectSubReportId == 4) {
                     acquisitionDays = 0;
-                    // getDays = 0;
                 } else if (timeCheck() == true) { // 申請時間を確認
                     acquisitionDays = 0;
-                    // getDays = 0;
                 } else {
                     let restTime = 0;
                     // ランチタイムを挟む場合
@@ -967,62 +928,22 @@
                     if (startTimeVal >= rest3TimeStart && startTimeVal < rest3TimeEnd && endTimeVal > rest3TimeEnd) {
                         restTime += rest3TimeEnd - startTimeVal;
                     }
+
                     validateMinutes = (endTimeVal - startTimeVal - restTime) / 60000;
+
                     if (validateMinutes < 60) {
                         acquisitionMinutes = validateMinutes;
                     } else {
                         acquisitionMinutes = validateMinutes % 60;
                         acquisitionHours = (validateMinutes - acquisitionMinutes) / 60;
                     }
-                    // getDays = ((endTimeVal - startTimeVal - restTime) / 60000) / 60 * 1 / 8;
                 }
-                // 時間換算:8時間で1日 1時間=1/8日 0.125日
-                // getDays = orgRound(getDays, 100000); // 小数点以下切り捨て
             }
 
             // get_days書き出し
-            // document.getElementById('get_days').setAttribute('value', getDays);
             document.getElementById('acquisition_days').setAttribute('value', acquisitionDays);
             document.getElementById('acquisition_hours').setAttribute('value', acquisitionHours);
             document.getElementById('acquisition_minutes').setAttribute('value', acquisitionMinutes);
-
-            // get時間&get日数作成&書き出し
-            // function orgRound(value, base) { // 小数点以下を丸める関数
-            //     return Math.round(value * base) / base;
-            // }
-
-            // function decimalPart(num, decDigits) { // 指定した桁数の小数点以下を取り出す関数
-            //     var decPart = num - ((num >= 0) ? Math.floor(num) : Math.ceil(num));
-            //     return decPart.toFixed(decDigits);
-            // }
-
-            // // console.log(orgRound(getDays, 100000)); // 小数5桁
-            // let getDaysOnly = getDays - decimalPart(getDays, 5);
-            // let getHours = decimalPart(getDays, 5) * 8;
-            // let getMinutes = 0;
-
-            // // 半日休みの場合シフトによって表示時間変更
-            // if (selectSubReportId == 3) {
-            //     if (amPmVal == 1) {
-            //         getDaysOnly = 0;
-            //         getHours = workTime1;
-            //     } else if (amPmVal == 2) {
-            //         getDaysOnly = 0;
-            //         getHours = workTime2;
-            //     }
-            // }
-
-            // if (decimalPart(getHours, 5) != 0 && decimalPart(getHours, 5) < 1) {
-            //     getHoursOnly = getHours - decimalPart(getHours, 5);
-            //     getHoursOnly = orgRound(getHoursOnly, 1);
-            //     getMinutes = decimalPart(getHours, 5) * 60;
-            //     getMinutes = orgRound(getMinutes, 1);
-            // } else {
-            //     getHoursOnly = getHours;
-            // }
-            // document.getElementById('get_days_only').setAttribute('value', getDaysOnly);
-            // document.getElementById('get_hours').setAttribute('value', getHoursOnly);
-            // document.getElementById('get_minutes').setAttribute('value', getMinutes);
 
             const myAcquisitionDays = @json($my_acquisition_days);
             const myAcquisitionDaysArray = Object.values(myAcquisitionDays);
@@ -1062,44 +983,7 @@
             document.getElementById('remaining_days').setAttribute('value', remainingDays);
             document.getElementById('remaining_hours').setAttribute('value', remainingHours);
             document.getElementById('remaining_minutes').setAttribute('value', remainingMinutes);
-
-            // // console.log(orgRound(remainingDays, 100000)); // 小数5桁
-            // let remainingDaysOnly = remainingDays - decimalPart(remainingDays, 5);
-            // let remainingHours = decimalPart(remainingDays, 5) * 8;
-            // let remainingMinutes = 0;
-
-            // if (decimalPart(remainingHours, 5) != 0 && decimalPart(remainingHours, 5) < 1) {
-            //     remainingHoursOnly = remainingHours - decimalPart(remainingHours, 5);
-            //     remainingHoursOnly = orgRound(remainingHoursOnly, 1);
-            //     remainingMinutes = decimalPart(remainingHours, 5) * 60;
-            //     remainingMinutes = orgRound(remainingMinutes, 1);
-
-            //     // 半日休みの場合シフトによって表示時間変更
-            // } else {
-            //     if (selectSubReportId == 3) {
-            //         if (amPmVal == 1) {
-            //             remainingHoursOnly = workTime2 - decimalPart(workTime2, 5);
-            //             remainingMinutes = decimalPart(workTime2, 5) * 60;
-            //         } else if (amPmVal == 2) {
-            //             remainingHoursOnly = workTime1 - decimalPart(workTime1, 5);
-            //             remainingMinutes = decimalPart(workTime1, 5) * 60;
-            //         }
-            //     } else {
-            //         remainingHoursOnly = getHours;
-            //     }
-            // }
-            // if (remainingDaysOnly < 0) {
-            //     remainingDaysOnly = 0;
-            // }
-            // if (remainingHours < 0) {
-            //     remainingHours = 0;
-            // }
-            // if (remainingMinutes < 0) {
-            //     remainingMinutes = 0;
-            // }
-            // document.getElementById('remaining_days_only').setAttribute('value', remainingDaysOnly);
-            // document.getElementById('remaining_hours').setAttribute('value', remainingHoursOnly);
-            // document.getElementById('remaining_minutes').setAttribute('value', remainingMinutes);
+            // TODO:外出の残日が変
 
             /* --functions-- */
             // 休日確認関数
@@ -1293,13 +1177,22 @@
 
                         // 届出済みの半日の開始時刻、終了時刻
                         if (el.am_pm == 1) {
-                            elStartTime = el.shift_category.start_time;
-                            elEndTime = el.shift_category.am_pm_switch;
+                            elStartTime = new Date(el.start_date + ' ' + el.shift_category.start_time);
+                            elEndTime = new Date(el.start_date + ' ' + el.shift_category.am_pm_switch);
+                            // 後半の開始時刻との一致を防ぐために5分前の時刻とする
+                            elEndTime.setTime(elEndTime.getTime() - 5 * 60 * 1000);
+                            if (elStartTime > elEndTime) {
+                                elEndTime.setDate(elEndTime.getDate() + 1);
+                            }
                         }
                         if (el.am_pm == 2) {
-                            elStartTime = el.shift_category.am_pm_switch;
-                            elEndTime = el.shift_category.end_time;
+                            elStartTime = new Date(el.start_date + ' ' + el.shift_category.am_pm_switch);
+                            elEndTime = new Date(el.start_date + ' ' + el.shift_category.end_time);
+                            if (elStartTime > elEndTime) {
+                                elEndTime.setDate(elEndTime.getDate() + 1);
+                            }
                         }
+
 
                         if (selectSubReportId == 3 && el.start_date == startY_M_D) {
                             // 取得予定の半日の開始時刻、終了時刻
@@ -1311,7 +1204,12 @@
                                 selectStartTime = amPmSwitch;
                                 selectEndTime = workTimeEnd;
                             }
-                            for (let t = new Date(selectStartTime); t <= selectEndTime; t
+                            // // 時間確認
+                            // console.log(elStartTime);
+                            // console.log(elEndTime);
+                            // console.log(selectStartTime);
+                            // console.log(selectEndTime);
+                            for (let t = new Date(selectStartTime); t < selectEndTime; t
                                 .setTime(t
                                     .getTime() + 5 * 60 * 1000)) {
                                 // = 開始時間
@@ -1395,8 +1293,10 @@
                             }
                         }
 
-                        elStartTime = el.start_time;
-                        elEndTime = el.end_time;
+                        elStartTime = new Date(el.start_date + ' ' + el.start_time);
+                        elEndTime = new Date(el.start_date + ' ' + el.end_time);
+                        // console.log(elStartTime);
+                        // console.log(elEndTime);
 
                         if (selectSubReportId == 3 && el.start_date == startY_M_D) {
                             // 取得予定の半日の開始時刻、終了時刻
@@ -1447,62 +1347,6 @@
                             }
                         }
                     }
-
-                    // // 終日選択
-                    // if (selectSubReportId == 1 || selectSubReportId == 2) {
-                    //     if (el.start_date == startY_M_D) {
-                    //         duplication = true;
-                    //     }
-                    // }
-                    // // 終日休み
-                    // if (el.am_pm == null &&
-                    //     el.start_time == null &&
-                    //     el.start_date == startY_M_D) {
-                    //     duplication = true;
-                    // }
-                    // // 時間休み
-                    // if (el.start_time != null &&
-                    //     el.start_date == startY_M_D) {
-                    //     for (let t = new Date(startDate.value + ' ' + startTime.value); t <= endTimeVal; t.setTime(t
-                    //             .getTime() + 5 * 60 * 1000)) {
-                    //         if (el.start_time == convertTime(t.getTime())) {
-                    //             duplication = true;
-                    //         }
-                    //         if (el.end_time == convertTime(t.getTime())) {
-                    //             duplication = true;
-                    //         }
-                    //         if (el.start_time <= convertTime(t.getTime()) &&
-                    //             el.end_time >= convertTime(t.getTime())) {
-                    //             duplication = true;
-                    //         }
-                    //     }
-                    // }
-                    // // 半日休み
-                    // if (el.am_pm != null && el.start_date == startY_M_D) {
-                    //     if (el.am_pm == amPmVal) {
-                    //         duplication = true;
-                    //     }
-                    //     if (el.am_pm == 1) {
-                    //         var sTime = workTimeStart;
-                    //         var eTime = lunchTimeStart;
-                    //     }
-                    //     if (el.am_pm == 2) {
-                    //         var sTime = lunchTimeEnd;
-                    //         var eTime = workTimeEnd;
-                    //     }
-                    //     for (let t = new Date(startDate.value + ' ' + startTime.value); t <= endTimeVal; t.setTime(t
-                    //             .getTime() + 5 * 60 * 1000)) {
-                    //         if (sTime == t) {
-                    //             duplication = true;
-                    //         }
-                    //         if (eTime == t) {
-                    //             duplication = true;
-                    //         }
-                    //         if (sTime <= t && eTime >= t) {
-                    //             duplication = true;
-                    //         }
-                    //     }
-                    // }
                 })
 
                 if (duplication == true) {
