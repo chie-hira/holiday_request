@@ -99,20 +99,20 @@
                                                         @endif
                                                     </span>
                                                     <p class="text-blue-400 text-xs">
-                                                        @if ($acquisition_day->pending_acquisition_days != 0)
-                                                            @if ($acquisition_day->pending_acquisition_days_only != 0)
-                                                                {{ $acquisition_day->pending_acquisition_days_only }}
+                                                        {{-- @if ($acquisition_day->pending_acquisition_days != 0) --}}
+                                                            @if ($acquisition_day->pending_acquisition_days != 0)
+                                                                {{ $acquisition_day->pending_acquisition_days }}
                                                                 日
                                                             @endif
-                                                            @if ($acquisition_day->pending_get_hours != 0)
-                                                                {{ $acquisition_day->pending_get_hours }}
+                                                            @if ($acquisition_day->pending_acquisition_hours != 0)
+                                                                {{ $acquisition_day->pending_acquisition_hours }}
                                                                 時間
                                                             @endif
-                                                            @if ($acquisition_day->pending_get_minutes != 0)
-                                                                {{ $acquisition_day->pending_get_minutes }}
+                                                            @if ($acquisition_day->pending_acquisition_minutes != 0)
+                                                                {{ $acquisition_day->pending_acquisition_minutes }}
                                                                 分
                                                             @endif
-                                                        @endif
+                                                        {{-- @endif --}}
                                                     </p>
                                                 </td>
                                             </tr>

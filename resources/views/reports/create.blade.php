@@ -948,42 +948,45 @@
             const myAcquisitionDays = @json($my_acquisition_days);
             const myAcquisitionDaysArray = Object.values(myAcquisitionDays);
             let selectReportId = reportCategory.value;
-            let ownRemainingDays = 0;
-            let ownRemainingHours = 0;
-            let ownRemainingMinutes = 0;
+            let remainingDays = 0;
+            let remainingHours = 0;
+            let remainingMinutes = 0;
             myAcquisitionDaysArray.forEach(el => {
                 if (el.report_id == selectReportId) {
-                    // 申請中の日数を考慮した残日数を算出
-                    ownRemainingDays = el.expectation_remaining_days;
-                    ownRemainingHours = el.expectation_remaining_hours;
-                    ownRemainingMinutes = el.expectation_remaining_minutes;
+                    console.log(el.remaining_days);
+                    if (el.remaining_days != null) {
+                        // 申請中の日数を考慮した残日数を算出
+                        remainingDays = el.expectation_remaining_days - acquisitionDays;
+                        remainingHours = el.expectation_remaining_hours - acquisitionHours;
+                        remainingMinutes = el.expectation_remaining_minutes - acquisitionMinutes;
+                        // シフトによって半日の時間が異なるため、半日休は0.5日で管理
+                        if (selectSubReportId == 3) {
+                            remainingDays = el.expectation_remaining_days - 0.5;
+                            remainingHours = el.expectation_remaining_hours;
+                            remainingMinutes = el.expectation_remaining_minutes;
+                        } else {
+                            if (remainingMinutes < 0) {
+                                remainingMinutes += 60;
+                                remainingHours -= 1;
+                            }
+                            if (remainingHours < 0) {
+                                remainingHours += (workHours1 + workHours2);
+                                remainingMinutes += (workMinutes1 + workMinutes2);
+                                remainingDays -= 1;
+                            }
+                        }
+                    } else {
+                        remainderDays = 0;
+                        remainingHours = 0;
+                        remainingMinutes = 0;
+                    }
                 }
             })
 
-            let remainingDays = ownRemainingDays - acquisitionDays;
-            let remainingHours = ownRemainingHours - acquisitionHours;
-            let remainingMinutes = ownRemainingMinutes - acquisitionMinutes;
-            // シフトによって半日の時間が異なるため、半日休は0.5日で管理
-            if (selectSubReportId == 3) {
-                remainingDays = ownRemainingDays - 0.5;
-                remainingHours = ownRemainingHours;
-                remainingMinutes = ownRemainingMinutes;
-            } else {
-                if (remainingMinutes < 0) {
-                    remainingMinutes += 60;
-                    remainingHours -= 1;
-                }
-                if (remainingHours < 0) {
-                    remainingHours += (workHours1 + workHours2);
-                    remainingMinutes += (workMinutes1 + workMinutes2);
-                    remainingDays -= 1;
-                }
-            }
             // 残日数書き出し
             document.getElementById('remaining_days').setAttribute('value', remainingDays);
             document.getElementById('remaining_hours').setAttribute('value', remainingHours);
             document.getElementById('remaining_minutes').setAttribute('value', remainingMinutes);
-            // TODO:外出の残日が変
 
             /* --functions-- */
             // 休日確認関数

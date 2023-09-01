@@ -106,25 +106,30 @@ class AcquisitionDay extends Model
 
         $acquisition_days = $reports->sum('acquisition_days');
 
-        // 勤務時間の基準は最新の届出
-        $shift_id = $reports->last()->shift_id;
-        $working_time = ShiftCategory::find($shift_id)->work_time;
-        // $working_time = $reports->last()->shift_category->work_time;
-        $sum_acquisition_hours = $reports->sum('acquisition_hours');
+        // 半日休は0.5日で加算
+        $reports = $reports->filter(function ($item) {
+            return $item->sub_report_id == 3;
+        });
+        $acquisition_days += count($reports)*0.5;
 
-        // sum_acquisition_minutesが60分以上のとき加算
-        $sum_acquisition_minutes = $reports->sum('acquisition_minutes');
-        if ($sum_acquisition_minutes > 60) {
-            $acquisition_minutes = $sum_acquisition_minutes % 60;
-            $sum_acquisition_hours +=
-                ($sum_acquisition_minutes - $acquisition_minutes) / 60;
-        }
+        // // 勤務時間の基準は最新の届出
+        // $shift_id = $reports->last()->shift_id;
+        // $working_time = ShiftCategory::find($shift_id)->work_time;
+        // $sum_acquisition_hours = $reports->sum('acquisition_hours');
 
-        if ($sum_acquisition_hours > $working_time) {
-            $acquisition_hours = $sum_acquisition_hours % $working_time;
-            $acquisition_days +=
-                ($sum_acquisition_hours - $acquisition_hours) / $working_time;
-        }
+        // // sum_acquisition_minutesが60分以上のとき加算
+        // $sum_acquisition_minutes = $reports->sum('acquisition_minutes');
+        // if ($sum_acquisition_minutes > 60) {
+        //     $acquisition_minutes = $sum_acquisition_minutes % 60;
+        //     $sum_acquisition_hours +=
+        //         ($sum_acquisition_minutes - $acquisition_minutes) / 60;
+        // }
+
+        // if ($sum_acquisition_hours > $working_time) {
+        //     $acquisition_hours = $sum_acquisition_hours % $working_time;
+        //     $acquisition_days +=
+        //         ($sum_acquisition_hours - $acquisition_hours) / $working_time;
+        // }
 
         return $acquisition_days;
     }
@@ -143,24 +148,29 @@ class AcquisitionDay extends Model
         }
 
         // 勤務時間の基準は最新の届出
-        $shift_id = $reports->last()->shift_id;
-        $working_time = ShiftCategory::find($shift_id)->work_time;
-        // $working_time = $reports->last()->shift_category->work_time;
-        $sum_acquisition_hours = $reports->sum('acquisition_hours');
+        // $shift_id = $reports->last()->shift_id;
+        // $working_time = ShiftCategory::find($shift_id)->work_time;
+        $acquisition_hours = $reports->sum('acquisition_hours');
+
+        // 半日休は0.5日で加算
+        $reports = $reports->filter(function ($item) {
+            return $item->sub_report_id == 3;
+        });
+        $acquisition_hours -= $reports->sum('acquisition_hours');
 
         // sum_acquisition_minutesが60分以上のとき加算
         $sum_acquisition_minutes = $reports->sum('acquisition_minutes');
         if ($sum_acquisition_minutes > 60) {
             $acquisition_minutes = $sum_acquisition_minutes % 60;
-            $sum_acquisition_hours +=
+            $acquisition_hours +=
                 ($sum_acquisition_minutes - $acquisition_minutes) / 60;
         }
 
-        if ($sum_acquisition_hours < $working_time) {
-            $acquisition_hours = $sum_acquisition_hours;
-        } else {
-            $acquisition_hours = $sum_acquisition_hours % $working_time;
-        }
+        // if ($sum_acquisition_hours < $working_time) {
+        //     $acquisition_hours = $sum_acquisition_hours;
+        // } else {
+        //     $acquisition_hours = $sum_acquisition_hours % $working_time;
+        // }
 
         return $acquisition_hours;
     }

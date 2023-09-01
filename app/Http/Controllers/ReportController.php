@@ -317,58 +317,6 @@ class ReportController extends Controller
                     'end_time' => 'required',
                     'acquisition_days' => [Rule::in(0)],
                     'acquisition_minutes' => [Rule::in(0, 10, 20, 30, 40, 50)],
-                    // 'get_days' => [
-                    //     'required',
-                    //     Rule::in([
-                    //         0.02083,
-                    //         0.04167,
-                    //         0.0625,
-                    //         0.08333,
-                    //         0.10417,
-                    //         0.125,
-                    //         0.14583,
-                    //         0.16667,
-                    //         0.1875,
-                    //         0.20833,
-                    //         0.22917,
-                    //         0.25,
-                    //         0.27083,
-                    //         0.29167,
-                    //         0.3125,
-                    //         0.33333,
-                    //         0.35417,
-                    //         0.375,
-                    //         0.39583,
-                    //         0.41667,
-                    //         0.4375,
-                    //         0.45833,
-                    //         0.47917,
-                    //         0.5,
-                    //         0.52083,
-                    //         0.54167,
-                    //         0.5625,
-                    //         0.58333,
-                    //         0.60417,
-                    //         0.625,
-                    //         0.64583,
-                    //         0.66667,
-                    //         0.6875,
-                    //         0.70833,
-                    //         0.72917,
-                    //         0.75,
-                    //         0.77083,
-                    //         0.79167,
-                    //         0.8125,
-                    //         0.83333,
-                    //         0.85417,
-                    //         0.825,
-                    //         0.89583,
-                    //         0.91667,
-                    //         0.9375,
-                    //         0.95833,
-                    //         0.97917,
-                    //     ]),
-                    // ],
                 ],
                 [
                     'acquisition_minutes.in' =>
@@ -413,7 +361,7 @@ class ReportController extends Controller
                 ]
             );
         }
-        $acquisition_day = AcquisitionDay::where('user_id', Auth::user()->id)
+        $acquisition_day = AcquisitionDay::where('user_id', $request->user_id)
             ->where('report_id', $request->report_id)
             ->first();
         if (!empty($acquisition_day->remaining_days)) {
@@ -471,104 +419,7 @@ class ReportController extends Controller
 
             DB::beginTransaction(); # トランザクション開始
             try {
-                $report->save();
-                $work_hours = $report->shift_category->work_hours;
-                $work_minutes = $report->shift_category->work_minutes;
-                if (!empty($acquisition_day)) {
-                    // if (!empty($acquisition_day->remaining_days)) {
-                    //     if (
-                    //         $acquisition_day->remaining_minutes <
-                    //         $report->acquisition_minutes
-                    //     ) {
-                    //         // hoursからminutesに1時間繰下げ
-                    //         $acquisition_day->remaining_minutes += 60;
-                    //         $acquisition_day->remaining_hours -= 1;
-                    //     }
-                    //     // のこり分確定
-                    //     $acquisition_day->remaining_minutes -=
-                    //         $report->acquisition_minutes;
-
-                    //     if (
-                    //         $acquisition_day->remaining_hours <
-                    //         $report->acquisition_hours
-                    //     ) {
-                    //         // daysからhoursに1日繰下げ
-                    //         $acquisition_day->remaining_hours += $work_time;
-                    //         $acquisition_day->remaining_days -= 1;
-                    //     }
-                    //     // のこり時間確定
-                    //     $acquisition_day->remaining_hours -=
-                    //         $report->acquisition_hours;
-
-                    //     // のこり日数確定
-                    //     $acquisition_day->remaining_days -=
-                    //         $report->acquisition_days;
-                    // }
-
-                    // 半日休の場合、0.5日で格納
-                    if ($report->sub_report_id == 3) {
-                        $acquisition_day->acquisition_days += 0.5;
-                        $acquisition_day->remaining_days -= 0.5;
-                    } elseif ($report->sub_report_id == 4) {
-                        // 時間休みは時間で格納
-                        $acquisition_day->acquisition_minutes +=
-                            $report->acquisition_minutes;
-                        if ($acquisition_day->acquisition_minutes > 60) {
-                            // minutesからhoursに1時間繰上げ
-                            $acquisition_day->acquisition_minutes -= 60;
-                            $acquisition_day->acquisition_hours += 1;
-                        }
-                        $acquisition_day->acquisition_hours += $report->acquisition_hours;
-                    } else {
-                    // TODO:ここから下、精査必要 不要なコードの可能性あり
-                        // のこり日数を登録
-                        $acquisition_day->remaining_minutes -=
-                            $report->acquisition_minutes;
-                        if ($acquisition_day->remaining_minutes < 0) {
-                            // hoursからminutesに1時間繰下げ
-                            $acquisition_day->remaining_hours -= 1;
-                            $acquisition_day->remaining_minutes += 60;
-                        }
-
-                        $acquisition_day->remaining_hours -=
-                            $report->acquisition_hours;
-                        if ($acquisition_day->remaining_hours < 0) {
-                            // daysからhoursに1日繰下げ
-                            $acquisition_day->remaining_days -= 1;
-                            $acquisition_day->remaining_hours += $work_hours;
-                            $acquisition_day->remaining_minutes += $work_minutes;
-                        }
-                        $acquisition_day->remaining_days -=
-                            $report->acquisition_days;
-
-                        // 取得日数を登録
-                        $acquisition_day->acquisition_minutes +=
-                            $report->acquisition_minutes;
-                        if ($acquisition_day->acquisition_minutes > 60) {
-                            // minutesからhoursに1時間繰上げ
-                            $acquisition_day->acquisition_minutes -= 60;
-                            $acquisition_day->acquisition_hours += 1;
-                        }
-
-                        $acquisition_day->acquisition_hours +=
-                            $report->acquisition_hours;
-                        if (
-                            $acquisition_day->acquisition_hours > $work_hours ||
-                            ($acquisition_day->acquisition_hours ==
-                                $work_hours &&
-                                $acquisition_day->acquisition_minutes ==
-                                    $work_minutes)
-                        ) {
-                            // hoursからdaysに1日繰上げ
-                            $acquisition_day->acquisition_hours -= $work_hours;
-                            $acquisition_day->acquisition_minutes -= $work_minutes;
-                            $acquisition_day->acquisition_days += 1;
-                        }
-                        $acquisition_day->acquisition_days +=
-                            $report->acquisition_days;
-                    }
-                    $acquisition_day->save(); # 残日数を保存
-                }
+                self::acquisitionSave($report);
                 DB::commit(); # トランザクション成功終了
                 // 管轄内の課長・GLにメール通知
                 $gl_approvals = Approval::whereHas('affiliation', function (
@@ -1379,30 +1230,8 @@ class ReportController extends Controller
         }
         $report->save();
 
-        // 誰も承認していない場合
-        if (
-            $report->cancel == 1 &&
-            $report->approval1 == 0 &&
-            $report->approval2 == 0
-        ) {
-            try {
-                $report->delete();
-
-                if ($approvers) {
-                    foreach ($approvers as $approver) {
-                        $approver->destroyReport($report);
-                    }
-                }
-
-                return redirect()
-                    ->route('reports.my_index')
-                    ->with('notice', 'DestroyReport');
-            } catch (\Throwable $th) {
-                Log::error('Exception caught: ' . $th->getMessage());
-                return back()->withErrors('エラーが発生しました');
-            }
-        } else {
-            // 承認がある場合
+        // 承認がある場合
+        if ($report->approval1 == 1 || $report->approval2 == 1) {
             // 工場長が承認している場合
             if ($report->approval1 == 1 && $report->approval2 == 0) {
                 // 工場長に通知
@@ -1434,6 +1263,35 @@ class ReportController extends Controller
             }
             // Glが承認している場合
             if ($report->approval1 == 0 && $report->approval2 == 1) {
+                $gl_approvals = Approval::whereHas('affiliation', function (
+                    $query
+                ) use ($report) {
+                    $query
+                        ->where(
+                            'factory_id',
+                            $report->user->affiliation->factory_id
+                        )
+                        ->where(
+                            'department_id',
+                            $report->user->affiliation->department_id
+                        )
+                        ->where(function ($query) use ($report) {
+                            $query
+                                ->where(
+                                    'group_id',
+                                    $report->user->affiliation->group_id
+                                )
+                                ->orWhere('group_id', 1);
+                        });
+                })
+                    ->where('approval_id', 3)
+                    ->get();
+
+                // GLがいない部署はGL承認を削除
+                if (empty($gl_approvals->first())) {
+                    $report->approval2 = 0;
+                }
+
                 // GLに通知
                 $approvers = User::whereHas('approvals', function ($query) use (
                     $report
@@ -1462,17 +1320,42 @@ class ReportController extends Controller
                                 });
                         });
                 })->get();
-                // dd($approvers);
             }
+
             // 承認したapproversに取消確認の通知メール送信
-            if ($approvers) {
+            if ($approvers->first()) {
                 foreach ($approvers as $approver) {
                     $approver->cancelReport($report);
                 }
+                return redirect()
+                    ->route('reports.my_index')
+                    ->with('notice', 'CancelReport');
             }
-            return redirect()
-                ->route('reports.my_index')
-                ->with('notice', 'CancelReport');
+        }
+
+        // 誰も承認していない場合、取消確認なしで削除
+        if (
+            $report->cancel == 1 &&
+            $report->approval1 == 0 &&
+            $report->approval2 == 0
+        ) {
+            try {
+                $report->delete();
+
+                // approversにメール
+                if ($approvers) {
+                    foreach ($approvers as $approver) {
+                        $approver->destroyReport($report);
+                    }
+                }
+
+                return redirect()
+                    ->route('reports.my_index')
+                    ->with('notice', 'DestroyReport');
+            } catch (\Throwable $th) {
+                Log::error('Exception caught: ' . $th->getMessage());
+                return back()->withErrors('エラーが発生しました');
+            }
         }
     }
 
@@ -1678,107 +1561,6 @@ class ReportController extends Controller
         }
     }
 
-    // public function getAndRemaining()
-    // {
-    //     $approvals = Auth::user()->approvals->where('approval_id', '!=', 1);
-    //     $users = User::where(function ($query) use ($approvals) {
-    //         foreach ($approvals as $approval) {
-    //             if ($approval->affiliation->department_id == 1) {
-    //                 $query->whereHas('affiliation', function ($query) use (
-    //                     $approval
-    //                 ) {
-    //                     $query->where(
-    //                         'factory_id',
-    //                         $approval->affiliation->factory_id
-    //                     );
-    //                 });
-    //             } else {
-    //                 $query->whereHas('affiliation', function ($query) use (
-    //                     $approval
-    //                 ) {
-    //                     $query->orWhere(function ($query) use ($approval) {
-    //                         $query
-    //                             ->where(
-    //                                 'factory_id',
-    //                                 $approval->affiliation->factory_id
-    //                             )
-    //                             ->where(
-    //                                 'department_id',
-    //                                 $approval->affiliation->department_id
-    //                             );
-    //                     });
-    //                 });
-    //             }
-    //         }
-    //     })->get();
-    //     if ($approvals->where('affiliation.factory_id', 1)->first()) {
-    //         $users = User::all();
-    //     }
-
-    //     // $users = User::where(function ($query) use ($approvals) {
-    //     //     foreach ($approvals as $approval) {
-    //     //         if ($approval->affiliation->department_id == 1) {
-    //     //             $query->orWhere(function ($query) use ($approval) {
-    //     //                 $query->whereHas('affiliation', function ($query) use (
-    //     //                     $approval
-    //     //                 ) {
-    //     //                     $query->where('factory_id', $approval->affiliation->factory_id);
-    //     //                 });
-    //     //             });
-    //     //         } elseif (
-    //     //             $approval->department_id != 1 &&
-    //     //             $approval->affiliation->group_id == 1
-    //     //         ) {
-    //     //             $query->orWhere(function ($query) use ($approval) {
-    //     //                 $query->whereHas('affiliation', function ($query) use (
-    //     //                     $approval
-    //     //                 ) {
-    //     //                     $query
-    //     //                         ->where('factory_id', $approval->affiliation->factory_id)
-    //     //                         ->where(
-    //     //                             'department_id',
-    //     //                             $approval->affiliation->department_id
-    //     //                         );
-    //     //                 });
-    //     //             });
-    //     //         } elseif (
-    //     //             $approval->department_id != 1 &&
-    //     //             $approval->affiliation->group_id != 1
-    //     //         ) {
-    //     //             $query->orWhere(function ($query) use ($approval) {
-    //     //                 $query->whereHas('affiliation', function ($query) use (
-    //     //                     $approval
-    //     //                 ) {
-    //     //                     $query
-    //     //                         ->where('factory_id', $approval->affiliation->factory_id)
-    //     //                         ->where(
-    //     //                             'department_id',
-    //     //                             $approval->affiliation->department_id
-    //     //                         )
-    //     //                         ->where('group_id', $approval->affiliation->group_id);
-    //     //                 });
-    //     //             });
-    //     //         }
-    //     //     }
-    //     // })->get();
-
-    //     # 重複削除&並べ替え
-    //     if ($users->first()) {
-    //         $users = $users
-    //             ->unique()
-    //             ->load(['reports', 'acquisition_days'])
-    //             ->sortBy('employee')
-    //             ->sortBy('affiliation_id');
-    //     }
-    //     // dd($users);
-
-    //     $report_categories = ReportCategory::all();
-
-    //     return view('reports.get_and_remaining')->with(
-    //         compact('users', 'report_categories')
-    //     );
-    // }
-
     // approval()
     public function approval(Report $report)
     {
@@ -1825,6 +1607,8 @@ class ReportController extends Controller
             ) {
                 $report->approval1 = 1;
                 // GLがいないとき工場長がGL承認する
+                // これは申請時点で既に承認済みになるので必要ないが、
+                // GLがいるときに申請してGL承認前にGLがいなくなったときのための処理
                 if (empty($gl_approvals->first())) {
                     $report->approval2 = 1;
                 }
@@ -1846,20 +1630,7 @@ class ReportController extends Controller
             $report->approved = 1; # 承認
             DB::beginTransaction(); # トランザクション開始
             try {
-                $report->save(); # 承認を保存
-                $acquisition_day = AcquisitionDay::where(
-                    'user_id',
-                    $report->user_id
-                )
-                    ->where('report_id', $report->report_id)
-                    ->first();
-                if (!empty($acquisition_day)) {
-                    if ($acquisition_day->remaining_days != null) {
-                        $acquisition_day->remaining_days -= $report->get_days;
-                    }
-                    $acquisition_day->acquisition_days += $report->get_days;
-                    $acquisition_day->save(); # 残日数を保存
-                }
+                self::acquisitionSave($report);
                 DB::commit(); # トランザクション成功終了
                 $user = $report->user;
                 $user->approved($report); # 届出作成者に承認を通知
@@ -1909,15 +1680,6 @@ class ReportController extends Controller
         })
             ->where('approval_id', 3)
             ->get();
-        // $gl_approval = Approval::where('approval_id', 3)
-        //     ->where('factory_id', $report->user->factory_id)
-        //     ->where('department_id', $report->user->department_id)
-        //     ->where(function ($query) use ($report) {
-        //         $query
-        //             ->orWhere('group_id', $report->user->group_id)
-        //             ->orWhere('group_id', 1);
-        //     })
-        //     ->get();
 
         foreach ($approvals as $approval) {
             if (
@@ -1967,25 +1729,16 @@ class ReportController extends Controller
                     return back()->withErrors('エラーが発生しました');
                 }
             } elseif ($report->approved == 1) {
-                $acquisition_day = AcquisitionDay::where(
-                    'report_id',
-                    $report->report_id
-                )
-                    ->where('user_id', $report->user_id)
-                    ->first();
+                // $acquisition_day = AcquisitionDay::where(
+                //     'report_id',
+                //     $report->report_id
+                // )
+                //     ->where('user_id', $report->user_id)
+                //     ->first();
 
                 DB::beginTransaction(); # トランザクション開始
                 try {
-                    $report->save();
-                    if (!empty($acquisition_day)) {
-                        if (!empty($acquisition_day->remaining_days)) {
-                            $acquisition_day->remaining_days +=
-                                $report->get_days;
-                        }
-                        $acquisition_day->acquisition_days -= $report->get_days;
-                        $acquisition_day->save(); # 残日数を保存
-                    }
-                    $report->delete();
+                    self::acquisitionCancel($report);
                     DB::commit(); # トランザクション成功終了
                     $report_user->destroyReport($report); // 申請者に取消メール通知
                     // リダイレクト
@@ -2012,6 +1765,138 @@ class ReportController extends Controller
                 return back()->withErrors('エラーが発生しました');
             }
         }
+    }
+
+    /** 届出確定関数
+     * reportを保存
+     * acquisition_dayを更新
+     * acquisitionを加算
+     * remainingを減算
+     */
+    function acquisitionSave(Report $report)
+    {
+        $report->save();
+        /**
+         * // 有給休暇など残日数を管理する休暇に時間休を追加するときは、
+         * // シフトの1日分の労働時間をオーバーしたところで日数を加算するプログラムをくむ
+         * workHours,workMinutesはその時使用する
+         * $work_hours = $report->shift_category->work_hours;
+         * $work_minutes = $report->shift_category->work_minutes;
+         */
+        $acquisition_day = AcquisitionDay::where('user_id', $report->user_id)
+            ->where('report_id', $report->report_id)
+            ->first();
+        if (!empty($acquisition_day)) {
+            if ($report->sub_report_id == 3) {
+                // 半日休は0.5日で格納
+                $acquisition_day->acquisition_days += 0.5;
+                $acquisition_day->remaining_days -= 0.5;
+            } elseif ($report->sub_report_id == 4) {
+                // 時間休は時間で取得だけ格納
+                $acquisition_day->acquisition_minutes +=
+                    $report->acquisition_minutes;
+                if ($acquisition_day->acquisition_minutes > 60) {
+                    // minutesからhoursに1時間繰上げ
+                    $acquisition_day->acquisition_minutes -= 60;
+                    $acquisition_day->acquisition_hours += 1;
+                }
+                $acquisition_day->acquisition_hours +=
+                    $report->acquisition_hours;
+            } else {
+                // 終日休、連休は日で格納
+                $acquisition_day->remaining_days -= $report->acquisition_days;
+                $acquisition_day->acquisition_days += $report->acquisition_days;
+
+                /**
+                 * // ここから下は有給休暇に時間休を追加するときに使用
+                 * // のこり日数を登録
+                 * $acquisition_day->remaining_minutes -=
+                 *     $report->acquisition_minutes;
+                 * if ($acquisition_day->remaining_minutes < 0) {
+                 *     // hoursからminutesに1時間繰下げ
+                 *     $acquisition_day->remaining_hours -= 1;
+                 *     $acquisition_day->remaining_minutes += 60;
+                 * }
+                 *
+                 * $acquisition_day->remaining_hours -= $report->acquisition_hours;
+                 * if ($acquisition_day->remaining_hours < 0) {
+                 *     // daysからhoursに1日繰下げ
+                 *     $acquisition_day->remaining_days -= 1;
+                 *     $acquisition_day->remaining_hours += $work_hours;
+                 *     $acquisition_day->remaining_minutes += $work_minutes;
+                 * }
+                 * $acquisition_day->remaining_days -= $report->acquisition_days;
+                 *
+                 * 取得日数を登録
+                 * $acquisition_day->acquisition_minutes +=
+                 *     $report->acquisition_minutes;
+                 * if ($acquisition_day->acquisition_minutes > 60) {
+                 *     // minutesからhoursに1時間繰上げ
+                 *     $acquisition_day->acquisition_minutes -= 60;
+                 *     $acquisition_day->acquisition_hours += 1;
+                 * }
+                 *
+                 * $acquisition_day->acquisition_hours +=
+                 *     $report->acquisition_hours;
+                 * if (
+                 *     $acquisition_day->acquisition_hours > $work_hours ||
+                 *     ($acquisition_day->acquisition_hours == $work_hours &&
+                 *         $acquisition_day->acquisition_minutes == $work_minutes)
+                 * ) {
+                 *     // hoursからdaysに1日繰上げ
+                 *     $acquisition_day->acquisition_hours -= $work_hours;
+                 *     $acquisition_day->acquisition_minutes -= $work_minutes;
+                 *     $acquisition_day->acquisition_days += 1;
+                 * }
+                 * $acquisition_day->acquisition_days += $report->acquisition_days;
+                 */
+            }
+            $acquisition_day->save(); # 残日数を保存
+        }
+    }
+
+    /** 届出取消関数
+     * reportを保存
+     * acquisition_dayを更新
+     * acquisitionを減算
+     * remainingを加算
+     */
+    function acquisitionCancel(Report $report)
+    {
+        $report->save();
+        $acquisition_day = AcquisitionDay::where('user_id', $report->user_id)
+            ->where('report_id', $report->report_id)
+            ->first();
+        if (!empty($acquisition_day)) {
+            if ($report->sub_report_id == 3) {
+                // 半日休は0.5日で格納
+                $acquisition_day->acquisition_days -= 0.5;
+                $acquisition_day->remaining_days += 0.5;
+            } elseif ($report->sub_report_id == 4) {
+                // 時間休は時間で取得だけ格納
+                $acquisition_day->acquisition_minutes -=
+                    $report->acquisition_minutes;
+                if ($acquisition_day->acquisition_minutes < 0) {
+                    // minutesからhoursに1時間繰下げ
+                    $acquisition_day->acquisition_minutes += 60;
+                    $acquisition_day->acquisition_hours -= 1;
+                }
+                $acquisition_day->acquisition_hours -=
+                    $report->acquisition_hours;
+            } else {
+                // 終日休、連休は日で格納
+                $acquisition_day->remaining_days += $report->acquisition_days;
+                $acquisition_day->acquisition_days -= $report->acquisition_days;
+            }
+            $acquisition_day->save(); # 残日数を保存
+
+            if (!empty($acquisition_day->remaining_days)) {
+                $acquisition_day->remaining_days += $report->get_days;
+            }
+            $acquisition_day->acquisition_days -= $report->get_days;
+            $acquisition_day->save(); # 残日数を保存
+        }
+        $report->delete();
     }
 
     // menu()
