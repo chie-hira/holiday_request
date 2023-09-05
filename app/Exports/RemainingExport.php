@@ -4,8 +4,9 @@ namespace App\Exports;
 
 use App\Models\AcquisitionDay;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithTitle;
 
-class RemainingExport implements FromCollection
+class RemainingExport implements FromCollection, WithTitle
 {
     /**
     * @return \Illuminate\Support\Collection
@@ -14,4 +15,8 @@ class RemainingExport implements FromCollection
     {
         return AcquisitionDay::all();
     }
+
+    public function title() : string{
+		return 'acquisition_days';
+	}
 }

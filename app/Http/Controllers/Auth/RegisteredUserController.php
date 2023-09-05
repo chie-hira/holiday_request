@@ -29,9 +29,6 @@ class RegisteredUserController extends Controller
         $affiliations = Affiliation::where('id', '!=', 1)
             ->get()
             ->load(['factory', 'department', 'group']);
-        // $factory_categories = FactoryCategory::where('id', '!=', 1)->get();
-        // $department_categories = DepartmentCategory::all();
-        // $group_categories = GroupCategory::all();
         return view('auth.register')->with(compact('affiliations'));
     }
 
