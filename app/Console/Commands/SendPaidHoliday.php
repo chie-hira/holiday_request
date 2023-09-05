@@ -20,8 +20,7 @@ class SendPaidHoliday extends Command
     public function handle()
     {
         /** 有給休暇の取得日数が5日未満のユーザーを抽出 */
-        $all_users = User::all();
-        $users = $all_users->filter(function ($user) {
+        $users = User::all()->filter(function ($user) {
             return $user->acquisition_paid_holidays < 5;
         });
 

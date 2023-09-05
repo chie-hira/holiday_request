@@ -59,7 +59,7 @@
                                         <tr>
                                             <th scope="col"
                                                 class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                {{ __('Team') }}
+                                                {{ __('Affiliation') }}
                                             </th>
                                             <th scope="col"
                                                 class="py-3 text-center text-xs font-medium text-gray-500 tracking-wider">

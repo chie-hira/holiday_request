@@ -61,11 +61,17 @@
                         @auth
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-
                                 <x-dropdown-link :href="route('logout')"
                                     onclick="event.preventDefault();
                                                 this.closest('form').submit();">
                                     {{ __('Log Out') }}
+                                </x-dropdown-link>
+                            </form>
+                            <form method="GET" action="{{ route('explanations') }}">
+                                <x-dropdown-link :href="route('explanations')"
+                                    onclick="event.preventDefault();
+                                        this.closest('form').submit();">
+                                    {{ __('操作説明') }}
                                 </x-dropdown-link>
                             </form>
                         @else
@@ -123,6 +129,17 @@
                         onclick="event.preventDefault();
                                         this.closest('form').submit();">
                         {{ __('Log Out') }}
+                    </x-responsive-nav-link>
+                </form>
+            </div>
+
+            <div class="mt-1 space-y-1">
+                <!-- Exsplanations -->
+                <form method="GET" action="{{ route('explanations') }}">
+                    <x-responsive-nav-link :href="route('explanations')"
+                        onclick="event.preventDefault();
+                                        this.closest('form').submit();">
+                        {{ __('操作説明') }}
                     </x-responsive-nav-link>
                 </form>
             </div>

@@ -19,7 +19,7 @@
                     <div class="-m-1.5 overflow-x-auto">
                         <div class="p-1.5 min-w-full inline-block align-middle">
                             <div class="overflow-hidden">
-                                <table class="mx-auto divide-y divide-gray-200 dark:divide-gray-700">
+                                <table class="mx-auto divide-y divide-gray-200">
                                     <thead>
                                         <tr>
                                             <th
@@ -42,7 +42,7 @@
                                             <form action="{{ route('approvals.store') }}" method="POST">
                                                 @csrf
                                                 <td
-                                                    class="px-2 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-800 dark:text-gray-200">
+                                                    class="px-2 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-800">
                                                     <x-select name="user_id" class="block mt-1 w-40 text-sm" required
                                                         autofocus>
                                                         @foreach ($users as $user)
@@ -91,7 +91,7 @@
             <div class="max-w-4xl w-full mx-auto mt-8">
                 <div class="relative w-30 h-8 mb-2">
                     <x-return-button class="px-5 absolute inset-y-0 right-0" href="{{ route('approvals.index') }}">
-                        {{ __('一覧へ戻る') }}
+                        {{ __('Back Index') }}
                     </x-return-button>
                 </div>
                 <div class="relative w-30 h-8">

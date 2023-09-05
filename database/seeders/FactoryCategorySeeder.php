@@ -19,7 +19,7 @@ class FactoryCategorySeeder extends Seeder
             ['factory_name' => '一関本社'],
             ['factory_name' => '前沢工場'],
             ['factory_name' => '平泉工場'],
-            ['factory_name' => '藤沢工場'],
+            ['factory_name' => 'NSE'],
         ];
         DB::table('factory_categories')->insert($param);
     }

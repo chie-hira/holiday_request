@@ -108,12 +108,13 @@
                                         <tr>
                                             <th
                                                 class="w-40 px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                {{ __('Affiliation') }}
-                                            </th>
-                                            <th
-                                                class="w-24 px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                {{-- {{ __('Affiliation') }} --}}
                                                 {{ __('Employee Name') }}
                                             </th>
+                                            {{-- <th
+                                                class="w-24 px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                {{ __('Employee Name') }}
+                                            </th> --}}
                                             <th
                                                 class="w-24 px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Remaining Days') }}
@@ -128,9 +129,8 @@
                                     <tbody class="divide-y divide-gray-200 ">
                                         @foreach ($users as $user)
                                             <tr>
-                                                <td
+                                                {{-- <td
                                                     class="px-4 py-4 whitespace-nowrap text-xs font-medium text-gray-800 ">
-                                                    {{-- <x-affiliation-name :affiliation="$user->affiliation" /> --}}
                                                     {{ $user->affiliation_name }}
                                                 </td>
                                                 <td
@@ -143,9 +143,37 @@
                                                     @endif
                                                     {{ $user->employee }}&ensp;
                                                     {{ $user->name }}
+                                                </td> --}}
+                                                <td
+                                                    class="hidden md:block text-xs text-blue-500 pl-4 pr-2 py-3 whitespace-nowrap font-medium ">
+                                                    <x-affiliation-name :affiliation="$user->affiliation" />
+                                                    <div class="text-sm text-gray-800">
+                                                        @if (Str::length($user->employee) == 1)
+                                                            &ensp;&ensp;
+                                                        @endif
+                                                        @if (Str::length($user->employee) == 2)
+                                                            &ensp;
+                                                        @endif
+                                                        {{ $user->employee }}&ensp;
+                                                        {{ $user->name }}
+                                                    </div>
                                                 </td>
                                                 <td
-                                                    class="px-2 py-4 whitespace-nowrap text-sm text-right text-gray-800">
+                                                    class="block md:hidden text-xxs text-blue-500 pl-4 pr-2 py-3 whitespace-nowrap font-medium ">
+                                                    <x-affiliation-name-limit :affiliation="$user->affiliation" />
+                                                    <div class="text-xs text-gray-800">
+                                                        @if (Str::length($user->employee) == 1)
+                                                            &ensp;&ensp;
+                                                        @endif
+                                                        @if (Str::length($user->employee) == 2)
+                                                            &ensp;
+                                                        @endif
+                                                        {{ $user->employee }}&ensp;
+                                                        {{ $user->name }}
+                                                    </div>
+                                                </td>
+                                                <td
+                                                    class="px-4 py-4 whitespace-nowrap text-sm text-right text-gray-800">
                                                     <div id="remaining-1_{{ $user->id }}" style="display: ">
                                                         <!-- 有給休暇 -->
                                                         <x-remaining-days :user="$user" key=1 />

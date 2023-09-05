@@ -20,18 +20,18 @@ class SendBirthdayHolidayLost extends Command
 
     public function handle()
     {
+        /** 今日が誕生日の3ヶ月後から14日前か判定する日付 */
         $reference_date = Carbon::now()
             ->subMonths(3)
             ->addDays(14)
             ->format('m-d');
 
-        $users = User::whereRaw(
-            "DATE_FORMAT(STR_TO_DATE(birthday, '%m-%d'), '%m-%d') = '$reference_date'"
-        )
+        /** バースデイ休暇の取得期間が終わる14日まえのユーザーを取得してmails.birthdayHolidayLostの内容のメールを送信 */
+        $users = User::where('birthday', $reference_date)
             ->select('email', 'name', 'birthday')
             ->get();
 
-        // TODO:総務部長にも同じ通知を送る？
+        // TODO:事務責任者にも同じ通知を送る？
         foreach ($users as $user) {
             $birthday = new Carbon(Carbon::now()->year . '-' . $user->birthday);
             $start =

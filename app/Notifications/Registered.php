@@ -48,7 +48,7 @@ class Registered extends Notification
     public function toMail($notifiable)
     {
         $url = route('menu');
-        // $explanations_url = route('explanations');
+        $explanations_url = route('explanations');
         return (new MailMessage())
             ->subject('ようこそ休暇申請アプリへ')
             ->markdown('mails.registered', [
@@ -56,7 +56,7 @@ class Registered extends Notification
                 'employee' => $this->employee,
                 'password' => $this->remarks,
                 'url' => $url,
-                // 'explanations_url' => $explanations_url,
+                'explanations_url' => $explanations_url,
             ]);
     }
 

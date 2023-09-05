@@ -23,7 +23,6 @@ use Illuminate\Support\Facades\Route;
 //     ->middleware(['auth'])
 //     ->name('dashboard');
 
-// TODO:policy,can設定、自分しか自分の投稿を編集、削除申請できない
 # reportルーティング
 Route::resource('reports', ReportController::class)
     ->only('create')
@@ -60,31 +59,36 @@ Route::resource('acquisition_days', AcquisitionDayController::class)
 Route::get('/my_acquisition_days', [AcquisitionDayController::class, 'myIndex'])
     ->name('acquisition_days.my_index')
     ->middleware('auth');
-// ->middleware('auth', 'can:view, acquisition_day');
 Route::get('/acquisition_status', [
     AcquisitionDayController::class,
     'acquisitionStatus',
 ])
     ->name('acquisition_days.status_index')
-    ->middleware('auth', 'can:approver_reader');
+    ->middleware('auth')
+    ->middleware('can:approver_reader');
 Route::get('/update_form', function () {
     return view('acquisition_days.update_form');
 })
     ->name('acquisition_days.update_form')
-    ->middleware('auth', 'can:general_admin');
+    ->middleware('auth')
+    ->middleware('can:general_admin');
 Route::post('/add_remainings', [
     AcquisitionDayController::class,
     'addRemainings',
 ])
     ->name('acquisitions_days.add_remainings')
-    ->middleware('auth', 'can:general_admin');
-// ->middleware('auth');
+    ->middleware('auth')
+    ->middleware('can:general_admin');
 
 # usersルーティング
-Route::resource('users', UserController::class)->middleware('auth');
+Route::resource('users', UserController::class)
+    ->middleware('auth')
+    ->middleware('can:admin');
 
 # approvalsルーティング
-Route::resource('approvals', ApprovalController::class)->middleware('auth');
+Route::resource('approvals', ApprovalController::class)
+    ->middleware('auth')
+    ->middleware('can:admin');
 
 # 承認ルーティング
 Route::get('/approval/{report}', [ReportController::class, 'approval'])
@@ -101,6 +105,12 @@ Route::get('/approval/{report}/cancel', [
 Route::get('/', [ReportController::class, 'menu'])
     ->name('menu')
     ->middleware('auth');
+# explanationsルーティング
+Route::get('/explanations', function () {
+    return view('explanations.index');
+})
+    ->middleware(['auth'])
+    ->name('explanations');
 # monitorルーティング
 Route::get('/monitor', [ReportController::class, 'monitor'])
     ->name('monitor');
@@ -116,7 +126,8 @@ Route::put('/reports/approved/{report}/cancel', [
 # エクスポート
 Route::get('/export_form', [ReportController::class, 'export_form'])
     ->name('reports.export_form')
-    ->middleware('auth');
+    ->middleware('auth')
+    ->middleware('can:approver_reader');
 Route::post('/export', [ReportController::class, 'export'])
     ->name('reports.export')
     ->middleware('auth');

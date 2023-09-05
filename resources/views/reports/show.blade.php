@@ -237,13 +237,13 @@
             @can('approver_reader')
                 <div class="flex justify-end">
                     <x-return-button class="w-30" href="{{ route('reports.index') }}">
-                        届出一覧
+                        {{ __('Report Index') }}
                     </x-return-button>
                 </div>
             @endcan
             <div class="flex justify-end">
                 <x-return-button class="w-30 px-4" href="{{ route('reports.my_index') }}">
-                    My届出一覧
+                        {{ __('Report MyIndex') }}
                 </x-return-button>
             </div>
             <div class="flex justify-end">

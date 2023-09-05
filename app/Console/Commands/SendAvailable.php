@@ -42,7 +42,7 @@ class SendAvailable extends Command
         /** 有給休暇が失効するユーザーを取得してmails.paidHolidayLostの内容のメールを送信 */
         $users = User::all();
         $url = route('menu');
-        // $explanations_url = route('explanations');
+        $explanations_url = route('explanations');
 
         foreach ($users as $user) {
             Mail::send(
@@ -52,15 +52,20 @@ class SendAvailable extends Command
                     'employee' => $user->employee,
                     'password' => $user->remarks,
                     'url' => $url,
-                    // 'explanations_url' => $explanations_url,
+                    'explanations_url' => $explanations_url,
                 ],
                 function ($message) use ($user) {
-                    $message->to($user->email)->subject('休暇申請アプリへようこそ');
-                },
+                    $message
+                        ->to($user->email)
+                        ->subject('休暇申請アプリへようこそ');
+                }
             );
 
             $user->remarks = null; // 備考欄のパスワードを削除
             $user->save();
+
+            // 送信間隔を設定（スパム検知防止）
+            sleep(5); // 5秒待機
         }
 
         $this->info('Available mails sent successfully.');

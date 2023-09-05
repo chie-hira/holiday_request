@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-// use App\Http\Requests\StoreApprovalRequest;
 use App\Http\Requests\StoreApprovalRequest;
 use App\Http\Requests\UpdateApprovalRequest;
 use App\Imports\ApprovalImport;
@@ -24,7 +23,9 @@ class ApprovalController extends Controller
      */
     public function index()
     {
-        $my_approvals = Auth::user()->approvals->where('approval_id', 1)->load('affiliation');
+        $my_approvals = Auth::user()
+            ->approvals->where('approval_id', 1)
+            ->load('affiliation');
         $approvals = Approval::whereHas('user', function ($query) use (
             $my_approvals
         ) {
@@ -91,7 +92,9 @@ class ApprovalController extends Controller
      */
     public function create()
     {
-        $my_approvals = Auth::user()->approvals->where('approval_id', 1)->load('affiliation');
+        $my_approvals = Auth::user()
+            ->approvals->where('approval_id', 1)
+            ->load('affiliation');
         $users = User::whereHas('affiliation', function ($query) use (
             $my_approvals
         ) {
@@ -138,7 +141,7 @@ class ApprovalController extends Controller
         })->get();
 
         // TODO:権限の組み合わせにルールをつける
-        // 1はdepartmentまでgroupは必ず1 
+        // 1はdepartmentまでgroupは必ず1
         $affiliations = Affiliation::where(function ($query) use (
             $my_approvals
         ) {
@@ -174,7 +177,11 @@ class ApprovalController extends Controller
 
         if ($my_approvals->contains('affiliation_id', 1)) {
             $users = User::all();
-            $affiliations = Affiliation::all()->load(['factory', 'department', 'group']);
+            $affiliations = Affiliation::all()->load([
+                'factory',
+                'department',
+                'group',
+            ]);
             $approval_categories = ApprovalCategory::all();
         }
 
@@ -258,12 +265,18 @@ class ApprovalController extends Controller
                     }
                 });
             }
-        })->get();
+        })
+            ->get()
+            ->load(['factory', 'department', 'group']);
 
-        $approval_categories = ApprovalCategory::where('id', '!=', 1)->get();
+        $approval_categories = ApprovalCategory::where('id', '!=', 1)->where('id', '!=', 5)->get();
 
         if ($my_approvals->contains('id', 1)) {
-            $affiliations = Affiliation::all()->load(['factory', 'department', 'group']);
+            $affiliations = Affiliation::all()->load([
+                'factory',
+                'department',
+                'group',
+            ]);
             $approval_categories = ApprovalCategory::all();
         }
 
@@ -304,7 +317,7 @@ class ApprovalController extends Controller
     public function destroy(Approval $approval)
     {
         Log::info('Destroy data:', $approval->all());
-        
+
         try {
             $approval->delete();
             return redirect()
@@ -316,13 +329,14 @@ class ApprovalController extends Controller
         }
     }
 
-    public function import(Request $request){
+    public function import(Request $request)
+    {
         $excel_file = $request->file('excel_file');
         $excel_file->store('excels');
-        Excel::import(new ApprovalImport, $excel_file);
+        Excel::import(new ApprovalImport(), $excel_file);
 
         return redirect()
-                ->route('import_form')
-                ->with('notice', '権限インポート完了！');
+            ->route('import_form')
+            ->with('notice', '権限インポート完了！');
     }
 }

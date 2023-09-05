@@ -24,8 +24,8 @@
                                                 class="px-2 py-2 whitespace-nowrap text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('状 態') }}
                                                 <div class="text-xxs text-blue-500">
-                                                    {{ __('Factory Manager') }}
-                                                    ・{{ __('Group Leader') }}
+                                                    {{ __('Approver1') }}
+                                                    ・{{ __('Approver2') }}
                                                 </div>
                                             </th>
                                             <th scope="col"

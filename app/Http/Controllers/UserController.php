@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UpdateUserRequest;
 use App\Imports\UserImport;
 use App\Models\Affiliation;
-use App\Models\ReportCategory;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -92,11 +91,46 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        $affiliations = Affiliation::where('id', '!=', 1)->get()->load([
-            'factory',
-            'department',
-            'group',
-        ]);
+        $my_approvals = Auth::user()
+            ->approvals->where('approval_id', 1)
+            ->load('affiliation');
+
+        $affiliations = Affiliation::where('id', '!=', 1)
+            ->where(function ($query) use ($my_approvals) {
+                foreach ($my_approvals as $approval) {
+                    $query->orWhere(function ($query) use ($approval) {
+                        if ($approval->affiliation->department_id == 1) {
+                            $query->where(
+                                'factory_id',
+                                $approval->affiliation->factory_id
+                            );
+                        } else {
+                            $query
+                                ->where(
+                                    'factory_id',
+                                    $approval->affiliation->factory_id
+                                )
+                                ->where(
+                                    'department_id',
+                                    $approval->affiliation->department_id
+                                );
+                        }
+                    });
+                }
+            })
+            ->get()
+            ->load(['factory', 'department', 'group']);
+
+        // 全体管理者の場合
+        if (
+            $my_approvals
+                ->where('affiliation_id', 1)
+                ->contains('approval_id', 1)
+        ) {
+            $affiliations = Affiliation::where('id', '!=', 1)
+                ->get()
+                ->load(['factory', 'department', 'group']);
+        }
         return view('users.edit')->with(compact('user', 'affiliations'));
     }
 

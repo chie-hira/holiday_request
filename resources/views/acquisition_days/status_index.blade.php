@@ -2,7 +2,7 @@
     {{-- //TODO:月、部所指定して表示 --}}
     <!-- Page nav -->
     <div class="border-b-2 border-gray-200">
-        <nav class="px-4 -mb-0.5 flex space-x-2">
+        <nav class="px-4 -mb-0.5 flex space-x-2 overflow-x-auto">
             <x-nav-button onclick="reportChange1()">
                 {{ $report_categories->where('id', 1)->first()->report_name }}
             </x-nav-button>
@@ -57,12 +57,13 @@
                                         <tr>
                                             <th
                                                 class="w-40 px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                {{ __('Affiliation') }}
-                                            </th>
-                                            <th
-                                                class="w-24 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                {{-- {{ __('Affiliation') }} --}}
                                                 {{ __('Employee Name') }}
                                             </th>
+                                            {{-- <th
+                                                class="w-24 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                {{ __('Employee Name') }}
+                                            </th> --}}
                                             <th id="remaining_title" style="display: "
                                                 class="w-24 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Remaining Days') }}
@@ -76,13 +77,42 @@
                                     <tbody class="divide-y divide-gray-200 ">
                                         @foreach ($users as $user)
                                             <tr>
-                                                <td
+                                                {{-- <td
                                                     class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">
                                                     <x-affiliation-name :affiliation="$user->affiliation" />
                                                 </td>
-                                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
+                                                <td
+                                                    class="px-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                     {{ $user->employee }}&ensp;
-                                                    {{ $user->name }}</td>
+                                                    {{ $user->name }}</td> --}}
+                                                <td
+                                                    class="hidden md:block text-xs text-blue-500 pl-4 pr-2 py-3 whitespace-nowrap font-medium ">
+                                                    <x-affiliation-name :affiliation="$user->affiliation" />
+                                                    <div class="text-sm text-gray-800">
+                                                        @if (Str::length($user->employee) == 1)
+                                                            &ensp;&ensp;
+                                                        @endif
+                                                        @if (Str::length($user->employee) == 2)
+                                                            &ensp;
+                                                        @endif
+                                                        {{ $user->employee }}&ensp;
+                                                        {{ $user->name }}
+                                                    </div>
+                                                </td>
+                                                <td
+                                                    class="block md:hidden text-xxs text-blue-500 pl-4 pr-2 py-3 whitespace-nowrap font-medium ">
+                                                    <x-affiliation-name-limit :affiliation="$user->affiliation" />
+                                                    <div class="text-xs text-gray-800">
+                                                        @if (Str::length($user->employee) == 1)
+                                                            &ensp;&ensp;
+                                                        @endif
+                                                        @if (Str::length($user->employee) == 2)
+                                                            &ensp;
+                                                        @endif
+                                                        {{ $user->employee }}&ensp;
+                                                        {{ $user->name }}
+                                                    </div>
+                                                </td>
                                                 <td id="remaining-data_{{ $user->id }}" style="display: "
                                                     class="px-2 py-4 whitespace-nowrap text-sm text-right text-gray-800 ">
                                                     <div id="remaining-1_{{ $user->id }}" style="display: ">
@@ -95,7 +125,7 @@
                                                     </div>
                                                 </td>
                                                 <td
-                                                    class="px-2 py-4 whitespace-nowrap text-sm text-right text-gray-800 ">
+                                                    class="px-4 py-4 whitespace-nowrap text-sm text-right text-gray-800 ">
                                                     <div id="get-1_{{ $user->id }}" style="display: ">
                                                         <x-acquisition-days :user="$user" key=1 />
                                                         {{-- 有給 --}}

@@ -22,9 +22,12 @@ class SendBirthdayGreetings extends Command
     {
         $today = Carbon::now()->format('m-d');
 
-        $users = User::whereRaw(
-            "DATE_FORMAT(STR_TO_DATE(birthday, '%m-%d'), '%m-%d') = '$today'"
-        )
+        // FIXME:うるう年問題 2月29日生まれの人には未通知
+        /** 今日、誕生日のユーザーを取得してmails.birthdayの内容のメールを送信 */
+        // $users = User::whereRaw(
+        //     "DATE_FORMAT(STR_TO_DATE(birthday, '%m-%d'), '%m-%d') = '$today'"
+        // )
+        $users = User::where('birthday', $today)
             ->select('email', 'name')
             ->get();
 

@@ -4,8 +4,9 @@ namespace App\Exports;
 
 use App\Models\Report;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithTitle;
 
-class ReportExport implements FromCollection
+class ReportExport implements FromCollection, WithTitle
 {
     /**
     * @return \Illuminate\Support\Collection
@@ -14,4 +15,8 @@ class ReportExport implements FromCollection
     {
         return Report::all();
     }
+
+    public function title(): string{
+		return 'reports';
+	}
 }

@@ -285,49 +285,21 @@
                 </div>
             @endauth
 
-            <!-- 上長承認 start -->
+            <!-- 権限表示 start -->
             <div class="text-left w-full my-12">
-                {{-- @if (Auth::user()->approvals->first()) --}}
                 <ul class="text-sm">
-                    @foreach (Auth::user()->approvals->load(['affiliation.factory', 'affiliation.department', 'affiliation.group']) as $approval)
+                    @foreach (Auth::user()->approvals->load(['affiliation.factory', 'affiliation.department', 'affiliation.group', 'approval_category']) as $approval)
                         <x-list>
-                            <!-- 管理者 -->
-                            @if ($approval->approval_id == 1)
                                 {{ $approval->affiliation->factory->factory_name }}
                                 @if ($approval->affiliation->department_id != 1)
                                     {{ $approval->affiliation->department->department_name }}
                                 @endif
-                                ・{{ __('Admin') }}
-                            @endif
-                            <!-- 承認 -->
-                            @if ($approval->approval_id == 2)
-                                {{ $approval->affiliation->factory->factory_name }}
-                                @if ($approval->affiliation->department_id != 1)
-                                    {{ $approval->affiliation->department->department_name }}
-                                @endif
-                                ・{{ __('Approval1') }}
-                            @endif
-                            @if ($approval->approval_id == 3)
-                                {{ $approval->affiliation->factory->factory_name }}
-                                @if ($approval->affiliation->department_id != 1)
-                                    {{ $approval->affiliation->department->department_name }}
-                                @endif
-                                ・{{ __('Approval2') }}
-                            @endif
-                            <!-- 閲覧 -->
-                            @if ($approval->approval_id == 4)
-                                {{ $approval->affiliation->factory->factory_name }}
-                                @if ($approval->affiliation->department_id != 1)
-                                    {{ $approval->affiliation->department->department_name }}
-                                @endif
-                                ・{{ __('Reader') }}
-                            @endif
+                                ・{{ $approval->approval_category->approval_name }}
                         </x-list>
                     @endforeach
                 </ul>
-                {{-- @endif --}}
             </div>
-            <!-- 承認 end -->
+            <!-- 権限表示 end -->
         </div>
     </section>
 
