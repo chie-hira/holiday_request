@@ -105,6 +105,12 @@ Route::get('/approval/{report}/cancel', [
 Route::get('/', [ReportController::class, 'menu'])
     ->name('menu')
     ->middleware('auth');
+# explanationsルーティング
+Route::get('/explanations', function () {
+    return view('explanations.index');
+})
+    ->middleware(['auth'])
+    ->name('explanations');
 # monitorルーティング
 Route::get('/monitor', [ReportController::class, 'monitor'])
     ->name('monitor');

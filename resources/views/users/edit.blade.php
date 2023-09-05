@@ -84,7 +84,7 @@
             <div class="max-w-2xl w-full mx-auto mt-8">
                 <div class="relative w-30 h-8 mb-2">
                     <x-return-button class="px-5 absolute inset-y-0 right-0" href="{{ route('users.index') }}">
-                        {{ __('一覧へ戻る') }}
+                        {{ __('Back Index') }}
                     </x-return-button>
                 </div>
                 <div class="relative w-30 h-8">
