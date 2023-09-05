@@ -22,6 +22,7 @@ class CreateReportCategoriesTable extends Migration
                 ->constrained('acquisition_forms')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
+            $table->boolean('apply_on_the_day')->default(0);
             $table->string('remarks')->nullable();
             $table->timestamps();
         });

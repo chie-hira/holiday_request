@@ -82,36 +82,4 @@ class Report extends Model
     {
         return $this->belongsTo(ShiftCategory::class, 'shift_id', 'id');
     }
-
-    # アクセサ
-    public function getGetDaysOnlyAttribute()
-    {
-        $exp = explode('.', $this->get_days);
-        return $exp[0];
-    }
-    public function getGetHoursAttribute()
-    {
-        $exp = explode('.', $this->get_days);
-        if (array_key_exists(1, $exp)) { # 小数点以下あり(1日未満)
-            $decimal_p = '0.'. $exp[1];
-            $exp_hour = explode('.', $decimal_p * 8); # 8時間で1日
-            return $exp_hour[0];
-        } else {
-            return 0;
-        }
-    }
-    public function getGetMinutesAttribute()
-    {
-        $exp = explode('.', $this->get_days);
-        if (array_key_exists(1, $exp)) { # 小数点以下あり(1日未満)
-            $decimal_p = '0.'. $exp[1];
-            $exp_hour = explode('.', $decimal_p * 8);
-            if (array_key_exists(1, $exp_hour)) { # 小数点以下あり(1時間未満)
-                $decimal_p = '0.'. $exp_hour[1];
-                return round($decimal_p * 60);
-            }
-        } else {
-            return 0;
-        }
-    }
 }

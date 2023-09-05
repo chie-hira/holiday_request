@@ -89,8 +89,18 @@ class ReportController extends Controller
                         }
                     });
                 }
+                $query->orWhere(function ($query) use ($approval) {
+                    $query
+                        ->where(
+                            'factory_id',
+                            $approval->affiliation->factory_id
+                        )
+                        ->where('department_id', 1);
+                });
             });
         })->get();
+        // 工場長を追加
+
         // dd($reports);
         // 全体の閲覧権限があるときは全てのレポートを取得
         if ($approvals->contains('affiliation_id', 1)) {
@@ -279,15 +289,8 @@ class ReportController extends Controller
             );
         }
 
-        if (
-            $request->report_id != 12 || # 欠勤
-            $request->report_id != 13 || # 遅刻
-            $request->report_id != 14 || # 早退
-            $request->report_id != 15 || # 外出
-            $request->report_id != 4 || # 特別休暇(弔事)
-            $request->report_id != 5 || # 特別休暇(弔事)
-            $request->report_id != 6 # 特別休暇(弔事)
-        ) {
+        $apply_on_the_day = ReportCategory::where('apply_on_the_day', 1)->get();
+        if (!$apply_on_the_day->contains('id', $request->report_id)) {
             $request->validate([
                 'start_date' => 'after:today',
             ]);
@@ -365,12 +368,17 @@ class ReportController extends Controller
             }
         }
 
-        // これは欠勤、遅刻、早退、外出は適用外の方が良い？
+        // 当日申請可能な休暇は適用外
         $start_date = new Carbon($request->start_date);
         $now = Carbon::now();
-        if ($now->addDay() >= $start_date->addHour(16)) {
+        if (
+            !$apply_on_the_day->contains('id', $request->report_id) &&
+            $now->addDay() >= $start_date->addHour(16)
+        ) {
             throw ValidationException::withMessages([
-                'start_date' => ['翌日の休暇は16時までに提出してください'],
+                'start_date' => [
+                    '前日までに提出が必要な休暇は、前日の16時までに提出してください',
+                ],
             ]);
         }
 
@@ -784,15 +792,8 @@ class ReportController extends Controller
             );
         }
 
-        if (
-            $request->report_id != 12 || # 欠勤
-            $request->report_id != 13 || # 遅刻
-            $request->report_id != 14 || # 早退
-            $request->report_id != 15 || # 外出
-            $request->report_id != 4 || # 特別休暇(弔事)
-            $request->report_id != 5 || # 特別休暇(弔事)
-            $request->report_id != 6 # 特別休暇(弔事)
-        ) {
+        $apply_on_the_day = ReportCategory::where('apply_on_the_day', 1)->get();
+        if (!$apply_on_the_day->contains('id', $request->report_id)) {
             $request->validate([
                 'start_date' => 'after:today',
             ]);
@@ -1592,15 +1593,16 @@ class ReportController extends Controller
 
             DB::beginTransaction(); # トランザクション開始
             try {
-                $report->save();
-                if (!empty($acquisition_day)) {
-                    if (!empty($acquisition_day->remaining_days)) {
-                        $acquisition_day->remaining_days += $report->get_days;
-                    }
-                    $acquisition_day->acquisition_days -= $report->get_days;
-                    $acquisition_day->save(); # 残日数を保存
-                }
-                $report->delete();
+                self::acquisitionCancel($report);
+                // $report->save();
+                // if (!empty($acquisition_day)) {
+                //     if (!empty($acquisition_day->remaining_days)) {
+                //         $acquisition_day->remaining_days += $report->get_days;
+                //     }
+                //     $acquisition_day->acquisition_days -= $report->get_days;
+                //     $acquisition_day->save(); # 残日数を保存
+                // }
+                // $report->delete();
                 DB::commit(); # トランザクション成功終了
                 // 管轄内の課長・GLにメール通知
                 if ($gl_approvals) {
@@ -1848,13 +1850,6 @@ class ReportController extends Controller
                     return back()->withErrors('エラーが発生しました');
                 }
             } elseif ($report->approved == 1) {
-                // $acquisition_day = AcquisitionDay::where(
-                //     'report_id',
-                //     $report->report_id
-                // )
-                //     ->where('user_id', $report->user_id)
-                //     ->first();
-
                 DB::beginTransaction(); # トランザクション開始
                 try {
                     self::acquisitionCancel($report);
@@ -2007,11 +2002,6 @@ class ReportController extends Controller
                 $acquisition_day->remaining_days += $report->acquisition_days;
                 $acquisition_day->acquisition_days -= $report->acquisition_days;
             }
-            $acquisition_day->save(); # 残日数を保存
-            if (!empty($acquisition_day->remaining_days)) {
-                $acquisition_day->remaining_days += $report->get_days;
-            }
-            $acquisition_day->acquisition_days -= $report->get_days;
             $acquisition_day->save(); # 残日数を保存
         }
         $report->delete();
@@ -2330,7 +2320,8 @@ class ReportController extends Controller
             $reports = $reports
                 ->unique()
                 ->load([
-                    'user.affiliation',
+                    'user.affiliation.factory',
+                    'user.affiliation.department',
                     'report_category',
                     'shift_category',
                     'reason_category',
@@ -2437,7 +2428,8 @@ class ReportController extends Controller
             $reports = $reports
                 ->unique()
                 ->load([
-                    'user.affiliation',
+                    'user.affiliation.factory',
+                    'user.affiliation.department',
                     'report_category',
                     'sub_report_category',
                 ])
@@ -2457,6 +2449,7 @@ class ReportController extends Controller
         $report_id = $request->report_category_id;
         $reason_id = $request->reason_category_id;
         $month = $request->get_month;
+        $affiliation = Affiliation::find($affiliation_id);
 
         # monthから月初め日、月終わり日を定義
         if ($month) {
@@ -2539,9 +2532,23 @@ class ReportController extends Controller
             ) {
                 # 所属を指定
                 $reports = $reports->filter(function ($item) use (
-                    $affiliation_id
+                    $affiliation_id,
+                    $affiliation
                 ) {
-                    return $item->user->affiliation_id == $affiliation_id;
+                    if ($affiliation->department_id == 1) {
+                        return $item->user->affiliation->factory_id ==
+                            $affiliation->factory_id;
+                    } elseif (
+                        $affiliation->department_id != 1 &&
+                        $affiliation->group_id == 1
+                    ) {
+                        return $item->user->affiliation->factory_id ==
+                            $affiliation->factory_id &&
+                            $item->user->affiliation->department_id ==
+                                $affiliation->department_id;
+                    } else {
+                        return $item->user->affiliation_id == $affiliation_id;
+                    }
                 });
             } elseif (
                 $affiliation_id == null &&
@@ -2577,8 +2584,25 @@ class ReportController extends Controller
             ) {
                 # 所属,休暇種類を指定
                 $reports = $reports
-                    ->filter(function ($item) use ($affiliation_id) {
-                        return $item->user->affiliation_id == $affiliation_id;
+                    ->filter(function ($item) use (
+                        $affiliation_id,
+                        $affiliation
+                    ) {
+                        if ($affiliation->department_id == 1) {
+                            return $item->user->affiliation->factory_id ==
+                                $affiliation->factory_id;
+                        } elseif (
+                            $affiliation->department_id != 1 &&
+                            $affiliation->group_id == 1
+                        ) {
+                            return $item->user->affiliation->factory_id ==
+                                $affiliation->factory_id &&
+                                $item->user->affiliation->department_id ==
+                                    $affiliation->department_id;
+                        } else {
+                            return $item->user->affiliation_id ==
+                                $affiliation_id;
+                        }
                     })
                     ->where('report_id', $report_id);
             } elseif (
@@ -2589,8 +2613,25 @@ class ReportController extends Controller
             ) {
                 # 所属,理由を指定
                 $reports = $reports
-                    ->filter(function ($item) use ($affiliation_id) {
-                        return $item->user->affiliation_id == $affiliation_id;
+                    ->filter(function ($item) use (
+                        $affiliation_id,
+                        $affiliation
+                    ) {
+                        if ($affiliation->department_id == 1) {
+                            return $item->user->affiliation->factory_id ==
+                                $affiliation->factory_id;
+                        } elseif (
+                            $affiliation->department_id != 1 &&
+                            $affiliation->group_id == 1
+                        ) {
+                            return $item->user->affiliation->factory_id ==
+                                $affiliation->factory_id &&
+                                $item->user->affiliation->department_id ==
+                                    $affiliation->department_id;
+                        } else {
+                            return $item->user->affiliation_id ==
+                                $affiliation_id;
+                        }
                     })
                     ->where('reason_id', $reason_id);
             } elseif (
@@ -2601,8 +2642,25 @@ class ReportController extends Controller
             ) {
                 # 所属,月を指定
                 $reports = $reports
-                    ->filter(function ($item) use ($affiliation_id) {
-                        return $item->user->affiliation_id == $affiliation_id;
+                    ->filter(function ($item) use (
+                        $affiliation_id,
+                        $affiliation
+                    ) {
+                        if ($affiliation->department_id == 1) {
+                            return $item->user->affiliation->factory_id ==
+                                $affiliation->factory_id;
+                        } elseif (
+                            $affiliation->department_id != 1 &&
+                            $affiliation->group_id == 1
+                        ) {
+                            return $item->user->affiliation->factory_id ==
+                                $affiliation->factory_id &&
+                                $item->user->affiliation->department_id ==
+                                    $affiliation->department_id;
+                        } else {
+                            return $item->user->affiliation_id ==
+                                $affiliation_id;
+                        }
                     })
                     ->where('start_date', '>=', $start_date)
                     ->where('start_date', '<=', $end_date);
@@ -2646,8 +2704,25 @@ class ReportController extends Controller
             ) {
                 # 所属,休暇種類,理由を指定
                 $reports = $reports
-                    ->filter(function ($item) use ($affiliation_id) {
-                        return $item->user->affiliation_id == $affiliation_id;
+                    ->filter(function ($item) use (
+                        $affiliation_id,
+                        $affiliation
+                    ) {
+                        if ($affiliation->department_id == 1) {
+                            return $item->user->affiliation->factory_id ==
+                                $affiliation->factory_id;
+                        } elseif (
+                            $affiliation->department_id != 1 &&
+                            $affiliation->group_id == 1
+                        ) {
+                            return $item->user->affiliation->factory_id ==
+                                $affiliation->factory_id &&
+                                $item->user->affiliation->department_id ==
+                                    $affiliation->department_id;
+                        } else {
+                            return $item->user->affiliation_id ==
+                                $affiliation_id;
+                        }
                     })
                     ->where('report_id', $report_id)
                     ->where('reason_id', $reason_id);
@@ -2659,8 +2734,25 @@ class ReportController extends Controller
             ) {
                 # 所属,休暇種類,月を指定
                 $reports = $reports
-                    ->filter(function ($item) use ($affiliation_id) {
-                        return $item->user->affiliation_id == $affiliation_id;
+                    ->filter(function ($item) use (
+                        $affiliation_id,
+                        $affiliation
+                    ) {
+                        if ($affiliation->department_id == 1) {
+                            return $item->user->affiliation->factory_id ==
+                                $affiliation->factory_id;
+                        } elseif (
+                            $affiliation->department_id != 1 &&
+                            $affiliation->group_id == 1
+                        ) {
+                            return $item->user->affiliation->factory_id ==
+                                $affiliation->factory_id &&
+                                $item->user->affiliation->department_id ==
+                                    $affiliation->department_id;
+                        } else {
+                            return $item->user->affiliation_id ==
+                                $affiliation_id;
+                        }
                     })
                     ->where('start_date', '>=', $start_date)
                     ->where('start_date', '<=', $end_date)
@@ -2673,8 +2765,25 @@ class ReportController extends Controller
             ) {
                 # 所属,理由,月を指定
                 $reports = $reports
-                    ->filter(function ($item) use ($affiliation_id) {
-                        return $item->user->affiliation_id == $affiliation_id;
+                    ->filter(function ($item) use (
+                        $affiliation_id,
+                        $affiliation
+                    ) {
+                        if ($affiliation->department_id == 1) {
+                            return $item->user->affiliation->factory_id ==
+                                $affiliation->factory_id;
+                        } elseif (
+                            $affiliation->department_id != 1 &&
+                            $affiliation->group_id == 1
+                        ) {
+                            return $item->user->affiliation->factory_id ==
+                                $affiliation->factory_id &&
+                                $item->user->affiliation->department_id ==
+                                    $affiliation->department_id;
+                        } else {
+                            return $item->user->affiliation_id ==
+                                $affiliation_id;
+                        }
                     })
                     ->where('start_date', '>=', $start_date)
                     ->where('start_date', '<=', $end_date)
@@ -2699,8 +2808,25 @@ class ReportController extends Controller
             ) {
                 # すべて指定
                 $reports = $reports
-                    ->filter(function ($item) use ($affiliation_id) {
-                        return $item->user->affiliation_id == $affiliation_id;
+                    ->filter(function ($item) use (
+                        $affiliation_id,
+                        $affiliation
+                    ) {
+                        if ($affiliation->department_id == 1) {
+                            return $item->user->affiliation->factory_id ==
+                                $affiliation->factory_id;
+                        } elseif (
+                            $affiliation->department_id != 1 &&
+                            $affiliation->group_id == 1
+                        ) {
+                            return $item->user->affiliation->factory_id ==
+                                $affiliation->factory_id &&
+                                $item->user->affiliation->department_id ==
+                                    $affiliation->department_id;
+                        } else {
+                            return $item->user->affiliation_id ==
+                                $affiliation_id;
+                        }
                     })
                     ->where('report_id', $report_id)
                     ->where('reason_id', $reason_id)
