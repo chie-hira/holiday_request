@@ -24,9 +24,8 @@ class SendBirthdayHoliday extends Command
             ->addMonths(3)
             ->format('m-d');
 
-        $users = User::whereRaw(
-            "DATE_FORMAT(STR_TO_DATE(birthday, '%m-%d'), '%m-%d') = '$reference_date'"
-        )
+        /** バースデイ休暇の取得期間に入ったユーザーを取得してmails.birthdayHolidayの内容のメールを送信 */
+        $users = User::where('birthday', $reference_date)
             ->select('email', 'name', 'birthday')
             ->get();
 

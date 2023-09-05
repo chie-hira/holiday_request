@@ -55,12 +55,17 @@ class SendAvailable extends Command
                     // 'explanations_url' => $explanations_url,
                 ],
                 function ($message) use ($user) {
-                    $message->to($user->email)->subject('休暇申請アプリへようこそ');
-                },
+                    $message
+                        ->to($user->email)
+                        ->subject('休暇申請アプリへようこそ');
+                }
             );
 
             $user->remarks = null; // 備考欄のパスワードを削除
             $user->save();
+
+            // 送信間隔を設定（スパム検知防止）
+            sleep(5); // 5秒待機
         }
 
         $this->info('Available mails sent successfully.');

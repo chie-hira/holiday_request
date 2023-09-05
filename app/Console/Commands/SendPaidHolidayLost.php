@@ -20,8 +20,7 @@ class SendPaidHolidayLost extends Command
     public function handle()
     {
         /** 有給休暇が失効するユーザーを抽出 */
-        $all_users = User::all();
-        $users = $all_users->filter(function ($user)
+        $users = User::all()->filter(function ($user)
         {
             return $user->lost_paid_holidays > 0;
         });
