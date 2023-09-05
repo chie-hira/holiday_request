@@ -19,15 +19,11 @@
                                                 class="w-24 px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Employee Name') }}
                                             </th>
-                                            {{-- <th
-                                                class="w-24 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                {{ __('Name') }}
-                                            </th> --}}
                                             <th
                                                 class="px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Affiliation') }}
                                             </th>
-                                            <th colspan="2" class="w-40"></th>
+                                            <th colspan="2" class="w-24"></th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-200 ">
@@ -35,47 +31,47 @@
                                             <td
                                                 class="px-6 py-4 whitespace-nowrap text-left text-sm font-medium text-gray-800 ">
                                                 @if (Str::length($user->employee) == 1)
-                                                        &ensp;&ensp;
-                                                    @endif
-                                                    @if (Str::length($user->employee) == 2)
-                                                        &ensp;
-                                                    @endif
-                                                    {{ $user->employee }}&ensp;
-                                                    {{ $user->name }}
-                                            </td>
-                                            {{-- <td class="px-4 py-4 whitespace-nowrap text-sm text-center text-gray-800 ">
+                                                    &ensp;&ensp;
+                                                @endif
+                                                @if (Str::length($user->employee) == 2)
+                                                    &ensp;
+                                                @endif
+                                                {{ $user->employee }}&ensp;
                                                 {{ $user->name }}
-                                            </td> --}}
+                                            </td>
                                             <form action="{{ route('users.update', $user) }}" method="POST">
                                                 @csrf
                                                 @method('PUT')
                                                 <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
-                                                    <x-select name="affiliation_id"
-                                                        class="block mt-1 text-sm" required autofocus>
+                                                    <x-select name="affiliation_id" class="block mt-1 text-sm" required
+                                                        autofocus>
                                                         <option value="{{ $user->affiliation_id }}">
-                                                            <x-affiliation-name :affiliation="$user->affiliation"/>
+                                                            <x-affiliation-name :affiliation="$user->affiliation" />
                                                         </option>
                                                         @foreach ($affiliations as $affiliation)
                                                             <option value="{{ $affiliation->id }}"
                                                                 @if ($affiliation->id === (int) old('affiliation_id')) selected @endif>
-                                                                <x-affiliation-name :affiliation="$affiliation"/>
+                                                                <x-affiliation-name :affiliation="$affiliation" />
                                                             </option>
                                                         @endforeach
                                                     </x-select>
                                                 </td>
                                                 <td class="px-1 py-4 whitespace-nowrap text-sm text-gray-800">
-                                                    <x-edit-button >
+                                                    <x-edit-button>
                                                         {{ __('Update') }}
                                                     </x-edit-button>
                                                 </td>
                                             </form>
-                                            <td class="pl-1 pr-2 py-4 whitespace-nowrap text-sm font-medium">
-                                                <form action="{{ route('users.destroy', $user) }}" method="POST">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <x-delete-input-button value="ユーザー削除" onclick="if(!confirm('ユーザー情報を削除しますか？この操作は取り消せません。削除したユーザーは、アプリを使用できなくなります。')){return false};"/>
-                                                </form>
-                                            </td>
+                                            @can('general_admin')
+                                                <td class="pl-1 pr-2 py-4 whitespace-nowrap text-sm font-medium">
+                                                    <form action="{{ route('users.destroy', $user) }}" method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <x-delete-input-button value="ユーザー削除"
+                                                            onclick="if(!confirm('ユーザー情報を削除しますか？この操作は取り消せません。削除したユーザーは、アプリを使用できなくなります。')){return false};" />
+                                                    </form>
+                                                </td>
+                                            @endcan
                                         </tr>
                                     </tbody>
                                 </table>

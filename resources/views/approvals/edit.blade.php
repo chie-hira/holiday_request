@@ -19,7 +19,7 @@
                     <div class="-m-1.5 overflow-x-auto">
                         <div class="p-1.5 min-w-full inline-block align-middle">
                             <div class="overflow-hidden">
-                                <table class="mx-auto divide-y divide-gray-200 dark:divide-gray-700">
+                                <table class="mx-auto divide-y divide-gray-200">
                                     <thead>
                                         <tr>
                                             <th
@@ -40,7 +40,7 @@
                                     <tbody class="divide-y divide-gray-200">
                                         <tr class="hover:bg-gray-100">
                                             <td
-                                                class="px-2 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-800 dark:text-gray-200">
+                                                class="px-2 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-800">
                                                 {{ $approval->user->employee }}&ensp;{{ $approval->user->name }}
                                             </td>
                                             <form action="{{ route('approvals.update', $approval) }}" method="POST">
@@ -50,12 +50,12 @@
                                                     <x-select name="affiliation_id" class="block mt-1 w-64 text-sm"
                                                         required autofocus>
                                                         <option value="{{ $approval->affiliation_id }}">
-                                                            <x-affiliation-name :affiliation="$approval->affiliation"/>
+                                                            <x-affiliation-name :affiliation="$approval->affiliation" />
                                                         </option>
                                                         @foreach ($affiliations as $affiliation)
                                                             <option value="{{ $affiliation->id }}"
                                                                 @if ($affiliation->id === (int) old('affiliation_id')) selected @endif>
-                                                                <x-affiliation-name :affiliation="$affiliation"/>
+                                                                <x-affiliation-name :affiliation="$affiliation" />
                                                             </option>
                                                         @endforeach
                                                     </x-select>
@@ -78,15 +78,17 @@
                                                     </x-edit-button>
                                                 </td>
                                             </form>
-                                            <td class="pl-1 pr-4 py-4 whitespace-nowrap text-sm font-medium">
-                                                <form action="{{ route('approvals.destroy', $approval) }}"
-                                                    method="POST">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <x-delete-input-button value="権限削除"
-                                                        onclick="if(!confirm('承認権限を取消しますか？')){return false};" />
-                                                </form>
-                                            </td>
+                                            @can('general_admin')
+                                                <td class="pl-1 pr-4 py-4 whitespace-nowrap text-sm font-medium">
+                                                    <form action="{{ route('approvals.destroy', $approval) }}"
+                                                        method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <x-delete-input-button value="権限削除"
+                                                            onclick="if(!confirm('承認権限を取消しますか？')){return false};" />
+                                                    </form>
+                                                </td>
+                                            @endcan
                                         </tr>
                                     </tbody>
                                 </table>

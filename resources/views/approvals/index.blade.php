@@ -9,8 +9,8 @@
                         設定から<span class="font-bold">権限の変更</span>と<span class="font-bold">取消</span>ができます。
                     </p>
                 </x-info>
-                    @can('general_admin')
-                <h2 class=" text-right">
+                @can('general_admin')
+                    <h2 class=" text-right">
                         <a href={{ route('approvals.create') }}
                             class="inline-flex items-center justify-center text-base mr-2 font-medium text-sky-600 hover:text-sky-50 p-1 rounded-full border-2 border-gray-400 bg-sky-100/60 hover:bg-sky-600">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
@@ -19,8 +19,8 @@
                                     clip-rule="evenodd" />
                             </svg>
                         </a>
-                </h2>
-                    @endcan
+                    </h2>
+                @endcan
             </div>
 
             <div class="max-w-3xl w-full mx-auto">
@@ -54,7 +54,7 @@
                                         @foreach ($approvals as $approval)
                                             <tr>
                                                 <td
-                                                    class="px-4 py-4 whitespace-nowrap text-sm text-left text-gray-800 dark:text-gray-200">
+                                                    class="px-4 py-4 whitespace-nowrap text-sm text-left text-gray-800">
                                                     @if (Str::length($approval->user->employee) == 1)
                                                         &ensp;&ensp;
                                                     @endif
@@ -67,12 +67,10 @@
                                                 <td class="px-4 py-4 whitespace-nowrap text-xs text-gray-800">
                                                     <x-affiliation-name :affiliation="$approval->affiliation" />
                                                 </td>
-                                                <td
-                                                    class="px-4 py-4 text-left whitespace-nowrap text-sm text-gray-800">
+                                                <td class="px-4 py-4 text-left whitespace-nowrap text-sm text-gray-800">
                                                     {{ $approval->approval_category->approval_name }}
                                                 </td>
-                                                <td
-                                                    class="px-1 py-4 whitespace-nowrap text-sm text-gray-800">
+                                                <td class="px-1 py-4 whitespace-nowrap text-sm text-gray-800">
                                                     <x-show-a-button href="{{ route('approvals.edit', $approval) }}"
                                                         class="px-3 py-1">
                                                         {{ __('Setting') }}
