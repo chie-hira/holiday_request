@@ -15,11 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
-// BUG:残日数更新
-// 取得推進日に扱い
-// 休業、有給取消の項目追加
-// TODO:休業日に申請できないようにする
-// 金曜日15::00まで申請できないように制御
+
 class AcquisitionDayController extends Controller
 {
     /**
@@ -152,6 +148,7 @@ class AcquisitionDayController extends Controller
     ) {
         Log::info('Request data:', $request->all());
 
+        // 残日数を管理する休暇の最小単位は半日で設定
         // バリデーション
         $request->validate([
             'remaining_days' => 'multiple_of:0.5',
@@ -319,14 +316,14 @@ class AcquisitionDayController extends Controller
     public function resetRemaining($report_id)
     {
         /** 受け取ったreport_idのremainingを初期値で上書きする */
-        $mourning_acquisition = Auth::user()
+        $reset_remaining = Auth::user()
             ->acquisition_days->where('report_id', $report_id)
             ->first();
-        $mourning_acquisition->remaining_days = ReportCategory::find(
+        $reset_remaining->remaining_days = ReportCategory::find(
             $report_id
         )->max_days;
 
-        return $mourning_acquisition->save();
+        return $reset_remaining->save();
     }
 
     public function addRemainings(Request $request)

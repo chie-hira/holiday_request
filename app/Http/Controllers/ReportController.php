@@ -15,7 +15,6 @@ use App\Models\User;
 use App\Models\Approval;
 use App\Models\FactoryCategory;
 use App\Exports\ReportFormExport;
-use App\Imports\UserImport;
 use App\Models\Affiliation;
 use App\Models\Calender;
 use App\Models\DepartmentCategory;
@@ -89,6 +88,7 @@ class ReportController extends Controller
                         }
                     });
                 }
+                // 工場長を追加
                 $query->orWhere(function ($query) use ($approval) {
                     $query
                         ->where(
@@ -99,9 +99,7 @@ class ReportController extends Controller
                 });
             });
         })->get();
-        // 工場長を追加
 
-        // dd($reports);
         // 全体の閲覧権限があるときは全てのレポートを取得
         if ($approvals->contains('affiliation_id', 1)) {
             $reports = Report::all();
@@ -125,7 +123,6 @@ class ReportController extends Controller
                 ->sortBy('start_date')
                 ->sortBy('report_date');
         }
-        // dd($reports);
 
         return view('reports.index')->with(compact('reports'));
     }
@@ -179,12 +176,13 @@ class ReportController extends Controller
         )
             ->orWhere(function ($query) {
                 $query
-                    ->where('id', 12)
-                    ->orWhere('id', 13)
-                    ->orWhere('id', 14)
-                    ->orWhere('id', 15)
-                    ->orWhere('id', 17)
-                    ->orWhere('id', 18);
+                    ->where('max_days', null);
+                    // ->where('id', 12)
+                    // ->orWhere('id', 13)
+                    // ->orWhere('id', 14)
+                    // ->orWhere('id', 15)
+                    // ->orWhere('id', 17)
+                    // ->orWhere('id', 18);
             })
             ->get()
             ->load('acquisition_form');
@@ -688,12 +686,13 @@ class ReportController extends Controller
         )
             ->orWhere(function ($query) {
                 $query
-                    ->where('id', 12)
-                    ->orWhere('id', 13)
-                    ->orWhere('id', 14)
-                    ->orWhere('id', 15)
-                    ->orWhere('id', 17)
-                    ->orWhere('id', 18);
+                    ->where('max_days', null);
+                    // ->where('id', 12)
+                    // ->orWhere('id', 13)
+                    // ->orWhere('id', 14)
+                    // ->orWhere('id', 15)
+                    // ->orWhere('id', 17)
+                    // ->orWhere('id', 18);
             })
             ->get();
 
@@ -870,197 +869,6 @@ class ReportController extends Controller
                 ]);
             }
         }
-
-        // // バリデーション
-        // if ($request->sub_report_id == 1) {
-        //     # 終日休
-        //     $request->validate(
-        //         [
-        //             'get_days' => [Rule::in(1.0)],
-        //         ],
-        //         [
-        //             'get_days.in' => '終日休は1日で届出してください。',
-        //         ]
-        //     );
-        // }
-        // if ($request->sub_report_id == 2) {
-        //     # 連休
-        //     $request->validate(
-        //         [
-        //             'end_date' => 'required',
-        //             'get_days' => 'integer|min:1',
-        //         ],
-        //         [
-        //             'get_days.min' =>
-        //                 '連休は:attributeが:min日以上で届出してください。',
-        //         ]
-        //     );
-        // }
-        // if ($request->sub_report_id == 3) {
-        //     # 半日休暇
-        //     $request->validate(
-        //         [
-        //             'am_pm' => 'required',
-        //             'get_days' => [
-        //                 'required',
-        //                 Rule::in(0.25, 0.3125, 0.375, 0.4375, 0.5),
-        //             ],
-        //         ],
-        //         [
-        //             'get_days.in' =>
-        //                 '半日休は2時間、2.5時間、3時間、3.5時間、4時間で届出してください。',
-        //             'am_pm.required' => '前半・後半を選択してください。',
-        //         ]
-        //     );
-        // }
-        // if ($request->sub_report_id == 4) {
-        //     # 時間休
-        //     $request->validate(
-        //         [
-        //             'start_time' => 'required',
-        //             'end_time' => 'required',
-        //             'get_days' => [
-        //                 'numeric',
-        //                 'max:1',
-        //                 'multiple_of:0.125',
-        //                 Rule::notIn([1]),
-        //             ],
-        //         ],
-        //         [
-        //             'get_days.max' => '時間給は:max日未満で届出できます。',
-        //             'get_days.multiple_of' =>
-        //                 '時間休は1時間単位で届出してください。',
-        //             'get_days.not_in' => '時間給は1日未満で届出できます。',
-        //         ]
-        //     );
-        // }
-
-        // if (
-        //     $request->report_id != 12 || # 欠勤
-        //     $request->report_id != 13 || # 遅刻
-        //     $request->report_id != 14 || # 早退
-        //     $request->report_id != 15 || # 外出
-        //     $request->report_id != 4 || # 特別休暇(弔事)
-        //     $request->report_id != 5 || # 特別休暇(弔事)
-        //     $request->report_id != 6 # 特別休暇(弔事)
-        // ) {
-        //     $request->validate([
-        //         'start_date' => 'after:today',
-        //     ]);
-        // }
-
-        // if (
-        //     $request->report_id == 13 || # 遅刻
-        //     $request->report_id == 14 # 早退
-        // ) {
-        //     $request->validate(
-        //         [
-        //             'start_time' => 'required',
-        //             'end_time' => 'required',
-        //             'get_days' => [
-        //                 'required',
-        //                 Rule::in([
-        //                     0.02083,
-        //                     0.04167,
-        //                     0.0625,
-        //                     0.08333,
-        //                     0.10417,
-        //                     0.125,
-        //                     0.14583,
-        //                     0.16667,
-        //                     0.1875,
-        //                     0.20833,
-        //                     0.22917,
-        //                     0.25,
-        //                     0.27083,
-        //                     0.29167,
-        //                     0.3125,
-        //                     0.33333,
-        //                     0.35417,
-        //                     0.375,
-        //                     0.39583,
-        //                     0.41667,
-        //                     0.4375,
-        //                     0.45833,
-        //                     0.47917,
-        //                     0.5,
-        //                     0.52083,
-        //                     0.54167,
-        //                     0.5625,
-        //                     0.58333,
-        //                     0.60417,
-        //                     0.625,
-        //                     0.64583,
-        //                     0.66667,
-        //                     0.6875,
-        //                     0.70833,
-        //                     0.72917,
-        //                     0.75,
-        //                     0.77083,
-        //                     0.79167,
-        //                     0.8125,
-        //                     0.83333,
-        //                     0.85417,
-        //                     0.825,
-        //                     0.89583,
-        //                     0.91667,
-        //                     0.9375,
-        //                     0.95833,
-        //                     0.97917,
-        //                 ]),
-        //             ],
-        //         ],
-        //         [
-        //             'get_days.in' => '遅刻・早退は10分単位で届出してください。',
-        //         ]
-        //     );
-        // }
-        // if ($request->report_id == 15) {
-        //     # 外出
-        //     $request->validate(
-        //         [
-        //             'start_time' => 'required',
-        //             'end_time' => 'required',
-        //             'get_days' => [
-        //                 'numeric',
-        //                 'max:1',
-        //                 'multiple_of:0.0625',
-        //                 Rule::notIn([1]),
-        //             ],
-        //         ],
-        //         [
-        //             'get_days.max' => '外出は:max日未満で届出できます。',
-        //             'get_days.multiple_of' =>
-        //                 '外出は30分単位で届出してください。',
-        //             'get_days.not_in' => '外出は1日未満で届出できます。',
-        //         ]
-        //     );
-        // }
-        // if ($request->reason_id == 9) {
-        //     # 理由:その他
-        //     $request->validate(
-        //         [
-        //             'reason_detail' => 'required',
-        //         ],
-        //         [
-        //             'reason_detail.required' => '理由は必須です。',
-        //         ]
-        //     );
-        // }
-        // $acquisition_day = AcquisitionDay::where('user_id', Auth::user()->id)
-        //     ->where('report_id', $request->report_id)
-        //     ->first();
-        // if (!empty($acquisition_day->remaining_days)) {
-        //     $result =
-        //         $acquisition_day->remaining_days -
-        //         $acquisition_day->pending_acquisition_days -
-        //         $request->get_days; // 残日数-申請中日数-申請日数
-        //     if ($result < 0) {
-        //         throw ValidationException::withMessages([
-        //             'get_days' => ['取得上限を超えています'],
-        //         ]);
-        //     }
-        // }
 
         # reportsレコード更新&承認リセット
         $report->fill($request->all());
@@ -2302,6 +2110,15 @@ class ReportController extends Controller
                         }
                     });
                 }
+                // 工場長を追加
+                $query->orWhere(function ($query) use ($approval) {
+                    $query
+                        ->where(
+                            'factory_id',
+                            $approval->affiliation->factory_id
+                        )
+                        ->where('department_id', 1);
+                });
             });
         })
             ->where('approved', 1)
@@ -2322,6 +2139,7 @@ class ReportController extends Controller
                 ->load([
                     'user.affiliation.factory',
                     'user.affiliation.department',
+                    'user.affiliation.group',
                     'report_category',
                     'shift_category',
                     'reason_category',
@@ -2410,6 +2228,15 @@ class ReportController extends Controller
                         }
                     });
                 }
+                // 工場長を追加
+                $query->orWhere(function ($query) use ($approval) {
+                    $query
+                        ->where(
+                            'factory_id',
+                            $approval->affiliation->factory_id
+                        )
+                        ->where('department_id', 1);
+                });
             });
         })
             ->where('approved', 1)
@@ -2430,7 +2257,10 @@ class ReportController extends Controller
                 ->load([
                     'user.affiliation.factory',
                     'user.affiliation.department',
+                    'user.affiliation.group',
                     'report_category',
+                    'shift_category',
+                    'reason_category',
                     'sub_report_category',
                 ])
                 ->sortBy('report_id')
