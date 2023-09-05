@@ -10,9 +10,10 @@
     <p>{{ $name }}さんが休暇申請アプリに登録されました。</p>
     <p>以下のIDとパスワードでログインしてください。</p>
     <p>ID:{{ $employee }}</p>
+    <p>パスワード:非表示</p>
     <hr style="text-align: left; border: dashed;">
     <p>操作方法はログイン後にこちらから確認できます。</p>
-    <p>操作説明:{{ $explanations_url }}</p>
+    <p>操作説明:非表示</p>
 </body>
 
 </html>

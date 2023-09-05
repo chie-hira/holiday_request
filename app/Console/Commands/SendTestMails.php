@@ -40,10 +40,10 @@ class SendTestMails extends Command
     public function handle()
     {
         /** 有給休暇が失効するユーザーを取得してmails.paidHolidayLostの内容のメールを送信 */
-        // $users = User::all();
-        $users = User::where('employee', 999)->get();
+        $users = User::all();
+        // $users = User::where('employee', 6)->get();
         // $url = route('menu');
-        $explanations_url = route('explanations');
+        // $explanations_url = route('explanations');
 
         foreach ($users as $user) {
             Mail::send(
@@ -53,7 +53,7 @@ class SendTestMails extends Command
                     'employee' => $user->employee,
                     // 'password' => $user->remarks,
                     // 'url' => $url,
-                    'explanations_url' => $explanations_url,
+                    // 'explanations_url' => $explanations_url,
                 ],
                 function ($message) use ($user) {
                     $message
