@@ -234,11 +234,6 @@
         </div>
 
         <div class="w-full max-w-md mx-auto mt-10 grid grid-cols-1 gap-2">
-            <div class="flex justify-end">
-                <x-return-button class="w-30" href="{{ route('reports.my_index') }}">
-                    My届出一覧
-                </x-return-button>
-            </div>
             @can('approver_reader')
                 <div class="flex justify-end">
                     <x-return-button class="w-30" href="{{ route('reports.index') }}">
@@ -246,6 +241,11 @@
                     </x-return-button>
                 </div>
             @endcan
+            <div class="flex justify-end">
+                <x-return-button class="w-30 px-4" href="{{ route('reports.my_index') }}">
+                    My届出一覧
+                </x-return-button>
+            </div>
             <div class="flex justify-end">
                 <x-back-home-button class="w-30" href="{{ route('menu') }}">
                     {{ __('Back') }}

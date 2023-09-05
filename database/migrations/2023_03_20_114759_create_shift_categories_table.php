@@ -16,10 +16,11 @@ class CreateShiftCategoriesTable extends Migration
         Schema::create('shift_categories', function (Blueprint $table) {
             $table->id()->comment('シフト');
             $table->integer('shift_code')->unique();
-            $table->float('work_time1');
-            $table->float('work_time2');
-            $table->time('start_time');
-            $table->time('end_time');
+            $table->float('work_time1')->comment('前半労働時間');
+            $table->float('work_time2')->comment('後半労働時間');
+            $table->time('am_pm_switch');
+            $table->time('start_time')->comment('始業時刻');
+            $table->time('end_time')->comment('終業時刻');
             $table->time('rest1_start_time');
             $table->time('rest1_end_time');
             $table->time('rest2_start_time')->nullable();

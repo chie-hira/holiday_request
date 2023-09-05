@@ -24,8 +24,8 @@ class UpdateAcquisitionDayRequest extends FormRequest
     public function rules()
     {
         return [
-            'remaining_days' => 'required|integer',
-            'remaining_hours' => 'integer',
+            'remaining_days' => 'required',
+            // 'remaining_hours' => 'integer',
         ];
     }
 }

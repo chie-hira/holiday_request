@@ -57,14 +57,14 @@
                     @endif
                 </td>
                 <td>
-                    @if ($report->get_days_only != 0)
-                        {{ $report->get_days_only }} 日&emsp;
+                    @if ($report->acquisition_days != 0)
+                        {{ $report->acquisition_days }} 日&emsp;
                     @endif
-                    @if ($report->get_hours != 0)
-                        {{ $report->get_hours }} 時間
+                    @if ($report->acquisition_hours != 0)
+                        {{ $report->acquisition_hours }} 時間
                     @endif
-                    @if ($report->get_minutes != 0)
-                        {{ $report->get_minutes }} 分
+                    @if ($report->acquisition_minutes != 0)
+                        {{ $report->acquisition_minutes }} 分
                     @endif
                 </td>
                 <td>

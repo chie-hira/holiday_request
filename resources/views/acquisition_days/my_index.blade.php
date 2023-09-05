@@ -44,8 +44,7 @@
                                                     {{ $acquisition_day->report_category->report_name }}
                                                     @if (
                                                         $acquisition_day->report_category->report_name == '介護休業' ||
-                                                        $acquisition_day->report_category->report_name == '育児休業' 
-                                                    )
+                                                            $acquisition_day->report_category->report_name == '育児休業')
                                                         <span class="text-blue-400 text-xs">{{ __('※') }}</span>
                                                     @endif
                                                 </td>
@@ -57,29 +56,34 @@
                                                     class="px-4 pt-3 pb-1 whitespace-nowrap text-right text-sm font-medium">
                                                     <span class=" font-bold">
                                                         @if (isset($acquisition_day->remaining_days))
-                                                            {{ $acquisition_day->remaining_days_only }}
-                                                            日
+                                                            {{ $acquisition_day->remaining_days }}日
                                                         @endif
                                                         @if (!empty($acquisition_day->remaining_hours))
                                                             &ensp;{{ $acquisition_day->remaining_hours }} 時間
                                                         @endif
+                                                        @if (!empty($acquisition_day->remaining_minutes))
+                                                            &ensp;{{ $acquisition_day->remaining_minutes }} 分
+                                                        @endif
                                                     </span>
                                                     <p class="text-blue-400 text-xs">
-                                                        @if ($acquisition_day->pending_acquisition_days != 0)
-                                                            @if ($acquisition_day->remaining - $acquisition_day->pending_acquisition_days == 0)
-                                                                {{ 0 }} 日
-                                                            @endif
-                                                            @if ($acquisition_day->expectation_days != 0)
-                                                                {{ $acquisition_day->expectation_days }}
-                                                                日
-                                                            @endif
-                                                            @if ($acquisition_day->expectation_hours != 0)
-                                                                {{ $acquisition_day->expectation_hours }}
-                                                                時間
-                                                            @endif
-                                                            @if ($acquisition_day->expectation_minutes != 0)
-                                                                {{ $acquisition_day->expectation_minutes }}
-                                                                分
+                                                        @if ($acquisition_day->remaining_days != null)
+                                                            @if (Auth::user()->reports->where('report_id', $acquisition_day->report_id)->where('approved', 0)->where('cancel', 0)->first())
+                                                                @if (
+                                                                    ($acquisition_day->expectation_remaining_days == 0 &&
+                                                                        $acquisition_day->expectation_remaining_hours == 0 &&
+                                                                        $acquisition_day->expectation_remaining_minutes == 0) ||
+                                                                        $acquisition_day->expectation_remaining_days != 0)
+                                                                    {{ $acquisition_day->expectation_remaining_days }}
+                                                                    日
+                                                                @endif
+                                                                @if ($acquisition_day->expectation_remaining_hours != 0)
+                                                                    {{ $acquisition_day->expectation_remaining_hours }}
+                                                                    時間
+                                                                @endif
+                                                                @if ($acquisition_day->expectation_remaining_minutes != 0)
+                                                                    {{ $acquisition_day->expectation_remaining_minutes }}
+                                                                    分
+                                                                @endif
                                                             @endif
                                                         @endif
                                                     </p>
@@ -87,36 +91,39 @@
                                                 <td
                                                     class="px-4 pt-3 pb-1 whitespace-nowrap text-right text-sm font-medium">
                                                     <span class=" font-bold">
-                                                        {{ $acquisition_day->acquisition_days_only }} 日
-                                                        @if (!empty($acquisition_day->acquisition_hours))
-                                                            &ensp;{{ $acquisition_day->acquisition_hours }} 時間
+                                                        @if ($acquisition_day->report_category->acquisition_id != 7)
+                                                            {{ $acquisition_day->acquisition_days }} 日
+                                                            @if (!empty($acquisition_day->acquisition_hours))
+                                                                &ensp;{{ $acquisition_day->acquisition_hours }} 時間
+                                                            @endif
+                                                            @if (!empty($acquisition_day->acquisition_minutes))
+                                                                &ensp;{{ $acquisition_day->acquisition_minutes }} 分
+                                                            @endif
+                                                        @else
+                                                                {{ $acquisition_day->acquisition_hours }} 時間
+                                                            @if (!empty($acquisition_day->acquisition_minutes))
+                                                                &ensp;{{ $acquisition_day->acquisition_minutes }} 分
+                                                            @endif
                                                         @endif
                                                     </span>
                                                     <p class="text-blue-400 text-xs">
+                                                        {{-- @if ($acquisition_day->pending_acquisition_days != 0) --}}
                                                         @if ($acquisition_day->pending_acquisition_days != 0)
-                                                            @if ($acquisition_day->pending_acquisition_days_only != 0)
-                                                                {{ $acquisition_day->pending_acquisition_days_only }}
-                                                                日
-                                                            @endif
-                                                            @if ($acquisition_day->pending_get_hours != 0)
-                                                                {{ $acquisition_day->pending_get_hours }}
-                                                                時間
-                                                            @endif
-                                                            @if ($acquisition_day->pending_get_minutes != 0)
-                                                                {{ $acquisition_day->pending_get_minutes }}
-                                                                分
-                                                            @endif
+                                                            {{ $acquisition_day->pending_acquisition_days }}
+                                                            日
                                                         @endif
+                                                        @if ($acquisition_day->pending_acquisition_hours != 0)
+                                                            {{ $acquisition_day->pending_acquisition_hours }}
+                                                            時間
+                                                        @endif
+                                                        @if ($acquisition_day->pending_acquisition_minutes != 0)
+                                                            {{ $acquisition_day->pending_acquisition_minutes }}
+                                                            分
+                                                        @endif
+                                                        {{-- @endif --}}
                                                     </p>
                                                 </td>
                                             </tr>
-                                            {{-- <tr>
-                                                <td colspan="3" class="border-b border-slate-300 -pt-2">
-                                                    <span class="text-blue-400 text-xs">
-                                                    {{ $acquisition_day->report_category->remarks }}
-                                                    </span>
-                                                </td>
-                                            </tr> --}}
                                         @endforeach
                                     </tbody>
                                 </table>

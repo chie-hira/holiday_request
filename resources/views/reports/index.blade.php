@@ -181,14 +181,20 @@
                                                 </td>
                                                 <td
                                                     class="px-6 py-3 whitespace-nowrap text-sm text-left text-gray-800 ">
-                                                    @if ($report->get_days_only != 0)
-                                                        {{ $report->get_days_only }} 日&emsp;
+                                                    @if ($report->acquisition_days != 0)
+                                                        {{ $report->acquisition_days }} 日
                                                     @endif
-                                                    @if ($report->get_hours != 0)
-                                                        {{ $report->get_hours }} 時間
+                                                    {{-- @if ($report->sub_report_id == 3)
+                                                        {{ 0.5 }} 日
                                                     @endif
-                                                    @if ($report->get_minutes != 0)
-                                                        {{ $report->get_minutes }} 分
+                                                    @if ($report->sub_report_id != 3 && $report->acquisition_hours != 0)
+                                                        {{ $report->acquisition_hours }} 時間
+                                                    @endif --}}
+                                                    @if ($report->acquisition_hours != 0)
+                                                        {{ $report->acquisition_hours }} 時間
+                                                    @endif
+                                                    @if ($report->acquisition_minutes != 0)
+                                                        {{ $report->acquisition_minutes }} 分
                                                     @endif
                                                 </td>
                                             </tr>

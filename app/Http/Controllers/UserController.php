@@ -92,7 +92,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        $affiliations = Affiliation::all()->load([
+        $affiliations = Affiliation::where('id', '!=', 1)->get()->load([
             'factory',
             'department',
             'group',

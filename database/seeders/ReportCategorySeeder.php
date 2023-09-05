@@ -23,6 +23,7 @@ class ReportCategorySeeder extends Seeder
                 'max_days' => 40,
                 'max_times' => null,
                 'acquisition_id' => 1,
+                'apply_on_the_day' => 0,
                 'remarks' => null,
             ], # 半日有給、時間休も含む
             [
@@ -30,6 +31,7 @@ class ReportCategorySeeder extends Seeder
                 'max_days' => 1,
                 'max_times' => 1,
                 'acquisition_id' => 5,
+                'apply_on_the_day' => 0,
                 'remarks' => null,
             ],
             [
@@ -37,6 +39,7 @@ class ReportCategorySeeder extends Seeder
                 'max_days' => 5,
                 'max_times' => null,
                 'acquisition_id' => 1,
+                'apply_on_the_day' => 0,
                 'remarks' => '本人が結婚するとき5日取得できます',
             ],
             [
@@ -44,6 +47,7 @@ class ReportCategorySeeder extends Seeder
                 'max_days' => 3,
                 'max_times' => null,
                 'acquisition_id' => 1,
+                'apply_on_the_day' => 1,
                 'remarks' =>
                     '配偶者、子、同居している父母の喪に服するとき3日取得できます',
             ],
@@ -52,6 +56,7 @@ class ReportCategorySeeder extends Seeder
                 'max_days' => 2,
                 'max_times' => null,
                 'acquisition_id' => 1,
+                'apply_on_the_day' => 1,
                 'remarks' =>
                     '同居している配偶者の父母の喪に服するとき2日取得できます',
             ],
@@ -60,6 +65,7 @@ class ReportCategorySeeder extends Seeder
                 'max_days' => 1,
                 'max_times' => null,
                 'acquisition_id' => 2,
+                'apply_on_the_day' => 1,
                 'remarks' =>
                     '同居していない父母、同居していない配偶者の父母、祖父母、同居している配偶者の祖父母、兄弟姉妹の喪に服するとき1日取得できます',
             ],
@@ -68,6 +74,7 @@ class ReportCategorySeeder extends Seeder
                 'max_days' => 5,
                 'max_times' => null,
                 'acquisition_id' => 1,
+                'apply_on_the_day' => 0,
                 'remarks' =>
                     '小学校就学前の子を養育する者がの子を看護するとき5日取得できます',
             ], # 時間単位
@@ -76,6 +83,7 @@ class ReportCategorySeeder extends Seeder
                 'max_days' => 10,
                 'max_times' => null,
                 'acquisition_id' => 1,
+                'apply_on_the_day' => 0,
                 'remarks' =>
                     '小学校就学前の子を2人以上養育する者が子を看護するとき10日取得できます',
             ], # 時間単位
@@ -84,6 +92,7 @@ class ReportCategorySeeder extends Seeder
                 'max_days' => 5,
                 'max_times' => null,
                 'acquisition_id' => 1,
+                'apply_on_the_day' => 0,
                 'remarks' => '要介護状態の家族を介護するとき5日取得できます',
             ], # 時間単位
             [
@@ -91,6 +100,7 @@ class ReportCategorySeeder extends Seeder
                 'max_days' => 10,
                 'max_times' => null,
                 'acquisition_id' => 1,
+                'apply_on_the_day' => 0,
                 'remarks' =>
                     '要介護状態の家族を2人以上介護するとき5日取得できます',
             ], # 時間単位
@@ -99,6 +109,7 @@ class ReportCategorySeeder extends Seeder
                 'max_days' => 5,
                 'max_times' => null,
                 'acquisition_id' => 4,
+                'apply_on_the_day' => 0,
                 'remarks' =>
                     '育児休業を取得しない場合に1歳以下の子1人につき5日取得できます',
             ], # 1日単位
@@ -107,6 +118,7 @@ class ReportCategorySeeder extends Seeder
                 'max_days' => null,
                 'max_times' => null,
                 'acquisition_id' => 3,
+                'apply_on_the_day' => 1,
                 'remarks' => null,
             ],
             [
@@ -114,6 +126,7 @@ class ReportCategorySeeder extends Seeder
                 'max_days' => null,
                 'max_times' => null,
                 'acquisition_id' => 7,
+                'apply_on_the_day' => 1,
                 'remarks' => '遅刻は10分単位で取得できます',
             ],
             [
@@ -121,6 +134,7 @@ class ReportCategorySeeder extends Seeder
                 'max_days' => null,
                 'max_times' => null,
                 'acquisition_id' => 7,
+                'apply_on_the_day' => 1,
                 'remarks' => '早退は10分単位で取得できます',
             ],
             [
@@ -128,6 +142,7 @@ class ReportCategorySeeder extends Seeder
                 'max_days' => null,
                 'max_times' => null,
                 'acquisition_id' => 7,
+                'apply_on_the_day' => 1,
                 'remarks' => '外出は30分単位で取得できます',
             ],
             [
@@ -135,6 +150,7 @@ class ReportCategorySeeder extends Seeder
                 'max_days' => 93,
                 'max_times' => 3,
                 'acquisition_id' => 6,
+                'apply_on_the_day' => 0,
                 'remarks' => null,
             ], # 対象家族1人につき
             [
@@ -142,6 +158,7 @@ class ReportCategorySeeder extends Seeder
                 'max_days' => null,
                 'max_times' => null,
                 'acquisition_id' => 6,
+                'apply_on_the_day' => 0,
                 'remarks' => null,
             ],
             [
@@ -149,6 +166,7 @@ class ReportCategorySeeder extends Seeder
                 'max_days' => 28,
                 'max_times' => null,
                 'acquisition_id' => 6,
+                'apply_on_the_day' => 0,
                 'remarks' => null,
             ],
         ];

@@ -29,7 +29,9 @@ class AcquisitionDayController extends Controller
      */
     public function index()
     {
-        $my_approvals = Auth::user()->approvals->where('approval_id', 1)->load('affiliation');
+        $my_approvals = Auth::user()
+            ->approvals->where('approval_id', 1)
+            ->load('affiliation');
 
         // 一部管理者の場合
         $users = User::where(function ($query) use ($my_approvals) {
@@ -149,16 +151,23 @@ class AcquisitionDayController extends Controller
         AcquisitionDay $acquisition_day
     ) {
         Log::info('Request data:', $request->all());
-        
-        $remaining_days = $request->remaining_days;
-        $remaining_hours = $request->remaining_hours;
-        $sum_get_days = $request->sum_get_days;
-        $sum_get_hours = $request->sum_get_hours;
 
-        $acquisition_day->remaining_days =
-            $remaining_days * 1 + $remaining_hours * 0.125;
-        $acquisition_day->acquisition_days =
-            $sum_get_days * 1 + $sum_get_hours * 0.125;
+        // バリデーション
+        $request->validate([
+            'remaining_days' => 'multiple_of:0.5',
+            'acquisition_days' => 'multiple_of:0.5',
+        ]);
+        $acquisition_day->remaining_days = $request->remaining_days;
+        $acquisition_day->acquisition_days = $request->acquisition_days;
+        // $remaining_days = $request->remaining_days;
+        // $remaining_hours = $request->remaining_hours;
+        // $acquisition_days = $request->acquisition_days;
+        // $acquisition_hours = $request->acquisition_hours;
+
+        // $acquisition_day->remaining_days =
+        //     $remaining_days * 1 + $remaining_hours * 0.125;
+        // $acquisition_day->acquisition_days =
+        //     $acquisition_days * 1 + $acquisition_hours * 0.125;
 
         try {
             $acquisition_day->save();
@@ -184,7 +193,10 @@ class AcquisitionDayController extends Controller
 
     public function myIndex()
     {
-        $acquisition_days = Auth::user()->acquisition_days->load('report_category');
+        $acquisition_days = Auth::user()->acquisition_days->load(
+            'report_category'
+        );
+        // $acquisition_days = Auth::user()->acquisition_days->load('report_category.reports.shift_category');
 
         /** 最後の弔事届出から14日で弔事の残日数をリセット */
         # 弔事の届出から14日で自動的にリセット
@@ -207,35 +219,73 @@ class AcquisitionDayController extends Controller
             }
         }
 
-        return view('acquisition_days.my_index')->with(compact('acquisition_days'));
+        return view('acquisition_days.my_index')->with(
+            compact('acquisition_days')
+        );
     }
 
     public function acquisitionStatus()
     {
-        $approvals = Auth::user()->approvals->where('approval_id', '!=', 1)->load('affiliation');
-        $users = User::where(function ($query) use ($approvals) {
-            foreach ($approvals as $approval) {
-                if ($approval->affiliation->department_id == 1) {
-                    $query->whereHas('affiliation', function ($query) use (
-                        $approval
-                    ) {
-                        $query->where('factory_id', $approval->affiliation->factory_id);
-                    });
-                } else {
-                    $query->whereHas('affiliation', function ($query) use (
-                        $approval
-                    ) {
-                        $query->orWhere(function ($query) use ($approval) {
+        $approvals = Auth::user()
+            ->approvals->where('approval_id', '!=', 1)
+            ->load('affiliation');
+        // dd($approvals);
+        $users = User::whereHas('affiliation', function ($query) use ($approvals) {
+            $query->where(function ($query) use ($approvals) {
+                foreach ($approvals as $approval) {
+                    $query->orWhere(function ($query) use ($approval) {
+                        if ($approval->affiliation->department_id == 1) {
+                            $query->where(
+                                'factory_id',
+                                $approval->affiliation->factory_id
+                            );
+                        } elseif (
+                            $approval->affiliation->department_id != 1
+                        ) {
                             $query
-                                ->where('factory_id', $approval->affiliation->factory_id)
+                                ->where(
+                                    'factory_id',
+                                    $approval->affiliation->factory_id
+                                )
                                 ->where(
                                     'department_id',
                                     $approval->affiliation->department_id
                                 );
-                        });
+                        }
                     });
+                    // if ($approval->affiliation->department_id == 1) {
+                    //     $query->whereHas('affiliation', function ($query) use (
+                    //         $approval
+                    //     ) {
+                    //         $query->where(
+                    //             'factory_id',
+                    //             $approval->affiliation->factory_id
+                    //         );
+                    //     });
+                    // } else {
+                    //     $query->whereHas('affiliation', function ($query) use (
+                    //         $approval
+                    //     ) {
+                    //         $query->where(function ($query) use ($approval) {
+                    //             $query->orWhere(function ($query) use (
+                    //                 $approval
+                    //             ) {
+                    //                 $query
+                    //                     ->where(
+                    //                         'factory_id',
+                    //                         $approval->affiliation->factory_id
+                    //                     )
+                    //                     ->where(
+                    //                         'department_id',
+                    //                         $approval->affiliation
+                    //                             ->department_id
+                    //                     );
+                    //             });
+                    //         });
+                    //     });
+                    // }
                 }
-            }
+            });
         })->get();
         if ($approvals->where('affiliation.factory_id', 1)->first()) {
             $users = User::all();
@@ -299,13 +349,13 @@ class AcquisitionDayController extends Controller
         try {
             foreach ($users as $user) {
                 $acquisition_days = $user->acquisition_days;
-                
+
                 // 取得日数を初期化
                 foreach ($acquisition_days as $acquisition_day) {
                     $acquisition_day->acquisition_days = 0;
                     $acquisition_day->save();
                 }
-                
+
                 $report1_acquisition = $acquisition_days
                     ->where('report_id', '=', 1)
                     ->first(); # 有給休暇
@@ -382,7 +432,6 @@ class AcquisitionDayController extends Controller
                         break;
                 }
                 $report1_acquisition->save(); #_remaining_days 有給休暇更新
-                
                 /** 有給休暇以外の休暇の残日数を初期化 */
                 $report_categories = ReportCategory::where(
                     'id',
@@ -424,6 +473,7 @@ class AcquisitionDayController extends Controller
                     'user_id' => $user->id,
                     'report_id' => $report->id,
                     'remaining_days' => $report->max_days,
+                    // 'remaining_days' => ($report->max_days != null ? $report->max_days : 0),
                 ];
             }
 
@@ -439,13 +489,14 @@ class AcquisitionDayController extends Controller
             ->with('notice', '休暇日数初期設定完了！');
     }
 
-    public function import(Request $request){
+    public function import(Request $request)
+    {
         $excel_file = $request->file('excel_file');
         $excel_file->store('excels');
-        Excel::import(new AcquisitionDayImport, $excel_file);
+        Excel::import(new AcquisitionDayImport(), $excel_file);
 
         return redirect()
-                ->route('import_form')
-                ->with('notice', '休暇日数インポート完了！');
+            ->route('import_form')
+            ->with('notice', '休暇日数インポート完了！');
     }
 }

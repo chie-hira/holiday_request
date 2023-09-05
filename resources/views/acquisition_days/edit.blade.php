@@ -10,7 +10,9 @@
                 </x-info>
             </div>
 
-            <div class="container max-w-4xl bg-white w-full mx-auto border-2 rounded-lg">
+            <x-errors :errors="$errors" />
+
+            <div class="container max-w-3xl bg-white w-full mx-auto border-2 rounded-lg">
                 <div class="flex flex-col p-8">
                     <div class="-m-1.5 overflow-x-auto">
                         <div class="p-1.5 min-w-full inline-block align-middle">
@@ -51,34 +53,22 @@
                                                 @csrf
                                                 @method('PUT')
                                                 <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
-                                                    <x-input name="remaining_days" type="number"
+                                                    <x-input name="remaining_days" type="number" step="0.5"
                                                         max="{{ $acquisition_day->report_category->max_days }}"
                                                         min="0" class="inline h-8 mt-1 w-20" :value="old(
                                                             'remaining_days',
                                                             $acquisition_day->remaining_days,
                                                         )" />
                                                     日
-                                                    <x-input name="remaining_hours" type="number" max="7"
-                                                        min="0" class="inline h-8 mt-1 w-20" :value="old(
-                                                            'remaining_hours',
-                                                            $acquisition_day->remaining_hours,
-                                                        )" />
-                                                    時間
                                                 </td>
                                                 <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
-                                                    <x-input name="sum_get_days" type="number"
+                                                    <x-input name="acquisition_days" type="number" step="0.5"
                                                         max="{{ $acquisition_day->report_id == 1 || $acquisition_day->report_id == 2 ? $acquisition_day->report_category->max_days : 30 }}"
                                                         min="0" class="inline h-8 mt-1 w-20" :value="old(
-                                                            'sum_get_days',
-                                                            $acquisition_day->acquisition_days_only,
+                                                            'acquisition_days',
+                                                            $acquisition_day->acquisition_days,
                                                         )" />
                                                     日
-                                                    <x-input name="sum_get_hours" type="number" max="7"
-                                                        min="0" class="inline h-8 mt-1 w-20" :value="old(
-                                                            'sum_get_hours',
-                                                            $acquisition_day->sum_get_hours,
-                                                        )" />
-                                                    時間
                                                 </td>
                                                 <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
                                                     <x-edit-button>
@@ -95,7 +85,7 @@
                 </div>
             </div>
 
-            <div class="max-w-4xl w-full mx-auto mt-8">
+            <div class="max-w-3xl w-full mx-auto mt-8">
                 <div class="relative w-30 h-8 mb-2">
                     <x-return-button class="px-5 absolute inset-y-0 right-0"
                         href="{{ route('acquisition_days.index') }}">

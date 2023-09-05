@@ -14,7 +14,7 @@ class CreateReportCategoriesTable extends Migration
     public function up()
     {
         Schema::create('report_categories', function (Blueprint $table) {
-            $table->id()->index()->comment('届け種類ID');
+            $table->id()->index()->comment('届出種類ID');
             $table->string('report_name')->unique();
             $table->integer('max_days')->nullable();
             $table->integer('max_times')->nullable();
@@ -22,6 +22,7 @@ class CreateReportCategoriesTable extends Migration
                 ->constrained('acquisition_forms')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
+            $table->boolean('apply_on_the_day')->default(0);
             $table->string('remarks')->nullable();
             $table->timestamps();
         });
