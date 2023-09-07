@@ -41,7 +41,7 @@ class SendTestMails extends Command
     {
         /** 有給休暇が失効するユーザーを取得してmails.paidHolidayLostの内容のメールを送信 */
         $users = User::all();
-        // $users = User::where('employee', 6)->get();
+        // $users = User::where('employee', 176)->get();
         // $url = route('menu');
         // $explanations_url = route('explanations');
 
@@ -51,6 +51,8 @@ class SendTestMails extends Command
                 [
                     'name' => $user->name,
                     'employee' => $user->employee,
+                    'affiliation' => $user->affiliation_name,
+                    'approvals' => $user->approvals->whereIn('approval_id', [2,3]),
                     // 'password' => $user->remarks,
                     // 'url' => $url,
                     // 'explanations_url' => $explanations_url,

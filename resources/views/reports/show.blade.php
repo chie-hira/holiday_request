@@ -68,22 +68,32 @@
                                         期 間
                                     </p>
                                     <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
-                                        @if ($report->start_date != null)
-                                            {{ $report->start_date }}
-                                        @else
-                                            -
+                                        {{ $report->start_date }}
+                                        @if ($report->end_date != null)
+                                            &emsp;~&emsp;{{ $report->end_date }}
+                                            <span class="ml-4">
+                                                {{ $report->acquisition_days }}日間
+                                            </span>
                                         @endif
                                         @if ($report->start_time != null)
                                             &emsp;{{ Str::substr($report->start_time, 0, 5) }}
-                                        @endif
-                                        @if ($report->end_date != null)
-                                            &emsp;~&emsp;{{ $report->end_date }}
-                                        @endif
-                                        @if ($report->end_time != null)
                                             &emsp;~&emsp;{{ Str::substr($report->end_time, 0, 5) }}
+                                            <span class="ml-4">
+                                                @if ($report->acquisition_hours != 0)
+                                                    {{ $report->acquisition_hours }}時間
+                                                @endif
+                                                @if ($report->acquisition_minutes != 0)
+                                                    {{ $report->acquisition_minutes }}分
+                                                @endif
+                                            </span>
                                         @endif
                                         @if ($report->am_pm != null)
-                                            &emsp;{{ $report->am_pm == 1 ? '午 前' : '午 後' }}
+                                            &emsp;{{ $report->am_pm == 1 ? '前 半' : '後 半' }}
+                                        @endif
+                                        @if ($report->end_date == null && $report->start_time == null && $report->am_pm == null)
+                                            <span class="ml-4">
+                                                {{ __('1') }}日間
+                                            </span>
                                         @endif
                                     </p>
                                 </div>
@@ -243,7 +253,7 @@
             @endcan
             <div class="flex justify-end">
                 <x-return-button class="w-30 px-4" href="{{ route('reports.my_index') }}">
-                        {{ __('Report MyIndex') }}
+                    {{ __('Report MyIndex') }}
                 </x-return-button>
             </div>
             <div class="flex justify-end">
