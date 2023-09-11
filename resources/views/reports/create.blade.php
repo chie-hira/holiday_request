@@ -1220,14 +1220,12 @@
                                 // * elStartTime
                                 // * elEndTime
                                 // =-----=
-                                //   *
                                 //   *~~*
                                 //   *~~~~~*
                                 if (elStartTime == t) {
                                     duplication = true;
                                 }
                                 //   =-----=
-                                //      *
                                 // *~~*
                                 // *~~~~~*
                                 if (elEndTime == t) {
@@ -1248,7 +1246,7 @@
                         if (selectSubReportId == 4 && el.start_date == startY_M_D) {
                             selectStartTime = startTimeVal;
                             selectEndTime = endTimeVal;
-                            for (let t = new Date(selectStartTime); t <= selectEndTime; t
+                            for (let t = new Date(selectStartTime); t < selectEndTime; t
                                 .setTime(t
                                     .getTime() + 5 * 60 * 1000)) {
                                 // = 開始時間
@@ -1257,14 +1255,12 @@
                                 // * elStartTime
                                 // * elEndTime
                                 // =-----=
-                                //   *
                                 //   *~~*
                                 //   *~~~~~*
                                 if (elStartTime == t) {
                                     duplication = true;
                                 }
                                 //   =-----=
-                                //      *
                                 // *~~*
                                 // *~~~~~*
                                 if (elEndTime == t) {
@@ -1311,7 +1307,7 @@
                                 selectEndTime = workTimeEnd;
                             }
 
-                            for (let t = new Date(selectStartTime); t <= selectEndTime; t
+                            for (let t = new Date(selectStartTime); t < selectEndTime; t
                                 .setTime(t
                                     .getTime() + 5 * 60 * 1000)) {
                                 if (elStartTime == t) {
@@ -1334,7 +1330,7 @@
                         if (selectSubReportId == 4 && el.start_date == startY_M_D) {
                             selectStartTime = startTimeVal;
                             selectEndTime = endTimeVal;
-                            for (let t = new Date(selectStartTime); t <= selectEndTime; t
+                            for (let t = new Date(selectStartTime); t < selectEndTime; t
                                 .setTime(t
                                     .getTime() + 5 * 60 * 1000)) {
                                 if (elStartTime == t) {

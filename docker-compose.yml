@@ -1,5 +1,11 @@
 version: '3'
 services:
+    app:
+        build:
+            context: ./vendor/laravel/sail/runtimes/8.2
+            dockerfile: Dockerfile  # vender内の Dockerfile を指定
+            args:
+                WWWGROUP: '${WWWGROUP}'
     laravel.test:
         build:
             context: ./vendor/laravel/sail/runtimes/8.2

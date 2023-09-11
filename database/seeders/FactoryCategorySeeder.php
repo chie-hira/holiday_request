@@ -14,12 +14,12 @@ class FactoryCategorySeeder extends Seeder
      */
     public function run()
     {
+        // クライアントに合わせて修正
         $param = [
-            ['factory_name' => '全工場'],
-            ['factory_name' => '一関本社'],
-            ['factory_name' => '前沢工場'],
-            ['factory_name' => '平泉工場'],
-            ['factory_name' => 'NSE'],
+            ['factory_name' => '全部'],
+            ['factory_name' => '第1製造部'],
+            ['factory_name' => '第2製造部'],
+            ['factory_name' => '総務・経理部'],
         ];
         DB::table('factory_categories')->insert($param);
     }
