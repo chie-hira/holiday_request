@@ -14,9 +14,9 @@ class CalenderCategorySeeder extends Seeder
      */
     public function run()
     {
+        // クライアントに合わせて修正
         $param = [
-            ['calender_name' => 'カレンダー1'], # 一関本社
-            ['calender_name' => 'カレンダー2'], # 平泉,NSE
+            ['calender_name' => 'カレンダー1'],
         ];
         DB::table('calender_categories')->insert($param);
     }

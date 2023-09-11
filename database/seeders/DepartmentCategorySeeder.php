@@ -14,25 +14,19 @@ class DepartmentCategorySeeder extends Seeder
      */
     public function run()
     {
+        // クライアントに合わせて修正
         $param = [
-            ['department_name' => '全課'], # 複数の課に所属している場合は無所属
-            ['department_name' => '営業課(自動車・一般)'],
-            ['department_name' => 'プレス製造課'],
-            ['department_name' => '板金製造課'],
-            ['department_name' => '生産管理課'],
-            ['department_name' => '品質管理課'],
-            ['department_name' => '総務部'],
-            ['department_name' => 'システム開発部'],
-            ['department_name' => '製造管理課'],
-            ['department_name' => '溶接製造課'],
-            ['department_name' => '生技保全課'],
-            ['department_name' => '管理課'],
-            ['department_name' => '製造支援課'],
-            ['department_name' => '製造2課（自動車）'],
-            ['department_name' => '製造1課（板金）'],
-            ['department_name' => '業務課'],
-            ['department_name' => '工機課'],
-            ['department_name' => '製造課'],
+            ['department_name' => '全グループ'],
+            ['department_name' => '製缶製造課 第４工場'],
+            ['department_name' => '製缶製造課 西工場'],
+            ['department_name' => 'パレット管理課 南工場'],
+            ['department_name' => '精密板金課 第３工場'],
+            ['department_name' => '精密板金課 第１工場'],
+            ['department_name' => '精密板金課 第５工場'],
+            ['department_name' => '切断加工課 第２工場'],
+            ['department_name' => '事務所'],
+            ['department_name' => '製缶製造課 無所属'],
+            ['department_name' => '切断加工課 無所属'],
         ];
         DB::table('department_categories')->insert($param);
     }

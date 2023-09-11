@@ -14,6 +14,7 @@ class DateCategorySeeder extends Seeder
      */
     public function run()
     {
+        // このままでOK
         $param = [
             ['date_name' => '祝日等'],
             ['date_name' => '土日営業日'],

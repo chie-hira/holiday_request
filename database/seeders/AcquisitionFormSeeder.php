@@ -14,6 +14,7 @@ class AcquisitionFormSeeder extends Seeder
      */
     public function run()
     {
+        // このままでOK
         $param = [
             ['acquisition_name' => '終日休、連休、半日休、時間休'], #1
             ['acquisition_name' => '終日休、半日休、時間休'], #2
