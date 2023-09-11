@@ -21,8 +21,8 @@ class CreateShiftCategoriesTable extends Migration
             $table->time('am_pm_switch');
             $table->time('start_time')->comment('始業時刻');
             $table->time('end_time')->comment('終業時刻');
-            $table->time('rest1_start_time');
-            $table->time('rest1_end_time');
+            $table->time('rest1_start_time')->nullable();
+            $table->time('rest1_end_time')->nullable();
             $table->time('rest2_start_time')->nullable();
             $table->time('rest2_end_time')->nullable();
             $table->time('rest3_start_time')->nullable();

@@ -55,7 +55,6 @@ class CalenderSeeder extends Seeder
             ['date' => '20240113', 'calender_id' => 1, 'date_id' => 2],
             ['date' => '20240203', 'calender_id' => 1, 'date_id' => 2],
             ['date' => '20240217', 'calender_id' => 1, 'date_id' => 2],
-            ['date' => '20240223', 'calender_id' => 1, 'date_id' => 2],
         ];
         DB::table('calenders')->insert($param);
     }
