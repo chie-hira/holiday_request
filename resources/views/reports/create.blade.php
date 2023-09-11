@@ -4,7 +4,7 @@
         <div class="container max-w-2xl px-6 py-12 mx-auto">
             <div class="">
                 <div class="flex flex-col text-center w-full mb-12">
-                    <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">届出書作成</h1>
+                    <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">{{ __('Report') }}作成</h1>
                     <div class="mx-auto">
                         <x-info>
                             <p class="text-sm">
@@ -35,27 +35,13 @@
                             <x-input type="text" id="user_id" class="block mt-1 w-full" :value="Auth::user()->name"
                                 readonly />
                         </div>
-                        <div>
-                            <label for="shift_id" class="block mb-2 text-sm font-medium text-gray-900">
-                                {{ __('Shift') }}
-                            </label>
-                            <x-select name="shift_id" id="shift_id" class="block mt-1 w-full" onchange="countDays();"
-                                required autofocus>
-                                @foreach ($shifts as $shift)
-                                    <option value="{{ $shift->id }}"
-                                        @if ($shift->id === (int) old('shift_id')) selected @endif>
-                                        {{ __('Shift Number') }}{{ $shift->shift_code }}&emsp;{{ $shift->start_time_hm }}~{{ $shift->end_time_hm }}
-                                    </option>
-                                @endforeach
-                            </x-select>
-                        </div>
-                        <div></div>
+                            <input type="hidden" name="shift_id" id="shift_id" value="1">
                         <div>
                             <label for="report_id" class="block mb-2 text-sm font-medium text-gray-900">
                                 {{ __('Report Category') }}
                             </label>
                             <x-select name="report_id" id="report_id" onchange="reportChange();"
-                                class="block mt-1 w-full" required>
+                                class="block mt-1 w-full" required autofocus>
                                 @foreach ($report_categories as $report_category)
                                     <option value="{{ $report_category->id }}"
                                         @if ($report_category->id === (int) old('report_id')) selected @endif>
@@ -169,7 +155,7 @@
                         </div>
                         <div>
                             <label for="reason_detail" class="block mb-2 text-sm font-medium text-gray-900">
-                                理由の詳細・備考
+                                事由の詳細・備考
                             </label>
                             <x-input type="text" id="reason_detail" name="reason_detail"
                                 placeholder="詳細・備考があれば記載してください" class="block mt-1 w-full" :value="old('reason_detail')" />

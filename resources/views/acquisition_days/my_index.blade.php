@@ -12,7 +12,7 @@
                 </div>
             </div>
 
-            <div class="container max-w-xl bg-white w-full mx-auto border-2 rounded-lg">
+            <div class="container max-w-2xl bg-white w-full mx-auto border-2 rounded-lg">
                 <div class="flex flex-col p-2 sm:p-8">
                     <div class="-m-1.5 overflow-x-auto">
                         <div class="p-1.5 min-w-full inline-block align-middle">
@@ -134,7 +134,7 @@
             </div>
         </div>
 
-        <div class="container max-w-xl px-5 pb-6 mx-auto">
+        <div class="container max-w-2xl px-5 pb-6 mx-auto">
             <div class="mx-auto my-6">
                 <div class="text-left mx-auto leading-relaxed text-sm mb-1">
                     <x-info>
