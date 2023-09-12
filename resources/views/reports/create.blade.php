@@ -4,7 +4,7 @@
         <div class="container max-w-2xl px-6 py-12 mx-auto">
             <div class="">
                 <div class="flex flex-col text-center w-full mb-12">
-                    <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">届出書作成</h1>
+                    <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">{{ __('Report') }}作成</h1>
                     <div class="mx-auto">
                         <x-info>
                             <p class="text-sm">
@@ -35,27 +35,13 @@
                             <x-input type="text" id="user_id" class="block mt-1 w-full" :value="Auth::user()->name"
                                 readonly />
                         </div>
-                        <div>
-                            <label for="shift_id" class="block mb-2 text-sm font-medium text-gray-900">
-                                {{ __('Shift') }}
-                            </label>
-                            <x-select name="shift_id" id="shift_id" class="block mt-1 w-full" onchange="countDays();"
-                                required autofocus>
-                                @foreach ($shifts as $shift)
-                                    <option value="{{ $shift->id }}"
-                                        @if ($shift->id === (int) old('shift_id')) selected @endif>
-                                        {{ __('Shift Number') }}{{ $shift->shift_code }}&emsp;{{ $shift->start_time_hm }}~{{ $shift->end_time_hm }}
-                                    </option>
-                                @endforeach
-                            </x-select>
-                        </div>
-                        <div></div>
+                        <input type="hidden" name="shift_id" id="shift_id" value="1">
                         <div>
                             <label for="report_id" class="block mb-2 text-sm font-medium text-gray-900">
                                 {{ __('Report Category') }}
                             </label>
                             <x-select name="report_id" id="report_id" onchange="reportChange();"
-                                class="block mt-1 w-full" required>
+                                class="block mt-1 w-full" required autofocus>
                                 @foreach ($report_categories as $report_category)
                                     <option value="{{ $report_category->id }}"
                                         @if ($report_category->id === (int) old('report_id')) selected @endif>
@@ -75,7 +61,7 @@
                                             id="sub_report_id_{{ $sub_category->id }}" onclick="subReportChange()"
                                             value="{{ $sub_category->id }}"
                                             @if ($sub_category->id === (int) old('sub_report_id')) checked @endif
-                                            class="shrink-0 mt-0.5 border-gray-200 rounded-full text-sky-600 focus:ring-sky-300 ">
+                                            class="shrink-0 mt-0.5 border-gray-200 rounded-full text-green-600 focus:ring-green-300 ">
                                         <label for="sub_report_id_{{ $sub_category->id }}" name="sub_report_name"
                                             class="mr-2 text-sm text-gray-500 ml-2">
                                             {{ $sub_category->sub_report_name }}
@@ -169,7 +155,7 @@
                         </div>
                         <div>
                             <label for="reason_detail" class="block mb-2 text-sm font-medium text-gray-900">
-                                理由の詳細・備考
+                                事由の詳細・備考
                             </label>
                             <x-input type="text" id="reason_detail" name="reason_detail"
                                 placeholder="詳細・備考があれば記載してください" class="block mt-1 w-full" :value="old('reason_detail')" />
@@ -335,6 +321,7 @@
             radioChange();
             subReportDisplaySwitch(); // sub_reportでform表示切替
             reportReasonSwitch(); // reportでreason種類切替
+            reasonDisplaySwitch();
         });
 
         // 切り替えるたびに初期化関数+表示ONだけ
@@ -345,6 +332,7 @@
             daysReset(); // get_daysリセット
             alertReset(); // アラートリセット
             reportReasonSwitch(); // reportでreason種類切替
+            reasonDisplaySwitch();
             radioChange();
             subReportDisplaySwitch();
             subReportRemarksSwitch();
@@ -357,7 +345,7 @@
 
         // 届出種類ごとの説明コメント切り替え関数
         function reoprtRemarksSwitch() {
-            reportRemarksContener.style.display = "none";
+            remarksContener.style.display = "none";
             let selectReportId = reportCategory.value;
             reportCategoryArray.forEach(el => {
                 if (el.id == selectReportId && el.remarks != null) {
@@ -660,10 +648,11 @@
 
         // 理由詳細placeholder切替関数
         function reasonDisplaySwitch() {
-            if (reasonCategory.value == "9") { // 理由その他表示
+            if (reasonCategory.value == "1" ||
+                reasonCategory.value == "2" 
+            ) { 
                 reasonDetail.placeholder = "詳細を記入してください";
-            }
-            if (reasonCategory.value != "9") { // 理由その他非表示
+            } else {
                 reasonDetail.placeholder = "詳細・備考があれば記入してください";
             }
         }

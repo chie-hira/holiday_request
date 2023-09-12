@@ -60,9 +60,9 @@
                                                     <x-affiliation-name :affiliation="$user->affiliation" />
                                                 </td>
                                                 <td class="pl-1 pr-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
-                                                    <x-edit-a-button href="{{ route('users.edit', $user) }}">
+                                                    <x-show-a-button href="{{ route('users.edit', $user) }}" class="px-3 py-1">
                                                         {{ __('Setting') }}
-                                                    </x-edit-a-button>
+                                                    </x-show-a-button>
                                                 </td>
                                             </tr>
                                         @endforeach

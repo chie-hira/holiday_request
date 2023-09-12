@@ -486,7 +486,7 @@
                                     申請書の作成と提出、休暇日数の取得日数と残日数の確認、自身の申請書の一覧の確認ができます。</p>
                             </div>
                         </div>
-                        <section class="text-gray-600 body-font border-b-2 border-green-800">
+                        <section class="text-gray-600 body-font border-b-2">
                             <div class="container w-3/4 py-4 md:py-8 mx-auto">
                                 <!-- 基本機能 start -->
                                 <div class="max-w-md mx-auto grid grid-cols-1 mb-10">
@@ -560,7 +560,7 @@
                             </div>
                         </div>
 
-                        <section class="text-gray-600 body-font border-b-2 border-green-800">
+                        <section class="text-gray-600 body-font border-b-2">
                             <div class="container w-full md:w-4/5 lg:w-2/3 px-5 py-8 md:py-16 mx-auto">
                                 <div class="flex flex-col text-center w-full mb-12">
                                     <h1 class="sm:text-3xl text-2xl ZenMaruGothic title-font mb-4 text-gray-900">申請書作成
@@ -741,7 +741,7 @@
                             </div>
                         </div>
 
-                        <section class="text-gray-600 body-font border-b-2 border-green-800">
+                        <section class="text-gray-600 body-font border-b-2">
                             <div class="container w-full md:w-4/5 lg:w-2/3 px-5 py-8 md:py-16 mx-auto">
                                 <div class="flex flex-col text-center w-full mb-12">
                                     <h1 class="sm:text-3xl text-2xl ZenMaruGothic title-font mb-4 text-gray-900">申請書作成
@@ -958,7 +958,7 @@
                                 <p class="text-center text-amber-500 text-2xl font-semibold">承認中</p>
                             </div>
 
-                            <div
+                            {{-- <div
                                 class="w-full max-w-md mx-auto mt-6 mb-8 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
                                 <div class="flex items-center justify-between mb-2">
                                     <h5
@@ -1101,9 +1101,9 @@
                                         {{ __('Back') }}
                                     </x-back-home-button>
                                 </div>
-                            </div>
+                            </div> --}}
 
-                            {{-- <div
+                            <div
                                 class="w-full max-w-lg mx-auto my-4 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
                                 <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 items-center justify-between mb-2">
                                     <h5
@@ -1221,8 +1221,8 @@
 
                             <div class="w-full max-w-md mx-auto grid grid-cols-1 gap-2">
                                 <div class="flex justify-end">
-                                    <x-return-button class="w-30" href="#report-my-index">
-                                        {{ __('My申請一覧') }}
+                                    <x-return-button class="w-30 px-4" href="#report-my-index">
+                                        {{ __('Report MyIndex') }}
                                     </x-return-button>
                                 </div>
                                 <div class="flex justify-end">
@@ -1230,13 +1230,13 @@
                                         {{ __('Back') }}
                                     </x-back-home-button>
                                 </div>
-                            </div> --}}
+                            </div>
 
                             <div id="approved-show" class="w-full max-w-lg mx-auto pt-8">
                                 <p class="text-center text-sky-600 text-2xl font-semibold">承認済み</p>
                             </div>
 
-                            <div
+                            {{-- <div
                                 class="w-full max-w-md mx-auto mt-6 mb-8 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
                                 <div class="flex items-center justify-between mb-2">
                                     <h5
@@ -1385,9 +1385,9 @@
                                         {{ __('Back') }}
                                     </x-back-home-button>
                                 </div>
-                            </div>
+                            </div> --}}
 
-                            {{-- <div
+                            <div
                                 class="w-full max-w-lg mx-auto my-4 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
                                 <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 items-center justify-between mb-2">
                                     <h5
@@ -1509,10 +1509,10 @@
                                 </ul>
                             </div>
 
-                            <div class="w-full max-w-md mx-auto grid grid-cols-1 gap-2 mb-6">
+                            <div class="w-full max-w-md mx-auto grid grid-cols-1 gap-2">
                                 <div class="flex justify-end">
-                                    <x-return-button class="w-30" href="#report-my-index">
-                                        {{ __('My申請一覧') }}
+                                    <x-return-button class="w-30 px-4" href="#report-my-index">
+                                        {{ __('Report MyIndex') }}
                                     </x-return-button>
                                 </div>
                                 <div class="flex justify-end">
@@ -1520,7 +1520,7 @@
                                         {{ __('Back') }}
                                     </x-back-home-button>
                                 </div>
-                            </div> --}}
+                            </div>
                         </section>
 
                         <!-- report-my-index -->
@@ -1916,7 +1916,7 @@
                                     <p class="text-center text-red-600 text-2xl font-semibold">取消確認中</p>
                                 </div>
 
-                                <div
+                                {{-- <div
                                     class="w-full max-w-md mx-auto mt-6 mb-8 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
                                     <div class="flex items-center justify-between mb-2">
                                         <h5
@@ -2067,9 +2067,9 @@
                                             {{ __('Back') }}
                                         </x-back-home-button>
                                     </div>
-                                </div>
+                                </div> --}}
 
-                                {{-- <div
+                                <div
                                     class="w-full max-w-lg mx-auto my-4 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
                                     <div
                                         class="grid grid-cols-1 gap-2 sm:grid-cols-2 items-center justify-between mb-2">
@@ -2195,10 +2195,10 @@
                                     </ul>
                                 </div>
 
-                                <div class="w-full max-w-md mx-auto grid grid-cols-1 gap-2 mb-6">
+                                <div class="w-full max-w-md mx-auto grid grid-cols-1 gap-2">
                                     <div class="flex justify-end">
-                                        <x-return-button class="w-30" href="#report-my-index">
-                                            {{ __('My申請一覧') }}
+                                        <x-return-button class="w-30 px-4" href="#report-my-index">
+                                            {{ __('Report MyIndex') }}
                                         </x-return-button>
                                     </div>
                                     <div class="flex justify-end">
@@ -2206,7 +2206,7 @@
                                             {{ __('Back') }}
                                         </x-back-home-button>
                                     </div>
-                                </div> --}}
+                                </div>
                             </section>
                         </div>
 
@@ -2502,7 +2502,7 @@
                                                                 </td>
                                                             </tr>
 
-                                                            <tr class="hover:bg-gray-100">
+                                                            {{-- <tr class="hover:bg-gray-100">
                                                                 <td
                                                                     class="hidden md:block pl-4 pr-2 py-3 whitespace-nowrap text-sm font-medium text-gray-800 ">
                                                                     {{ __('育児休業') }}
@@ -2518,7 +2518,7 @@
                                                                     class="px-4 pt-3 pb-1 whitespace-nowrap text-right text-sm font-medium">
                                                                     ※
                                                                 </td>
-                                                            </tr>
+                                                            </tr> --}}
 
                                                         </tbody>
                                                     </table>
@@ -2531,11 +2531,11 @@
                                 <div class="container max-w-xl px-5 pb-6 mx-auto">
                                     <div class="mx-auto my-6">
                                         <div class="text-left mx-auto leading-relaxed text-xs md:text-sm mb-1">
-                                            <x-info>
+                                            {{-- <x-info>
                                                 <p>
                                                     育児休業は<span class="font-bold">1歳に満たない子</span>を扶養する者が取得できます。
                                                 </p>
-                                            </x-info>
+                                            </x-info> --}}
                                             <x-info>
                                                 <p>
                                                     休暇制度の詳細は総務課にお問い合わせください。
@@ -2718,8 +2718,7 @@
 
                                         <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
                                             <!-- 承認,閲覧 start -->
-                                            <a href="#report-index"
-                                                class="inline-flex items-center p-2 text-lg font-medium text-gray-600 hover:text-sky-700 hover:underline hover:underline-offset-0 hover:decoration-4 hover:decoration-sky-200">
+                                            <x-sub-menu-a-link href="#report-index">
                                                 <span class="mr-3">
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                                         viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -2743,10 +2742,9 @@
                                                         {{ '2' }}
                                                     </div>
                                                 </div>
-                                            </a>
+                                            </x-sub-menu-a-link>
 
-                                            <a href="#get-and-remaining"
-                                                class="inline-flex items-center p-2 text-lg font-medium text-gray-600 hover:text-sky-700 hover:underline hover:underline-offset-0 hover:decoration-4 hover:decoration-sky-200">
+                                            <x-sub-menu-a-link href="#get-and-remaining">
                                                 <span class="mr-3">
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                                         viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -2756,10 +2754,9 @@
                                                     </svg>
                                                 </span>
                                                 <span class="w-32">休暇取得状況</span>
-                                            </a>
+                                            </x-sub-menu-a-link>
 
-                                            <a href="#export"
-                                                class="inline-flex items-center p-2 text-lg font-medium text-gray-600 hover:text-sky-700 hover:underline hover:underline-offset-0 hover:decoration-4 hover:decoration-sky-200">
+                                            <x-sub-menu-a-link href="#export">
                                                 <span class="mr-3">
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                                         viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -2769,7 +2766,7 @@
                                                     </svg>
                                                 </span>
                                                 <span class="w-32">エクスポート</span>
-                                            </a>
+                                            </x-sub-menu-a-link>
                                             <!-- 承認,閲覧 end -->
                                         </div>
                                 </section>
@@ -2989,7 +2986,7 @@
                                     <p class="text-center text-amber-500 text-2xl font-semibold">承認中</p>
                                 </div>
 
-                                <div
+                                {{-- <div
                                     class="w-full max-w-md mx-auto mt-6 mb-8 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
                                     <div class="flex items-center justify-between mb-2">
                                         <h5
@@ -3138,144 +3135,144 @@
                                             {{ __('Back') }}
                                         </x-back-home-button>
                                     </div>
-                                </div>
+                                </div> --}}
 
-                                {{-- <div
-                                class="w-full max-w-lg mx-auto my-4 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
-                                <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 items-center justify-between mb-2">
-                                    <h5
-                                        class="text-center border-solid border-2 px-6 sm:px-10 py-2 border-gray-500 rounded-md text-xl font-bold leading-none text-gray-900">
-                                        {{ __('有給休暇願') }}
-                                    </h5>
-                                    <p
-                                        class="text-right underline underline-offset-4 border-solid px-4 py-1 border-sky-500 text-md font-medium text-sky-600">
-                                        {{ __('終日休') }}
-                                    </p>
-                                </div>
-                                <div class="flex justify-end">
-                                    <div></div>
-                                    <ul role="list" class="divide-y divide-gray-500">
-                                        <li class="text-sm md:text-lg">
-                                            &emsp;申請日&emsp;:&emsp;
-                                            <span class="ZenKurenaido font-bold text-gray-800 mr-2">
-                                                {{ __('2023-05-01') }}&emsp;
-                                            </span>
-                                        </li>
-                                        <li></li>
-                                    </ul>
-                                </div>
-
-                                <div class="flex justify-between my-4">
-                                    <ul class="divide-y divide-gray-500 text-sm md:text-md">
-                                        <li class="pt-2">
-                                            <div class="ZenKurenaido font-semibold text-gray-800 text-md sm:text-lg">
-                                                &emsp;富士善工業株式会社&ensp;御中&emsp;
-                                            </div>
-                                        </li>
-                                        <li class="pt-2">
-                                            <div class="flex items-center text-md sm:text-lg">
-                                                &emsp;氏 名 &emsp;
-                                                <span class="ZenKurenaido font-semibold text-gray-800 mr-2">
-                                                    {{ '長島 島子' }}
+                                <div
+                                    class="w-full max-w-lg mx-auto my-4 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
+                                    <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 items-center justify-between mb-2">
+                                        <h5
+                                            class="text-center border-solid border-2 px-6 sm:px-10 py-2 border-gray-500 rounded-md text-xl font-bold leading-none text-gray-900">
+                                            {{ __('有給休暇願') }}
+                                        </h5>
+                                        <p
+                                            class="text-right underline underline-offset-4 border-solid px-4 py-1 border-sky-500 text-md font-medium text-sky-600">
+                                            {{ __('終日休') }}
+                                        </p>
+                                    </div>
+                                    <div class="flex justify-end">
+                                        <div></div>
+                                        <ul role="list" class="divide-y divide-gray-500">
+                                            <li class="text-sm md:text-lg">
+                                                &emsp;申請日&emsp;:&emsp;
+                                                <span class="ZenKurenaido font-bold text-gray-800 mr-2">
+                                                    {{ __('2023-05-01') }}&emsp;
                                                 </span>
+                                            </li>
+                                            <li></li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="flex justify-between my-4">
+                                        <ul class="divide-y divide-gray-500 text-sm md:text-md">
+                                            <li class="pt-2">
+                                                <div class="ZenKurenaido font-semibold text-gray-800 text-md sm:text-lg">
+                                                    &emsp;富士善工業株式会社&ensp;御中&emsp;
+                                                </div>
+                                            </li>
+                                            <li class="pt-2">
+                                                <div class="flex items-center text-md sm:text-lg">
+                                                    &emsp;氏 名 &emsp;
+                                                    <span class="ZenKurenaido font-semibold text-gray-800 mr-2">
+                                                        {{ '長島 島子' }}
+                                                    </span>
+                                                </div>
+                                            </li>
+                                            <li></li>
+                                        </ul>
+                                    </div>
+                                    <ul role="list" class="divide-y divide-gray-500 text-sm md:text-lg">
+                                        <li class="pt-2 pb-0">
+                                            <div class="flex items-center space-x-4">
+                                                <div class="flex-1 min-w-0">
+                                                    <div class="flex items-center pb-1">
+                                                        <p
+                                                            class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
+                                                            期 間
+                                                        </p>
+                                                        <p class="ZenKurenaido font-semibold text-gray-800 ml-4">
+                                                            {{ __('2023-05-01') }}
+                                                            <span class="font-bold text-gray-800 ml-4">
+                                                                {{ __('1') }}日間
+                                                            </span>
+                                                        </p>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </li>
-                                        <li></li>
+                                        <li class="pt-3 pb-0 sm:pt-4">
+                                            <div class="flex items-center space-x-4">
+                                                <div class="flex-1 min-w-0">
+                                                    <div class="flex items-center pb-1">
+                                                        <p
+                                                            class="w-16 text-center border rounded border-gray-700 py-1 text-gray-800">
+                                                            事 由
+                                                        </p>
+                                                        <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
+                                                            {{ __('怪我') }}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="pt-3 pb-0 sm:pt-4">
+                                            <div class="flex items-center space-x-4">
+                                                <div class="flex-1 min-w-0">
+                                                    <div class="flex items-center pb-1">
+                                                        <p
+                                                            class="w-16 text-center border rounded border-gray-700 py-1 text-gray-800">
+                                                            備 考
+                                                        </p>
+                                                        <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
+                                                            {{ __('骨折') }}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="pt-4 pb-0 flex justify-end">
+                                            <table>
+                                                <thead class="">
+                                                    <tr>
+                                                        <th
+                                                            class="w-16 md:w-20 border border-gray-500 text-gray-900 text-center">
+                                                            上長</th>
+                                                        <th
+                                                            class="w-16 md:w-20 border border-gray-500 text-gray-900 text-center">
+                                                            係長</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="w-16 md:w-20 h-12 border border-gray-500 text-center">
+                                                        </td>
+                                                        <td class="w-16 md:w-20 h-12 border border-gray-500 text-center">
+                                                            <div class="flex justify-center">
+                                                                <x-edit-a-button href="#report-approval"
+                                                                    dusk='approval2-button'
+                                                                    onclick="if(!confirm('承認しますか？')){return false};"
+                                                                    class="text-xs md:text-md px-2 md:px-3 py-1">
+                                                                    {{ __('Approval') }}
+                                                                </x-edit-a-button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </li>
                                     </ul>
                                 </div>
-                                <ul role="list" class="divide-y divide-gray-500 text-sm md:text-lg">
-                                    <li class="pt-2 pb-0">
-                                        <div class="flex items-center space-x-4">
-                                            <div class="flex-1 min-w-0">
-                                                <div class="flex items-center pb-1">
-                                                    <p
-                                                        class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
-                                                        期 間
-                                                    </p>
-                                                    <p class="ZenKurenaido font-semibold text-gray-800 ml-4">
-                                                        {{ __('2023-05-01') }}
-                                                        <span class="font-bold text-gray-800 ml-4">
-                                                            {{ __('1') }}日間
-                                                        </span>
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="pt-3 pb-0 sm:pt-4">
-                                        <div class="flex items-center space-x-4">
-                                            <div class="flex-1 min-w-0">
-                                                <div class="flex items-center pb-1">
-                                                    <p
-                                                        class="w-16 text-center border rounded border-gray-700 py-1 text-gray-800">
-                                                        事 由
-                                                    </p>
-                                                    <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
-                                                        {{ __('怪我') }}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="pt-3 pb-0 sm:pt-4">
-                                        <div class="flex items-center space-x-4">
-                                            <div class="flex-1 min-w-0">
-                                                <div class="flex items-center pb-1">
-                                                    <p
-                                                        class="w-16 text-center border rounded border-gray-700 py-1 text-gray-800">
-                                                        備 考
-                                                    </p>
-                                                    <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
-                                                        {{ __('骨折') }}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="pt-4 pb-0 flex justify-end">
-                                        <table>
-                                            <thead class="">
-                                                <tr>
-                                                    <th
-                                                        class="w-16 md:w-20 border border-gray-500 text-gray-900 text-center">
-                                                        上長</th>
-                                                    <th
-                                                        class="w-16 md:w-20 border border-gray-500 text-gray-900 text-center">
-                                                        係長</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td class="w-16 md:w-20 h-12 border border-gray-500 text-center">
-                                                    </td>
-                                                    <td class="w-16 md:w-20 h-12 border border-gray-500 text-center">
-                                                        <div class="flex justify-center">
-                                                            <x-edit-a-button href="#report-approval"
-                                                                dusk='approval2-button'
-                                                                onclick="if(!confirm('承認しますか？')){return false};"
-                                                                class="text-xs md:text-md px-2 md:px-3 py-1">
-                                                                {{ __('Approval') }}
-                                                            </x-edit-a-button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </li>
-                                </ul>
-                            </div>
 
-                            <div class="w-full max-w-md mx-auto grid grid-cols-1 gap-2 mb-6">
-                                <div class="flex justify-end">
-                                    <x-return-button class="w-30" href="#report-my-index">
-                                        {{ __('My申請一覧') }}
-                                    </x-return-button>
+                                <div class="w-full max-w-md mx-auto grid grid-cols-1 gap-2">
+                                    <div class="flex justify-end">
+                                        <x-return-button class="w-30 px-4" href="#report-my-index">
+                                            {{ __('Report MyIndex') }}
+                                        </x-return-button>
+                                    </div>
+                                    <div class="flex justify-end">
+                                        <x-back-home-button class="w-30" href="#base">
+                                            {{ __('Back') }}
+                                        </x-back-home-button>
+                                    </div>
                                 </div>
-                                <div class="flex justify-end">
-                                    <x-back-home-button class="w-30" href="#approval">
-                                        {{ __('Back') }}
-                                    </x-back-home-button>
-                                </div>
-                            </div> --}}
                             </section>
                         </div>
 
@@ -3314,7 +3311,7 @@
                                     <p class="text-center text-red-600 text-2xl font-semibold">取消確認中</p>
                                 </div>
 
-                                <div
+                                {{-- <div
                                     class="w-full max-w-md mx-auto mt-6 mb-8 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
                                     <div class="flex items-center justify-between mb-2">
                                         <h5
@@ -3466,144 +3463,144 @@
                                             {{ __('Back') }}
                                         </x-back-home-button>
                                     </div>
-                                </div>
+                                </div> --}}
 
-                                {{-- <div
-                                class="w-full max-w-lg mx-auto my-4 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
-                                <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 items-center justify-between mb-2">
-                                    <h5
-                                        class="text-center border-solid border-2 px-6 sm:px-10 py-2 border-gray-500 rounded-md text-xl font-bold leading-none text-gray-900">
-                                        {{ __('有給休暇願') }}
-                                    </h5>
-                                    <p
-                                        class="text-right underline underline-offset-4 border-solid px-4 py-1 border-sky-500 text-md font-medium text-sky-600">
-                                        {{ __('終日休') }}
-                                    </p>
-                                </div>
-                                <div class="flex justify-end">
-                                    <div></div>
-                                    <ul role="list" class="divide-y divide-gray-500">
-                                        <li class="text-sm md:text-lg">
-                                            &emsp;申請日&emsp;:&emsp;
-                                            <span class="ZenKurenaido font-bold text-gray-800 mr-2">
-                                                {{ __('2023-05-01') }}&emsp;
-                                            </span>
-                                        </li>
-                                        <li></li>
-                                    </ul>
-                                </div>
-
-                                <div class="flex justify-between my-4">
-                                    <ul class="divide-y divide-gray-500 text-sm md:text-md">
-                                        <li class="pt-2">
-                                            <div class="ZenKurenaido font-semibold text-gray-800 text-md sm:text-lg">
-                                                &emsp;富士善工業株式会社&ensp;御中&emsp;
-                                            </div>
-                                        </li>
-                                        <li class="pt-2">
-                                            <div class="flex items-center text-md sm:text-lg">
-                                                &emsp;氏 名 &emsp;
-                                                <span class="ZenKurenaido font-semibold text-gray-800 mr-2">
-                                                    {{ '長島 秋休' }}
+                                <div
+                                    class="w-full max-w-lg mx-auto my-4 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
+                                    <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 items-center justify-between mb-2">
+                                        <h5
+                                            class="text-center border-solid border-2 px-6 sm:px-10 py-2 border-gray-500 rounded-md text-xl font-bold leading-none text-gray-900">
+                                            {{ __('有給休暇願') }}
+                                        </h5>
+                                        <p
+                                            class="text-right underline underline-offset-4 border-solid px-4 py-1 border-sky-500 text-md font-medium text-sky-600">
+                                            {{ __('終日休') }}
+                                        </p>
+                                    </div>
+                                    <div class="flex justify-end">
+                                        <div></div>
+                                        <ul role="list" class="divide-y divide-gray-500">
+                                            <li class="text-sm md:text-lg">
+                                                &emsp;申請日&emsp;:&emsp;
+                                                <span class="ZenKurenaido font-bold text-gray-800 mr-2">
+                                                    {{ __('2023-05-01') }}&emsp;
                                                 </span>
+                                            </li>
+                                            <li></li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="flex justify-between my-4">
+                                        <ul class="divide-y divide-gray-500 text-sm md:text-md">
+                                            <li class="pt-2">
+                                                <div class="ZenKurenaido font-semibold text-gray-800 text-md sm:text-lg">
+                                                    &emsp;富士善工業株式会社&ensp;御中&emsp;
+                                                </div>
+                                            </li>
+                                            <li class="pt-2">
+                                                <div class="flex items-center text-md sm:text-lg">
+                                                    &emsp;氏 名 &emsp;
+                                                    <span class="ZenKurenaido font-semibold text-gray-800 mr-2">
+                                                        {{ '長島 秋休' }}
+                                                    </span>
+                                                </div>
+                                            </li>
+                                            <li></li>
+                                        </ul>
+                                    </div>
+                                    <ul role="list" class="divide-y divide-gray-500 text-sm md:text-lg">
+                                        <li class="pt-2 pb-0">
+                                            <div class="flex items-center space-x-4">
+                                                <div class="flex-1 min-w-0">
+                                                    <div class="flex items-center pb-1">
+                                                        <p
+                                                            class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
+                                                            期 間
+                                                        </p>
+                                                        <p class="ZenKurenaido font-semibold text-gray-800 ml-4">
+                                                            {{ __('2023-05-01') }}
+                                                            <span class="font-bold text-gray-800 ml-4">
+                                                                {{ __('1') }}日間
+                                                            </span>
+                                                        </p>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </li>
-                                        <li></li>
+                                        <li class="pt-3 pb-0 sm:pt-4">
+                                            <div class="flex items-center space-x-4">
+                                                <div class="flex-1 min-w-0">
+                                                    <div class="flex items-center pb-1">
+                                                        <p
+                                                            class="w-16 text-center border rounded border-gray-700 py-1 text-gray-800">
+                                                            事 由
+                                                        </p>
+                                                        <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
+                                                            {{ __('怪我') }}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="pt-3 pb-0 sm:pt-4">
+                                            <div class="flex items-center space-x-4">
+                                                <div class="flex-1 min-w-0">
+                                                    <div class="flex items-center pb-1">
+                                                        <p
+                                                            class="w-16 text-center border rounded border-gray-700 py-1 text-gray-800">
+                                                            備 考
+                                                        </p>
+                                                        <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
+                                                            {{ __('骨折') }}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="pt-4 pb-0 flex justify-end">
+                                            <table>
+                                                <thead class="">
+                                                    <tr>
+                                                        <th
+                                                            class="w-16 md:w-20 border border-gray-500 text-gray-900 text-center">
+                                                            上長</th>
+                                                        <th
+                                                            class="w-16 md:w-20 border border-gray-500 text-gray-900 text-center">
+                                                            係長</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="w-16 md:w-20 h-12 border border-gray-500 text-center">
+                                                            <x-delete-a-button href="#report-cant-approval"
+                                                                onclick="if(!confirm('取消を確認しました')){return false};"
+                                                                class="text-xs md:text-md px-1 py-1">
+                                                                {{ __('CancelCheck') }}
+                                                            </x-delete-a-button>
+                                                        </td>
+                                                        <td class="w-16 md:w-20 h-12 border border-gray-500 text-center">
+                                                            <div class="flex justify-center">
+                                                                <x-cancel-stamp />
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </li>
                                     </ul>
                                 </div>
-                                <ul role="list" class="divide-y divide-gray-500 text-sm md:text-lg">
-                                    <li class="pt-2 pb-0">
-                                        <div class="flex items-center space-x-4">
-                                            <div class="flex-1 min-w-0">
-                                                <div class="flex items-center pb-1">
-                                                    <p
-                                                        class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
-                                                        期 間
-                                                    </p>
-                                                    <p class="ZenKurenaido font-semibold text-gray-800 ml-4">
-                                                        {{ __('2023-05-01') }}
-                                                        <span class="font-bold text-gray-800 ml-4">
-                                                            {{ __('1') }}日間
-                                                        </span>
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="pt-3 pb-0 sm:pt-4">
-                                        <div class="flex items-center space-x-4">
-                                            <div class="flex-1 min-w-0">
-                                                <div class="flex items-center pb-1">
-                                                    <p
-                                                        class="w-16 text-center border rounded border-gray-700 py-1 text-gray-800">
-                                                        事 由
-                                                    </p>
-                                                    <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
-                                                        {{ __('怪我') }}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="pt-3 pb-0 sm:pt-4">
-                                        <div class="flex items-center space-x-4">
-                                            <div class="flex-1 min-w-0">
-                                                <div class="flex items-center pb-1">
-                                                    <p
-                                                        class="w-16 text-center border rounded border-gray-700 py-1 text-gray-800">
-                                                        備 考
-                                                    </p>
-                                                    <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
-                                                        {{ __('骨折') }}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="pt-4 pb-0 flex justify-end">
-                                        <table>
-                                            <thead class="">
-                                                <tr>
-                                                    <th
-                                                        class="w-16 md:w-20 border border-gray-500 text-gray-900 text-center">
-                                                        上長</th>
-                                                    <th
-                                                        class="w-16 md:w-20 border border-gray-500 text-gray-900 text-center">
-                                                        係長</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td class="w-16 md:w-20 h-12 border border-gray-500 text-center">
-                                                        <x-delete-a-button href="#report-cant-approval"
-                                                            onclick="if(!confirm('取消を確認しました')){return false};"
-                                                            class="text-xs md:text-md px-1 py-1">
-                                                            {{ __('CancelCheck') }}
-                                                        </x-delete-a-button>
-                                                    </td>
-                                                    <td class="w-16 md:w-20 h-12 border border-gray-500 text-center">
-                                                        <div class="flex justify-center">
-                                                            <x-cancel-stamp />
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </li>
-                                </ul>
-                            </div>
 
-                            <div class="w-full max-w-md mx-auto grid grid-cols-1 gap-2 mb-6">
-                                <div class="flex justify-end">
-                                    <x-return-button class="w-30" href="#report-my-index">
-                                        {{ __('My申請一覧') }}
-                                    </x-return-button>
+                                <div class="w-full max-w-md mx-auto grid grid-cols-1 gap-2">
+                                    <div class="flex justify-end">
+                                        <x-return-button class="w-30 px-4" href="#report-my-index">
+                                            {{ __('Report MyIndex') }}
+                                        </x-return-button>
+                                    </div>
+                                    <div class="flex justify-end">
+                                        <x-back-home-button class="w-30" href="#base">
+                                            {{ __('Back') }}
+                                        </x-back-home-button>
+                                    </div>
                                 </div>
-                                <div class="flex justify-end">
-                                    <x-back-home-button class="w-30" href="#approval">
-                                        {{ __('Back') }}
-                                    </x-back-home-button>
-                                </div>
-                            </div> --}}
                             </section>
                         </div>
 
@@ -4259,7 +4256,97 @@
 
                                     <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
                                         <!-- 承認,閲覧 start -->
-                                        <a href="#report-index"
+                                        <x-sub-menu-a-link href="#report-index">
+                                            <span class="mr-3">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                    class="w-6 h-6">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                                                </svg>
+                                            </span>
+                                            <span class="flex items-center w-24">
+                                                申請一覧
+                                            </span>
+                                            {{-- <div class="flex justify-center relative -ml-4 -mt-5">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                    fill="currentColor" class="w-6 h-6 text-red-600">
+                                                    <path fill-rule="evenodd"
+                                                        d="M5.337 21.718a6.707 6.707 0 01-.533-.074.75.75 0 01-.44-1.223 3.73 3.73 0 00.814-1.686c.023-.115-.022-.317-.254-.543C3.274 16.587 2.25 14.41 2.25 12c0-5.03 4.428-9 9.75-9s9.75 3.97 9.75 9c0 5.03-4.428 9-9.75 9-.833 0-1.643-.097-2.417-.279a6.721 6.721 0 01-4.246.997z"
+                                                        clip-rule="evenodd" fill="" />
+                                                </svg>
+                                                <div class="absolute text-xs text-white font-bold leading-6 text-center">
+                                                    {{ 2 }}
+                                                </div>
+                                            </div> --}}
+                                        </x-sub-menu-a-link>
+
+                                        <x-sub-menu-a-link href="#get-and-remaining">
+                                            <span class="mr-3">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                    class="w-6 h-6">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+                                                </svg>
+                                            </span>
+                                            <span class="w-32">休暇取得状況</span>
+                                        </x-sub-menu-a-link>
+
+                                        <x-sub-menu-a-link href="#export">
+                                            <span class="mr-3">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                    class="w-6 h-6">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                                                </svg>
+                                            </span>
+                                            <span class="w-32">エクスポート</span>
+                                        </x-sub-menu-a-link>
+                                        <!-- 閲覧権限以上 start -->
+
+                                        <!-- 管理者 start -->
+                                        <x-sub-menu-a-link href="#remaining-update">
+                                            <span class="mr-3">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                    class="w-6 h-6">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
+                                                </svg>
+                                            </span>
+                                            <span class="w-32">休暇日数の設定</span>
+                                        </x-sub-menu-a-link>
+
+                                        <x-sub-menu-a-link href="#user-update">
+                                            <span class="mr-3">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                    class="w-6 h-6">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z" />
+                                                </svg>
+
+                                            </span>
+                                            <span class="w-32">ユーザー設定</span>
+                                        </x-sub-menu-a-link>
+
+                                        <x-sub-menu-a-link href="#approval-info">
+                                            <span class="mr-3">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                    class="w-6 h-6">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.397.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                </svg>
+                                            </span>
+                                            <span class="w-32">権限設定</span>
+                                        </x-sub-menu-a-link>
+
+                                        {{-- <a href="#report-index"
                                             class="inline-flex items-center p-2 text-lg font-medium text-gray-600 hover:text-sky-700 hover:underline hover:underline-offset-0 hover:decoration-4 hover:decoration-sky-200">
                                             <span class="mr-3">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -4340,7 +4427,7 @@
                                                 </svg>
                                             </span>
                                             <span class="w-32">権限設定</span>
-                                        </a>
+                                        </a> --}}
                                     </div>
                             </section>
                         </div>
@@ -5906,7 +5993,7 @@
         </div>
 
         <!-- ボタン -->
-        <button class="fixed right-4 bottom-16 bg-sky-700/80 text-white px-2 py-2 rounded-full shadow"
+        <button class="fixed right-4 bottom-16 bg-green-700/80 text-white px-2 py-2 rounded-full shadow"
             onclick="location.href='{{ route('menu') }}'">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="w-6 h-6">
@@ -5915,7 +6002,7 @@
             </svg>
         </button>
         <button id="scrollTopBtn"
-            class="fixed right-4 bottom-4 bg-sky-700/80 text-white px-2 py-2 rounded-full shadow"
+            class="fixed right-4 bottom-4 bg-green-700/80 text-white px-2 py-2 rounded-full shadow"
             onclick="scrollToTop()">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="w-6 h-6">

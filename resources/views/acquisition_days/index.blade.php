@@ -8,18 +8,18 @@
             <x-nav-button onclick="reportChange2()">
                 {{ $report_categories->where('id', 2)->first()->report_name }}
             </x-nav-button>
-            <x-nav-button onclick="reportChange3()">
+            {{-- <x-nav-button onclick="reportChange3()">
                 {{ $report_categories->where('id', 3)->first()->report_name }}
-            </x-nav-button>
+            </x-nav-button> --}}
             <x-nav-button onclick="reportChange4()">
                 {{ $report_categories->where('id', 4)->first()->report_name }}
             </x-nav-button>
             <x-nav-button onclick="reportChange5()">
                 {{ $report_categories->where('id', 5)->first()->report_name }}
             </x-nav-button>
-            <x-nav-button onclick="reportChange6()">
+            {{-- <x-nav-button onclick="reportChange6()">
                 {{ $report_categories->where('id', 6)->first()->report_name }}
-            </x-nav-button>
+            </x-nav-button> --}}
             <x-nav-button onclick="reportChange7()">
                 {{ $report_categories->where('id', 7)->first()->report_name }}
             </x-nav-button>
@@ -32,12 +32,12 @@
             <x-nav-button onclick="reportChange10()">
                 {{ $report_categories->where('id', 10)->first()->report_name }}
             </x-nav-button>
-            <x-nav-button onclick="reportChange11()">
+            {{-- <x-nav-button onclick="reportChange11()">
                 {{ $report_categories->where('id', 11)->first()->report_name }}
             </x-nav-button>
             <x-nav-button onclick="reportChange16()">
                 {{ $report_categories->where('id', 16)->first()->report_name }}
-            </x-nav-button>
+            </x-nav-button> --}}
         </nav>
     </div>
     <section class="text-gray-600 body-font">
@@ -50,18 +50,18 @@
                 <p id="report_name-2" style="display: none" class="lg:w-2/3 mx-auto text-lg leading-relaxed">
                     {{ $report_categories->where('id', 2)->first()->report_name }}
                 </p>
-                <p id="report_name-3" style="display: none" class="lg:w-2/3 mx-auto text-lg leading-relaxed">
+                {{-- <p id="report_name-3" style="display: none" class="lg:w-2/3 mx-auto text-lg leading-relaxed">
                     {{ $report_categories->where('id', 3)->first()->report_name }}
-                </p>
+                </p> --}}
                 <p id="report_name-4" style="display: none" class="lg:w-2/3 mx-auto text-lg leading-relaxed">
                     {{ $report_categories->where('id', 4)->first()->report_name }}
                 </p>
                 <p id="report_name-5" style="display: none" class="lg:w-2/3 mx-auto text-lg leading-relaxed">
                     {{ $report_categories->where('id', 5)->first()->report_name }}
                 </p>
-                <p id="report_name-6" style="display: none" class="lg:w-2/3 mx-auto text-lg leading-relaxed">
+                {{-- <p id="report_name-6" style="display: none" class="lg:w-2/3 mx-auto text-lg leading-relaxed">
                     {{ $report_categories->where('id', 6)->first()->report_name }}
-                </p>
+                </p> --}}
                 <p id="report_name-7" style="display: none" class="lg:w-2/3 mx-auto text-lg leading-relaxed">
                     {{ $report_categories->where('id', 7)->first()->report_name }}
                 </p>
@@ -74,12 +74,12 @@
                 <p id="report_name-10" style="display: none" class="lg:w-2/3 mx-auto text-lg leading-relaxed">
                     {{ $report_categories->where('id', 10)->first()->report_name }}
                 </p>
-                <p id="report_name-11" style="display: none" class="lg:w-2/3 mx-auto text-lg leading-relaxed">
+                {{-- <p id="report_name-11" style="display: none" class="lg:w-2/3 mx-auto text-lg leading-relaxed">
                     {{ $report_categories->where('id', 11)->first()->report_name }}
                 </p>
                 <p id="report_name-16" style="display: none" class="lg:w-2/3 mx-auto text-lg leading-relaxed">
                     {{ $report_categories->where('id', 16)->first()->report_name }}
-                </p>
+                </p> --}}
                 <h2 id="paid_holiday_update" style="display: " class="text-right">
                     @can('general_admin')
                         <x-circle-button href="{{ route('acquisition_days.update_form') }}">
@@ -181,10 +181,10 @@
                                                         <!-- バースデイ休暇 -->
                                                         <x-remaining-days :user="$user" key=2 />
                                                     </div>
-                                                    <div id="remaining-3_{{ $user->id }}" style="display: none">
+                                                    {{-- <div id="remaining-3_{{ $user->id }}" style="display: none">
                                                         <!--  -->
                                                         <x-remaining-days :user="$user" key=3 />
-                                                    </div>
+                                                    </div> --}}
                                                     <div id="remaining-4_{{ $user->id }}" style="display: none">
                                                         <!-- 弔事-->
                                                         <x-remaining-days :user="$user" key=4 />
@@ -193,10 +193,10 @@
                                                         <!-- 弔事-->
                                                         <x-remaining-days :user="$user" key=5 />
                                                     </div>
-                                                    <div id="remaining-6_{{ $user->id }}" style="display: none">
+                                                    {{-- <div id="remaining-6_{{ $user->id }}" style="display: none">
                                                         <!-- 弔事-->
                                                         <x-remaining-days :user="$user" key=6 />
-                                                    </div>
+                                                    </div> --}}
                                                     <div id="remaining-7_{{ $user->id }}" style="display: none">
                                                         <!-- -->
                                                         <x-remaining-days :user="$user" key=7 />
@@ -213,14 +213,14 @@
                                                         <!-- -->
                                                         <x-remaining-days :user="$user" key=10 />
                                                     </div>
-                                                    <div id="remaining-11_{{ $user->id }}" style="display: none">
+                                                    {{-- <div id="remaining-11_{{ $user->id }}" style="display: none">
                                                         <!-- -->
                                                         <x-remaining-days :user="$user" key=11 />
                                                     </div>
                                                     <div id="remaining-16_{{ $user->id }}" style="display: none">
                                                         <!-- 介護休業 -->
                                                         <x-remaining-days :user="$user" key=16 />
-                                                    </div>
+                                                    </div> --}}
                                                 </td>
                                                 <td
                                                     class="px-4 py-4 whitespace-nowrap text-sm text-right text-gray-800 ">
@@ -232,10 +232,10 @@
                                                         <!-- バースデイ休暇 -->
                                                         <x-acquisition-days :user="$user" key=2 />
                                                     </div>
-                                                    <div id="get-3_{{ $user->id }}" style="display: none">
+                                                    {{-- <div id="get-3_{{ $user->id }}" style="display: none">
                                                         <!--  -->
                                                         <x-acquisition-days :user="$user" key=3 />
-                                                    </div>
+                                                    </div> --}}
                                                     <div id="get-4_{{ $user->id }}" style="display: none">
                                                         <!-- 弔事-->
                                                         <x-acquisition-days :user="$user" key=4 />
@@ -244,10 +244,10 @@
                                                         <!-- 弔事-->
                                                         <x-acquisition-days :user="$user" key=5 />
                                                     </div>
-                                                    <div id="get-6_{{ $user->id }}" style="display: none">
+                                                    {{-- <div id="get-6_{{ $user->id }}" style="display: none">
                                                         <!-- 弔事-->
                                                         <x-acquisition-days :user="$user" key=6 />
-                                                    </div>
+                                                    </div> --}}
                                                     <div id="get-7_{{ $user->id }}" style="display: none">
                                                         <!-- -->
                                                         <x-acquisition-days :user="$user" key=7 />
@@ -264,13 +264,13 @@
                                                         <!-- -->
                                                         <x-acquisition-days :user="$user" key=10 />
                                                     </div>
-                                                    <div id="get-11_{{ $user->id }}" style="display: none">
+                                                    {{-- <div id="get-11_{{ $user->id }}" style="display: none">
                                                         <!-- -->
                                                         <x-acquisition-days :user="$user" key=11 />
                                                     </div>
                                                     <div id="get-16_{{ $user->id }}" style="display: none">
                                                         <x-acquisition-days :user="$user" key=16 />
-                                                    </div>
+                                                    </div> --}}
                                                 </td>
                                                 @can('general_admin')
                                                     <td id="edit"
@@ -289,13 +289,13 @@
                                                                 {{ __('Edit') }}
                                                             </x-show-a-button>
                                                         </div>
-                                                        <div id="edit-3_{{ $user->id }}" style="display: none">
+                                                        {{-- <div id="edit-3_{{ $user->id }}" style="display: none">
                                                             <x-show-a-button
                                                                 href="{{ route('acquisition_days.edit', $user->acquisition(3)->id) }}"
                                                                 class="px-3 py-1">
                                                                 {{ __('Edit') }}
                                                             </x-show-a-button>
-                                                        </div>
+                                                        </div> --}}
                                                         <div id="edit-4_{{ $user->id }}" style="display: none">
                                                             <x-show-a-button
                                                                 href="{{ route('acquisition_days.edit', $user->acquisition(4)->id) }}"
@@ -310,13 +310,13 @@
                                                                 {{ __('Edit') }}
                                                             </x-show-a-button>
                                                         </div>
-                                                        <div id="edit-6_{{ $user->id }}" style="display: none">
+                                                        {{-- <div id="edit-6_{{ $user->id }}" style="display: none">
                                                             <x-show-a-button
                                                                 href="{{ route('acquisition_days.edit', $user->acquisition(6)->id) }}"
                                                                 class="px-3 py-1">
                                                                 {{ __('Edit') }}
                                                             </x-show-a-button>
-                                                        </div>
+                                                        </div> --}}
                                                         <div id="edit-7_{{ $user->id }}" style="display: none">
                                                             <x-show-a-button
                                                                 href="{{ route('acquisition_days.edit', $user->acquisition(7)->id) }}"
@@ -345,7 +345,7 @@
                                                                 {{ __('Edit') }}
                                                             </x-show-a-button>
                                                         </div>
-                                                        <div id="edit-11_{{ $user->id }}" style="display: none">
+                                                        {{-- <div id="edit-11_{{ $user->id }}" style="display: none">
                                                             <x-show-a-button
                                                                 href="{{ route('acquisition_days.edit', $user->acquisition(11)->id) }}"
                                                                 class="px-3 py-1">
@@ -358,7 +358,7 @@
                                                                 class="px-3 py-1">
                                                                 {{ __('Edit') }}
                                                             </x-show-a-button>
-                                                        </div>
+                                                        </div> --}}
                                                     </td>
                                                 @else
                                                     <td id="edit"
@@ -367,14 +367,14 @@
                                                         </div>
                                                         <div id="edit-2_{{ $user->id }}" style="display: none">
                                                         </div>
-                                                        <div id="edit-3_{{ $user->id }}" style="display: none">
-                                                        </div>
+                                                        {{-- <div id="edit-3_{{ $user->id }}" style="display: none">
+                                                        </div> --}}
                                                         <div id="edit-4_{{ $user->id }}" style="display: none">
                                                         </div>
                                                         <div id="edit-5_{{ $user->id }}" style="display: none">
                                                         </div>
-                                                        <div id="edit-6_{{ $user->id }}" style="display: none">
-                                                        </div>
+                                                        {{-- <div id="edit-6_{{ $user->id }}" style="display: none">
+                                                        </div> --}}
                                                         <div id="edit-7_{{ $user->id }}" style="display: none">
                                                         </div>
                                                         <div id="edit-8_{{ $user->id }}" style="display: none">
@@ -383,10 +383,10 @@
                                                         </div>
                                                         <div id="edit-10_{{ $user->id }}" style="display: none">
                                                         </div>
-                                                        <div id="edit-11_{{ $user->id }}" style="display: none">
+                                                        {{-- <div id="edit-11_{{ $user->id }}" style="display: none">
                                                         </div>
                                                         <div id="edit-16_{{ $user->id }}" style="display: none">
-                                                        </div>
+                                                        </div> --}}
                                                     </td>
                                                 @endcan
                                             </tr>
@@ -411,16 +411,16 @@
         let paidHolidayUpdate = document.getElementById('paid_holiday_update');
         let reportName1 = document.getElementById('report_name-1');
         let reportName2 = document.getElementById('report_name-2');
-        let reportName3 = document.getElementById('report_name-3');
+        // let reportName3 = document.getElementById('report_name-3');
         let reportName4 = document.getElementById('report_name-4');
         let reportName5 = document.getElementById('report_name-5');
-        let reportName6 = document.getElementById('report_name-6');
+        // let reportName6 = document.getElementById('report_name-6');
         let reportName7 = document.getElementById('report_name-7');
         let reportName8 = document.getElementById('report_name-8');
         let reportName9 = document.getElementById('report_name-9');
         let reportName10 = document.getElementById('report_name-10');
-        let reportName11 = document.getElementById('report_name-11');
-        let reportName16 = document.getElementById('report_name-16');
+        // let reportName11 = document.getElementById('report_name-11');
+        // let reportName16 = document.getElementById('report_name-16');
         const users = @json($users);
 
         function reportChange1() {
@@ -435,11 +435,11 @@
             paidHolidayUpdate.style.display = 'none';
         }
 
-        function reportChange3() {
-            reportNameRemainingOn(reportName3);
-            reportChange(3);
-            paidHolidayUpdate.style.display = 'none';
-        }
+        // function reportChange3() {
+        //     reportNameRemainingOn(reportName3);
+        //     reportChange(3);
+        //     paidHolidayUpdate.style.display = 'none';
+        // }
 
         function reportChange4() {
             reportNameRemainingOn(reportName4);
@@ -453,11 +453,11 @@
             paidHolidayUpdate.style.display = 'none';
         }
 
-        function reportChange6() {
-            reportNameRemainingOn(reportName6);
-            reportChange(6);
-            paidHolidayUpdate.style.display = 'none';
-        }
+        // function reportChange6() {
+        //     reportNameRemainingOn(reportName6);
+        //     reportChange(6);
+        //     paidHolidayUpdate.style.display = 'none';
+        // }
 
         function reportChange7() {
             reportNameRemainingOn(reportName7);
@@ -483,17 +483,17 @@
             paidHolidayUpdate.style.display = 'none';
         }
 
-        function reportChange11() {
-            reportNameRemainingOn(reportName11);
-            reportChange(11);
-            paidHolidayUpdate.style.display = 'none';
-        }
+        // function reportChange11() {
+        //     reportNameRemainingOn(reportName11);
+        //     reportChange(11);
+        //     paidHolidayUpdate.style.display = 'none';
+        // }
 
-        function reportChange16() {
-            reportNameRemainingOn(reportName16);
-            reportChange(16);
-            paidHolidayUpdate.style.display = 'none';
-        }
+        // function reportChange16() {
+        //     reportNameRemainingOn(reportName16);
+        //     reportChange(16);
+        //     paidHolidayUpdate.style.display = 'none';
+        // }
 
         function reportChange(reportCategoryId) {
             console.log(reportCategoryId);
@@ -503,34 +503,33 @@
             Object.keys(users).forEach((el) => {
                 let remainingId1 = document.getElementById('remaining-1_' + users[el].id);
                 let remainingId2 = document.getElementById('remaining-2_' + users[el].id);
-                let remainingId3 = document.getElementById('remaining-3_' + users[el].id);
+                // let remainingId3 = document.getElementById('remaining-3_' + users[el].id);
                 let remainingId4 = document.getElementById('remaining-4_' + users[el].id);
                 let remainingId5 = document.getElementById('remaining-5_' + users[el].id);
-                let remainingId6 = document.getElementById('remaining-6_' + users[el].id);
+                // let remainingId6 = document.getElementById('remaining-6_' + users[el].id);
                 let remainingId7 = document.getElementById('remaining-7_' + users[el].id);
                 let remainingId8 = document.getElementById('remaining-8_' + users[el].id);
                 let remainingId9 = document.getElementById('remaining-9_' + users[el].id);
                 let remainingId10 = document.getElementById('remaining-10_' + users[el].id);
-                let remainingId11 = document.getElementById('remaining-11_' + users[el].id);
-                let remainingId16 = document.getElementById('remaining-16_' + users[el].id);
+                // let remainingId11 = document.getElementById('remaining-11_' + users[el].id);
+                // let remainingId16 = document.getElementById('remaining-16_' + users[el].id);
                 let getId1 = document.getElementById('get-1_' + users[el].id);
                 let getId2 = document.getElementById('get-2_' + users[el].id);
-                let getId3 = document.getElementById('get-3_' + users[el].id);
+                // let getId3 = document.getElementById('get-3_' + users[el].id);
                 let getId4 = document.getElementById('get-4_' + users[el].id);
                 let getId5 = document.getElementById('get-5_' + users[el].id);
-                let getId6 = document.getElementById('get-6_' + users[el].id);
+                // let getId6 = document.getElementById('get-6_' + users[el].id);
                 let getId7 = document.getElementById('get-7_' + users[el].id);
                 let getId8 = document.getElementById('get-8_' + users[el].id);
                 let getId9 = document.getElementById('get-9_' + users[el].id);
                 let getId10 = document.getElementById('get-10_' + users[el].id);
-                let getId11 = document.getElementById('get-11_' + users[el].id);
-                let getId16 = document.getElementById('get-16_' + users[el].id);
-                const remainingIds = [remainingId1, remainingId2, remainingId3, remainingId4, remainingId5,
-                    remainingId6,
-                    remainingId7, remainingId8, remainingId9, remainingId10, remainingId11, remainingId16
+                // let getId11 = document.getElementById('get-11_' + users[el].id);
+                // let getId16 = document.getElementById('get-16_' + users[el].id);
+                const remainingIds = [remainingId1, remainingId2, remainingId4, remainingId5,
+                    remainingId7, remainingId8, remainingId9, remainingId10
                 ];
-                const getIds = [getId1, getId2, getId3, getId4, getId5, getId6,
-                    getId7, getId8, getId9, getId10, getId11, getId16
+                const getIds = [getId1, getId2, getId4, getId5,
+                    getId7, getId8, getId9, getId10
                 ];
 
                 remainingIds.forEach(id => {
@@ -556,18 +555,18 @@
             Object.keys(users).forEach((el) => {
                 let editId1 = document.getElementById('edit-1_' + users[el].id);
                 let editId2 = document.getElementById('edit-2_' + users[el].id);
-                let editId3 = document.getElementById('edit-3_' + users[el].id);
+                // let editId3 = document.getElementById('edit-3_' + users[el].id);
                 let editId4 = document.getElementById('edit-4_' + users[el].id);
                 let editId5 = document.getElementById('edit-5_' + users[el].id);
-                let editId6 = document.getElementById('edit-6_' + users[el].id);
+                // let editId6 = document.getElementById('edit-6_' + users[el].id);
                 let editId7 = document.getElementById('edit-7_' + users[el].id);
                 let editId8 = document.getElementById('edit-8_' + users[el].id);
                 let editId9 = document.getElementById('edit-9_' + users[el].id);
                 let editId10 = document.getElementById('edit-10_' + users[el].id);
-                let editId11 = document.getElementById('edit-11_' + users[el].id);
-                let editId16 = document.getElementById('edit-16_' + users[el].id);
-                const editIds = [editId1, editId2, editId3, editId4, editId5, editId6, editId7, editId8, editId9,
-                    editId10, editId11, editId16
+                // let editId11 = document.getElementById('edit-11_' + users[el].id);
+                // let editId16 = document.getElementById('edit-16_' + users[el].id);
+                const editIds = [editId1, editId2, editId4, editId5, editId7, editId8, editId9,
+                    editId10
                 ];
 
                 editIds.forEach(id => {
@@ -582,8 +581,8 @@
         }
 
         function reportNameRemainingOn(reportName) {
-            const reportNames = [reportName1, reportName2, reportName3, reportName4, reportName5, reportName6, reportName7,
-                reportName8, reportName9, reportName10, reportName11, reportName16
+            const reportNames = [reportName1, reportName2, reportName4, reportName5, reportName7,
+                reportName8, reportName9, reportName10
             ];
             reportNames.forEach(name => {
                 if (reportName == name) {

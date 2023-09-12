@@ -32,7 +32,11 @@ class AcquisitionDayImport implements ToModel, WithHeadingRow
         if ($existingRecord) {
             $existingRecord->update([
                 'remaining_days' => $row['remaining_days'],
+                'remaining_hours' => $row['remaining_hours'],
+                'remaining_minutes' => $row['remaining_minutes'],
                 'acquisition_days' => $row['acquisition_days'],
+                'acquisition_hours' => $row['acquisition_hours'],
+                'acquisition_minutes' => $row['acquisition_minutes'],
             ]);
             return $existingRecord;
         }

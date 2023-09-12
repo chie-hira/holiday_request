@@ -53,7 +53,7 @@
                                                 @csrf
                                                 @method('PUT')
                                                 <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
-                                                    <x-input name="remaining_days" type="number" step="0.5"
+                                                    <x-input name="remaining_days" type="number" step="{{ $acquisition_day->report_id == 2 ? 1 : 0.5 }}"
                                                         max="{{ $acquisition_day->report_category->max_days }}"
                                                         min="0" class="inline h-8 mt-1 w-20" :value="old(
                                                             'remaining_days',
@@ -62,7 +62,7 @@
                                                     日
                                                 </td>
                                                 <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
-                                                    <x-input name="acquisition_days" type="number" step="0.5"
+                                                    <x-input name="acquisition_days" type="number" step="{{ $acquisition_day->report_id == 2 ? 1 : 0.5 }}"
                                                         max="{{ $acquisition_day->report_id == 1 || $acquisition_day->report_id == 2 ? $acquisition_day->report_category->max_days : 30 }}"
                                                         min="0" class="inline h-8 mt-1 w-20" :value="old(
                                                             'acquisition_days',

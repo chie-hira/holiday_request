@@ -1,5 +1,5 @@
 <div class="min-h-screen flex flex-col sm:justify-center items-center pt-8 bg-gray-50">
-    <div class="text-sky-600 hover:text-sky-800">
+    <div class="text-green-800 hover:text-red-800">
         {{ $logo }}
     </div>
 

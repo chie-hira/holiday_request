@@ -21,7 +21,7 @@ class SendBirthdayHoliday extends Command
     public function handle()
     {
         $reference_date = Carbon::now()
-            ->addMonths(3)
+            ->addMonths(1)
             ->format('m-d');
 
         /** バースデイ休暇の取得期間に入ったユーザーを取得してmails.birthdayHolidayの内容のメールを送信 */
@@ -32,18 +32,18 @@ class SendBirthdayHoliday extends Command
         foreach ($users as $user) {
             $birthday = new Carbon(Carbon::now()->year . '-' . $user->birthday);
             $start =
-                $birthday->copy()->subMonths(3)->year .
+                $birthday->copy()->subMonths(1)->year .
                 '年' .
-                $birthday->copy()->subMonths(3)->month .
+                $birthday->copy()->subMonths(1)->month .
                 '月' .
-                $birthday->copy()->subMonths(3)->day .
+                $birthday->copy()->subMonths(1)->day .
                 '日';
             $end =
-                $birthday->copy()->addMonths(3)->year .
+                $birthday->copy()->addMonths(1)->year .
                 '年' .
-                $birthday->copy()->addMonths(3)->month .
+                $birthday->copy()->addMonths(1)->month .
                 '月' .
-                $birthday->copy()->addMonths(3)->day .
+                $birthday->copy()->addMonths(1)->day .
                 '日';
             Mail::send(
                 'mails.birthdayHoliday',

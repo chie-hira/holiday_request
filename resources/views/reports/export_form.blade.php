@@ -81,10 +81,10 @@
                                                 class="px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Rest Days') }}
                                             </th>
-                                            <th scope="col" colspan="2"
+                                            {{-- <th scope="col" colspan="2"
                                                 class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Shift') }}
-                                            </th>
+                                            </th> --}}
                                             <th scope="col"
                                                 class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Report Date') }}
@@ -153,7 +153,7 @@
                                                         {{ $report->acquisition_minutes }} 分
                                                     @endif
                                                 </td>
-                                                <td
+                                                {{-- <td
                                                     class="pl-4 pr-2 py-3 whitespace-nowrap text-sm text-right text-gray-800 ">
                                                     {{ __('Shift') }} {{ $report->shift_category->shift_code }}
                                                 </td>
@@ -161,7 +161,7 @@
                                                     class="pr-4 py-3 whitespace-nowrap text-sm text-right text-gray-800 ">
                                                     {{ $report->shift_category->start_time_hm }} ~
                                                     {{ $report->shift_category->end_time_hm }}
-                                                </td>
+                                                </td> --}}
                                                 <td
                                                     class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-800 ">
                                                     {{ $report->report_date }}

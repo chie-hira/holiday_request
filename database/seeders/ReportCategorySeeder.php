@@ -105,7 +105,7 @@ class ReportCategorySeeder extends Seeder
                 'max_days' => null,
                 'max_times' => null,
                 'acquisition_id' => 4,
-                'apply_on_the_day' => 0,
+                'apply_on_the_day' => 1,
                 'remarks' => null,
             ], # 1日単位
             [

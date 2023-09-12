@@ -1,6 +1,6 @@
 <x-app-layout>
     <section class="text-gray-600 body-font">
-        <div class="container max-w-xl px-5 py-6 mx-auto">
+        <div class="container max-w-2xl px-5 py-6 mx-auto">
             <div class="flex flex-col text-center w-full mb-4">
                 <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">{{ __('Rest Days') }}</h1>
                 <div class="text-left mx-auto leading-relaxed text-sm mb-1">
@@ -9,10 +9,21 @@
                             <span class="font-semibold">{{ Auth::user()->name }}さん</span>の取得状況です。
                         </p>
                     </x-info>
+                    <x-info>
+                        @if (5 - Auth::user()->acquisition_days->where('report_id',1)->first()->acquisition_days > 0)
+                            <p class="text-sm">
+                                有給休暇の取得推進日数はあと<span class="font-semibold text-red-500">{{ 5 - Auth::user()->acquisition_days->where('report_id',1)->first()->acquisition_days }}日</span>です。
+                            </p>
+                        @else
+                            <p class="text-sm">
+                                有給休暇取得推進日数を消化しました。
+                            </p>
+                        @endif
+                    </x-info>
                 </div>
             </div>
 
-            <div class="container max-w-xl bg-white w-full mx-auto border-2 rounded-lg">
+            <div class="container max-w-2xl bg-white w-full mx-auto border-2 rounded-lg">
                 <div class="flex flex-col p-2 sm:p-8">
                     <div class="-m-1.5 overflow-x-auto">
                         <div class="p-1.5 min-w-full inline-block align-middle">
@@ -134,37 +145,17 @@
             </div>
         </div>
 
-        <div class="container max-w-xl px-5 pb-6 mx-auto">
+        <div class="container max-w-2xl px-5 pb-6 mx-auto">
             <div class="mx-auto my-6">
                 <div class="text-left mx-auto leading-relaxed text-sm mb-1">
-                    <x-info>
+                    {{-- <x-info>
                         <p>
-                            看護休暇は<span class="font-bold">小学校就学前の子</span>を養育する者が取得できます。
+                            育児休業は<span class="font-bold">1歳に満たない子</span>を扶養する者が取得できます。
                         </p>
-                    </x-info>
+                    </x-info> --}}
                     <x-info>
                         <p>
-                            介護休暇、介護休業は<span class="font-bold">要介護状態の家族</span>を介護する者が取得できます。
-                        </p>
-                    </x-info>
-                    <x-info>
-                        <p>
-                            特別休暇(慶事)は<span class="font-bold">本人が結婚する</span>ときに取得できます。
-                        </p>
-                    </x-info>
-                    <x-info>
-                        <p>
-                            特別休暇(弔事)は<span class="font-bold">近親者が喪に服す</span>ときに取得できます。
-                        </p>
-                    </x-info>
-                    <x-info>
-                        <p>
-                            特別休暇(短期育休)、育児休業、パパ育休は<span class="font-bold">1歳に満たない子</span>と同居し扶養する者が取得できます。
-                        </p>
-                    </x-info>
-                    <x-info>
-                        <p>
-                            ※は<span class="font-bold">対象によって休暇日数が変わります</span>。詳細は総務課にお問い合わせください。
+                            休暇制度の詳細は総務課にお問い合わせください。
                         </p>
                     </x-info>
                 </div>

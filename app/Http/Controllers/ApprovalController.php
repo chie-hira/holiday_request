@@ -271,7 +271,7 @@ class ApprovalController extends Controller
 
         $approval_categories = ApprovalCategory::where('id', '!=', 1)->where('id', '!=', 5)->get();
 
-        if ($my_approvals->contains('id', 1)) {
+        if ($my_approvals->contains('affiliation_id', 1)) {
             $affiliations = Affiliation::all()->load([
                 'factory',
                 'department',

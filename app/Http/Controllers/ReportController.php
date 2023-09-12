@@ -121,10 +121,28 @@ class ReportController extends Controller
                 ->sortBy('report_id')
                 ->sortBy('user.affiliation_id')
                 ->sortBy('start_date')
-                ->sortBy('report_date');
+                ->sortByDesc('start_date')
+                ->sortByDesc('report_date');
         }
 
-        return view('reports.index')->with(compact('reports'));
+        $affiliations = Affiliation::all()->load([
+            'factory',
+            'department',
+            'group',
+        ]);
+        $report_categories = ReportCategory::all();
+        $reason_categories = ReasonCategory::all();
+        $users = User::all('id', 'employee', 'name')->sortBy('employee');
+
+        return view('reports.index')->with(
+            compact(
+                'reports',
+                'affiliations',
+                'report_categories',
+                'reason_categories',
+                'users',
+            )
+        );
     }
 
     /**
@@ -193,8 +211,8 @@ class ReportController extends Controller
             Carbon::now()->year . '-' . Auth::user()->birthday
         ); # 誕生日
         if (
-            now()->subMonths(3) > $birthday ||
-            now()->addMonths(3) < $birthday
+            now()->subMonths(1) > $birthday ||
+            now()->addMonths(1) < $birthday
         ) {
             $report_categories = $report_categories->where('id', '!=', 2);
         }
@@ -296,37 +314,26 @@ class ReportController extends Controller
 
         if (
             $request->report_id == 13 || # 遅刻
-            $request->report_id == 14 # 早退
+            $request->report_id == 14 || # 早退
+            $request->report_id == 15 # 外出
         ) {
             $request->validate(
                 [
                     'start_time' => 'required',
                     'end_time' => 'required',
                     'acquisition_days' => [Rule::in(0)],
-                    'acquisition_minutes' => [Rule::in(0, 10, 20, 30, 40, 50)],
+                    'acquisition_minutes' => [Rule::in(0, 15, 30, 45)],
                 ],
                 [
                     'acquisition_minutes.in' =>
-                        '遅刻・早退は10分単位で届出してください。',
+                        '遅刻・早退・外出は15分単位で届出してください。',
                 ]
             );
         }
-        if ($request->report_id == 15) {
-            # 外出
-            $request->validate(
-                [
-                    'start_time' => 'required',
-                    'end_time' => 'required',
-                    'acquisition_days' => [Rule::in(0)],
-                    'acquisition_minutes' => [Rule::in(0, 30)],
-                ],
-                [
-                    'acquisition_minutes.in' =>
-                        '外出は30分単位で届出してください。',
-                ]
-            );
-        }
-        if ($request->reason_id == 9) {
+        if (
+            $request->reason_id == 1 || 
+            $request->reason_id == 2 
+        ) {
             # 理由:その他
             $request->validate(
                 [
@@ -438,7 +445,7 @@ class ReportController extends Controller
                 // リダイレクト
                 return redirect()
                     ->route('reports.show', $report)
-                    ->with('msg', 'Approved');
+                    ->with('notice', 'Approved');
             } catch (\Exception $e) {
                 DB::rollBack(); # トランザクション失敗終了
                 // 例外情報をログに出力
@@ -732,6 +739,10 @@ class ReportController extends Controller
     // update()
     public function update(UpdateReportRequest $request, Report $report)
     {
+        // 二重送信防止
+        $request->session()->regenerateToken();
+        Log::info('Request data:', $request->all());
+        
         // バリデーション
         if ($request->sub_report_id == 1) {
             # 終日休
@@ -800,37 +811,26 @@ class ReportController extends Controller
 
         if (
             $request->report_id == 13 || # 遅刻
-            $request->report_id == 14 # 早退
+            $request->report_id == 14 || # 早退
+            $request->report_id == 15 # 外出
         ) {
             $request->validate(
                 [
                     'start_time' => 'required',
                     'end_time' => 'required',
                     'acquisition_days' => [Rule::in(0)],
-                    'acquisition_minutes' => [Rule::in(0, 10, 20, 30, 40, 50)],
+                    'acquisition_minutes' => [Rule::in(0, 15, 30, 45)],
                 ],
                 [
                     'acquisition_minutes.in' =>
-                        '遅刻・早退は10分単位で届出してください。',
+                        '遅刻・早退・外出は15分単位で届出してください。',
                 ]
             );
         }
-        if ($request->report_id == 15) {
-            # 外出
-            $request->validate(
-                [
-                    'start_time' => 'required',
-                    'end_time' => 'required',
-                    'acquisition_days' => [Rule::in(0)],
-                    'acquisition_minutes' => [Rule::in(0, 30)],
-                ],
-                [
-                    'acquisition_minutes.in' =>
-                        '外出は30分単位で届出してください。',
-                ]
-            );
-        }
-        if ($request->reason_id == 9) {
+        if (
+            $request->reason_id == 1 || 
+            $request->reason_id == 2 
+        ) {
             # 理由:その他
             $request->validate(
                 [
@@ -1565,7 +1565,7 @@ class ReportController extends Controller
                 $user->approved($report); # 届出作成者に承認を通知
                 return redirect()
                     ->route('reports.show', $report)
-                    ->with('msg', 'Approved');
+                    ->with('notice', 'Approved');
             } catch (\Exception $e) {
                 DB::rollBack(); # トランザクション失敗終了
                 Log::error('Exception caught: ' . $e->getMessage());
@@ -1576,7 +1576,7 @@ class ReportController extends Controller
                 $report->save(); # 承認を保存
                 return redirect()
                     ->route('reports.show', $report)
-                    ->with('msg', 'Approved');
+                    ->with('notice', 'Approved');
             } catch (\Throwable $th) {
                 Log::error('Exception caught: ' . $th->getMessage());
                 return back()->withErrors('エラーが発生しました');
@@ -1681,7 +1681,7 @@ class ReportController extends Controller
                 // 取消確認しました
                 return redirect()
                     ->route('reports.show', $report)
-                    ->with('msg', 'CheckedReport');
+                    ->with('notice', 'CheckedReport');
             } catch (\Throwable $th) {
                 Log::error('Exception caught: ' . $th->getMessage());
                 return back()->withErrors('エラーが発生しました');
@@ -1852,7 +1852,7 @@ class ReportController extends Controller
                                     ) use ($approval) {
                                         $query->where(
                                             'factory_id',
-                                            $approval->factory_id
+                                            $approval->affiliation->factory_id
                                         );
                                     })
                                     ->where('cancel', 0)
