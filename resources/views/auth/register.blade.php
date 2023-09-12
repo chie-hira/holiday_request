@@ -62,14 +62,14 @@
             <div class="mt-4">
                 <x-label for="affiliation_id" :value="__('Affiliation')" />
 
-                <select name="affiliation_id" id="affiliation_id"
-                    class="rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 block w-full p-2.5">
+                <x-select name="affiliation_id" id="affiliation_id" class="w-full mt-1">
+                    {{-- class="rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 block w-full p-2.5"> --}}
                     @foreach ($affiliations as $affiliation)
                         <option value="{{ $affiliation->id }}" @if ($affiliation->id === (int) old('affiliation_id')) selected @endif>
                             <x-affiliation-name :affiliation="$affiliation" />
                         </option>
                     @endforeach
-                </select>
+                </x-select>
             </div>
 
             {{-- <!-- Factory_id -->

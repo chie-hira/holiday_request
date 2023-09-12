@@ -321,6 +321,7 @@
             radioChange();
             subReportDisplaySwitch(); // sub_reportでform表示切替
             reportReasonSwitch(); // reportでreason種類切替
+            reasonDisplaySwitch();
         });
 
         // 切り替えるたびに初期化関数+表示ONだけ
@@ -331,6 +332,7 @@
             daysReset(); // get_daysリセット
             alertReset(); // アラートリセット
             reportReasonSwitch(); // reportでreason種類切替
+            reasonDisplaySwitch();
             radioChange();
             subReportDisplaySwitch();
             subReportRemarksSwitch();
@@ -646,10 +648,11 @@
 
         // 理由詳細placeholder切替関数
         function reasonDisplaySwitch() {
-            if (reasonCategory.value == "9") { // 理由その他表示
+            if (reasonCategory.value == "1" ||
+                reasonCategory.value == "2" 
+            ) { 
                 reasonDetail.placeholder = "詳細を記入してください";
-            }
-            if (reasonCategory.value != "9") { // 理由その他非表示
+            } else {
                 reasonDetail.placeholder = "詳細・備考があれば記入してください";
             }
         }

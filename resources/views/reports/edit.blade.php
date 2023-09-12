@@ -338,6 +338,7 @@
             radioChange();
             subReportDisplaySwitch(); // sub_reportでform表示切替
             reportReasonSwitch(); // reportでreason種類切替
+            reasonDisplaySwitch();
             countDays();
         });
 
@@ -348,6 +349,7 @@
             daysReset(); // get_daysリセット
             alertReset(); // アラートリセット
             reportReasonSwitch(); // reportでreason種類切替
+            reasonDisplaySwitch();
             radioChange();
             subReportDisplaySwitch();
             subReportRemarksSwitch();
