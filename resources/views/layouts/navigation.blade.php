@@ -1,10 +1,10 @@
-<nav x-data="{ open: false }" class="bg-sky-600">
+<nav x-data="{ open: false }" class="bg-green-800">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-12">
             <div class="flex">
                 <!-- Logo -->
-                <div class="shrink-0 flex items-center text-white hover:text-sky-800">
+                <div class="shrink-0 flex items-center text-white hover:text-red-800">
                     <a href="{{ route('menu') }}">
                         <x-application-logo class="block h-10 w-auto fill-current text-gray-600" />
                     </a>
@@ -37,8 +37,8 @@
 
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <button {{-- class="flex items-center text-sm font-medium text-white hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out"> --}}
-                            class="flex items-center text-sm font-medium text-white transition duration-150 ease-in-out hover:text-sky-800">
+                        <button 
+                            class="flex items-center text-sm font-medium text-white transition duration-150 ease-in-out hover:text-red-800">
                             @auth
                                 <div>{{ Auth::user()->employee }}&ensp;{{ Auth::user()->name }}</div>
                             @else
@@ -89,8 +89,7 @@
             <!-- Hamburger -->
             <div class="-mr-2 flex items-center sm:hidden">
                 <button @click="open = ! open"
-                    class="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-sky-800 focus:outline-none focus:text-sky-800 transition duration-150 ease-in-out">
-                    {{-- class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"> --}}
+                    class="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-red-800 focus:outline-none focus:text-red-800 transition duration-150 ease-in-out">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{ 'hidden': open, 'inline-flex': !open }" class="inline-flex"
                             stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

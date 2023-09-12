@@ -35,7 +35,7 @@
                             <x-input type="text" id="user_id" class="block mt-1 w-full" :value="Auth::user()->name"
                                 readonly />
                         </div>
-                            <input type="hidden" name="shift_id" id="shift_id" value="1">
+                        <input type="hidden" name="shift_id" id="shift_id" value="1">
                         <div>
                             <label for="report_id" class="block mb-2 text-sm font-medium text-gray-900">
                                 {{ __('Report Category') }}
@@ -61,7 +61,7 @@
                                             id="sub_report_id_{{ $sub_category->id }}" onclick="subReportChange()"
                                             value="{{ $sub_category->id }}"
                                             @if ($sub_category->id === (int) old('sub_report_id')) checked @endif
-                                            class="shrink-0 mt-0.5 border-gray-200 rounded-full text-sky-600 focus:ring-sky-300 ">
+                                            class="shrink-0 mt-0.5 border-gray-200 rounded-full text-green-600 focus:ring-green-300 ">
                                         <label for="sub_report_id_{{ $sub_category->id }}" name="sub_report_name"
                                             class="mr-2 text-sm text-gray-500 ml-2">
                                             {{ $sub_category->sub_report_name }}
@@ -343,7 +343,7 @@
 
         // 届出種類ごとの説明コメント切り替え関数
         function reoprtRemarksSwitch() {
-            reportRemarksContener.style.display = "none";
+            remarksContener.style.display = "none";
             let selectReportId = reportCategory.value;
             reportCategoryArray.forEach(el => {
                 if (el.id == selectReportId && el.remarks != null) {

@@ -5,7 +5,7 @@
             <!-- 有休残日数 -->
             <x-info>
                 <p>
-                    有休残日数&ensp;:&ensp;
+                    {{ __('有給休暇残日数') }}&ensp;:&ensp;
                     @if (!empty($paid_holidays->remaining_days))
                         <span class="font-bold">
                             {{ $paid_holidays->remaining_days }}
@@ -18,9 +18,9 @@
                     @endif
                 </p>
             </x-info>
-            <div class="pl-2 -mt-2 mb-1">
+            {{-- <div class="pl-2 -mt-2 mb-1">
                 <span class="text-xs text-blue-500">有給休暇取得推進日を除く</span>
-            </div>
+            </div> --}}
             <!-- バースデイ休暇notice -->
             @if (now()->subMonths(3) <= $birthday && now()->addMonths(3) >= $birthday)
                 <x-info>
@@ -142,7 +142,7 @@
                 <!-- 基本機能 start -->
                 <div class="max-w-md mx-auto grid grid-cols-1 mb-10">
                     <a href={{ route('reports.create') }}
-                        class="block text-center items-center p-3 my-2 text-white rounded-xl border border-gray-500 bg-cyan-500 hover:text-gray-600 hover:bg-white focus:text-cyan-500 ">
+                        class="block text-center items-center p-3 my-2 rounded-xl border border-gray-500 bg-cyan-400 hover:text-gray-600 hover:bg-white focus:text-cyan-400 ">
                         <div class="flex justify-center items-center text-2xl">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                                 <path
@@ -151,12 +151,12 @@
                                     d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z"
                                     fill="" />
                             </svg>
-                            <span class="ZenMaruGothic w-40">届 出 作 成</span>
+                            <span class="ZenMaruGothic w-40">申請書作成</span>
                         </div>
                     </a>
 
                     <a href={{ route('acquisition_days.my_index') }}
-                        class="block text-center items-center p-3 my-2 text-white rounded-xl border border-gray-500 bg-fuchsia-400 hover:text-gray-600 hover:bg-white focus:text-fuchsia-400">
+                        class="block text-center items-center p-3 my-2 rounded-xl border border-gray-500 bg-fuchsia-300 hover:text-gray-600 hover:bg-white focus:text-fuchsia-300">
                         <div class="flex justify-center items-center text-2xl">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                                 <path fill-rule="evenodd"
@@ -166,19 +166,19 @@
                                     d="M12.971 1.816A5.23 5.23 0 0114.25 5.25v1.875c0 .207.168.375.375.375H16.5a5.23 5.23 0 013.434 1.279 9.768 9.768 0 00-6.963-6.963z"
                                     fill="" />
                             </svg>
-                            <span class="ZenMaruGothic w-40">休暇可能日数</span>
+                            <span class="ZenMaruGothic w-40">休 暇 日 数</span>
                         </div>
                     </a>
 
                     <a href={{ route('reports.my_index') }}
-                        class="block text-center items-center p-3 my-2 text-white rounded-xl border border-gray-500 bg-amber-400 hover:text-gray-600 hover:bg-white focus:text-amber-400">
+                        class="block text-center items-center p-3 my-2 rounded-xl border border-gray-500 bg-amber-300 hover:text-gray-600 hover:bg-white focus:text-amber-300">
                         <div class="flex justify-center items-center text-2xl">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                                 <path fill-rule="evenodd"
                                     d="M1.5 5.625c0-1.036.84-1.875 1.875-1.875h17.25c1.035 0 1.875.84 1.875 1.875v12.75c0 1.035-.84 1.875-1.875 1.875H3.375A1.875 1.875 0 011.5 18.375V5.625zM21 9.375A.375.375 0 0020.625 9h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zm0 3.75a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zm0 3.75a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zM10.875 18.75a.375.375 0 00.375-.375v-1.5a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5zM3.375 15h7.5a.375.375 0 00.375-.375v-1.5a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375zm0-3.75h7.5a.375.375 0 00.375-.375v-1.5A.375.375 0 0010.875 9h-7.5A.375.375 0 003 9.375v1.5c0 .207.168.375.375.375z"
                                     clip-rule="evenodd" fill="" />
                             </svg>
-                            <span class="ZenMaruGothic w-40">My届出一覧</span>
+                            <span class="ZenMaruGothic w-40">My申請一覧</span>
                         </div>
                     </a>
                 </div>
@@ -187,8 +187,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
                     <!-- 閲覧権限以上 start -->
                     @can('approver_reader')
-                        <a href={{ route('reports.index') }}
-                            class="inline-flex items-center p-2 text-lg font-medium text-gray-600 hover:text-sky-700 hover:underline hover:underline-offset-0 hover:decoration-4 hover:decoration-sky-200">
+                        <x-sub-menu-a-link href="{{ route('reports.index') }}">
                             <span class="mr-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                     stroke="currentColor" class="w-6 h-6">
@@ -197,7 +196,7 @@
                                 </svg>
                             </span>
                             <span class="flex items-center w-24">
-                                届出一覧
+                                申請一覧
                             </span>
                             @if ($pending || $approved)
                                 <div class="flex justify-center relative -ml-4 -mt-5">
@@ -212,10 +211,9 @@
                                     </div>
                                 </div>
                             @endif
-                        </a>
+                        </x-sub-menu-a-link>
 
-                        <a href={{ route('acquisition_days.status_index') }}
-                            class="inline-flex items-center p-2 text-lg font-medium text-gray-600 hover:text-sky-700 hover:underline hover:underline-offset-0 hover:decoration-4 hover:decoration-sky-200">
+                        <x-sub-menu-a-link href="{{ route('acquisition_days.status_index') }}">
                             <span class="mr-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -224,10 +222,9 @@
                                 </svg>
                             </span>
                             <span class="w-32">休暇取得状況</span>
-                        </a>
+                        </x-sub-menu-a-link>
 
-                        <a href={{ route('reports.export_form') }}
-                            class="inline-flex items-center p-2 text-lg font-medium text-gray-600 hover:text-sky-700 hover:underline hover:underline-offset-0 hover:decoration-4 hover:decoration-sky-200">
+                        <x-sub-menu-a-link href="{{ route('reports.export_form') }}">
                             <span class="mr-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -236,14 +233,13 @@
                                 </svg>
                             </span>
                             <span class="w-32">エクスポート</span>
-                        </a>
+                        </x-sub-menu-a-link>
                     @endcan
                     <!-- 閲覧権限以上 start -->
 
                     <!-- 管理者 start -->
                     @can('admin')
-                        <a href={{ route('acquisition_days.index') }}
-                            class="inline-flex items-center p-2 text-lg font-medium text-gray-600 hover:text-sky-700 hover:underline hover:underline-offset-0 hover:decoration-4 hover:decoration-sky-200">
+                        <x-sub-menu-a-link href="{{ route('acquisition_days.index') }}">
                             <span class="mr-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -252,10 +248,9 @@
                                 </svg>
                             </span>
                             <span class="w-32">休暇日数の設定</span>
-                        </a>
+                        </x-sub-menu-a-link>
 
-                        <a href={{ route('users.index') }}
-                            class="inline-flex items-center p-2 text-lg font-medium text-gray-600 hover:text-sky-700 hover:underline hover:underline-offset-0 hover:decoration-4 hover:decoration-sky-200">
+                        <x-sub-menu-a-link href="{{ route('users.index') }}">
                             <span class="mr-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -265,10 +260,9 @@
 
                             </span>
                             <span class="w-32">ユーザー設定</span>
-                        </a>
+                        </x-sub-menu-a-link>
 
-                        <a href={{ route('approvals.index') }}
-                            class="inline-flex items-center p-2 text-lg font-medium text-gray-600 hover:text-sky-700 hover:underline hover:underline-offset-0 hover:decoration-4 hover:decoration-sky-200">
+                        <x-sub-menu-a-link href="{{ route('approvals.index') }}">
                             <span class="mr-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -279,7 +273,7 @@
                                 </svg>
                             </span>
                             <span class="w-32">権限設定</span>
-                        </a>
+                        </x-sub-menu-a-link>
                     @endcan
                     <!-- 管理者 end -->
                 </div>

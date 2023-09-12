@@ -9,8 +9,8 @@
             <th></th>
             <th></th>
             <th>{{ __('Rest Days') }}</th>
-            <th>{{ __('Shift') }}</th>
-            <th></th>
+            {{-- <th>{{ __('Shift') }}</th>
+            <th></th> --}}
             <th>{{ __('Report Date') }}</th>
             <th>{{ __('Reason') }}</th>
             <th>{{ __('Reason Detail') }}</th>
@@ -67,13 +67,13 @@
                         {{ $report->acquisition_minutes }} 分
                     @endif
                 </td>
-                <td>
+                {{-- <td>
                     シフト{{ $report->shift_category->shift_code }}
                 </td>
                 <td>
                     {{ $report->shift_category->start_time_hm }} ~
                     {{ $report->shift_category->end_time_hm }}
-                </td>
+                </td> --}}
                 <td>
                     {{ $report->report_date }}
                 </td>
