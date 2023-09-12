@@ -19,8 +19,10 @@
         href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500&family=Courgette&family=M+PLUS+Rounded+1c:wght@300;400;500&family=Zen+Kurenaido&family=Zen+Maru+Gothic:wght@300;400;500&display=swap"
         rel="stylesheet">
 
-    <link rel="apple-touch-icon" type="image/png" href="{{ asset('/image/text_yasumi.png') }}">
-    <link rel="icon" type="image/png" href="{{ asset('/image/text_yasumi.png') }}">
+    <link rel="apple-touch-icon" type="image/png" href="{{ asset('/image/icon-152x152.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('/image/icon-152x152.png') }}">
+    {{-- <link rel="apple-touch-icon" type="image/png" href="{{ asset('/image/text_yasumi.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('/image/text_yasumi.png') }}"> --}}
 
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
