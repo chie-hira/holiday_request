@@ -22,19 +22,19 @@
                 <span class="text-xs text-blue-500">有給休暇取得推進日を除く</span>
             </div> --}}
             <!-- バースデイ休暇notice -->
-            @if (now()->subMonths(3) <= $birthday && now()->addMonths(3) >= $birthday)
+            @if (now()->subMonths(1) <= $birthday && now()->addMonths(1) >= $birthday)
                 <x-info>
                     バースデイ休暇取得期間です
                 </x-info>
                 <div class="pl-2 -mt-2 mb-1">
                     <span class="text-xs text-blue-500">
-                        {{ $birthday->copy()->subMonths(3)->year }}年
-                        {{ $birthday->copy()->subMonths(3)->month }}月
-                        {{ $birthday->copy()->subMonths(3)->day }}日
+                        {{ $birthday->copy()->subMonths(1)->year }}年
+                        {{ $birthday->copy()->subMonths(1)->month }}月
+                        {{ $birthday->copy()->subMonths(1)->day }}日
                         ~
-                        {{ $birthday->copy()->addMonths(3)->year }}年
-                        {{ $birthday->copy()->addMonths(3)->month }}月
-                        {{ $birthday->copy()->addMonths(3)->day }}日
+                        {{ $birthday->copy()->addMonths(1)->year }}年
+                        {{ $birthday->copy()->addMonths(1)->month }}月
+                        {{ $birthday->copy()->addMonths(1)->day }}日
                     </span>
                 </div>
             @endif
@@ -60,13 +60,13 @@
                 </div>
             @endif
             <!-- バースデイ休暇失効alert -->
-            @if (now()->addDays(14)->subMonths(3) >= $birthday && now() <= $birthday->copy()->addMonths(3))
+            @if (now()->addDays(14)->subMonths(1) >= $birthday && now() <= $birthday->copy()->addMonths(1))
                 <x-alert>
                     バースデイ休暇が失効します
                 </x-alert>
                 <div class="pl-2 -mt-1 mb-1">
                     <span class="text-xs text-blue-500">失効まであと</span>
-                    <span class="font-bold text-red-600">{{ now()->subMonths(3)->diff($birthday)->days }}日</span>
+                    <span class="font-bold text-red-600">{{ now()->subMonths(1)->diff($birthday)->days }}日</span>
                 </div>
             @endif
             <!-- 有給休暇失効alert -->

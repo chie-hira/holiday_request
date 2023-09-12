@@ -211,8 +211,8 @@ class ReportController extends Controller
             Carbon::now()->year . '-' . Auth::user()->birthday
         ); # 誕生日
         if (
-            now()->subMonths(3) > $birthday ||
-            now()->addMonths(3) < $birthday
+            now()->subMonths(1) > $birthday ||
+            now()->addMonths(1) < $birthday
         ) {
             $report_categories = $report_categories->where('id', '!=', 2);
         }
