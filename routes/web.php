@@ -159,6 +159,8 @@ Route::get('/initial_import', [
     'initial_import',
 ])->name('initial_import');
 
+Route::get('/search', [ReportController::class, 'search']);
+
 // TODO:notAuthorizedでログイン画面にリダイレクト
 
 require __DIR__ . '/auth.php';

@@ -98,8 +98,10 @@
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-200 ">
-                                        @foreach ($reports as $report)
-                                            <tr id="report_{{ $report->id }}" style="display:" class="hover:bg-gray-100 ">
+                                        @foreach ($paginator as $report)
+                                            {{-- <tr id="report_{{ $report->id }}" style="display:" --}}
+                                            <tr id="resultContainer"
+                                                class="hover:bg-gray-100 ">
                                                 <td
                                                     class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-800 ">
                                                     {{ $report->report_date }}
@@ -246,6 +248,7 @@
                     </div>
                 </div>
             </div>
+            {{ $paginator->links() }}
 
             <div class="mt-10 flex justify-end">
                 <x-back-home-button class="w-30" href="{{ route('menu') }}">
@@ -260,7 +263,7 @@
         let selectUser = document.getElementById('select_user');
         let selectReport = document.getElementById('select_report');
         let selectMonth = document.getElementById('select_month');
-        const reports = @json($reports);
+        const reports = @json($paginator);
         const affiliations = @json($affiliations);
 
         function search() {
@@ -269,7 +272,47 @@
             let selectReportId = selectReport.value;
             let selectGetMonth = selectMonth.value;
             console.log('search'); // 起動確認
-            reportDataChange(selectAffiliationId, selectUserId, selectReportId, selectGetMonth);
+
+            let currentPage = '{{ $paginator->currentPage() }}';
+            // Ajaxリクエストを送信
+            $.ajax({
+                type: "GET",
+                url: "/search", // サーバー側のAPIエンドポイント
+                data: {
+                    page: currentPage, // 現在のページ番号
+                    selectAffiliationId: selectAffiliationId,
+                    selectUserId: selectUserId,
+                    selectReportId: selectReportId,
+                    selectGetMonth: selectGetMonth
+                },
+                success: function(data) {
+                    console.log(data);
+                    $('#resultContainer').empty();
+
+                    const objectData = Object.values(data);
+
+                    // データをループして表示
+                    objectData.forEach(function(item) {
+                        // 新しい行を作成
+                        var newRow = $('<tr>');
+
+                        // データをセルに追加
+                        newRow.append($('<td>').text(item.name));
+                        newRow.append($('<td>').text(item.description));
+                        // 他のデータに関するセルを必要に応じて追加
+
+                        // 行をテーブルに追加
+                        $('#resultContainer').append(newRow);
+                    });
+                    // データを受信した後、ビューを更新
+                    // ここでテーブルやリストに新しいデータを挿入または更新
+                },
+                error: function(error) {
+                    console.error("Ajaxエラー: " + error);
+                }
+            });
+
+            // reportDataChange(selectAffiliationId, selectUserId, selectReportId, selectGetMonth);
         }
 
         function reportDataChange(selectAffiliationId, selectUserId, selectReportId, selectGetMonth) {
