@@ -147,6 +147,9 @@ Route::post('/users_import', [UserController::class, 'import'])->name(
 Route::post('/approvals_import', [ApprovalController::class, 'import'])->name(
     'approvals_import'
 );
+Route::post('/reports_import', [ReportController::class, 'import'])->name(
+    'reports_import'
+);
 Route::post('/acquisition_days_import', [
     AcquisitionDayController::class,
     'import',

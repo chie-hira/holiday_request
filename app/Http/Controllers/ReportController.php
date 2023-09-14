@@ -15,6 +15,7 @@ use App\Models\User;
 use App\Models\Approval;
 use App\Models\FactoryCategory;
 use App\Exports\ReportFormExport;
+use App\Imports\ReportImport;
 use App\Models\Affiliation;
 use App\Models\Calender;
 use App\Models\DepartmentCategory;
@@ -2668,6 +2669,17 @@ class ReportController extends Controller
 
         $view = view('reports.export')->with(compact('reports'));
         return Excel::download(new ReportFormExport($view), 'reports.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+        $excel_file = $request->file('excel_file');
+        $excel_file->store('excels');
+        Excel::import(new ReportImport(), $excel_file);
+
+        return redirect()
+            ->route('import_form')
+            ->with('notice', '申請インポート完了！');
     }
 
     public function all_export()
