@@ -46,7 +46,7 @@
                             :value="request('select_month')" />
                         <!-- 取得日選択 - end -->
                     </div>
-                    <x-show-button type="submit" class="my-1">検索</x-show-button>
+                    <x-show-button type="submit" class="my-1">検 索</x-show-button>
                 </div>
             </form>
         </nav>
