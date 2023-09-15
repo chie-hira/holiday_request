@@ -254,7 +254,9 @@
                     </div>
                 </div>
             </div>
+            <div class="mt-2">
             {{ $paginator->appends(request()->except('page'))->links() }}
+            </div>
             {{-- {{ $paginator->links() }} --}}
 
             <div class="mt-10 flex justify-end">
