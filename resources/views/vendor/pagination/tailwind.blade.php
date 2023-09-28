@@ -2,10 +2,10 @@
     <div class="flex justify-end mr-4">
         <p class="text-sm text-gray-700 leading-5">
             @if ($paginator->firstItem())
-                <span class="font-medium">{{ $paginator->firstItem() }}</span>
+                <span class="font-medium">{{ $paginator->firstItem() }} ~</span>
                 <span class="font-medium">{{ $paginator->lastItem() }}件</span>
             @else
-                {{ $paginator->count() }}
+                {{ $paginator->count() }}件
             @endif
             <span class="font-medium">(全{{ $paginator->total() }}件)</span>
         </p>

@@ -23,12 +23,6 @@
                     {{ $report->user->affiliation_name }}
                 </td>
                 <td>
-                    @if (Str::length($report->user->employee) == 1)
-                        &ensp;&ensp;
-                    @endif
-                    @if (Str::length($report->user->employee) == 2)
-                        &ensp;
-                    @endif
                     {{ $report->user->employee }}
                 </td>
                 <td>

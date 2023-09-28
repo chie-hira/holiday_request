@@ -28,6 +28,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -1297,9 +1298,10 @@ class ReportController extends Controller
     // search
     public function search(Request $request)
     {
-
         // 管理者権限は設定についての権限なので、一覧に影響しない
-        $approvals = Auth::user()->approvals->where('approval_id', '!=', 1)->load('affiliation');
+        $approvals = Auth::user()
+            ->approvals->where('approval_id', '!=', 1)
+            ->load('affiliation');
         // 権限に当てはまるユーザーの申請を取得
         $reports = Report::whereHas('user.affiliation', function ($query) use (
             $approvals
@@ -1356,15 +1358,16 @@ class ReportController extends Controller
                 });
             });
         })
-            ->where('approved', 1)
-            ->where('cancel', 0)
+            // ->where('approved', 1)
+            // ->where('cancel', 0)
             ->get();
         // dd($reports);
         // 全体の閲覧権限があるときは全てのレポートを取得
         if ($approvals->contains('affiliation_id', 1)) {
-            $reports = Report::where('approved', 1)
-                ->where('cancel', 0)
-                ->get();
+            // $reports = Report::where('approved', 1)
+            //     ->where('cancel', 0)
+            //     ->get();
+            $reports = Report::all();
         }
 
         # 重複削除&並べ替え
@@ -1386,7 +1389,7 @@ class ReportController extends Controller
                 ->sortByDesc('start_date')
                 ->sortByDesc('report_date');
         }
-        
+
         $affiliation_id = $request->select_affiliation;
         $user_id = $request->select_user;
         $report_id = $request->select_report;
@@ -1789,7 +1792,7 @@ class ReportController extends Controller
             $page, // 現在のページ番号
             ['path' => request()->url()] // ページネーションリンクのURLを指定
         );
-        
+
         $affiliations = Affiliation::all()->load([
             'factory',
             'department',
@@ -1808,7 +1811,6 @@ class ReportController extends Controller
                 'users'
             )
         );
-        
     }
 
     // myIndex()
@@ -2648,7 +2650,7 @@ class ReportController extends Controller
             ->where('approved', 1)
             ->where('cancel', 0)
             ->get();
-        // dd($reports);
+
         // 全体の閲覧権限があるときは全てのレポートを取得
         if ($approvals->contains('affiliation_id', 1)) {
             $reports = Report::where('approved', 1)
@@ -2674,23 +2676,38 @@ class ReportController extends Controller
                 ->sortBy('start_date')
                 ->sortBy('report_date');
         }
+
+        // ページ番号と1ページあたりのアイテム数を指定
+        $page = request()->get('page', 1); // 現在のページ番号を取得、デフォルトは1
+        $perPage = 25; // 1ページあたりのアイテム数を設定
+
+        // コレクションをページネーションする
+        $paginator = new LengthAwarePaginator(
+            $reports->forPage($page, $perPage), // ページに表示するアイテムを取得
+            $reports->count(), // 全体のアイテム数
+            $perPage, // 1ページあたりのアイテム数
+            $page, // 現在のページ番号
+            ['path' => request()->url()] // ページネーションリンクのURLを指定
+        );
+
         $affiliations = Affiliation::all()->load([
             'factory',
             'department',
             'group',
         ]);
-        $factories = FactoryCategory::all();
-        $departments = DepartmentCategory::all();
         $report_categories = ReportCategory::all();
         $reason_categories = ReasonCategory::all();
         $users = User::all('id', 'employee');
 
+        // sessionリセット
+        Session::forget('reports_collection');
+        // sessionにreportsを保存
+        Session::put('reports_collection', $reports);
+
         return view('reports.export_form')->with(
             compact(
-                'reports',
+                'paginator',
                 'affiliations',
-                'factories',
-                'departments',
                 'report_categories',
                 'reason_categories',
                 'users'
@@ -2698,15 +2715,13 @@ class ReportController extends Controller
         );
     }
 
-    // export()
-    public function export(Request $request)
+    // export_search
+    public function export_search(Request $request)
     {
-        // 二重送信防止
-        // $request->session()->regenerateToken();
-        Log::info('Request data:', $request->all());
-
         // 管理者権限は設定についての権限なので、一覧に影響しない
-        $approvals = Auth::user()->approvals->where('approval_id', '!=', 1);
+        $approvals = Auth::user()
+            ->approvals->where('approval_id', '!=', 1)
+            ->load('affiliation');
         // 権限に当てはまるユーザーの申請を取得
         $reports = Report::whereHas('user.affiliation', function ($query) use (
             $approvals
@@ -2766,7 +2781,7 @@ class ReportController extends Controller
             ->where('approved', 1)
             ->where('cancel', 0)
             ->get();
-        // dd($reports);
+
         // 全体の閲覧権限があるときは全てのレポートを取得
         if ($approvals->contains('affiliation_id', 1)) {
             $reports = Report::where('approved', 1)
@@ -2779,30 +2794,26 @@ class ReportController extends Controller
             $reports = $reports
                 ->unique()
                 ->load([
+                    'user.affiliation',
                     'user.affiliation.factory',
                     'user.affiliation.department',
                     'user.affiliation.group',
                     'report_category',
                     'shift_category',
-                    'reason_category',
                     'sub_report_category',
+                    'reason_category',
                 ])
                 ->sortBy('report_id')
                 ->sortBy('user.affiliation_id')
                 ->sortBy('start_date')
-                ->sortBy('report_date');
+                ->sortByDesc('start_date')
+                ->sortByDesc('report_date');
         }
 
-        /** 設定条件で絞り込む
-         * affiliation_id 課
-         * report_id 休暇種類
-         * reason_id 理由
-         * month 月
-         */
-        $affiliation_id = $request->affiliation_id;
-        $report_id = $request->report_category_id;
-        $reason_id = $request->reason_category_id;
-        $month = $request->get_month;
+        $affiliation_id = $request->select_affiliation;
+        $reason_id = $request->select_reason;
+        $report_id = $request->select_report;
+        $month = $request->select_month;
         $affiliation = Affiliation::find($affiliation_id);
 
         # monthから月初め日、月終わり日を定義
@@ -3188,7 +3199,49 @@ class ReportController extends Controller
                     ->where('start_date', '<=', $end_date);
             }
         }
-        // $reports->load(['user', 'user.factory', 'user.department', 'report_category', 'reason_category']);
+
+        // ページ番号と1ページあたりのアイテム数を指定
+        $page = request()->get('page', 1); // 現在のページ番号を取得、デフォルトは1
+        $perPage = 25; // 1ページあたりのアイテム数を設定
+
+        // コレクションをページネーションする
+        $paginator = new LengthAwarePaginator(
+            $reports->forPage($page, $perPage), // ページに表示するアイテムを取得
+            $reports->count(), // 全体のアイテム数
+            $perPage, // 1ページあたりのアイテム数
+            $page, // 現在のページ番号
+            ['path' => request()->url()] // ページネーションリンクのURLを指定
+        );
+
+        $affiliations = Affiliation::all()->load([
+            'factory',
+            'department',
+            'group',
+        ]);
+        $report_categories = ReportCategory::all();
+        $reason_categories = ReasonCategory::all();
+        $users = User::all('id', 'employee', 'name')->sortBy('employee');
+
+        // sessionリセット
+        Session::forget('reports_collection');
+        // sessionにreportsを保存
+        Session::put('reports_collection', $reports);
+
+        return view('reports.export_form')->with(
+            compact(
+                'paginator',
+                'affiliations',
+                'report_categories',
+                'reason_categories',
+                'users'
+            )
+        );
+    }
+
+    // export()
+    public function export()
+    {
+        $reports = Session::get('reports_collection');
 
         $view = view('reports.export')->with(compact('reports'));
         return Excel::download(new ReportFormExport($view), 'reports.xlsx');

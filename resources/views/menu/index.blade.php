@@ -11,11 +11,14 @@
                             {{ $paid_holidays->remaining_days }}
                         </span> 日
                     @endif
-                    @if (!empty($paid_holidays->remaining_hours))
+                    {{-- @if (!empty($paid_holidays->remaining_hours))
                         <span class="font-bold">
                             &ensp;{{ $paid_holidays->remaining_hours }}
                         </span> 時間
-                    @endif
+                    @endif --}}
+                    @empty($paid_holidays->remaining_days)
+                        0日
+                    @endempty
                 </p>
             </x-info>
             {{-- <div class="pl-2 -mt-2 mb-1">

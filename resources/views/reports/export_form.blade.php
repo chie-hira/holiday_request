@@ -1,43 +1,54 @@
 <x-app-layout>
     <div class="border-b-2 border-gray-200 overflow-x-auto">
-        <nav class="px-4 py-1 flex space-x-6">
-            <!-- 所属選択 - start -->
-            <x-select name="select_affiliation" id="select_affiliation" class="block text-xs w-40" onchange="search();">
-                <option value='1'>{{ __('Affiliation') }}</option>
-                @foreach ($affiliations as $affiliation)
-                    <option value="{{ $affiliation->id }}" @if ($affiliation->id === (int) old('select_affiliation')) selected @endif>
-                        <x-affiliation-name :affiliation="$affiliation" />
-                    </option>
-                @endforeach
-            </x-select>
-            <!-- 属性選択 - end -->
-            <!-- 休暇種類選択 - start -->
-            <x-select name="select_report" id="select_report" class="block text-xs w-40" onchange="search();">
-                <option value=''>{{ __('Report Category') }}</option>
-                <option value=''>全て</option>
-                @foreach ($report_categories as $report_category)
-                    <option value="{{ $report_category->id }}" @if ($report_category->id === (int) old('select_report')) selected @endif>
-                        {{ $report_category->report_name }}
-                    </option>
-                @endforeach
-            </x-select>
-            <!-- 休暇種類選択 - end -->
-            <!-- 理由選択 - start -->
-            <x-select name="select_reason" id="select_reason" class="block text-xs w-40" onchange="search();">
-                <option value=''>{{ __('Reason') }}</option>
-                <option value=''>全て</option>
-                @foreach ($reason_categories as $reason_category)
-                    <option value="{{ $reason_category->id }}" @if ($reason_category->id === (int) old('select_reason')) selected @endif>
-                        {{ $reason_category->reason }}
-                    </option>
-                @endforeach
-            </x-select>
-            <!-- 理由選択 - end -->
-            <!-- 取得日選択 - start -->
-            <x-input type="month" id="select_month" name="select_month" onchange="search();"
-                class="block text-xs w-40" :value="old('month')" />
-            <!-- 取得日選択 - end -->
-
+        <nav class="px-4 py-1 space-x-6">
+            <form action="/export_search" method="GET">
+                <div class="md:flex">
+                    <div class="flex">
+                        <!-- 所属選択 - start -->
+                        <x-select name="select_affiliation" id="select_affiliation" class="block text-xs w-40 mr-2 my-1">
+                            <option value='1'>{{ __('Affiliation') }}</option>
+                            @foreach ($affiliations as $affiliation)
+                                <option value="{{ $affiliation->id }}"
+                                    @if ($affiliation->id == request('select_affiliation')) selected @endif>
+                                    <x-affiliation-name :affiliation="$affiliation" />
+                                </option>
+                            @endforeach
+                        </x-select>
+                        <!-- 属性選択 - end -->
+                        <!-- 休暇種類選択 - start -->
+                        <x-select name="select_report" id="select_report" class="block text-xs w-40 mr-2 my-1">
+                            <option value=''>{{ __('Report Category') }}</option>
+                            <option value=''>全て</option>
+                            @foreach ($report_categories as $report_category)
+                                <option value="{{ $report_category->id }}"
+                                    @if ($report_category->id == request('select_report')) selected @endif>
+                                    {{ $report_category->report_name }}
+                                </option>
+                            @endforeach
+                        </x-select>
+                        <!-- 休暇種類選択 - end -->
+                    </div>
+                    <div class="flex">
+                        <!-- 理由選択 - start -->
+                        <x-select name="select_reason" id="select_reason" class="block text-xs w-40 mr-2 my-1">
+                            <option value=''>{{ __('Reason') }}</option>
+                            <option value=''>全て</option>
+                            @foreach ($reason_categories as $reason)
+                                <option value="{{ $reason->id }}" 
+                                    @if ($reason->id == request('select_reason')) selected @endif>
+                                    {{ $reason->reason }}
+                                </option>
+                            @endforeach
+                        </x-select>
+                        <!-- 理由選択 - end -->
+                        <!-- 取得日選択 - start -->
+                        <x-input type="month" id="select_month" name="select_month" class="block text-xs w-40 mr-2 my-1"
+                            :value="request('select_month')" />
+                        <!-- 取得日選択 - end -->
+                    </div>
+                    <x-show-button type="submit" class="my-1">検 索</x-show-button>
+                </div>
+            </form>
         </nav>
     </div>
 
@@ -99,7 +110,7 @@
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-200 ">
-                                        @foreach ($reports as $report)
+                                        @foreach ($paginator as $report)
                                             <tr id="report_{{ $report->id }}" style="display:"
                                                 class="hover:bg-gray-100 ">
                                                 <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800 ">
@@ -185,15 +196,13 @@
                 </div>
             </div>
 
+            <div class="mt-2">
+            {{ $paginator->appends(request()->except('page'))->links() }}
+            </div>
+
             <div class="w-full mx-auto mt-4 grid grid-cols-1 gap-2">
                 <div class="flex justify-end mb-4">
-                    <form id="myForm" action="{{ route('reports.export') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="affiliation_id" id="affiliation_id" value="">
-                        <input type="hidden" name="user_id" id="user_id" value="">
-                        <input type="hidden" name="report_category_id" id="report_category_id" value="">
-                        <input type="hidden" name="reason_category_id" id="reason_category_id" value="">
-                        <input type="hidden" name="get_month" id="get_month" value="">
+                    <form id="myForm" action="{{ route('reports.export') }}" method="GET">
                         <div class="flex flex-row-reverse">
                             <x-button id="submitButton" class="w-full flex">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
@@ -217,233 +226,4 @@
             </div>
         </div>
     </section>
-
-    <script>
-        let selectAffiliation = document.getElementById('select_affiliation');
-        let selectReport = document.getElementById('select_report');
-        let selectReason = document.getElementById('select_reason');
-        let selectMonth = document.getElementById('select_month');
-        const reports = @json($reports);
-        const affiliations = @json($affiliations);
-
-        function search() {
-            let selectAffiliationId = selectAffiliation.value;
-            let selectReportId = selectReport.value;
-            let selectReasonId = selectReason.value;
-            let selectGetMonth = selectMonth.value;
-            console.log('search'); // 起動確認
-            // 条件書き出し
-            document.getElementById('affiliation_id').setAttribute('value', selectAffiliationId);
-            document.getElementById('report_category_id').setAttribute('value', selectReportId);
-            document.getElementById('reason_category_id').setAttribute('value', selectReasonId);
-            document.getElementById('get_month').setAttribute('value', selectGetMonth);
-            reportDataChange(selectAffiliationId, selectReportId, selectReasonId, selectGetMonth);
-        }
-
-        function reportDataChange(selectAffiliationId, selectReportId, selectReasonId, selectGetMonth) {
-            const department1Affiliations = affiliations.filter((affiliation) => affiliation.department_id == 1);
-            const department1Ids = department1Affiliations.map(object => object.id);
-
-            const selectAffiliationObject = affiliations.filter((affiliation) => affiliation.id == selectAffiliationId);
-            const factories = affiliations.filter((affiliation) => affiliation.factory_id == selectAffiliationObject[0]
-                .factory_id);
-            const factoryIds = factories.map(object => object.id);
-
-            Object.keys(reports).forEach(key => {
-                const value = reports[key];
-                let reportAffiliationId = value.user.affiliation_id;
-                let reportCartegoryId = value.report_id;
-                let reportReasonId = value.reason_id;
-                let reportGetMonth = value.start_date.substr(0, 7);
-                let reportId = document.getElementById('report_' + value.id);
-                console.log(key, value);
-
-                // 選択された値と一致する場合は表示、そうでなければ非表示
-                if (selectAffiliationId == 1) {
-                    if (
-                        selectReportId == reportCartegoryId &&
-                        selectReasonId == reportReasonId &&
-                        selectGetMonth == reportGetMonth || // 全て選択
-
-                        !selectReportId &&
-                        selectReasonId == reportReasonId &&
-                        selectGetMonth == reportGetMonth || // 所属,理由,月 選択
-
-                        selectReportId == reportCartegoryId &&
-                        !selectReasonId &&
-                        selectGetMonth == reportGetMonth || // 所属,休暇種類,月 選択
-
-                        selectReportId == reportCartegoryId &&
-                        selectReasonId == reportReasonId &&
-                        !selectGetMonth || // 所属,休暇種類,理由 選択
-
-                        !selectReportId &&
-                        !selectReasonId &&
-                        selectGetMonth == reportGetMonth || // 所属,月 選択
-
-                        !selectReportId &&
-                        selectReasonId == reportReasonId &&
-                        !selectGetMonth || // 所属,理由 選択
-
-                        selectReportId == reportCartegoryId &&
-                        !selectReasonId &&
-                        !selectGetMonth || // 所属,休暇種類 選択
-
-                        !selectReportId &&
-                        !selectReasonId &&
-                        !selectGetMonth // 全て未選択
-                    ) {
-                        reportId.style.display = '';
-                    } else {
-                        reportId.style.display = 'none';
-                    }
-                } else if (department1Ids.includes(Number(selectAffiliationId))) {
-                    if (
-                        factoryIds.includes(Number(reportAffiliationId)) &&
-                        selectReportId == reportCartegoryId &&
-                        selectReasonId == reportReasonId &&
-                        selectGetMonth == reportGetMonth || // 全て選択
-
-                        factoryIds.includes(Number(reportAffiliationId)) &&
-                        !selectReportId &&
-                        selectReasonId == reportReasonId &&
-                        selectGetMonth == reportGetMonth || // 所属,理由,月 選択
-
-                        factoryIds.includes(Number(reportAffiliationId)) &&
-                        selectReportId == reportCartegoryId &&
-                        !selectReasonId &&
-                        selectGetMonth == reportGetMonth || // 所属,休暇種類,月 選択
-
-                        factoryIds.includes(Number(reportAffiliationId)) &&
-                        selectReportId == reportCartegoryId &&
-                        selectReasonId == reportReasonId &&
-                        !selectGetMonth || // 所属,休暇種類,理由 選択
-
-                        factoryIds.includes(Number(reportAffiliationId)) &&
-                        !selectReportId &&
-                        !selectReasonId &&
-                        selectGetMonth == reportGetMonth || // 所属,月 選択
-
-                        factoryIds.includes(Number(reportAffiliationId)) &&
-                        !selectReportId &&
-                        selectReasonId == reportReasonId &&
-                        !selectGetMonth || // 所属,理由 選択
-
-                        factoryIds.includes(Number(reportAffiliationId)) &&
-                        selectReportId == reportCartegoryId &&
-                        !selectReasonId &&
-                        !selectGetMonth || // 所属,休暇種類 選択
-
-                        factoryIds.includes(Number(reportAffiliationId)) &&
-                        !selectReportId &&
-                        !selectReasonId &&
-                        !selectGetMonth // 全て未選択
-                    ) {
-                        reportId.style.display = '';
-                    } else {
-                        reportId.style.display = 'none';
-                    }
-                } else if (
-                    selectAffiliationId == reportAffiliationId &&
-                    selectReportId == reportCartegoryId &&
-                    selectReasonId == reportReasonId &&
-                    selectGetMonth == reportGetMonth || // 全て選択
-
-                    !selectAffiliationId &&
-                    selectReportId == reportCartegoryId &&
-                    selectReasonId == reportReasonId &&
-                    selectGetMonth == reportGetMonth || // 所属2,休暇種類,理由,月 選択
-
-                    selectAffiliationId == reportAffiliationId &&
-                    !selectReportId &&
-                    selectReasonId == reportReasonId &&
-                    selectGetMonth == reportGetMonth || // 所属,理由,月 選択
-
-                    selectAffiliationId == reportAffiliationId &&
-                    selectReportId == reportCartegoryId &&
-                    !selectReasonId &&
-                    selectGetMonth == reportGetMonth || // 所属,休暇種類,月 選択
-
-                    selectAffiliationId == reportAffiliationId &&
-                    selectReportId == reportCartegoryId &&
-                    selectReasonId == reportReasonId &&
-                    !selectGetMonth || // 所属,休暇種類,理由 選択
-
-                    !selectAffiliationId &&
-                    !selectReportId &&
-                    selectReasonId == reportReasonId &&
-                    selectGetMonth == reportGetMonth || // 所属2,理由,月 選択
-
-                    !selectAffiliationId &&
-                    selectReportId == reportCartegoryId &&
-                    !selectReasonId &&
-                    selectGetMonth == reportGetMonth || // 所属2,休暇種類,月 選択
-
-                    !selectAffiliationId &&
-                    selectReportId == reportCartegoryId &&
-                    selectReasonId == reportReasonId &&
-                    !selectGetMonth || // 所属2,休暇種類,理由 選択
-
-                    selectAffiliationId == reportAffiliationId &&
-                    !selectReportId &&
-                    !selectReasonId &&
-                    selectGetMonth == reportGetMonth || // 所属,月 選択
-
-                    selectAffiliationId == reportAffiliationId &&
-                    !selectReportId &&
-                    selectReasonId == reportReasonId &&
-                    !selectGetMonth || // 所属,理由 選択
-
-                    selectAffiliationId == reportAffiliationId &&
-                    selectReportId == reportCartegoryId &&
-                    !selectReasonId &&
-                    !selectGetMonth || // 所属,休暇種類 選択
-
-                    selectAffiliationId == reportAffiliationId &&
-                    !selectReportId &&
-                    !selectReasonId &&
-                    !selectGetMonth || // 所属 選択
-
-                    !selectAffiliationId &&
-                    selectReportId == reportCartegoryId &&
-                    !selectReasonId &&
-                    !selectGetMonth || // 所属1,休暇種類 選択
-
-                    !selectAffiliationId &&
-                    !selectReportId &&
-                    selectReasonId == reportReasonId &&
-                    !selectGetMonth || // 所属1,理由 選択
-
-                    !selectAffiliationId &&
-                    !selectReportId &&
-                    !selectReasonId &&
-                    !selectGetMonth // 全て未選択
-                ) {
-                    reportId.style.display = '';
-                } else {
-                    reportId.style.display = 'none';
-                }
-
-            });
-        }
-
-        /* 二重送信防止start */
-        // 送信ボタンをクリックした後に非活性化する関数
-        var submitButton = document.getElementById('submitButton');
-
-        function disableSubmitButton() {
-            submitButton.disabled = true; // ボタンを非活性にする
-        }
-
-        function enableSubmitButton() {
-            document.getElementById('submitButton').disabled = false;
-        }
-
-        // フォームが送信される前にdisableSubmitButton関数を呼び出す
-        document.getElementById('myForm').addEventListener('submit', function() {
-            disableSubmitButton();
-            setTimeout(enableSubmitButton, 5000);
-        });
-        /* 二重送信防止end */
-    </script>
 </x-app-layout>

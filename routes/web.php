@@ -128,7 +128,7 @@ Route::get('/export_form', [ReportController::class, 'export_form'])
     ->name('reports.export_form')
     ->middleware('auth')
     ->middleware('can:approver_reader');
-Route::post('/export', [ReportController::class, 'export'])
+Route::get('/export', [ReportController::class, 'export'])
     ->name('reports.export')
     ->middleware('auth');
 Route::get('/all_export', [ReportController::class, 'all_export'])->middleware(
@@ -159,7 +159,11 @@ Route::get('/initial_import', [
     'initial_import',
 ])->name('initial_import');
 
-Route::get('/search', [ReportController::class, 'search']);
+# 検索
+Route::get('/search', [ReportController::class, 'search'])
+    ->middleware('auth');
+Route::get('/export_search', [ReportController::class, 'export_search'])
+    ->middleware('auth');
 
 // TODO:notAuthorizedでログイン画面にリダイレクト
 

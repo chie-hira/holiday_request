@@ -133,7 +133,7 @@
                                                         ~&emsp;&emsp;{{ Str::substr($report->end_time, 0, 5) }}
                                                     @endif
                                                     @if ($report->am_pm != null)
-                                                        {{ $report->am_pm == 1 ? '前半' : '後半' }}
+                                                        {{ $report->am_pm == 1 ? '午 前' : '午 後' }}
                                                     @endif
                                                 </td>
                                                 <td
