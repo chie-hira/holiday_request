@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="border-b-2 border-gray-200 overflow-x-auto">
         <nav class="px-4 py-1 space-x-6">
-            <form action="/search" method="GET">
+            <form action="{{ route('search') }}" method="GET">
                 <div class="md:flex">
                     <div class="flex">
                         <!-- 所属選択 - start -->

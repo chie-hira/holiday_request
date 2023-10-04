@@ -161,9 +161,11 @@ Route::get('/initial_import', [
 
 # 検索
 Route::get('/search', [ReportController::class, 'search'])
-    ->middleware('auth');
+    ->middleware('auth')
+    ->name('search');
 Route::get('/export_search', [ReportController::class, 'export_search'])
-    ->middleware('auth');
+    ->middleware('auth')
+    ->name('export_search');
 
 // TODO:notAuthorizedでログイン画面にリダイレクト
 
