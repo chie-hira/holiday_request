@@ -99,7 +99,7 @@
                                         </span>
                                     @endif
                                     @if ($report->am_pm != null)
-                                        &emsp;{{ $report->am_pm == 1 ? '前 半' : '後 半' }}
+                                        &emsp;{{ $report->am_pm == 1 ? '午 前' : '午 後' }}
                                     @endif
                                     @if ($report->end_date == null && $report->start_time == null && $report->am_pm == null)
                                         <span class="ml-4">

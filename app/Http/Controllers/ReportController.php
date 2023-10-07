@@ -15,6 +15,7 @@ use App\Models\User;
 use App\Models\Approval;
 use App\Models\FactoryCategory;
 use App\Exports\ReportFormExport;
+use App\Imports\ReportImport;
 use App\Models\Affiliation;
 use App\Models\Calender;
 use App\Models\DepartmentCategory;
@@ -25,7 +26,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -124,6 +127,18 @@ class ReportController extends Controller
                 ->sortByDesc('start_date')
                 ->sortByDesc('report_date');
         }
+        // ページ番号と1ページあたりのアイテム数を指定
+        $page = request()->get('page', 1); // 現在のページ番号を取得、デフォルトは1
+        $perPage = 25; // 1ページあたりのアイテム数を設定
+
+        // コレクションをページネーションする
+        $paginator = new LengthAwarePaginator(
+            $reports->forPage($page, $perPage), // ページに表示するアイテムを取得
+            $reports->count(), // 全体のアイテム数
+            $perPage, // 1ページあたりのアイテム数
+            $page, // 現在のページ番号
+            ['path' => request()->url()] // ページネーションリンクのURLを指定
+        );
 
         $affiliations = Affiliation::all()->load([
             'factory',
@@ -136,11 +151,12 @@ class ReportController extends Controller
 
         return view('reports.index')->with(
             compact(
-                'reports',
+                // 'reports',
+                'paginator',
                 'affiliations',
                 'report_categories',
                 'reason_categories',
-                'users',
+                'users'
             )
         );
     }
@@ -193,14 +209,13 @@ class ReportController extends Controller
             }
         )
             ->orWhere(function ($query) {
-                $query
-                    ->where('max_days', null);
-                    // ->where('id', 12)
-                    // ->orWhere('id', 13)
-                    // ->orWhere('id', 14)
-                    // ->orWhere('id', 15)
-                    // ->orWhere('id', 17)
-                    // ->orWhere('id', 18);
+                $query->where('max_days', null);
+                // ->where('id', 12)
+                // ->orWhere('id', 13)
+                // ->orWhere('id', 14)
+                // ->orWhere('id', 15)
+                // ->orWhere('id', 17)
+                // ->orWhere('id', 18);
             })
             ->get()
             ->load('acquisition_form');
@@ -330,10 +345,7 @@ class ReportController extends Controller
                 ]
             );
         }
-        if (
-            $request->reason_id == 1 || 
-            $request->reason_id == 2 
-        ) {
+        if ($request->reason_id == 1 || $request->reason_id == 2) {
             # 理由:その他
             $request->validate(
                 [
@@ -692,14 +704,13 @@ class ReportController extends Controller
             }
         )
             ->orWhere(function ($query) {
-                $query
-                    ->where('max_days', null);
-                    // ->where('id', 12)
-                    // ->orWhere('id', 13)
-                    // ->orWhere('id', 14)
-                    // ->orWhere('id', 15)
-                    // ->orWhere('id', 17)
-                    // ->orWhere('id', 18);
+                $query->where('max_days', null);
+                // ->where('id', 12)
+                // ->orWhere('id', 13)
+                // ->orWhere('id', 14)
+                // ->orWhere('id', 15)
+                // ->orWhere('id', 17)
+                // ->orWhere('id', 18);
             })
             ->get();
 
@@ -742,7 +753,7 @@ class ReportController extends Controller
         // 二重送信防止
         $request->session()->regenerateToken();
         Log::info('Request data:', $request->all());
-        
+
         // バリデーション
         if ($request->sub_report_id == 1) {
             # 終日休
@@ -827,10 +838,7 @@ class ReportController extends Controller
                 ]
             );
         }
-        if (
-            $request->reason_id == 1 || 
-            $request->reason_id == 2 
-        ) {
+        if ($request->reason_id == 1 || $request->reason_id == 2) {
             # 理由:その他
             $request->validate(
                 [
@@ -1285,6 +1293,524 @@ class ReportController extends Controller
                 return back()->withErrors('エラーが発生しました');
             }
         }
+    }
+
+    // search
+    public function search(Request $request)
+    {
+        // 管理者権限は設定についての権限なので、一覧に影響しない
+        $approvals = Auth::user()
+            ->approvals->where('approval_id', '!=', 1)
+            ->load('affiliation');
+        // 権限に当てはまるユーザーの申請を取得
+        $reports = Report::whereHas('user.affiliation', function ($query) use (
+            $approvals
+        ) {
+            $query->where(function ($query) use ($approvals) {
+                foreach ($approvals as $approval) {
+                    $query->orWhere(function ($query) use ($approval) {
+                        if ($approval->affiliation->department_id == 1) {
+                            $query->where(
+                                'factory_id',
+                                $approval->affiliation->factory_id
+                            );
+                        } elseif (
+                            $approval->affiliation->department_id != 1 &&
+                            $approval->affiliation->group_id == 1
+                        ) {
+                            $query
+                                ->where(
+                                    'factory_id',
+                                    $approval->affiliation->factory_id
+                                )
+                                ->where(
+                                    'department_id',
+                                    $approval->affiliation->department_id
+                                );
+                        } elseif (
+                            $approval->affiliation->department_id != 1 &&
+                            $approval->affiliation->group_id != 1
+                        ) {
+                            $query
+                                ->where(
+                                    'factory_id',
+                                    $approval->affiliation->factory_id
+                                )
+                                ->where(
+                                    'department_id',
+                                    $approval->affiliation->department_id
+                                )
+                                ->where(
+                                    'group_id',
+                                    $approval->affiliation->group_id
+                                );
+                        }
+                    });
+                }
+                // 工場長を追加
+                $query->orWhere(function ($query) use ($approval) {
+                    $query
+                        ->where(
+                            'factory_id',
+                            $approval->affiliation->factory_id
+                        )
+                        ->where('department_id', 1);
+                });
+            });
+        })
+            // ->where('approved', 1)
+            // ->where('cancel', 0)
+            ->get();
+        // dd($reports);
+        // 全体の閲覧権限があるときは全てのレポートを取得
+        if ($approvals->contains('affiliation_id', 1)) {
+            // $reports = Report::where('approved', 1)
+            //     ->where('cancel', 0)
+            //     ->get();
+            $reports = Report::all();
+        }
+
+        # 重複削除&並べ替え
+        if ($reports->first()) {
+            $reports = $reports
+                ->unique()
+                ->load([
+                    'user.affiliation',
+                    'user.affiliation.factory',
+                    'user.affiliation.department',
+                    'user.affiliation.group',
+                    'report_category',
+                    'shift_category',
+                    'sub_report_category',
+                ])
+                ->sortBy('report_id')
+                ->sortBy('user.affiliation_id')
+                ->sortBy('start_date')
+                ->sortByDesc('start_date')
+                ->sortByDesc('report_date');
+        }
+
+        $affiliation_id = $request->select_affiliation;
+        $user_id = $request->select_user;
+        $report_id = $request->select_report;
+        $month = $request->select_month;
+        $affiliation = Affiliation::find($affiliation_id);
+
+        # monthから月初め日、月終わり日を定義
+        if ($month) {
+            $carbon = new Carbon($month);
+            $start_date = $carbon->format('Y-m-d');
+            $end_date = $carbon
+                ->addMonth()
+                ->subDay()
+                ->format('Y-m-d');
+        }
+
+        /** 条件に従って帳票出力するreportを取得 */
+        if ($affiliation_id == 1) {
+            if ($report_id != null && $user_id == null && $month == null) {
+                # 休暇種類を指定
+                $reports = $reports->where('report_id', $report_id);
+            } elseif (
+                $report_id == null &&
+                $user_id != null &&
+                $month == null
+            ) {
+                # 理由を指定
+                $reports = $reports->where('user_id', $user_id);
+            } elseif (
+                $report_id == null &&
+                $user_id == null &&
+                $month != null
+            ) {
+                # 月を指定
+                $reports = $reports
+                    ->where('start_date', '>=', $start_date)
+                    ->where('start_date', '<=', $end_date);
+            } elseif (
+                $report_id != null &&
+                $user_id != null &&
+                $month == null
+            ) {
+                # 休暇種類,理由を指定
+                $reports = $reports
+                    ->where('report_id', $report_id)
+                    ->where('user_id', $user_id);
+            } elseif (
+                $report_id != null &&
+                $user_id == null &&
+                $month != null
+            ) {
+                # 休暇種類,月を指定
+                $reports = $reports
+                    ->where('report_id', $report_id)
+                    ->where('start_date', '>=', $start_date)
+                    ->where('start_date', '<=', $end_date);
+            } elseif (
+                $report_id == null &&
+                $user_id != null &&
+                $month != null
+            ) {
+                # 理由,月を指定
+                $reports = $reports
+                    ->where('start_date', '>=', $start_date)
+                    ->where('start_date', '<=', $end_date)
+                    ->where('user_id', $user_id);
+            } elseif (
+                $report_id != null &&
+                $user_id != null &&
+                $month != null
+            ) {
+                # 休暇種類,理由,月を指定
+                $reports = $reports
+                    ->where('start_date', '>=', $start_date)
+                    ->where('start_date', '<=', $end_date)
+                    ->where('report_id', $report_id)
+                    ->where('user_id', $user_id);
+            }
+        } else {
+            if (
+                $affiliation_id != null &&
+                $report_id == null &&
+                $user_id == null &&
+                $month == null
+            ) {
+                # 所属を指定
+                $reports = $reports->filter(function ($item) use (
+                    $affiliation_id,
+                    $affiliation
+                ) {
+                    if ($affiliation->department_id == 1) {
+                        return $item->user->affiliation->factory_id ==
+                            $affiliation->factory_id;
+                    } elseif (
+                        $affiliation->department_id != 1 &&
+                        $affiliation->group_id == 1
+                    ) {
+                        return $item->user->affiliation->factory_id ==
+                            $affiliation->factory_id &&
+                            $item->user->affiliation->department_id ==
+                                $affiliation->department_id;
+                    } else {
+                        return $item->user->affiliation_id == $affiliation_id;
+                    }
+                });
+            } elseif (
+                $affiliation_id == null &&
+                $report_id != null &&
+                $user_id == null &&
+                $month == null
+            ) {
+                # 休暇種類を指定
+                $reports = $reports->where('report_id', $report_id);
+            } elseif (
+                $affiliation_id == null &&
+                $report_id == null &&
+                $user_id != null &&
+                $month == null
+            ) {
+                # 理由を指定
+                $reports = $reports->where('user_id', $user_id);
+            } elseif (
+                $affiliation_id == null &&
+                $report_id == null &&
+                $user_id == null &&
+                $month != null
+            ) {
+                # 月を指定
+                $reports = $reports
+                    ->where('start_date', '>=', $start_date)
+                    ->where('start_date', '<=', $end_date);
+            } elseif (
+                $affiliation_id != null &&
+                $report_id != null &&
+                $user_id == null &&
+                $month == null
+            ) {
+                # 所属,休暇種類を指定
+                $reports = $reports
+                    ->filter(function ($item) use (
+                        $affiliation_id,
+                        $affiliation
+                    ) {
+                        if ($affiliation->department_id == 1) {
+                            return $item->user->affiliation->factory_id ==
+                                $affiliation->factory_id;
+                        } elseif (
+                            $affiliation->department_id != 1 &&
+                            $affiliation->group_id == 1
+                        ) {
+                            return $item->user->affiliation->factory_id ==
+                                $affiliation->factory_id &&
+                                $item->user->affiliation->department_id ==
+                                    $affiliation->department_id;
+                        } else {
+                            return $item->user->affiliation_id ==
+                                $affiliation_id;
+                        }
+                    })
+                    ->where('report_id', $report_id);
+            } elseif (
+                $affiliation_id != null &&
+                $report_id == null &&
+                $user_id != null &&
+                $month == null
+            ) {
+                # 所属,理由を指定
+                $reports = $reports
+                    ->filter(function ($item) use (
+                        $affiliation_id,
+                        $affiliation
+                    ) {
+                        if ($affiliation->department_id == 1) {
+                            return $item->user->affiliation->factory_id ==
+                                $affiliation->factory_id;
+                        } elseif (
+                            $affiliation->department_id != 1 &&
+                            $affiliation->group_id == 1
+                        ) {
+                            return $item->user->affiliation->factory_id ==
+                                $affiliation->factory_id &&
+                                $item->user->affiliation->department_id ==
+                                    $affiliation->department_id;
+                        } else {
+                            return $item->user->affiliation_id ==
+                                $affiliation_id;
+                        }
+                    })
+                    ->where('user_id', $user_id);
+            } elseif (
+                $affiliation_id != null &&
+                $report_id == null &&
+                $user_id == null &&
+                $month != null
+            ) {
+                # 所属,月を指定
+                $reports = $reports
+                    ->filter(function ($item) use (
+                        $affiliation_id,
+                        $affiliation
+                    ) {
+                        if ($affiliation->department_id == 1) {
+                            return $item->user->affiliation->factory_id ==
+                                $affiliation->factory_id;
+                        } elseif (
+                            $affiliation->department_id != 1 &&
+                            $affiliation->group_id == 1
+                        ) {
+                            return $item->user->affiliation->factory_id ==
+                                $affiliation->factory_id &&
+                                $item->user->affiliation->department_id ==
+                                    $affiliation->department_id;
+                        } else {
+                            return $item->user->affiliation_id ==
+                                $affiliation_id;
+                        }
+                    })
+                    ->where('start_date', '>=', $start_date)
+                    ->where('start_date', '<=', $end_date);
+            } elseif (
+                $affiliation_id == null &&
+                $report_id != null &&
+                $user_id != null &&
+                $month == null
+            ) {
+                # 休暇種類,理由を指定
+                $reports = $reports
+                    ->where('report_id', $report_id)
+                    ->where('user_id', $user_id);
+            } elseif (
+                $affiliation_id == null &&
+                $report_id != null &&
+                $user_id == null &&
+                $month != null
+            ) {
+                # 休暇種類,月を指定
+                $reports = $reports
+                    ->where('report_id', $report_id)
+                    ->where('start_date', '>=', $start_date)
+                    ->where('start_date', '<=', $end_date);
+            } elseif (
+                $affiliation_id == null &&
+                $report_id == null &&
+                $user_id != null &&
+                $month != null
+            ) {
+                # 理由,月を指定
+                $reports = $reports
+                    ->where('start_date', '>=', $start_date)
+                    ->where('start_date', '<=', $end_date)
+                    ->where('user_id', $user_id);
+            } elseif (
+                $affiliation_id != null &&
+                $report_id != null &&
+                $user_id != null &&
+                $month == null
+            ) {
+                # 所属,休暇種類,理由を指定
+                $reports = $reports
+                    ->filter(function ($item) use (
+                        $affiliation_id,
+                        $affiliation
+                    ) {
+                        if ($affiliation->department_id == 1) {
+                            return $item->user->affiliation->factory_id ==
+                                $affiliation->factory_id;
+                        } elseif (
+                            $affiliation->department_id != 1 &&
+                            $affiliation->group_id == 1
+                        ) {
+                            return $item->user->affiliation->factory_id ==
+                                $affiliation->factory_id &&
+                                $item->user->affiliation->department_id ==
+                                    $affiliation->department_id;
+                        } else {
+                            return $item->user->affiliation_id ==
+                                $affiliation_id;
+                        }
+                    })
+                    ->where('report_id', $report_id)
+                    ->where('user_id', $user_id);
+            } elseif (
+                $affiliation_id != null &&
+                $report_id != null &&
+                $user_id == null &&
+                $month != null
+            ) {
+                # 所属,休暇種類,月を指定
+                $reports = $reports
+                    ->filter(function ($item) use (
+                        $affiliation_id,
+                        $affiliation
+                    ) {
+                        if ($affiliation->department_id == 1) {
+                            return $item->user->affiliation->factory_id ==
+                                $affiliation->factory_id;
+                        } elseif (
+                            $affiliation->department_id != 1 &&
+                            $affiliation->group_id == 1
+                        ) {
+                            return $item->user->affiliation->factory_id ==
+                                $affiliation->factory_id &&
+                                $item->user->affiliation->department_id ==
+                                    $affiliation->department_id;
+                        } else {
+                            return $item->user->affiliation_id ==
+                                $affiliation_id;
+                        }
+                    })
+                    ->where('start_date', '>=', $start_date)
+                    ->where('start_date', '<=', $end_date)
+                    ->where('report_id', $report_id);
+            } elseif (
+                $affiliation_id != null &&
+                $report_id == null &&
+                $user_id != null &&
+                $month != null
+            ) {
+                # 所属,理由,月を指定
+                $reports = $reports
+                    ->filter(function ($item) use (
+                        $affiliation_id,
+                        $affiliation
+                    ) {
+                        if ($affiliation->department_id == 1) {
+                            return $item->user->affiliation->factory_id ==
+                                $affiliation->factory_id;
+                        } elseif (
+                            $affiliation->department_id != 1 &&
+                            $affiliation->group_id == 1
+                        ) {
+                            return $item->user->affiliation->factory_id ==
+                                $affiliation->factory_id &&
+                                $item->user->affiliation->department_id ==
+                                    $affiliation->department_id;
+                        } else {
+                            return $item->user->affiliation_id ==
+                                $affiliation_id;
+                        }
+                    })
+                    ->where('start_date', '>=', $start_date)
+                    ->where('start_date', '<=', $end_date)
+                    ->where('user_id', $user_id);
+            } elseif (
+                $affiliation_id == null &&
+                $report_id != null &&
+                $user_id != null &&
+                $month != null
+            ) {
+                # 休暇種類,理由,月を指定
+                $reports = $reports
+                    ->where('start_date', '>=', $start_date)
+                    ->where('start_date', '<=', $end_date)
+                    ->where('report_id', $report_id)
+                    ->where('user_id', $user_id);
+            } elseif (
+                $affiliation_id != null &&
+                $report_id != null &&
+                $user_id != null &&
+                $month != null
+            ) {
+                # すべて指定
+                $reports = $reports
+                    ->filter(function ($item) use (
+                        $affiliation_id,
+                        $affiliation
+                    ) {
+                        if ($affiliation->department_id == 1) {
+                            return $item->user->affiliation->factory_id ==
+                                $affiliation->factory_id;
+                        } elseif (
+                            $affiliation->department_id != 1 &&
+                            $affiliation->group_id == 1
+                        ) {
+                            return $item->user->affiliation->factory_id ==
+                                $affiliation->factory_id &&
+                                $item->user->affiliation->department_id ==
+                                    $affiliation->department_id;
+                        } else {
+                            return $item->user->affiliation_id ==
+                                $affiliation_id;
+                        }
+                    })
+                    ->where('report_id', $report_id)
+                    ->where('user_id', $user_id)
+                    ->where('start_date', '>=', $start_date)
+                    ->where('start_date', '<=', $end_date);
+            }
+        }
+
+        // ページ番号と1ページあたりのアイテム数を指定
+        $page = request()->get('page', 1); // 現在のページ番号を取得、デフォルトは1
+        $perPage = 25; // 1ページあたりのアイテム数を設定
+
+        // コレクションをページネーションする
+        $paginator = new LengthAwarePaginator(
+            $reports->forPage($page, $perPage), // ページに表示するアイテムを取得
+            $reports->count(), // 全体のアイテム数
+            $perPage, // 1ページあたりのアイテム数
+            $page, // 現在のページ番号
+            ['path' => request()->url()] // ページネーションリンクのURLを指定
+        );
+
+        $affiliations = Affiliation::all()->load([
+            'factory',
+            'department',
+            'group',
+        ]);
+        $report_categories = ReportCategory::all();
+        $reason_categories = ReasonCategory::all();
+        $users = User::all('id', 'employee', 'name')->sortBy('employee');
+
+        return view('reports.index')->with(
+            compact(
+                'paginator',
+                'affiliations',
+                'report_categories',
+                'reason_categories',
+                'users'
+            )
+        );
     }
 
     // myIndex()
@@ -2124,7 +2650,7 @@ class ReportController extends Controller
             ->where('approved', 1)
             ->where('cancel', 0)
             ->get();
-        // dd($reports);
+
         // 全体の閲覧権限があるときは全てのレポートを取得
         if ($approvals->contains('affiliation_id', 1)) {
             $reports = Report::where('approved', 1)
@@ -2150,23 +2676,38 @@ class ReportController extends Controller
                 ->sortBy('start_date')
                 ->sortBy('report_date');
         }
+
+        // ページ番号と1ページあたりのアイテム数を指定
+        $page = request()->get('page', 1); // 現在のページ番号を取得、デフォルトは1
+        $perPage = 25; // 1ページあたりのアイテム数を設定
+
+        // コレクションをページネーションする
+        $paginator = new LengthAwarePaginator(
+            $reports->forPage($page, $perPage), // ページに表示するアイテムを取得
+            $reports->count(), // 全体のアイテム数
+            $perPage, // 1ページあたりのアイテム数
+            $page, // 現在のページ番号
+            ['path' => request()->url()] // ページネーションリンクのURLを指定
+        );
+
         $affiliations = Affiliation::all()->load([
             'factory',
             'department',
             'group',
         ]);
-        $factories = FactoryCategory::all();
-        $departments = DepartmentCategory::all();
         $report_categories = ReportCategory::all();
         $reason_categories = ReasonCategory::all();
         $users = User::all('id', 'employee');
 
+        // sessionリセット
+        Session::forget('reports_collection');
+        // sessionにreportsを保存
+        Session::put('reports_collection', $reports);
+
         return view('reports.export_form')->with(
             compact(
-                'reports',
+                'paginator',
                 'affiliations',
-                'factories',
-                'departments',
                 'report_categories',
                 'reason_categories',
                 'users'
@@ -2174,15 +2715,13 @@ class ReportController extends Controller
         );
     }
 
-    // export()
-    public function export(Request $request)
+    // export_search
+    public function export_search(Request $request)
     {
-        // 二重送信防止
-        // $request->session()->regenerateToken();
-        Log::info('Request data:', $request->all());
-
         // 管理者権限は設定についての権限なので、一覧に影響しない
-        $approvals = Auth::user()->approvals->where('approval_id', '!=', 1);
+        $approvals = Auth::user()
+            ->approvals->where('approval_id', '!=', 1)
+            ->load('affiliation');
         // 権限に当てはまるユーザーの申請を取得
         $reports = Report::whereHas('user.affiliation', function ($query) use (
             $approvals
@@ -2242,7 +2781,7 @@ class ReportController extends Controller
             ->where('approved', 1)
             ->where('cancel', 0)
             ->get();
-        // dd($reports);
+
         // 全体の閲覧権限があるときは全てのレポートを取得
         if ($approvals->contains('affiliation_id', 1)) {
             $reports = Report::where('approved', 1)
@@ -2255,30 +2794,26 @@ class ReportController extends Controller
             $reports = $reports
                 ->unique()
                 ->load([
+                    'user.affiliation',
                     'user.affiliation.factory',
                     'user.affiliation.department',
                     'user.affiliation.group',
                     'report_category',
                     'shift_category',
-                    'reason_category',
                     'sub_report_category',
+                    'reason_category',
                 ])
                 ->sortBy('report_id')
                 ->sortBy('user.affiliation_id')
                 ->sortBy('start_date')
-                ->sortBy('report_date');
+                ->sortByDesc('start_date')
+                ->sortByDesc('report_date');
         }
 
-        /** 設定条件で絞り込む
-         * affiliation_id 課
-         * report_id 休暇種類
-         * reason_id 理由
-         * month 月
-         */
-        $affiliation_id = $request->affiliation_id;
-        $report_id = $request->report_category_id;
-        $reason_id = $request->reason_category_id;
-        $month = $request->get_month;
+        $affiliation_id = $request->select_affiliation;
+        $reason_id = $request->select_reason;
+        $report_id = $request->select_report;
+        $month = $request->select_month;
         $affiliation = Affiliation::find($affiliation_id);
 
         # monthから月初め日、月終わり日を定義
@@ -2664,10 +3199,63 @@ class ReportController extends Controller
                     ->where('start_date', '<=', $end_date);
             }
         }
-        // $reports->load(['user', 'user.factory', 'user.department', 'report_category', 'reason_category']);
+
+        // ページ番号と1ページあたりのアイテム数を指定
+        $page = request()->get('page', 1); // 現在のページ番号を取得、デフォルトは1
+        $perPage = 25; // 1ページあたりのアイテム数を設定
+
+        // コレクションをページネーションする
+        $paginator = new LengthAwarePaginator(
+            $reports->forPage($page, $perPage), // ページに表示するアイテムを取得
+            $reports->count(), // 全体のアイテム数
+            $perPage, // 1ページあたりのアイテム数
+            $page, // 現在のページ番号
+            ['path' => request()->url()] // ページネーションリンクのURLを指定
+        );
+
+        $affiliations = Affiliation::all()->load([
+            'factory',
+            'department',
+            'group',
+        ]);
+        $report_categories = ReportCategory::all();
+        $reason_categories = ReasonCategory::all();
+        $users = User::all('id', 'employee', 'name')->sortBy('employee');
+
+        // sessionリセット
+        Session::forget('reports_collection');
+        // sessionにreportsを保存
+        Session::put('reports_collection', $reports);
+
+        return view('reports.export_form')->with(
+            compact(
+                'paginator',
+                'affiliations',
+                'report_categories',
+                'reason_categories',
+                'users'
+            )
+        );
+    }
+
+    // export()
+    public function export()
+    {
+        $reports = Session::get('reports_collection');
 
         $view = view('reports.export')->with(compact('reports'));
         return Excel::download(new ReportFormExport($view), 'reports.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+        $excel_file = $request->file('excel_file');
+        $excel_file->store('excels');
+        Excel::import(new ReportImport(), $excel_file);
+
+        return redirect()
+            ->route('import_form')
+            ->with('notice', '申請インポート完了！');
     }
 
     public function all_export()
