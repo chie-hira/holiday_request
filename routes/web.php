@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\AcquisitionDayController;
 use App\Http\Controllers\ApprovalController;
+use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -166,6 +168,14 @@ Route::get('/search', [ReportController::class, 'search'])
 Route::get('/export_search', [ReportController::class, 'export_search'])
     ->middleware('auth')
     ->name('export_search');
+
+#profile
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'mail_address_edit'])->name('profile.mail_address_edit');
+    Route::get('/password', [ProfileController::class, 'password_edit'])->name('profile.password_edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/password', [PasswordController::class, 'update'])->name('password.change');
+});
 
 // TODO:notAuthorizedでログイン画面にリダイレクト
 
