@@ -171,6 +171,7 @@ Route::get('/export_search', [ReportController::class, 'export_search'])
 
 #profile
 Route::middleware('auth')->group(function () {
+    Route::get('/account', [ProfileController::class, 'account'])->name('profile.edit');
     Route::get('/profile', [ProfileController::class, 'mail_address_edit'])->name('profile.mail_address_edit');
     Route::get('/password', [ProfileController::class, 'password_edit'])->name('profile.password_edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
