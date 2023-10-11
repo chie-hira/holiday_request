@@ -153,6 +153,7 @@ return [
             'rule-name' => 'custom-message',
         ],
         'sameMonth' => '2つ以上の月に及ぶ休暇を取得する場合は、月ごとに届出を提出してください。',
+        'today' => '申請日は今日です',
     ],
 
     'attributes' => [

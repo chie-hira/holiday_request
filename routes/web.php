@@ -28,36 +28,36 @@ use Illuminate\Support\Facades\Route;
 # reportルーティング
 Route::resource('reports', ReportController::class)
     ->only('create')
-    ->middleware('auth')
-    ->middleware('block.datetime');
+    ->middleware('block.datetime')
+    ->middleware('auth');
 Route::resource('reports', ReportController::class)
     ->only('show')
     ->middleware('auth');
 Route::resource('reports', ReportController::class)
     ->only('store')
-    ->middleware('auth')
-    ->middleware('throttle:5, 1'); # 1分間に受け付けるリクエスト数を5回に制限
+    ->middleware('throttle:5, 1') # 1分間に受け付けるリクエスト数を5回に制限
+    ->middleware('auth');
 // ReportControllerTestを実行するときはリクエスト制限を外すこと
 Route::resource('reports', ReportController::class)
     ->only(['edit', 'update'])
-    ->middleware('auth')
-    ->middleware('can:update,report');
+    ->middleware('can:update,report')
+    ->middleware('auth');
 Route::resource('reports', ReportController::class)
     ->only('destroy')
-    ->middleware('auth')
-    ->middleware('can:delete,report');
+    ->middleware('can:delete,report')
+    ->middleware('auth');
 Route::resource('reports', ReportController::class)
     ->only('index')
-    ->middleware('auth')
-    ->middleware('can:approver_reader');
+    ->middleware('can:approver_reader')
+    ->middleware('auth');
 Route::get('/my_reports', [ReportController::class, 'myIndex'])
     ->name('reports.my_index')
     ->middleware('auth');
 
 # acquisition_daysルーティング
 Route::resource('acquisition_days', AcquisitionDayController::class)
-    ->middleware('auth')
-    ->middleware('can:admin');
+    ->middleware('can:admin')
+    ->middleware('auth');
 Route::get('/my_acquisition_days', [AcquisitionDayController::class, 'myIndex'])
     ->name('acquisition_days.my_index')
     ->middleware('auth');
@@ -66,31 +66,31 @@ Route::get('/acquisition_status', [
     'acquisitionStatus',
 ])
     ->name('acquisition_days.status_index')
-    ->middleware('auth')
-    ->middleware('can:approver_reader');
+    ->middleware('can:approver_reader')
+    ->middleware('auth');
 Route::get('/update_form', function () {
     return view('acquisition_days.update_form');
 })
     ->name('acquisition_days.update_form')
-    ->middleware('auth')
-    ->middleware('can:general_admin');
+    ->middleware('can:general_admin')
+    ->middleware('auth');
 Route::post('/add_remainings', [
     AcquisitionDayController::class,
     'addRemainings',
 ])
     ->name('acquisitions_days.add_remainings')
-    ->middleware('auth')
-    ->middleware('can:general_admin');
+    ->middleware('can:general_admin')
+    ->middleware('auth');
 
 # usersルーティング
 Route::resource('users', UserController::class)
-    ->middleware('auth')
-    ->middleware('can:admin');
+    ->middleware('can:admin')
+    ->middleware('auth');
 
 # approvalsルーティング
 Route::resource('approvals', ApprovalController::class)
-    ->middleware('auth')
-    ->middleware('can:admin');
+    ->middleware('can:admin')
+    ->middleware('auth');
 
 # 承認ルーティング
 Route::get('/approval/{report}', [ReportController::class, 'approval'])
@@ -111,8 +111,8 @@ Route::get('/', [ReportController::class, 'menu'])
 Route::get('/explanations', function () {
     return view('explanations.index');
 })
-    ->middleware(['auth'])
-    ->name('explanations');
+    ->name('explanations')
+    ->middleware('auth');
 # monitorルーティング
 Route::get('/monitor', [ReportController::class, 'monitor'])
     ->name('monitor');
@@ -128,8 +128,8 @@ Route::put('/reports/approved/{report}/cancel', [
 # エクスポート
 Route::get('/export_form', [ReportController::class, 'export_form'])
     ->name('reports.export_form')
-    ->middleware('auth')
-    ->middleware('can:approver_reader');
+    ->middleware('can:approver_reader')
+    ->middleware('auth');
 Route::get('/export', [ReportController::class, 'export'])
     ->name('reports.export')
     ->middleware('auth');
@@ -163,11 +163,11 @@ Route::get('/initial_import', [
 
 # 検索
 Route::get('/search', [ReportController::class, 'search'])
-    ->middleware('auth')
-    ->name('search');
+    ->name('search')
+    ->middleware('auth');
 Route::get('/export_search', [ReportController::class, 'export_search'])
-    ->middleware('auth')
-    ->name('export_search');
+    ->name('export_search')
+    ->middleware('auth');
 
 #profile
 Route::middleware('auth')->group(function () {
