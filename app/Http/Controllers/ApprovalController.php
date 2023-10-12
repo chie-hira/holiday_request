@@ -176,7 +176,7 @@ class ApprovalController extends Controller
         $approval_categories = ApprovalCategory::where('id', '!=', 1)->get();
 
         if ($my_approvals->contains('affiliation_id', 1)) {
-            $users = User::all();
+            $users = User::all()->sortBy('employee');
             $affiliations = Affiliation::all()->load([
                 'factory',
                 'department',
@@ -316,7 +316,7 @@ class ApprovalController extends Controller
      */
     public function destroy(Approval $approval)
     {
-        Log::info('Destroy data:', $approval->all());
+        Log::info('Destroy data:', $approval->getAttributes());
 
         try {
             $approval->delete();

@@ -80,16 +80,22 @@ class SendListToManager extends Command
         }
 
         // Excelファイルを生成
-        $excelFilePath = storage_path('app/excels/file.xlsx');
+        $excelName = date('YmdHis') . '_reports.xlsx';
+        $excelFilePath = 'public/excels/' . $excelName;
         Excel::store(new ReportList($excelData), $excelFilePath);
+
+        $excelUrl = 'storage/app/' . $excelFilePath;
 
         $users = User::whereHas('approvals', function ($query) {
             $query->where('approval_id', 5);
         })->get();
 
         foreach ($users as $user) {
-            Mail::to($user->email)->send(new ExcelEmail($excelFilePath),);
+            Mail::to($user->email)->send(new ExcelEmail($excelUrl),);
         }
+
+        // メール送信が完了したらエクセルファイルを削除
+        unlink($excelUrl);
 
         $this->info('Report list sent successfully.');
     }
