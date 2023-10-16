@@ -68,12 +68,16 @@ Route::get('/acquisition_status', [
     ->name('acquisition_days.status_index')
     ->middleware('can:approver_reader')
     ->middleware('auth');
-Route::get('/update_form', function () {
-    return view('acquisition_days.update_form');
-})
+Route::get('/update_form', [AcquisitionDayController::class, 'updateForm'])
     ->name('acquisition_days.update_form')
     ->middleware('can:general_admin')
     ->middleware('auth');
+// Route::get('/update_form', function () {
+//     return view('acquisition_days.update_form');
+// })
+//     ->name('acquisition_days.update_form')
+//     ->middleware('can:general_admin')
+//     ->middleware('auth');
 Route::post('/add_remainings', [
     AcquisitionDayController::class,
     'addRemainings',

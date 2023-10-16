@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
 class AcquisitionDayController extends Controller
@@ -329,6 +330,19 @@ class AcquisitionDayController extends Controller
         return $reset_remaining->save();
     }
 
+    public function updateForm()
+    {
+        $files = Storage::files('public/excels');
+        $files = array_filter($files, function ($file) {
+            // ファイル名に "report" が含まれる場合に true を返す
+            return strpos($file, 'report') !== false;
+        });
+
+        // dd($filteredFiles);
+        // dd($file = Storage::files('public/excels'));
+        return view('acquisition_days.update_form')->with(compact('files'));
+    }
+
     public function addRemainings(Request $request)
     {
         // 二重送信防止
@@ -343,17 +357,15 @@ class AcquisitionDayController extends Controller
         /** 更新前データの保存 */
         $excel_name = date('YmdHis') . '_acquisition_days.xlsx';
         Excel::store(new RemainingExport(), 'public/excels/' . $excel_name);
-        // Excel::store(new ReportExport(), 'public/excels/' . 'report.xlsx');
-
         $fileName = date('YmdHis') . '_reports.xlsx';
-        // レスポンスを生成
-        $reports = Report::all();
-        $view = view('reports.export')->with(compact('reports'));
-        $response = Excel::download(new ReportFormExport($view), $fileName);
-        // レスポンスを直接出力
-        $response->send();
-        dd('notice');
-        // $this->Next();
+        Excel::store(new ReportExport(), 'public/excels/' . $fileName);
+
+        // $exportedFile = Excel::store(
+        //     new ReportExport(),
+        //     'public/excels/' . $fileName
+        // );
+        // $downloadUrl = Storage::url('public/excels/' . $fileName);
+        // return redirect()->to($downloadUrl);
 
         /** remainings更新 */
         $users = User::with('acquisition_days')->get();
@@ -461,8 +473,12 @@ class AcquisitionDayController extends Controller
             }
 
             return redirect()
-                ->route('acquisition_days.index')
-                ->with('notice', '休暇の残日数を更新しました');
+                ->route('acquisition_days.update_form')
+                // ->with(compact('downloadUrl'))
+                ->with(
+                    'notice',
+                    '休暇日数を更新しました。基準日より前の申請書は削除されました。基準日前の申請をダウンロードして保管してください。'
+                );
         } catch (\Throwable $th) {
             Log::error('Exception caught: ' . $th->getMessage());
             return back()->withErrors('エラーが発生しました');

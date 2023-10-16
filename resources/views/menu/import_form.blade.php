@@ -66,8 +66,7 @@
         <ul class="text-gray-600 pl-8 mb-6">
             <li class="list-disc"><span class="text-blue-600">移行前の申請データ</span>があるときはここからimport</li>
         </ul>
-        <form method="post" action="{{ route('reports_import') }}" enctype="multipart/form-data"
-            class="mb-4">
+        <form method="post" action="{{ route('reports_import') }}" enctype="multipart/form-data" class="mb-4">
             @csrf
             <label for="acquisition_days" class="block text-sm text-gray-500">reports</label>
             <div class="flex">
