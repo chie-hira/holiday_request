@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Exports\RemainingExport;
+use App\Exports\ReportExport;
+use App\Exports\ReportFormExport;
 use App\Http\Requests\StoreAcquisitionDayRequest;
 use App\Http\Requests\UpdateAcquisitionDayRequest;
 use App\Imports\AcquisitionDayImport;
 use App\Models\User;
 use App\Models\AcquisitionDay;
+use App\Models\Report;
 use App\Models\ReportCategory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -227,7 +230,9 @@ class AcquisitionDayController extends Controller
             ->approvals->where('approval_id', '!=', 1)
             ->load('affiliation');
         // dd($approvals);
-        $users = User::whereHas('affiliation', function ($query) use ($approvals) {
+        $users = User::whereHas('affiliation', function ($query) use (
+            $approvals
+        ) {
             $query->where(function ($query) use ($approvals) {
                 foreach ($approvals as $approval) {
                     $query->orWhere(function ($query) use ($approval) {
@@ -236,9 +241,7 @@ class AcquisitionDayController extends Controller
                                 'factory_id',
                                 $approval->affiliation->factory_id
                             );
-                        } elseif (
-                            $approval->affiliation->department_id != 1
-                        ) {
+                        } elseif ($approval->affiliation->department_id != 1) {
                             $query
                                 ->where(
                                     'factory_id',
@@ -340,6 +343,17 @@ class AcquisitionDayController extends Controller
         /** 更新前データの保存 */
         $excel_name = date('YmdHis') . '_acquisition_days.xlsx';
         Excel::store(new RemainingExport(), 'public/excels/' . $excel_name);
+        // Excel::store(new ReportExport(), 'public/excels/' . 'report.xlsx');
+
+        $fileName = date('YmdHis') . '_reports.xlsx';
+        // レスポンスを生成
+        $reports = Report::all();
+        $view = view('reports.export')->with(compact('reports'));
+        $response = Excel::download(new ReportFormExport($view), $fileName);
+        // レスポンスを直接出力
+        $response->send();
+        dd('notice');
+        // $this->Next();
 
         /** remainings更新 */
         $users = User::with('acquisition_days')->get();
