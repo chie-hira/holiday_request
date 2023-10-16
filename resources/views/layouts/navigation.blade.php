@@ -132,6 +132,16 @@
                 </form>
             </div>
 
+            <div class="mt-3 space-y-1">
+                <form method="GET" action="{{ route('profile.edit') }}">
+                    <x-responsive-nav-link :href="route('profile.edit')"
+                        onclick="event.preventDefault();
+                                        this.closest('form').submit();">
+                        {{ __('アカウント管理') }}
+                    </x-responsive-nav-link>
+                </form>
+            </div>
+
             <div class="mt-1 space-y-1">
                 <!-- Exsplanations -->
                 <form method="GET" action="{{ route('explanations') }}">
