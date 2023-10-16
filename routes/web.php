@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\Route;
 # reportルーティング
 Route::resource('reports', ReportController::class)
     ->only('create')
-    ->middleware('block.datetime')
+    // ->middleware('block.datetime')
     ->middleware('auth');
 Route::resource('reports', ReportController::class)
     ->only('show')

@@ -60,13 +60,13 @@
                                     {{ __('Log Out') }}
                                 </x-dropdown-link>
                             </form>
-                            <form method="GET" action="{{ route('profile.edit') }}">
+                            {{-- <form method="GET" action="{{ route('profile.edit') }}">
                                 <x-dropdown-link :href="route('profile.edit')"
                                     onclick="event.preventDefault();
                                         this.closest('form').submit();">
                                     {{ __('アカウント管理') }}
                                 </x-dropdown-link>
-                            </form>
+                            </form> --}}
                             <form method="GET" action="{{ route('explanations') }}">
                                 <x-dropdown-link :href="route('explanations')"
                                     onclick="event.preventDefault();
@@ -132,7 +132,7 @@
                 </form>
             </div>
 
-            <div class="mt-3 space-y-1">
+            {{-- <div class="mt-3 space-y-1">
                 <form method="GET" action="{{ route('profile.edit') }}">
                     <x-responsive-nav-link :href="route('profile.edit')"
                         onclick="event.preventDefault();
@@ -140,7 +140,7 @@
                         {{ __('アカウント管理') }}
                     </x-responsive-nav-link>
                 </form>
-            </div>
+            </div> --}}
 
             <div class="mt-1 space-y-1">
                 <!-- Exsplanations -->
