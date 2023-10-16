@@ -38,7 +38,7 @@ class Kernel extends ConsoleKernel
             ->command('backup:run --disable-notifications --only-db')
             ->daily(); # データベースバックアップ
         $schedule->command('log:clean')->daily(); # 古いログ削除
-        $schedule->command('send:list')->dailyAt('9:00');
+        $schedule->command('send:list')->dailyAt('09:00');
         $schedule->command('send:birthday-greetings')->dailyAt('09:00'); # 毎朝9:00にバースデー通知
         $schedule->command('send:birthday-holiday')->dailyAt('09:00'); # 毎朝9:00に実行
         $schedule->command('send:birthday-holiday-lost')->dailyAt('09:00'); # 毎朝9:00に実行

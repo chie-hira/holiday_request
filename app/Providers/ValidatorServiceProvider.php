@@ -51,5 +51,24 @@ class ValidatorServiceProvider extends ServiceProvider
         ) {
             return __('validation.custom.sameMonth');
         });
+
+        // 今日以外はNG
+        Validator::extend('today', function (
+            $attribute,
+            $value,
+            $parameters,
+            $validator
+        ) {
+            return $value === now()->format('Y-m-d');
+        });
+
+        Validator::replacer('today', function (
+            $message,
+            $attribute,
+            $rule,
+            $parameters
+        ) {
+            return __('validation.custom.today');
+        });
     }
 }

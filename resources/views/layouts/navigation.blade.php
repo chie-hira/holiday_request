@@ -24,13 +24,6 @@
                 @auth
                     <p class="text-sm text-white">
                         {{ Auth::user()->affiliation_name }}
-                        {{-- {{ Auth::user()->affiliation->factory->factory_name }}
-                        @if (Auth::user()->affiliation->department->id != 1)
-                            ・{{ Auth::user()->affiliation->department->department_name }}
-                        @endif
-                        @if (Auth::user()->affiliation->group != null && Auth::user()->affiliation->group->id != 1)
-                            ・{{ Auth::user()->affiliation->group->group_name }}
-                        @endif --}}
                         &emsp;/&emsp;
                     </p>
                 @endauth
@@ -65,6 +58,13 @@
                                     onclick="event.preventDefault();
                                                 this.closest('form').submit();">
                                     {{ __('Log Out') }}
+                                </x-dropdown-link>
+                            </form>
+                            <form method="GET" action="{{ route('profile.edit') }}">
+                                <x-dropdown-link :href="route('profile.edit')"
+                                    onclick="event.preventDefault();
+                                        this.closest('form').submit();">
+                                    {{ __('アカウント管理') }}
                                 </x-dropdown-link>
                             </form>
                             <form method="GET" action="{{ route('explanations') }}">
@@ -128,6 +128,16 @@
                         onclick="event.preventDefault();
                                         this.closest('form').submit();">
                         {{ __('Log Out') }}
+                    </x-responsive-nav-link>
+                </form>
+            </div>
+
+            <div class="mt-3 space-y-1">
+                <form method="GET" action="{{ route('profile.edit') }}">
+                    <x-responsive-nav-link :href="route('profile.edit')"
+                        onclick="event.preventDefault();
+                                        this.closest('form').submit();">
+                        {{ __('アカウント管理') }}
                     </x-responsive-nav-link>
                 </form>
             </div>

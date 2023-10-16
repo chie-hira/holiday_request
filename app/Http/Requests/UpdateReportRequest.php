@@ -24,7 +24,7 @@ class UpdateReportRequest extends FormRequest
     public function rules()
     {
         return [
-            'report_date' => 'required|date',
+            'report_date' => 'required|date|date_format:Y-m-d|today',
             'user_id' => 'required|integer',
             'report_id' => 'required|integer',
             'sub_report_id' => 'required|integer',
