@@ -335,11 +335,9 @@ class AcquisitionDayController extends Controller
         $files = Storage::files('public/excels');
         $files = array_filter($files, function ($file) {
             // ファイル名に "report" が含まれる場合に true を返す
-            return strpos($file, 'report') !== false;
+            return strpos($file, 'list') !== false;
         });
 
-        // dd($filteredFiles);
-        // dd($file = Storage::files('public/excels'));
         return view('acquisition_days.update_form')->with(compact('files'));
     }
 
@@ -355,21 +353,31 @@ class AcquisitionDayController extends Controller
         ]);
 
         /** 更新前データの保存 */
+        // 日数
         $excel_name = date('YmdHis') . '_acquisition_days.xlsx';
         Excel::store(new RemainingExport(), 'public/excels/' . $excel_name);
+        
+        // 申請一覧
         $fileName = date('YmdHis') . '_reports.xlsx';
         Excel::store(new ReportExport(), 'public/excels/' . $fileName);
-
-        // $exportedFile = Excel::store(
-        //     new ReportExport(),
-        //     'public/excels/' . $fileName
-        // );
-        // $downloadUrl = Storage::url('public/excels/' . $fileName);
-        // return redirect()->to($downloadUrl);
+        
+        // 申請一覧view
+        $fileName = date('YmdHi') . '_list.xlsx';
+        $reports = Report::where('start_date', '<', $request->update_date)
+                ->where('start_date', '<', now()->format('Y-m-d'))
+                ->get();
+        $view = view('reports.export')->with(compact('reports'));
+        Excel::store(new ReportFormExport($view), 'public/excels/' . $fileName);
 
         /** remainings更新 */
         $users = User::with('acquisition_days')->get();
         try {
+            // 申請書削除
+            Report::where('start_date', '<', $request->update_date)
+                ->where('start_date', '<', now()->format('Y-m-d'))
+                ->delete();
+            // $delete_reports->delete();
+
             foreach ($users as $user) {
                 $acquisition_days = $user->acquisition_days;
 
@@ -391,13 +399,13 @@ class AcquisitionDayController extends Controller
                 /** 有給休暇を採用年数で更新 */
                 switch ($length_of_service) {
                     case $length_of_service >= 0.5 && $length_of_service < 1.5:
-                        $report1_acquisition->remaining_days = 10 - 3; # 取得推進日3日を除く
+                        $report1_acquisition->remaining_days = 10;
                         break;
 
                     case $length_of_service >= 1.5 && $length_of_service < 2.5:
                         $remaining_add = $remaining_now + 11;
                         if ($remaining_add >= 21) {
-                            $report1_acquisition->remaining_days = 21 - 3; # 取得推進日3日を除く
+                            $report1_acquisition->remaining_days = 21;
                         } else {
                             $report1_acquisition->remaining_days =
                                 $remaining_add - 3; # 取得推進日3日を除く
@@ -407,7 +415,7 @@ class AcquisitionDayController extends Controller
                     case $length_of_service >= 2.5 && $length_of_service < 3.5:
                         $remaining_add = $remaining_now + 12;
                         if ($remaining_add >= 23) {
-                            $report1_acquisition->remaining_days = 23 - 3; # 取得推進日3日を除く
+                            $report1_acquisition->remaining_days = 23;
                         } else {
                             $report1_acquisition->remaining_days =
                                 $remaining_add - 3; # 取得推進日3日を除く
@@ -417,7 +425,7 @@ class AcquisitionDayController extends Controller
                     case $length_of_service >= 3.5 && $length_of_service < 4.5:
                         $remaining_add = $remaining_now + 14;
                         if ($remaining_add >= 26) {
-                            $report1_acquisition->remaining_days = 26 - 3; # 取得推進日3日を除く
+                            $report1_acquisition->remaining_days = 26;
                         } else {
                             $report1_acquisition->remaining_days =
                                 $remaining_add - 3; # 取得推進日3日を除く
@@ -427,7 +435,7 @@ class AcquisitionDayController extends Controller
                     case $length_of_service >= 4.5 && $length_of_service < 5.5:
                         $remaining_add = $remaining_now + 16;
                         if ($remaining_add >= 30) {
-                            $report1_acquisition->remaining_days = 30 - 3; # 取得推進日3日を除く
+                            $report1_acquisition->remaining_days = 30;
                         } else {
                             $report1_acquisition->remaining_days =
                                 $remaining_add - 3; # 取得推進日3日を除く
@@ -437,7 +445,7 @@ class AcquisitionDayController extends Controller
                     case $length_of_service >= 5.5 && $length_of_service < 6.5:
                         $remaining_add = $remaining_now + 18;
                         if ($remaining_add >= 32) {
-                            $report1_acquisition->remaining_days = 32 - 3; # 取得推進日3日を除く
+                            $report1_acquisition->remaining_days = 32;
                         } else {
                             $report1_acquisition->remaining_days =
                                 $remaining_add - 3; # 取得推進日3日を除く
@@ -447,7 +455,7 @@ class AcquisitionDayController extends Controller
                     case $length_of_service >= 6.5:
                         $remaining_add = $remaining_now + 20;
                         if ($remaining_add >= 40) {
-                            $report1_acquisition->remaining_days = 40 - 3; # 取得推進日3日を除く
+                            $report1_acquisition->remaining_days = 40;
                         } else {
                             $report1_acquisition->remaining_days =
                                 $remaining_add - 3; # 取得推進日3日を除く
@@ -481,7 +489,8 @@ class AcquisitionDayController extends Controller
                 );
         } catch (\Throwable $th) {
             Log::error('Exception caught: ' . $th->getMessage());
-            return back()->withErrors('エラーが発生しました');
+            return back()->withErrors($th->getMessage());
+            // return back()->withErrors('エラーが発生しました');
         }
     }
 

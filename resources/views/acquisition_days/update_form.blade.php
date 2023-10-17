@@ -25,6 +25,7 @@
             </div>
 
             <x-errors :errors="$errors" />
+            <x-notice :notice="session('notice')" />
 
             <!-- 更新日form - start -->
             <form id="myForm" action="{{ route('acquisitions_days.add_remainings') }}" method="POST">
@@ -61,7 +62,8 @@
                         <p class="text-sm pr-2">
                             {{ pathinfo($file, PATHINFO_FILENAME) }}
                         </p>
-                        <x-show-a-button href="{{ Storage::url($file) }}" class="text-xs px-2 py-1 my-1 focus:ring focus:ring-green-300">
+                        <x-show-a-button href="{{ Storage::url($file) }}"
+                            class="text-xs px-2 py-1 my-1 focus:ring focus:ring-green-300">
                             ダウンロード
                             </x-a>
                     </div>
