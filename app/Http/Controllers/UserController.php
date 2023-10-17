@@ -8,9 +8,9 @@ use App\Models\Affiliation;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
@@ -170,6 +170,57 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             return back()->withErrors('エラーが発生しました');
         }
+    }
+
+    // profile_admin
+    // 管理者がユーザーのプロフィールを変更できる
+    public function email_edit(User $user)
+    {
+        // dd($user);
+        return view('users.mail_address_edit', [
+            'user' => $user,
+        ]);
+    }
+
+    public function password_edit(User $user)
+    {
+        return view('users.password_edit', [
+            'user' => $user,
+        ]);
+    }
+
+    /**
+     * Update the user's profile information.
+     */
+    public function email_update(Request $request, User $user)
+    {
+        // dd($request);
+        // dd($user);
+        $user->fill($request->all());
+        $user->save();
+
+        return back()->with('status', 'profile-updated');
+    }
+
+    public function password_update(Request $request, User $user)
+    {
+        // dd($user);
+        $validated = $request->validateWithBag('updatePassword', [
+            'current_password_original' => ['required', 'current_password_original:'.$user->id],
+            // 'current_password' => ['required', 'current_password'],
+            'password' => ['required', Password::defaults(), 'confirmed'],
+        ]);
+        // dd($user);
+
+        $user->password = Hash::make($validated['password']);
+        $user->save();
+        // dd($user);
+
+        // $request->user()->update([
+        //     'password' => Hash::make($validated['password']),
+        // ]);
+
+        return back()->with('status', 'password-updated');
     }
 
     public function import(Request $request)

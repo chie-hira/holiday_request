@@ -173,7 +173,7 @@ Route::get('/export_search', [ReportController::class, 'export_search'])
     ->name('export_search')
     ->middleware('auth');
 
-#profile
+#profile これは使わない
 Route::middleware('auth')->group(function () {
     Route::get('/account', [ProfileController::class, 'account'])->name('profile.edit');
     Route::get('/profile', [ProfileController::class, 'mail_address_edit'])->name('profile.mail_address_edit');
@@ -181,6 +181,16 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/password', [PasswordController::class, 'update'])->name('password.change');
 });
+
+#profile_admin
+Route::middleware('auth')->group(function () {
+    // Route::get('/account', [ProfileController::class, 'account'])->name('profile.edit');
+    Route::get('users/{user}/email_edit', [UserController::class, 'email_edit'])->name('users.email_edit');
+    Route::get('users/{user}/password_edit', [UserController::class, 'password_edit'])->name('users.password_edit');
+    Route::patch('users/email_update/{user}', [UserController::class, 'email_update'])->name('users.email_update');
+    Route::put('users/password_update/{user}', [UserController::class, 'password_update'])->name('users.password_update');
+});
+
 
 // TODO:notAuthorizedでログイン画面にリダイレクト
 
