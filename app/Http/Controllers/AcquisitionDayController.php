@@ -334,11 +334,20 @@ class AcquisitionDayController extends Controller
     {
         $files = Storage::files('public/excels');
         $files = array_filter($files, function ($file) {
-            // ファイル名に "report" が含まれる場合に true を返す
+            // ファイル名に "list" が含まれる場合に true を返す
             return strpos($file, 'list') !== false;
         });
 
-        return view('acquisition_days.update_form')->with(compact('files'));
+        $file_paths = [];
+        foreach ($files as $file) {
+            // dd(pathinfo($file, PATHINFO_FILENAME));
+            $fileName = pathinfo($file, PATHINFO_FILENAME);
+            $file_paths[] = "storage/excels/". $fileName. ".xlsx";
+        }
+        // dd($file_paths);
+        // $files = ['storage/excels/20231017_list.xlsx'];
+
+        return view('acquisition_days.update_form')->with(compact('files', 'file_paths'));
     }
 
     public function addRemainings(Request $request)
@@ -356,16 +365,16 @@ class AcquisitionDayController extends Controller
         // 日数
         $excel_name = date('YmdHis') . '_acquisition_days.xlsx';
         Excel::store(new RemainingExport(), 'public/excels/' . $excel_name);
-        
+
         // 申請一覧
         $fileName = date('YmdHis') . '_reports.xlsx';
         Excel::store(new ReportExport(), 'public/excels/' . $fileName);
-        
+
         // 申請一覧view
         $fileName = date('YmdHi') . '_list.xlsx';
         $reports = Report::where('start_date', '<', $request->update_date)
-                ->where('start_date', '<', now()->format('Y-m-d'))
-                ->get();
+            ->where('start_date', '<', now()->format('Y-m-d'))
+            ->get();
         $view = view('reports.export')->with(compact('reports'));
         Excel::store(new ReportFormExport($view), 'public/excels/' . $fileName);
 

@@ -57,12 +57,16 @@
             @endif --}}
 
             <div class="mt-8">
-                @foreach ($files as $file)
+                @foreach ($file_paths as $path)
+                {{-- @foreach ($files as $file) --}}
                     <div class="flex items-center">
                         <p class="text-sm pr-2">
-                            {{ pathinfo($file, PATHINFO_FILENAME) }}
+                            {{ pathinfo($path, PATHINFO_FILENAME) }}
+                            {{-- {{ pathinfo($file, PATHINFO_FILENAME) }} --}}
                         </p>
-                        <x-show-a-button href="{{ Storage::url($file) }}"
+                        <x-show-a-button href="{{ asset($path) }}"
+                        {{-- http://localhost/storage/excels/public/excels/20231017_list.xlsx --}}
+                        {{-- <x-show-a-button href="{{ Storage::url($file) }}" --}}
                             class="text-xs px-2 py-1 my-1 focus:ring focus:ring-green-300">
                             ダウンロード
                             </x-a>
