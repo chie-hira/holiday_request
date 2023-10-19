@@ -29,6 +29,7 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -210,16 +211,19 @@ class ReportController extends Controller
         )
             ->orWhere(function ($query) {
                 $query->where('max_days', null);
-                // ->where('id', 12)
-                // ->orWhere('id', 13)
-                // ->orWhere('id', 14)
-                // ->orWhere('id', 15)
-                // ->orWhere('id', 17)
-                // ->orWhere('id', 18);
             })
             ->get()
             ->load('acquisition_form');
-        // dd($report_categories);
+
+        // 新入社員で有給取得できない場合
+        $release_date = now()
+            ->subMonth(3)
+            ->format('Y-m-d');
+        if (Auth::user()->adoption_date > $release_date) {
+            $report_categories = $report_categories->reject(function ($query) {
+                return $query->id == 1;
+            });
+        }
 
         /** バースデイ休暇の取得期間外の場合は、バースデイ休暇をreport_categoriesから除く */
         $birthday = new Carbon(

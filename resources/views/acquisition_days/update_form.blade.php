@@ -41,16 +41,38 @@
                 </div>
 
                 <div class="flex flex-row-reverse">
-                    <x-button id="submitButton" class="w-full" onclick="if(!confirm('有給休暇日数を更新します。この操作は取り消せません。更新してよろしいですか？')){return false};">
+                    <x-button id="submitButton" class="w-full"
+                        onclick="if(!confirm('有給休暇日数を更新します。この操作は取り消せません。更新してよろしいですか？')){return false};">
                         {{ __('Update') }}
                     </x-button>
                 </div>
             </form>
             <!-- 更新日form - end -->
 
+            {{-- <x-notice :notice="session('notice')" />
+            @if (session('downloadUrl'))
+                <x-show-a-button href="{{ session('downloadUrl') }}" class="p-2">
+                    ダウンロード
+                    </x-a>
+            @endif --}}
+
+            <div class="mt-8">
+                @foreach ($files as $file)
+                    <div class="flex items-center">
+                        <p class="text-sm pr-2">
+                            {{ pathinfo($file, PATHINFO_FILENAME) }}
+                        </p>
+                        <x-show-a-button href="{{ Storage::url($file) }}"
+                            class="text-xs px-2 py-1 my-1 focus:ring focus:ring-green-300">
+                            ダウンロード
+                            </x-a>
+                    </div>
+                @endforeach
+            </div>
             <div class="max-w-2xl w-full mx-auto mt-8">
                 <div class="relative w-30 h-8 mb-2">
-                <x-return-button class="px-5 absolute inset-y-0 right-0" href="{{ route('acquisition_days.index') }}">
+                    <x-return-button class="px-5 absolute inset-y-0 right-0"
+                        href="{{ route('acquisition_days.index') }}">
                         {{ __('Back Index') }}
                     </x-return-button>
                 </div>

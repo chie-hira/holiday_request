@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\Route;
 # reportルーティング
 Route::resource('reports', ReportController::class)
     ->only('create')
-    ->middleware('block.datetime')
+    // ->middleware('block.datetime')
     ->middleware('auth');
 Route::resource('reports', ReportController::class)
     ->only('show')
@@ -68,12 +68,16 @@ Route::get('/acquisition_status', [
     ->name('acquisition_days.status_index')
     ->middleware('can:approver_reader')
     ->middleware('auth');
-Route::get('/update_form', function () {
-    return view('acquisition_days.update_form');
-})
+Route::get('/update_form', [AcquisitionDayController::class, 'updateForm'])
     ->name('acquisition_days.update_form')
     ->middleware('can:general_admin')
     ->middleware('auth');
+// Route::get('/update_form', function () {
+//     return view('acquisition_days.update_form');
+// })
+//     ->name('acquisition_days.update_form')
+//     ->middleware('can:general_admin')
+//     ->middleware('auth');
 Route::post('/add_remainings', [
     AcquisitionDayController::class,
     'addRemainings',
@@ -169,7 +173,7 @@ Route::get('/export_search', [ReportController::class, 'export_search'])
     ->name('export_search')
     ->middleware('auth');
 
-#profile
+#profile これは使わない
 Route::middleware('auth')->group(function () {
     Route::get('/account', [ProfileController::class, 'account'])->name('profile.edit');
     Route::get('/profile', [ProfileController::class, 'mail_address_edit'])->name('profile.mail_address_edit');
@@ -177,6 +181,16 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/password', [PasswordController::class, 'update'])->name('password.change');
 });
+
+#profile_admin
+Route::middleware('auth')->group(function () {
+    // Route::get('/account', [ProfileController::class, 'account'])->name('profile.edit');
+    Route::get('users/{user}/email_edit', [UserController::class, 'email_edit'])->name('users.email_edit');
+    Route::get('users/{user}/password_edit', [UserController::class, 'password_edit'])->name('users.password_edit');
+    Route::patch('users/email_update/{user}', [UserController::class, 'email_update'])->name('users.email_update');
+    Route::put('users/password_update/{user}', [UserController::class, 'password_update'])->name('users.password_update');
+});
+
 
 // TODO:notAuthorizedでログイン画面にリダイレクト
 

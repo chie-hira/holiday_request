@@ -4,14 +4,14 @@
             <th>{{ __('Affiliation') }}</th>
             <th>{{ __('Employee') }}</th>
             <th>{{ __('Name') }}</th>
+            <th>{{ __('Report Date') }}</th>
             <th>{{ __('Report Category') }}</th>
-            <th>{{ __('Rest Span') }}</th>
-            <th></th>
-            <th></th>
+            <th>{{ __('Rest Span1') }}</th>
+            <th>{{ __('Rest Span2') }}</th>
+            <th>{{ __('Rest Span3') }}</th>
             <th>{{ __('Rest Days') }}</th>
             {{-- <th>{{ __('Shift') }}</th>
             <th></th> --}}
-            <th>{{ __('Report Date') }}</th>
             <th>{{ __('Reason') }}</th>
             <th>{{ __('Reason Detail') }}</th>
         </tr>
@@ -27,6 +27,9 @@
                 </td>
                 <td>
                     {{ $report->user->name }}
+                </td>
+                <td>
+                    {{ $report->report_date }}
                 </td>
                 <td>
                     <x-report-name :report="$report" />
@@ -68,9 +71,6 @@
                     {{ $report->shift_category->start_time_hm }} ~
                     {{ $report->shift_category->end_time_hm }}
                 </td> --}}
-                <td>
-                    {{ $report->report_date }}
-                </td>
                 <td>
                     {{ $report->reason_category->reason }}
                 </td>

@@ -10,9 +10,12 @@
                         </p>
                     </x-info>
                     <x-info>
-                        @if (5 - Auth::user()->acquisition_days->where('report_id',1)->first()->acquisition_days > 0)
+                        @if (5 -
+                                Auth::user()->acquisition_days->where('report_id', 1)->first()->acquisition_days >
+                                0)
                             <p class="text-sm">
-                                有給休暇の取得推進日数はあと<span class="font-semibold text-red-500">{{ 5 - Auth::user()->acquisition_days->where('report_id',1)->first()->acquisition_days }}日</span>です。
+                                有給休暇の取得推進日数はあと<span
+                                    class="font-semibold text-red-500">{{ 5 -Auth::user()->acquisition_days->where('report_id', 1)->first()->acquisition_days }}日</span>です。
                             </p>
                         @else
                             <p class="text-sm">
@@ -53,10 +56,14 @@
                                                 <td
                                                     class="hidden md:block pl-4 pr-2 py-3 whitespace-nowrap text-sm font-medium text-gray-800 ">
                                                     {{ $acquisition_day->report_category->report_name }}
-                                                    @if (
-                                                        $acquisition_day->report_category->report_name == '介護休業' ||
-                                                            $acquisition_day->report_category->report_name == '育児休業')
+                                                    {{-- @if ($acquisition_day->report_category->report_name == '介護休業' || $acquisition_day->report_category->report_name == '育児休業')
                                                         <span class="text-blue-400 text-xs">{{ __('※') }}</span>
+                                                    @endif --}}
+                                                    @if (
+                                                        $acquisition_day->report_category->report_name == '有給休暇' &&
+                                                            Auth::user()->adoption_date >
+                                                                now()->subMonth(3)->format('Y-m-d'))
+                                                        <span class="text-blue-400 text-xs">{{ __('(採用から3か月後に申請できます)') }}</span>
                                                     @endif
                                                 </td>
                                                 <td
@@ -111,7 +118,7 @@
                                                                 &ensp;{{ $acquisition_day->acquisition_minutes }} 分
                                                             @endif
                                                         @else
-                                                                {{ $acquisition_day->acquisition_hours }} 時間
+                                                            {{ $acquisition_day->acquisition_hours }} 時間
                                                             @if (!empty($acquisition_day->acquisition_minutes))
                                                                 &ensp;{{ $acquisition_day->acquisition_minutes }} 分
                                                             @endif

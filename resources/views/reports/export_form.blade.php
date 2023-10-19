@@ -34,16 +34,15 @@
                             <option value=''>{{ __('Reason') }}</option>
                             <option value=''>全て</option>
                             @foreach ($reason_categories as $reason)
-                                <option value="{{ $reason->id }}" 
-                                    @if ($reason->id == request('select_reason')) selected @endif>
+                                <option value="{{ $reason->id }}" @if ($reason->id == request('select_reason')) selected @endif>
                                     {{ $reason->reason }}
                                 </option>
                             @endforeach
                         </x-select>
                         <!-- 理由選択 - end -->
                         <!-- 取得日選択 - start -->
-                        <x-input type="month" id="select_month" name="select_month" class="block text-xs w-40 mr-2 my-1"
-                            :value="request('select_month')" />
+                        <x-input type="month" id="select_month" name="select_month"
+                            class="block text-xs w-40 mr-2 my-1" :value="request('select_month')" />
                         <!-- 取得日選択 - end -->
                     </div>
                     <x-show-button type="submit" class="my-1">検 索</x-show-button>
@@ -68,26 +67,37 @@
                                 <table class="min-w-full divide-y divide-gray-200 ">
                                     <thead>
                                         <tr>
+                                            <!-- 所属 -->
                                             <th scope="col"
                                                 class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Affiliation') }}
                                             </th>
+                                            <!-- 社員番号 -->
                                             <th scope="col"
                                                 class="py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Employee') }}
                                             </th>
+                                            <!-- 氏名 -->
                                             <th scope="col"
                                                 class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Name') }}
                                             </th>
+                                            <!-- 申請日 -->
+                                            <th scope="col"
+                                                class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
+                                                {{ __('Report Date') }}
+                                            </th>
+                                            <!-- 申請種類 -->
                                             <th scope="col"
                                                 class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Report Category') }}
                                             </th>
+                                            <!-- 休暇期間 -->
                                             <th scope="col" colspan="2"
                                                 class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Rest Span') }}
                                             </th>
+                                            <!-- 休暇日数 -->
                                             <th scope="col"
                                                 class="px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Rest Days') }}
@@ -96,14 +106,12 @@
                                                 class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Shift') }}
                                             </th> --}}
-                                            <th scope="col"
-                                                class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                {{ __('Report Date') }}
-                                            </th>
+                                            <!-- 理由 -->
                                             <th scope="col"
                                                 class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Reason') }}
                                             </th>
+                                            <!-- 理由詳細 -->
                                             <th scope="col"
                                                 class="px-4 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                             </th>
@@ -113,9 +121,11 @@
                                         @foreach ($paginator as $report)
                                             <tr id="report_{{ $report->id }}" style="display:"
                                                 class="hover:bg-gray-100 ">
+                                                <!-- 所属 -->
                                                 <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800 ">
                                                     {{ $report->user->affiliation_name }}
                                                 </td>
+                                                <!-- 社員番号 -->
                                                 <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800 ">
                                                     @if (Str::length($report->user->employee) == 1)
                                                         &ensp;&ensp;
@@ -125,12 +135,20 @@
                                                     @endif
                                                     {{ $report->user->employee }}
                                                 </td>
+                                                <!-- 氏名 -->
                                                 <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800 ">
                                                     {{ $report->user->name }}
                                                 </td>
+                                                <!-- 申請日 -->
+                                                <td
+                                                    class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-800 ">
+                                                    {{ $report->report_date }}
+                                                </td>
+                                                <!-- 申請種類 -->
                                                 <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800 ">
                                                     <x-report-name :report="$report" />
                                                 </td>
+                                                <!-- 休暇期間 -->
                                                 <td class="pl-4 pr-2 py-3 whitespace-nowrap text-sm text-gray-800 ">
                                                     @if ($report->start_date != null)
                                                         {{ $report->start_date }}
@@ -152,6 +170,7 @@
                                                         {{ $report->am_pm == 1 ? '前半' : '後半' }}
                                                     @endif
                                                 </td>
+                                                <!-- 休暇日数 -->
                                                 <td
                                                     class="px-4 py-3 whitespace-nowrap text-sm text-right text-gray-800 ">
                                                     @if ($report->acquisition_days != 0)
@@ -173,14 +192,12 @@
                                                     {{ $report->shift_category->start_time_hm }} ~
                                                     {{ $report->shift_category->end_time_hm }}
                                                 </td> --}}
-                                                <td
-                                                    class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-800 ">
-                                                    {{ $report->report_date }}
-                                                </td>
+                                                <!-- 理由 -->
                                                 <td
                                                     class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-800 ">
                                                     {{ $report->reason_category->reason }}
                                                 </td>
+                                                <!-- 理由詳細 -->
                                                 <td
                                                     class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-800 ">
                                                     {{ $report->reason_detail }}
@@ -197,7 +214,7 @@
             </div>
 
             <div class="mt-2">
-            {{ $paginator->appends(request()->except('page'))->links() }}
+                {{ $paginator->appends(request()->except('page'))->links() }}
             </div>
 
             <div class="w-full mx-auto mt-4 grid grid-cols-1 gap-2">

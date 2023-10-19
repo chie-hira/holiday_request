@@ -3,17 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Exports\RemainingExport;
+use App\Exports\ReportExport;
+use App\Exports\ReportFormExport;
 use App\Http\Requests\StoreAcquisitionDayRequest;
 use App\Http\Requests\UpdateAcquisitionDayRequest;
 use App\Imports\AcquisitionDayImport;
 use App\Models\User;
 use App\Models\AcquisitionDay;
+use App\Models\Report;
 use App\Models\ReportCategory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
 class AcquisitionDayController extends Controller
@@ -227,7 +231,9 @@ class AcquisitionDayController extends Controller
             ->approvals->where('approval_id', '!=', 1)
             ->load('affiliation');
         // dd($approvals);
-        $users = User::whereHas('affiliation', function ($query) use ($approvals) {
+        $users = User::whereHas('affiliation', function ($query) use (
+            $approvals
+        ) {
             $query->where(function ($query) use ($approvals) {
                 foreach ($approvals as $approval) {
                     $query->orWhere(function ($query) use ($approval) {
@@ -236,9 +242,7 @@ class AcquisitionDayController extends Controller
                                 'factory_id',
                                 $approval->affiliation->factory_id
                             );
-                        } elseif (
-                            $approval->affiliation->department_id != 1
-                        ) {
+                        } elseif ($approval->affiliation->department_id != 1) {
                             $query
                                 ->where(
                                     'factory_id',
@@ -326,6 +330,17 @@ class AcquisitionDayController extends Controller
         return $reset_remaining->save();
     }
 
+    public function updateForm()
+    {
+        $files = Storage::files('public/excels');
+        $files = array_filter($files, function ($file) {
+            // ファイル名に "report" が含まれる場合に true を返す
+            return strpos($file, 'list') !== false;
+        });
+
+        return view('acquisition_days.update_form')->with(compact('files'));
+    }
+
     public function addRemainings(Request $request)
     {
         // 二重送信防止
@@ -338,12 +353,31 @@ class AcquisitionDayController extends Controller
         ]);
 
         /** 更新前データの保存 */
+        // 日数
         $excel_name = date('YmdHis') . '_acquisition_days.xlsx';
         Excel::store(new RemainingExport(), 'public/excels/' . $excel_name);
+        
+        // 申請一覧
+        $fileName = date('YmdHis') . '_reports.xlsx';
+        Excel::store(new ReportExport(), 'public/excels/' . $fileName);
+        
+        // 申請一覧view
+        $fileName = date('YmdHi') . '_list.xlsx';
+        $reports = Report::where('start_date', '<', $request->update_date)
+                ->where('start_date', '<', now()->format('Y-m-d'))
+                ->get();
+        $view = view('reports.export')->with(compact('reports'));
+        Excel::store(new ReportFormExport($view), 'public/excels/' . $fileName);
 
         /** remainings更新 */
         $users = User::with('acquisition_days')->get();
         try {
+            // 申請書削除
+            Report::where('start_date', '<', $request->update_date)
+                ->where('start_date', '<', now()->format('Y-m-d'))
+                ->delete();
+            // $delete_reports->delete();
+
             foreach ($users as $user) {
                 $acquisition_days = $user->acquisition_days;
 
@@ -365,13 +399,13 @@ class AcquisitionDayController extends Controller
                 /** 有給休暇を採用年数で更新 */
                 switch ($length_of_service) {
                     case $length_of_service >= 0.5 && $length_of_service < 1.5:
-                        $report1_acquisition->remaining_days = 10 - 3; # 取得推進日3日を除く
+                        $report1_acquisition->remaining_days = 10;
                         break;
 
                     case $length_of_service >= 1.5 && $length_of_service < 2.5:
                         $remaining_add = $remaining_now + 11;
                         if ($remaining_add >= 21) {
-                            $report1_acquisition->remaining_days = 21 - 3; # 取得推進日3日を除く
+                            $report1_acquisition->remaining_days = 21;
                         } else {
                             $report1_acquisition->remaining_days =
                                 $remaining_add - 3; # 取得推進日3日を除く
@@ -381,7 +415,7 @@ class AcquisitionDayController extends Controller
                     case $length_of_service >= 2.5 && $length_of_service < 3.5:
                         $remaining_add = $remaining_now + 12;
                         if ($remaining_add >= 23) {
-                            $report1_acquisition->remaining_days = 23 - 3; # 取得推進日3日を除く
+                            $report1_acquisition->remaining_days = 23;
                         } else {
                             $report1_acquisition->remaining_days =
                                 $remaining_add - 3; # 取得推進日3日を除く
@@ -391,7 +425,7 @@ class AcquisitionDayController extends Controller
                     case $length_of_service >= 3.5 && $length_of_service < 4.5:
                         $remaining_add = $remaining_now + 14;
                         if ($remaining_add >= 26) {
-                            $report1_acquisition->remaining_days = 26 - 3; # 取得推進日3日を除く
+                            $report1_acquisition->remaining_days = 26;
                         } else {
                             $report1_acquisition->remaining_days =
                                 $remaining_add - 3; # 取得推進日3日を除く
@@ -401,7 +435,7 @@ class AcquisitionDayController extends Controller
                     case $length_of_service >= 4.5 && $length_of_service < 5.5:
                         $remaining_add = $remaining_now + 16;
                         if ($remaining_add >= 30) {
-                            $report1_acquisition->remaining_days = 30 - 3; # 取得推進日3日を除く
+                            $report1_acquisition->remaining_days = 30;
                         } else {
                             $report1_acquisition->remaining_days =
                                 $remaining_add - 3; # 取得推進日3日を除く
@@ -411,7 +445,7 @@ class AcquisitionDayController extends Controller
                     case $length_of_service >= 5.5 && $length_of_service < 6.5:
                         $remaining_add = $remaining_now + 18;
                         if ($remaining_add >= 32) {
-                            $report1_acquisition->remaining_days = 32 - 3; # 取得推進日3日を除く
+                            $report1_acquisition->remaining_days = 32;
                         } else {
                             $report1_acquisition->remaining_days =
                                 $remaining_add - 3; # 取得推進日3日を除く
@@ -421,7 +455,7 @@ class AcquisitionDayController extends Controller
                     case $length_of_service >= 6.5:
                         $remaining_add = $remaining_now + 20;
                         if ($remaining_add >= 40) {
-                            $report1_acquisition->remaining_days = 40 - 3; # 取得推進日3日を除く
+                            $report1_acquisition->remaining_days = 40;
                         } else {
                             $report1_acquisition->remaining_days =
                                 $remaining_add - 3; # 取得推進日3日を除く
@@ -447,11 +481,16 @@ class AcquisitionDayController extends Controller
             }
 
             return redirect()
-                ->route('acquisition_days.index')
-                ->with('notice', '休暇の残日数を更新しました');
+                ->route('acquisition_days.update_form')
+                // ->with(compact('downloadUrl'))
+                ->with(
+                    'notice',
+                    '休暇日数を更新しました。基準日より前の申請書は削除されました。基準日前の申請をダウンロードして保管してください。'
+                );
         } catch (\Throwable $th) {
             Log::error('Exception caught: ' . $th->getMessage());
-            return back()->withErrors('エラーが発生しました');
+            return back()->withErrors($th->getMessage());
+            // return back()->withErrors('エラーが発生しました');
         }
     }
 
