@@ -124,7 +124,6 @@ class ReportController extends Controller
                 ])
                 ->sortBy('report_id')
                 ->sortBy('user.affiliation_id')
-                ->sortBy('start_date')
                 ->sortByDesc('start_date')
                 ->sortByDesc('report_date');
         }
@@ -2677,8 +2676,8 @@ class ReportController extends Controller
                 ])
                 ->sortBy('report_id')
                 ->sortBy('user.affiliation_id')
-                ->sortBy('start_date')
-                ->sortBy('report_date');
+                ->sortByDesc('start_date')
+                ->sortByDesc('report_date');
         }
 
         // ページ番号と1ページあたりのアイテム数を指定
