@@ -15,6 +15,7 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules;
 
 class RegisteredUserController extends Controller
@@ -42,6 +43,10 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request)
     {
+        // 二重送信防止
+        $request->session()->regenerateToken();
+        Log::info('Request data:', $request->all());
+
         // dd($request);
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
