@@ -304,8 +304,8 @@ class AcquisitionDayController extends Controller
                     'affiliation.department',
                     'affiliation.group',
                 ])
-                ->sortBy('employee')
-                ->sortBy('affiliation_id');
+                ->sortBy('affiliation_id')
+                ->sortBy('employee');
         }
         // dd($users);
 
