@@ -67,7 +67,7 @@ class SendListToManager extends Command
                 'end_date' => $item->end_date,
                 'start_time' => $item->start_time,
                 'end_time' => $item->end_time,
-                'am_pm' => $report->am_pm != null ? ($report->am_pm == 1 ? '午前' : '午後') : '',
+                'am_pm' => $item->am_pm == 1 ? '午前' : ($item->am_pm == 2 ? '午後' : ''),
                 'acquisition_days' => $item->acquisition_days,
                 'acquisition_hours' => $item->acquisition_hours,
                 'acquisition_minutes' => $item->acquisition_minutes,
