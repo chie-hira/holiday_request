@@ -1174,7 +1174,7 @@ class ReportController extends Controller
             // 工場長が承認している場合
             if ($report->approval1 == 1 && $report->approval2 == 0) {
                 // 工場長に通知
-                $approvers = User::whereHas('approvals', function ($query) use (
+                $approved_persons = User::whereHas('approvals', function ($query) use (
                     $report
                 ) {
                     $query
@@ -1202,7 +1202,7 @@ class ReportController extends Controller
             }
             // Glが承認している場合
             if ($report->approval1 == 0 && $report->approval2 == 1) {
-                $gl_approvals = Approval::whereHas('affiliation', function (
+                $gl_approvers = Approval::whereHas('affiliation', function (
                     $query
                 ) use ($report) {
                     $query
@@ -1227,12 +1227,12 @@ class ReportController extends Controller
                     ->get();
 
                 // GLがいない部署はGL承認を削除
-                if (empty($gl_approvals->first())) {
+                if (empty($gl_approvers->first())) {
                     $report->approval2 = 0;
                 }
 
                 // GLに通知
-                $approvers = User::whereHas('approvals', function ($query) use (
+                $approved_persons = User::whereHas('approvals', function ($query) use (
                     $report
                 ) {
                     $query
@@ -1262,8 +1262,8 @@ class ReportController extends Controller
             }
 
             // 承認したapproversに取消確認の通知メール送信
-            if ($approvers->first()) {
-                foreach ($approvers as $approver) {
+            if ($approved_persons->first()) {
+                foreach ($approved_persons as $approver) {
                     $approver->cancelReport($report);
                 }
                 return redirect()
