@@ -1174,9 +1174,9 @@ class ReportController extends Controller
             // 工場長が承認している場合
             if ($report->approval1 == 1 && $report->approval2 == 0) {
                 // 工場長に通知
-                $approved_persons = User::whereHas('approvals', function ($query) use (
-                    $report
-                ) {
+                $approved_persons = User::whereHas('approvals', function (
+                    $query
+                ) use ($report) {
                     $query
                         ->where('approval_id', 2)
                         ->whereHas('affiliation', function ($query) use (
@@ -1232,9 +1232,9 @@ class ReportController extends Controller
                 }
 
                 // GLに通知
-                $approved_persons = User::whereHas('approvals', function ($query) use (
-                    $report
-                ) {
+                $approved_persons = User::whereHas('approvals', function (
+                    $query
+                ) use ($report) {
                     $query
                         ->where('approval_id', 3)
                         ->whereHas('affiliation', function ($query) use (
@@ -2253,7 +2253,8 @@ class ReportController extends Controller
                 }
                 $acquisition_day->acquisition_hours +=
                     $report->acquisition_hours;
-            } else {
+                // else {
+            } elseif ($report->report_id <= 10) {
                 // 終日休、連休は日で格納
                 $acquisition_day->remaining_days -= $report->acquisition_days;
                 $acquisition_day->acquisition_days += $report->acquisition_days;
