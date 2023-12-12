@@ -1148,12 +1148,12 @@
                             //      *
                             // *~~*
                             // *~~~~~*
-                            if (endY_M_D == Y_M_D) {
+                            if (!isNaN(endVal.getFullYear()) && endY_M_D == Y_M_D) {
                                 duplication = true;
                             }
                             //   =-----=
                             // *~~~~~~~~~*
-                            if (startY_M_D <= Y_M_D && endY_M_D >= Y_M_D) {
+                            if (!isNaN(endVal.getFullYear()) && startY_M_D <= Y_M_D && endY_M_D >= Y_M_D) {
                                 duplication = true;
                             }
                         }

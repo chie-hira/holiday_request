@@ -2254,10 +2254,17 @@ class ReportController extends Controller
                 $acquisition_day->acquisition_hours +=
                     $report->acquisition_hours;
                 // else {
-            } elseif ($report->report_id <= 10) {
-                // 終日休、連休は日で格納
-                $acquisition_day->remaining_days -= $report->acquisition_days;
-                $acquisition_day->acquisition_days += $report->acquisition_days;
+            } else {
+                if ($report->report_id <= 10) {
+                    // 終日休、連休は日で格納
+                    $acquisition_day->remaining_days -=
+                        $report->acquisition_days;
+                    $acquisition_day->acquisition_days +=
+                        $report->acquisition_days;
+                } else {
+                    $acquisition_day->acquisition_days +=
+                        $report->acquisition_days;
+                }
 
                 /**
                  * // ここから下は有給休暇に時間休を追加するときに使用
