@@ -2,7 +2,7 @@
     <section class="text-gray-600 body-font">
         <div class="container max-w-4xl px-5 py-16 w-full mx-auto">
             <div class="flex flex-col text-center w-full mb-10">
-                <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">権限の編集</h1>
+                <h1 class="sm:text-3xl text-2xl font-medium ZenMaruGothic title-font mb-4 text-gray-900">権限の編集</h1>
                 <x-info class="mx-auto">
                     <p class="text-sm">
                         <span class="font-bold">管轄、権限の種類</span>を変更できます。
@@ -38,7 +38,7 @@
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-200">
-                                        <tr class="hover:bg-gray-100">
+                                        <tr>
                                             <td
                                                 class="px-2 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-800">
                                                 {{ $approval->user->employee }}&ensp;{{ $approval->user->name }}

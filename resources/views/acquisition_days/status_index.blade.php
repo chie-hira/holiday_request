@@ -1,5 +1,4 @@
 <x-app-layout>
-    {{-- //TODO:月、部所指定して表示 --}}
     <!-- Page nav -->
     <div class="border-b-2 border-gray-200">
         <nav class="px-4 -mb-0.5 flex space-x-2 overflow-x-auto">
@@ -25,8 +24,8 @@
     </div>
     <section class="text-gray-600 body-font">
         <div class="container max-w-3xl px-5 py-16 mx-auto">
-            <div class="flex flex-col text-center w-full mb-6">
-                <h1 class="sm:text-4xl text-3xl font-medium title-font mb-4 text-gray-900">{{ __('休暇取得状況') }}</h1>
+            <div class="flex flex-col ZenMaruGothic text-center w-full mb-6">
+                <h1 class="sm:text-4xl text-3xl font-medium title-font mb-4 text-gray-800">{{ __('休暇取得状況') }}</h1>
                 <p id="report_name-1" style="display: " class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
                     {{ $report_categories->where('id', 1)->first()->report_name }}
                 </p>
@@ -57,13 +56,8 @@
                                         <tr>
                                             <th
                                                 class="w-40 px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                {{-- {{ __('Affiliation') }} --}}
                                                 {{ __('Employee Name') }}
                                             </th>
-                                            {{-- <th
-                                                class="w-24 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                {{ __('Employee Name') }}
-                                            </th> --}}
                                             <th id="remaining_title" style="display: "
                                                 class="w-24 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Remaining Days') }}
@@ -77,16 +71,8 @@
                                     <tbody class="divide-y divide-gray-200 ">
                                         @foreach ($users as $user)
                                             <tr>
-                                                {{-- <td
-                                                    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">
-                                                    <x-affiliation-name :affiliation="$user->affiliation" />
-                                                </td>
                                                 <td
-                                                    class="px-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
-                                                    {{ $user->employee }}&ensp;
-                                                    {{ $user->name }}</td> --}}
-                                                <td
-                                                    class="hidden md:block text-xs text-blue-500 pl-4 pr-2 py-3 whitespace-nowrap font-medium ">
+                                                    class="hidden md:block text-xs text-sky-500 pl-4 pr-2 py-3 whitespace-nowrap font-medium ">
                                                     <x-affiliation-name :affiliation="$user->affiliation" />
                                                     <div class="text-sm text-gray-800">
                                                         @if (Str::length($user->employee) == 1)
@@ -166,6 +152,26 @@
                     {{ __('Back') }}
                 </x-back-home-button>
             </div>
+        </div>
+
+        <!-- ボタン -->
+        <div class="w-full max-w-3xl px-5 mx-auto grid grid-cols-1 gap-2">
+            <button class="fixed right-16 bottom-16 bg-sky-400/80 text-white px-2 py-2 rounded-full shadow"
+                onclick="window.history.back();">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                    <path fill-rule="evenodd"
+                        d="M9.53 2.47a.75.75 0 010 1.06L4.81 8.25H15a6.75 6.75 0 010 13.5h-3a.75.75 0 010-1.5h3a5.25 5.25 0 100-10.5H4.81l4.72 4.72a.75.75 0 11-1.06 1.06l-6-6a.75.75 0 010-1.06l6-6a.75.75 0 011.06 0z"
+                        clip-rule="evenodd" />
+                </svg>
+            </button>
+            {{-- <button class="fixed right-16 bottom-28 bg-sky-400/80 text-white px-2 py-2 rounded-full shadow"
+            onclick="location.href='{{ route('menu') }}'">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+            </svg>
+        </button> --}}
         </div>
     </section>
 

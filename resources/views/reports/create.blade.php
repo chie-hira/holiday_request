@@ -1,10 +1,9 @@
 <x-app-layout>
-    {{-- //TODO:メール機能届出の提出、更新、削除で通知、承認で通知 --}}
     <section class="text-gray-600 body-font">
         <div class="container max-w-2xl px-6 py-12 mx-auto">
             <div class="">
                 <div class="flex flex-col text-center w-full mb-12">
-                    <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">{{ __('Report') }}作成</h1>
+                    <h1 class="sm:text-3xl text-2xl ZenMaruGothic font-medium title-font mb-4 text-gray-800">{{ __('Report') }}作成</h1>
                     <div class="mx-auto">
                         <x-info>
                             <p class="text-sm">
@@ -61,7 +60,7 @@
                                             id="sub_report_id_{{ $sub_category->id }}" onclick="subReportChange()"
                                             value="{{ $sub_category->id }}"
                                             @if ($sub_category->id === (int) old('sub_report_id')) checked @endif
-                                            class="shrink-0 mt-0.5 border-gray-200 rounded-full text-green-600 focus:ring-green-300 ">
+                                            class="shrink-0 mt-0.5 border-gray-200 rounded-full text-sky-500 focus:ring-sky-300 ">
                                         <label for="sub_report_id_{{ $sub_category->id }}" name="sub_report_name"
                                             class="mr-2 text-sm text-gray-500 ml-2">
                                             {{ $sub_category->sub_report_name }}
@@ -286,6 +285,26 @@
                     {{ __('Back') }}
                 </x-back-home-button>
             </div>
+        </div>
+
+        <!-- ボタン -->
+        <div class="w-full max-w-3xl px-5 mx-auto grid grid-cols-1 gap-2">
+            <button class="fixed right-16 bottom-16 bg-sky-400/80 text-white px-2 py-2 rounded-full shadow"
+                onclick="window.history.back();">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                    <path fill-rule="evenodd"
+                        d="M9.53 2.47a.75.75 0 010 1.06L4.81 8.25H15a6.75 6.75 0 010 13.5h-3a.75.75 0 010-1.5h3a5.25 5.25 0 100-10.5H4.81l4.72 4.72a.75.75 0 11-1.06 1.06l-6-6a.75.75 0 010-1.06l6-6a.75.75 0 011.06 0z"
+                        clip-rule="evenodd" />
+                </svg>
+            </button>
+            {{-- <button class="fixed right-16 bottom-28 bg-sky-400/80 text-white px-2 py-2 rounded-full shadow"
+                onclick="location.href='{{ route('menu') }}'">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                </svg>
+            </button> --}}
         </div>
     </section>
 
@@ -649,8 +668,8 @@
         // 理由詳細placeholder切替関数
         function reasonDisplaySwitch() {
             if (reasonCategory.value == "1" ||
-                reasonCategory.value == "2" 
-            ) { 
+                reasonCategory.value == "2"
+            ) {
                 reasonDetail.placeholder = "詳細を記入してください";
             } else {
                 reasonDetail.placeholder = "詳細・備考があれば記入してください";

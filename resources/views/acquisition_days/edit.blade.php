@@ -2,7 +2,7 @@
     <section class="text-gray-600 body-font">
         <div class="container px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-10">
-                <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">{{ __('Rest Days') }}の修正</h1>
+                <h1 class="sm:text-3xl text-2xl font-medium ZenMaruGothic title-font mb-4 text-gray-800">{{ __('Rest Days') }}の修正</h1>
                 <x-info class="mx-auto">
                     <p class="text-sm">
                         {{ __('Rest Days') }}を変更できます。

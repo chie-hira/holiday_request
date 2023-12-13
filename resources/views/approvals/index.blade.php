@@ -2,25 +2,20 @@
     <!-- Page Heading -->
     <section class="text-gray-600 body-font">
         <div class="container max-w-3xl px-5 py-16 mx-auto">
-            <div class="flex flex-col text-center w-full mb-6">
-                <h1 class="sm:text-4xl text-3xl font-medium title-font text-gray-900">権限一覧</h1>
+            <div class="flex flex-col text-center w-full mb-4">
+                <h1 class="sm:text-4xl text-3xl font-medium ZenMaruGothic title-font text-gray-800">権限一覧</h1>
                 <x-info class="mx-auto my-4">
                     <p class="text-sm">
                         設定から<span class="font-bold">権限の変更</span>と<span class="font-bold">取消</span>ができます。
                     </p>
                 </x-info>
-                @can('general_admin')
-                    <h2 class=" text-right">
-                        <x-circle-button href="{{ route('approvals.create') }}">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-                                <path fill-rule="evenodd"
-                                    d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                        </x-circle-button>
-                    </h2>
-                @endcan
             </div>
+            @can('general_admin')
+                <h2 class="text-right mb-4">
+                    <x-show-a-button href="{{ route('approvals.create') }}"
+                        class="px-2 py-1">権限追加</x-show-button>
+                </h2>
+            @endcan
 
             <div class="max-w-3xl w-full mx-auto">
                 <x-notice :notice="session('notice')" />

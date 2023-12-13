@@ -1,5 +1,5 @@
 <button 
-    {{ $attributes->merge(['class' => "py-2 px-1 inline-flex items-center gap-1 border-b-[3px] hover:border-green-500 text-sm whitespace-nowrap text-gray-500 hover:text-green-800"]) }}>
+    {{ $attributes->merge(['class' => "py-2 px-1 inline-flex items-center gap-1 border-b-2 hover:border-sky-400 text-sm whitespace-nowrap text-gray-500 hover:text-sky-500"]) }}>
     <span>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-2 h-2 mb-0.5">
             <path fill-rule="evenodd"

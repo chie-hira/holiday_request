@@ -491,7 +491,7 @@
                                 <!-- 基本機能 start -->
                                 <div class="max-w-md mx-auto grid grid-cols-1 mb-10">
                                     <a href="#report-create"
-                                        class="block text-center items-center p-3 my-2 text-white rounded-xl border border-gray-500 bg-cyan-500 hover:text-gray-600 hover:bg-white focus:text-cyan-500 ">
+                                        class="block text-center items-center p-3 my-2 rounded-xl border border-gray-500 text-white bg-sky-400 hover:text-gray-600 hover:bg-white focus:text-sky-500">
                                         <div class="flex justify-center items-center text-2xl">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                                                 fill="currentColor" class="w-6 h-6">
@@ -506,7 +506,7 @@
                                     </a>
 
                                     <a href="#remaining-my-index"
-                                        class="block text-center items-center p-3 my-2 text-white rounded-xl border border-gray-500 bg-fuchsia-400 hover:text-gray-600 hover:bg-white focus:text-fuchsia-400">
+                                        class="block text-center items-center p-3 my-2 rounded-xl border border-gray-500 text-white bg-sky-400 hover:text-gray-600 hover:bg-white focus:text-sky-500">
                                         <div class="flex justify-center items-center text-2xl">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                                                 fill="currentColor" class="w-6 h-6">
@@ -522,7 +522,7 @@
                                     </a>
 
                                     <a href="#report-my-index"
-                                        class="block text-center items-center p-3 my-2 text-white rounded-xl border border-gray-500 bg-amber-400 hover:text-gray-600 hover:bg-white focus:text-amber-400">
+                                        class="block text-center items-center p-3 my-2 rounded-xl border border-gray-500 text-white bg-sky-400 hover:text-gray-600 hover:bg-white focus:text-sky-500">
                                         <div class="flex justify-center items-center text-2xl">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                                                 fill="currentColor" class="w-6 h-6">
@@ -958,151 +958,6 @@
                                 <p class="text-center text-amber-500 text-2xl font-semibold">承認中</p>
                             </div>
 
-                            {{-- <div
-                                class="w-full max-w-md mx-auto mt-6 mb-8 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
-                                <div class="flex items-center justify-between mb-2">
-                                    <h5
-                                        class="border-solid border-2 px-6 sm:px-10 py-2 border-gray-500 rounded-md text-xl font-bold leading-none text-gray-900">
-                                        出 退 勤 届 け
-                                    </h5>
-                                    <p
-                                        class="border-solid border-2 px-4 py-1 border-sky-500 rounded-md text-md font-medium text-sky-600">
-                                        {{ Auth::user()->affiliation->factory->factory_name }}
-                                    </p>
-                                </div>
-                                <p class="text-gray-600 text-sm text-right">{{ Auth::user()->department_group_name }}
-                                </p>
-                                <div class="flow-root">
-                                    <ul role="list" class="divide-y divide-gray-200">
-                                        <!-- divide-y アンダーライン仕切り -->
-                                        <li class="">
-                                            <div class="flex items-center space-x-4">
-                                                <div class="flex-1 min-w-0">
-                                                    <p class="ZenKurenaido px-2 text-xl font-semibold text-gray-800">
-                                                        {{ __('有給休暇') }}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="pt-3 pb-0 sm:pt-4">
-                                            <div class="flex items-center space-x-4">
-                                                <div class="flex-1 min-w-0">
-                                                    <div class="flex items-center pb-1">
-                                                        <p
-                                                            class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
-                                                            {{ __('Reason') }}
-                                                        </p>
-                                                        <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
-                                                            {{ __('その他') }}</p>
-                                                    </div>
-                                                    <p class="text-sm text-gray-700 truncate px-4 pt-2">
-                                                        {{ __('子供の行事') }}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="pt-3 pb-0 sm:pt-4">
-                                            <div class="flex items-center space-x-4">
-                                                <div class="flex-1 min-w-0">
-                                                    <div class="flex items-center pb-1">
-                                                        <p
-                                                            class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
-                                                            期 間
-                                                        </p>
-                                                        <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
-                                                            {{ __('2023-05-02') }}&emsp;
-                                                            <span class="ml-4">
-                                                                {{ __('1') }}日間
-                                                            </span>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="pt-3 pb-0 sm:pt-4">
-                                            <div class="flex items-center space-x-4">
-                                                <div class="flex-1 min-w-0">
-                                                    <div class="flex items-center pb-1">
-                                                        <p
-                                                            class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
-                                                            {{ __('Report Date') }}
-                                                        </p>
-                                                        <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
-                                                            {{ __('2023-05-01') }}&emsp;
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="pt-3 pb-0 sm:pt-4">
-                                            <div class="flex items-center space-x-4">
-                                                <div class="flex-1 min-w-0">
-                                                    <div class="flex items-center pb-1">
-                                                        <p
-                                                            class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
-                                                            コード
-                                                        </p>
-                                                        <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
-                                                            {{ Auth::user()->employee }}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="pt-3 pb-0 sm:pt-4">
-                                            <div class="flex items-center space-x-4">
-                                                <div class="flex-1 min-w-0">
-                                                    <div class="flex items-center pb-1">
-                                                        <p
-                                                            class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
-                                                            {{ __('Name') }}
-                                                        </p>
-                                                        <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
-                                                            {{ Auth::user()->name }}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="pt-3 pb-0 sm:pt-4">
-                                            <table>
-                                                <thead class="">
-                                                    <tr>
-                                                        <th
-                                                            class="w-20 border border-gray-500 text-gray-900 text-center text-sm">
-                                                            部長/工場長
-                                                        </th>
-                                                        <th
-                                                            class="w-20 border border-gray-500 text-gray-900 text-center text-sm">
-                                                            課長/GL</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="w-20 h-12 border border-gray-500 text-center">
-                                                        </td>
-                                                        <td class="w-20 h-12 border border-gray-500 text-center">
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="w-full max-w-md mx-auto grid grid-cols-1 gap-2">
-                                <div class="flex justify-end">
-                                    <x-return-button class="w-30 px-4" href="#report-my-index">
-                                        {{ __('Report MyIndex') }}
-                                    </x-return-button>
-                                </div>
-                                <div class="flex justify-end">
-                                    <x-back-home-button class="w-30" href="#base">
-                                        {{ __('Back') }}
-                                    </x-back-home-button>
-                                </div>
-                            </div> --}}
-
                             <div
                                 class="w-full max-w-lg mx-auto my-4 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
                                 <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 items-center justify-between mb-2">
@@ -1115,11 +970,14 @@
                                         {{ __('終日休') }}
                                     </p>
                                 </div>
-                                <div class="flex justify-end">
+                                <div class="flex justify-end text-lg">
                                     <div></div>
                                     <ul role="list" class="divide-y divide-gray-500">
-                                        <li class="text-sm md:text-lg">
-                                            &emsp;申請日&emsp;:&emsp;
+                                        <!-- divide-y アンダーライン仕切り -->
+                                        <li class="flex items-center">
+                                            <p class="w-16 text-center border rounded border-gray-700 m-2 text-md text-gray-800">
+                                                申請日
+                                            </p>
                                             <span class="ZenKurenaido font-bold text-gray-800 mr-2">
                                                 {{ __('2023-05-01') }}&emsp;
                                             </span>
@@ -1128,25 +986,21 @@
                                     </ul>
                                 </div>
 
-                                <div class="flex justify-between my-4">
-                                    <ul class="divide-y divide-gray-500 text-sm md:text-md">
-                                        <li class="pt-2">
-                                            <div class="ZenKurenaido font-semibold text-gray-800 text-md sm:text-lg">
-                                                &emsp;富士善工業株式会社&ensp;御中&emsp;
-                                            </div>
-                                        </li>
-                                        <li class="pt-2">
-                                            <div class="flex items-center text-md sm:text-lg">
-                                                &emsp;氏 名 &emsp;
-                                                <span class="ZenKurenaido font-semibold text-gray-800 mr-2">
-                                                    {{ Auth::user()->name }}
-                                                </span>
-                                            </div>
-                                        </li>
-                                        <li></li>
-                                    </ul>
-                                </div>
                                 <ul role="list" class="divide-y divide-gray-500 text-sm md:text-lg">
+                                    <li class="pt-3 pb-0 sm:pt-4">
+                                        <div class="flex items-center space-x-4">
+                                            <div class="flex-1 min-w-0">
+                                                <div class="flex items-center pb-1">
+                                                    <p class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
+                                                        申請者
+                                                    </p>
+                                                    <p class="ZenKurenaido font-semibold text-gray-700 ml-4 text-lg">
+                                                        {{ Auth::user()->name }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
                                     <li class="pt-2 pb-0">
                                         <div class="flex items-center space-x-4">
                                             <div class="flex-1 min-w-0">
@@ -1236,156 +1090,6 @@
                                 <p class="text-center text-sky-600 text-2xl font-semibold">承認済み</p>
                             </div>
 
-                            {{-- <div
-                                class="w-full max-w-md mx-auto mt-6 mb-8 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
-                                <div class="flex items-center justify-between mb-2">
-                                    <h5
-                                        class="border-solid border-2 px-6 sm:px-10 py-2 border-gray-500 rounded-md text-xl font-bold leading-none text-gray-900">
-                                        出 退 勤 届 け
-                                    </h5>
-                                    <p
-                                        class="border-solid border-2 px-4 py-1 border-sky-500 rounded-md text-md font-medium text-sky-600">
-                                        {{ Auth::user()->affiliation->factory->factory_name }}
-                                    </p>
-                                </div>
-                                <p class="text-gray-600 text-sm text-right">{{ Auth::user()->department_group_name }}
-                                </p>
-                                <div class="flow-root">
-                                    <ul role="list" class="divide-y divide-gray-200">
-                                        <!-- divide-y アンダーライン仕切り -->
-                                        <li class="">
-                                            <div class="flex items-center space-x-4">
-                                                <div class="flex-1 min-w-0">
-                                                    <p class="ZenKurenaido px-2 text-xl font-semibold text-gray-800">
-                                                        {{ __('有給休暇') }}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="pt-3 pb-0 sm:pt-4">
-                                            <div class="flex items-center space-x-4">
-                                                <div class="flex-1 min-w-0">
-                                                    <div class="flex items-center pb-1">
-                                                        <p
-                                                            class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
-                                                            {{ __('Reason') }}
-                                                        </p>
-                                                        <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
-                                                            {{ __('その他') }}</p>
-                                                    </div>
-                                                    <p class="text-sm text-gray-700 truncate px-4 pt-2">
-                                                        {{ __('子供の行事') }}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="pt-3 pb-0 sm:pt-4">
-                                            <div class="flex items-center space-x-4">
-                                                <div class="flex-1 min-w-0">
-                                                    <div class="flex items-center pb-1">
-                                                        <p
-                                                            class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
-                                                            期 間
-                                                        </p>
-                                                        <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
-                                                            {{ __('2023-05-02') }}&emsp;
-                                                            <span class="ml-4">
-                                                                {{ __('1') }}日間
-                                                            </span>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="pt-3 pb-0 sm:pt-4">
-                                            <div class="flex items-center space-x-4">
-                                                <div class="flex-1 min-w-0">
-                                                    <div class="flex items-center pb-1">
-                                                        <p
-                                                            class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
-                                                            {{ __('Report Date') }}
-                                                        </p>
-                                                        <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
-                                                            {{ __('2023-05-01') }}&emsp;
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="pt-3 pb-0 sm:pt-4">
-                                            <div class="flex items-center space-x-4">
-                                                <div class="flex-1 min-w-0">
-                                                    <div class="flex items-center pb-1">
-                                                        <p
-                                                            class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
-                                                            コード
-                                                        </p>
-                                                        <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
-                                                            {{ Auth::user()->employee }}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="pt-3 pb-0 sm:pt-4">
-                                            <div class="flex items-center space-x-4">
-                                                <div class="flex-1 min-w-0">
-                                                    <div class="flex items-center pb-1">
-                                                        <p
-                                                            class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
-                                                            {{ __('Name') }}
-                                                        </p>
-                                                        <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
-                                                            {{ Auth::user()->name }}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="pt-3 pb-0 sm:pt-4">
-                                            <table>
-                                                <thead class="">
-                                                    <tr>
-                                                        <th
-                                                            class="w-20 border border-gray-500 text-gray-900 text-center text-sm">
-                                                            部長/工場長
-                                                        </th>
-                                                        <th
-                                                            class="w-20 border border-gray-500 text-gray-900 text-center text-sm">
-                                                            課長/GL</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td class="w-20 h-12 border border-gray-500 text-center">
-                                                            <div class="flex justify-center">
-                                                                <x-approved-stamp />
-                                                            </div>
-                                                        </td>
-                                                        <td class="w-20 h-12 border border-gray-500 text-center">
-                                                            <div class="flex justify-center">
-                                                                <x-approved-stamp />
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="w-full max-w-md mx-auto grid grid-cols-1 gap-2">
-                                <div class="flex justify-end">
-                                    <x-return-button class="w-30 px-4" href="#report-my-index">
-                                        {{ __('Report MyIndex') }}
-                                    </x-return-button>
-                                </div>
-                                <div class="flex justify-end">
-                                    <x-back-home-button class="w-30" href="#base">
-                                        {{ __('Back') }}
-                                    </x-back-home-button>
-                                </div>
-                            </div> --}}
 
                             <div
                                 class="w-full max-w-lg mx-auto my-4 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
@@ -1399,11 +1103,14 @@
                                         {{ __('終日休') }}
                                     </p>
                                 </div>
-                                <div class="flex justify-end">
+                                <div class="flex justify-end text-lg">
                                     <div></div>
                                     <ul role="list" class="divide-y divide-gray-500">
-                                        <li class="text-sm md:text-lg">
-                                            &emsp;申請日&emsp;:&emsp;
+                                        <!-- divide-y アンダーライン仕切り -->
+                                        <li class="flex items-center">
+                                            <p class="w-16 text-center border rounded border-gray-700 m-2 text-md text-gray-800">
+                                                申請日
+                                            </p>
                                             <span class="ZenKurenaido font-bold text-gray-800 mr-2">
                                                 {{ __('2023-05-01') }}&emsp;
                                             </span>
@@ -1412,25 +1119,21 @@
                                     </ul>
                                 </div>
 
-                                <div class="flex justify-between my-4">
-                                    <ul class="divide-y divide-gray-500 text-sm md:text-md">
-                                        <li class="pt-2">
-                                            <div class="ZenKurenaido font-semibold text-gray-800 text-md sm:text-lg">
-                                                &emsp;富士善工業株式会社&ensp;御中&emsp;
-                                            </div>
-                                        </li>
-                                        <li class="pt-2">
-                                            <div class="flex items-center text-md sm:text-lg">
-                                                &emsp;氏 名 &emsp;
-                                                <span class="ZenKurenaido font-semibold text-gray-800 mr-2">
-                                                    {{ Auth::user()->name }}
-                                                </span>
-                                            </div>
-                                        </li>
-                                        <li></li>
-                                    </ul>
-                                </div>
                                 <ul role="list" class="divide-y divide-gray-500 text-sm md:text-lg">
+                                    <li class="pt-3 pb-0 sm:pt-4">
+                                        <div class="flex items-center space-x-4">
+                                            <div class="flex-1 min-w-0">
+                                                <div class="flex items-center pb-1">
+                                                    <p class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
+                                                        申請者
+                                                    </p>
+                                                    <p class="ZenKurenaido font-semibold text-gray-700 ml-4 text-lg">
+                                                        {{ Auth::user()->name }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
                                     <li class="pt-2 pb-0">
                                         <div class="flex items-center space-x-4">
                                             <div class="flex-1 min-w-0">
@@ -1916,159 +1619,6 @@
                                     <p class="text-center text-red-600 text-2xl font-semibold">取消確認中</p>
                                 </div>
 
-                                {{-- <div
-                                    class="w-full max-w-md mx-auto mt-6 mb-8 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
-                                    <div class="flex items-center justify-between mb-2">
-                                        <h5
-                                            class="border-solid border-2 px-6 sm:px-10 py-2 border-gray-500 rounded-md text-xl font-bold leading-none text-gray-900">
-                                            出 退 勤 届 け
-                                        </h5>
-                                        <p
-                                            class="border-solid border-2 px-4 py-1 border-sky-500 rounded-md text-md font-medium text-sky-600">
-                                            {{ Auth::user()->affiliation->factory->factory_name }}
-                                        </p>
-                                    </div>
-                                    <p class="text-gray-600 text-sm text-right">
-                                        {{ Auth::user()->department_group_name }}
-                                    </p>
-                                    <div class="flow-root">
-                                        <ul role="list" class="divide-y divide-gray-200">
-                                            <!-- divide-y アンダーライン仕切り -->
-                                            <li class="">
-                                                <div class="flex items-center space-x-4">
-                                                    <div class="flex-1 min-w-0">
-                                                        <p
-                                                            class="ZenKurenaido px-2 text-xl font-semibold text-gray-800">
-                                                            {{ __('有給休暇') }}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li class="pt-3 pb-0 sm:pt-4">
-                                                <div class="flex items-center space-x-4">
-                                                    <div class="flex-1 min-w-0">
-                                                        <div class="flex items-center pb-1">
-                                                            <p
-                                                                class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
-                                                                {{ __('Reason') }}
-                                                            </p>
-                                                            <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
-                                                                {{ __('その他') }}</p>
-                                                        </div>
-                                                        <p class="text-sm text-gray-700 truncate px-4 pt-2">
-                                                            {{ __('子供の行事') }}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li class="pt-3 pb-0 sm:pt-4">
-                                                <div class="flex items-center space-x-4">
-                                                    <div class="flex-1 min-w-0">
-                                                        <div class="flex items-center pb-1">
-                                                            <p
-                                                                class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
-                                                                期 間
-                                                            </p>
-                                                            <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
-                                                                {{ __('2023-05-02') }}&emsp;
-                                                                <span class="ml-4">
-                                                                    {{ __('1') }}日間
-                                                                </span>
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li class="pt-3 pb-0 sm:pt-4">
-                                                <div class="flex items-center space-x-4">
-                                                    <div class="flex-1 min-w-0">
-                                                        <div class="flex items-center pb-1">
-                                                            <p
-                                                                class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
-                                                                {{ __('Report Date') }}
-                                                            </p>
-                                                            <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
-                                                                {{ __('2023-05-01') }}&emsp;
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li class="pt-3 pb-0 sm:pt-4">
-                                                <div class="flex items-center space-x-4">
-                                                    <div class="flex-1 min-w-0">
-                                                        <div class="flex items-center pb-1">
-                                                            <p
-                                                                class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
-                                                                コード
-                                                            </p>
-                                                            <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
-                                                                {{ Auth::user()->employee }}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li class="pt-3 pb-0 sm:pt-4">
-                                                <div class="flex items-center space-x-4">
-                                                    <div class="flex-1 min-w-0">
-                                                        <div class="flex items-center pb-1">
-                                                            <p
-                                                                class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
-                                                                {{ __('Name') }}
-                                                            </p>
-                                                            <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
-                                                                {{ Auth::user()->name }}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li class="pt-3 pb-0 sm:pt-4">
-                                                <table>
-                                                    <thead class="">
-                                                        <tr>
-                                                            <th
-                                                                class="w-20 border border-gray-500 text-gray-900 text-center text-sm">
-                                                                部長/工場長
-                                                            </th>
-                                                            <th
-                                                                class="w-20 border border-gray-500 text-gray-900 text-center text-sm">
-                                                                課長/GL</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td class="w-20 h-12 border border-gray-500 text-center">
-                                                                <div class="flex justify-center">
-                                                                    <x-approved-stamp />
-                                                                </div>
-                                                            </td>
-                                                            <td class="w-20 h-12 border border-gray-500 text-center">
-                                                                <div class="flex justify-center">
-                                                                    <x-cancel-stamp />
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="w-full max-w-md mx-auto grid grid-cols-1 gap-2">
-                                    <div class="flex justify-end">
-                                        <x-return-button class="w-30 px-4" href="#report-my-index">
-                                            {{ __('Report MyIndex') }}
-                                        </x-return-button>
-                                    </div>
-                                    <div class="flex justify-end">
-                                        <x-back-home-button class="w-30" href="#base">
-                                            {{ __('Back') }}
-                                        </x-back-home-button>
-                                    </div>
-                                </div> --}}
-
                                 <div
                                     class="w-full max-w-lg mx-auto my-4 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
                                     <div
@@ -2082,39 +1632,37 @@
                                             {{ __('終日休') }}
                                         </p>
                                     </div>
-                                    <div class="flex justify-end">
-                                        <div></div>
-                                        <ul role="list" class="divide-y divide-gray-500">
-                                            <li class="text-sm md:text-lg">
-                                                &emsp;申請日&emsp;:&emsp;
-                                                <span class="ZenKurenaido font-bold text-gray-800 mr-2">
-                                                    {{ __('2023-05-01') }}&emsp;
-                                                </span>
-                                            </li>
-                                            <li></li>
-                                        </ul>
-                                    </div>
+                                    <div class="flex justify-end text-lg">
+                                    <div></div>
+                                    <ul role="list" class="divide-y divide-gray-500">
+                                        <!-- divide-y アンダーライン仕切り -->
+                                        <li class="flex items-center">
+                                            <p class="w-16 text-center border rounded border-gray-700 m-2 text-md text-gray-800">
+                                                申請日
+                                            </p>
+                                            <span class="ZenKurenaido font-bold text-gray-800 mr-2">
+                                                {{ __('2023-05-01') }}&emsp;
+                                            </span>
+                                        </li>
+                                        <li></li>
+                                    </ul>
+                                </div>
 
-                                    <div class="flex justify-between my-4">
-                                        <ul class="divide-y divide-gray-500 text-sm md:text-md">
-                                            <li class="pt-2">
-                                                <div
-                                                    class="ZenKurenaido font-semibold text-gray-800 text-md sm:text-lg">
-                                                    &emsp;富士善工業株式会社&ensp;御中&emsp;
-                                                </div>
-                                            </li>
-                                            <li class="pt-2">
-                                                <div class="flex items-center text-md sm:text-lg">
-                                                    &emsp;氏 名 &emsp;
-                                                    <span class="ZenKurenaido font-semibold text-gray-800 mr-2">
-                                                        {{ Auth::user()->name }}
-                                                    </span>
-                                                </div>
-                                            </li>
-                                            <li></li>
-                                        </ul>
-                                    </div>
                                     <ul role="list" class="divide-y divide-gray-500 text-sm md:text-lg">
+                                        <li class="pt-3 pb-0 sm:pt-4">
+                                        <div class="flex items-center space-x-4">
+                                            <div class="flex-1 min-w-0">
+                                                <div class="flex items-center pb-1">
+                                                    <p class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
+                                                        申請者
+                                                    </p>
+                                                    <p class="ZenKurenaido font-semibold text-gray-700 ml-4 text-lg">
+                                                        {{ Auth::user()->name }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
                                         <li class="pt-2 pb-0">
                                             <div class="flex items-center space-x-4">
                                                 <div class="flex-1 min-w-0">
@@ -2502,24 +2050,6 @@
                                                                 </td>
                                                             </tr>
 
-                                                            {{-- <tr class="hover:bg-gray-100">
-                                                                <td
-                                                                    class="hidden md:block pl-4 pr-2 py-3 whitespace-nowrap text-sm font-medium text-gray-800 ">
-                                                                    {{ __('育児休業') }}
-                                                                </td>
-                                                                <td
-                                                                    class="block md:hidden pl-4 pr-2 py-3 whitespace-nowrap text-xs font-medium text-gray-800 ">
-                                                                    {{ Str::limit('育児休業', 15) }}
-                                                                </td>
-                                                                <td
-                                                                    class="px-4 pt-3 pb-1 whitespace-nowrap text-right text-sm font-medium">
-                                                                </td>
-                                                                <td
-                                                                    class="px-4 pt-3 pb-1 whitespace-nowrap text-right text-sm font-medium">
-                                                                    ※
-                                                                </td>
-                                                            </tr> --}}
-
                                                         </tbody>
                                                     </table>
                                                 </div>
@@ -2625,7 +2155,7 @@
                                         <!-- 基本機能 start -->
                                         <div class="max-w-md mx-auto grid grid-cols-1 mb-10">
                                             <a href="#report-create"
-                                                class="block text-center items-center p-3 my-2 text-white rounded-xl border border-gray-500 bg-cyan-500 hover:text-gray-600 hover:bg-white focus:text-cyan-500 ">
+                                                class="block text-center items-center p-3 my-2 rounded-xl border border-gray-500 text-white bg-sky-400 hover:text-gray-600 hover:bg-white focus:text-sky-500">
                                                 <div class="flex justify-center items-center text-2xl">
                                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                                                         fill="currentColor" class="w-6 h-6">
@@ -2640,7 +2170,7 @@
                                             </a>
 
                                             <a href="#remaining-my-index"
-                                                class="block text-center items-center p-3 my-2 text-white rounded-xl border border-gray-500 bg-fuchsia-400 hover:text-gray-600 hover:bg-white focus:text-fuchsia-400">
+                                                class="block text-center items-center p-3 my-2 rounded-xl border border-gray-500 text-white bg-sky-400 hover:text-gray-600 hover:bg-white focus:text-sky-500">
                                                 <div class="flex justify-center items-center text-2xl">
                                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                                                         fill="currentColor" class="w-6 h-6">
@@ -2656,7 +2186,7 @@
                                             </a>
 
                                             <a href="#report-my-index"
-                                                class="block text-center items-center p-3 my-2 text-white rounded-xl border border-gray-500 bg-amber-400 hover:text-gray-600 hover:bg-white focus:text-amber-400">
+                                                class="block text-center items-center p-3 my-2 rounded-xl border border-gray-500 text-white bg-sky-400 hover:text-gray-600 hover:bg-white focus:text-sky-500">
                                                 <div class="flex justify-center items-center text-2xl">
                                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                                                         fill="currentColor" class="w-6 h-6">
@@ -2868,12 +2398,12 @@
                                                                         </td>
                                                                         <td
                                                                             class="pl-1 pr-4 py-4 whitespace-nowrap text-gray-800 ">
-                                                                            {{ '長島 秋休' }}
+                                                                            {{ '申請者いち' }}
                                                                         </td>
                                                                         <td
                                                                             class="pl-4 pr-1 py-4 whitespace-nowrap text-gray-800 ">
-                                                                            {{ '第一製造部' }}
-                                                                            {{ '精密板金課' }}
+                                                                            {{ '部門一' }}
+                                                                            {{ '第一課' }}
                                                                         </td>
                                                                         <td
                                                                             class="px-6 py-4 whitespace-nowrap text-gray-800 ">
@@ -2926,11 +2456,11 @@
                                                                         </td>
                                                                         <td
                                                                             class="pl-1 pr-4 py-4 whitespace-nowrap text-gray-800 ">
-                                                                            {{ '長島 島子' }}
+                                                                            {{ '申請者に' }}
                                                                         </td>
                                                                         <td
                                                                             class="pl-4 pr-1 py-4 whitespace-nowrap text-gray-800 ">
-                                                                            {{ '第二製造部' }}
+                                                                            {{ '部門二' }}
                                                                             {{ '総務課' }}
                                                                         </td>
                                                                         <td
@@ -3149,38 +2679,37 @@
                                             {{ __('終日休') }}
                                         </p>
                                     </div>
-                                    <div class="flex justify-end">
-                                        <div></div>
-                                        <ul role="list" class="divide-y divide-gray-500">
-                                            <li class="text-sm md:text-lg">
-                                                &emsp;申請日&emsp;:&emsp;
-                                                <span class="ZenKurenaido font-bold text-gray-800 mr-2">
-                                                    {{ __('2023-05-01') }}&emsp;
-                                                </span>
-                                            </li>
-                                            <li></li>
-                                        </ul>
-                                    </div>
+                                    <div class="flex justify-end text-lg">
+                                    <div></div>
+                                    <ul role="list" class="divide-y divide-gray-500">
+                                        <!-- divide-y アンダーライン仕切り -->
+                                        <li class="flex items-center">
+                                            <p class="w-16 text-center border rounded border-gray-700 m-2 text-md text-gray-800">
+                                                申請日
+                                            </p>
+                                            <span class="ZenKurenaido font-bold text-gray-800 mr-2">
+                                                {{ __('2023-05-01') }}&emsp;
+                                            </span>
+                                        </li>
+                                        <li></li>
+                                    </ul>
+                                </div>
 
-                                    <div class="flex justify-between my-4">
-                                        <ul class="divide-y divide-gray-500 text-sm md:text-md">
-                                            <li class="pt-2">
-                                                <div class="ZenKurenaido font-semibold text-gray-800 text-md sm:text-lg">
-                                                    &emsp;富士善工業株式会社&ensp;御中&emsp;
-                                                </div>
-                                            </li>
-                                            <li class="pt-2">
-                                                <div class="flex items-center text-md sm:text-lg">
-                                                    &emsp;氏 名 &emsp;
-                                                    <span class="ZenKurenaido font-semibold text-gray-800 mr-2">
-                                                        {{ '長島 島子' }}
-                                                    </span>
-                                                </div>
-                                            </li>
-                                            <li></li>
-                                        </ul>
-                                    </div>
                                     <ul role="list" class="divide-y divide-gray-500 text-sm md:text-lg">
+                                        <li class="pt-3 pb-0 sm:pt-4">
+                                        <div class="flex items-center space-x-4">
+                                            <div class="flex-1 min-w-0">
+                                                <div class="flex items-center pb-1">
+                                                    <p class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
+                                                        申請者
+                                                    </p>
+                                                    <p class="ZenKurenaido font-semibold text-gray-700 ml-4 text-lg">
+                                                        {{ Auth::user()->name }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
                                         <li class="pt-2 pb-0">
                                             <div class="flex items-center space-x-4">
                                                 <div class="flex-1 min-w-0">
@@ -3477,38 +3006,37 @@
                                             {{ __('終日休') }}
                                         </p>
                                     </div>
-                                    <div class="flex justify-end">
-                                        <div></div>
-                                        <ul role="list" class="divide-y divide-gray-500">
-                                            <li class="text-sm md:text-lg">
-                                                &emsp;申請日&emsp;:&emsp;
-                                                <span class="ZenKurenaido font-bold text-gray-800 mr-2">
-                                                    {{ __('2023-05-01') }}&emsp;
-                                                </span>
-                                            </li>
-                                            <li></li>
-                                        </ul>
-                                    </div>
+                                    <div class="flex justify-end text-lg">
+                                    <div></div>
+                                    <ul role="list" class="divide-y divide-gray-500">
+                                        <!-- divide-y アンダーライン仕切り -->
+                                        <li class="flex items-center">
+                                            <p class="w-16 text-center border rounded border-gray-700 m-2 text-md text-gray-800">
+                                                申請日
+                                            </p>
+                                            <span class="ZenKurenaido font-bold text-gray-800 mr-2">
+                                                {{ __('2023-05-01') }}&emsp;
+                                            </span>
+                                        </li>
+                                        <li></li>
+                                    </ul>
+                                </div>
 
-                                    <div class="flex justify-between my-4">
-                                        <ul class="divide-y divide-gray-500 text-sm md:text-md">
-                                            <li class="pt-2">
-                                                <div class="ZenKurenaido font-semibold text-gray-800 text-md sm:text-lg">
-                                                    &emsp;富士善工業株式会社&ensp;御中&emsp;
-                                                </div>
-                                            </li>
-                                            <li class="pt-2">
-                                                <div class="flex items-center text-md sm:text-lg">
-                                                    &emsp;氏 名 &emsp;
-                                                    <span class="ZenKurenaido font-semibold text-gray-800 mr-2">
-                                                        {{ '長島 秋休' }}
-                                                    </span>
-                                                </div>
-                                            </li>
-                                            <li></li>
-                                        </ul>
-                                    </div>
                                     <ul role="list" class="divide-y divide-gray-500 text-sm md:text-lg">
+                                        <li class="pt-3 pb-0 sm:pt-4">
+                                        <div class="flex items-center space-x-4">
+                                            <div class="flex-1 min-w-0">
+                                                <div class="flex items-center pb-1">
+                                                    <p class="w-16 text-center border rounded border-gray-700 py-1 text-md text-gray-800">
+                                                        申請者
+                                                    </p>
+                                                    <p class="ZenKurenaido font-semibold text-gray-700 ml-4 text-lg">
+                                                        {{ Auth::user()->name }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
                                         <li class="pt-2 pb-0">
                                             <div class="flex items-center space-x-4">
                                                 <div class="flex-1 min-w-0">
@@ -3684,12 +3212,12 @@
                                                                 <tr>
                                                                     <td
                                                                         class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">
-                                                                        {{ '第一製造部' }}
+                                                                        {{ '部門' }}
                                                                     </td>
                                                                     <td
                                                                         class="px-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                                         {{ '1000' }}&ensp;
-                                                                        {{ '長島 秋休' }}</td>
+                                                                        {{ '申請者いち' }}</td>
                                                                     <td
                                                                         class="pl-4 pr-2 py-4 whitespace-nowrap text-sm text-right text-gray-800 ">
                                                                         <div style="display: ">
@@ -3715,12 +3243,12 @@
                                                                 <tr>
                                                                     <td
                                                                         class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">
-                                                                        {{ '第二製造部' }}
+                                                                        {{ '部門二' }}
                                                                     </td>
                                                                     <td
                                                                         class="px-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                                         {{ '2000' }}&ensp;
-                                                                        {{ '長島 島子' }}</td>
+                                                                        {{ '申請者に' }}</td>
                                                                     <td
                                                                         class="pl-4 pr-2 py-4 whitespace-nowrap text-sm text-right text-gray-800 ">
                                                                         <div style="display: ">
@@ -3746,12 +3274,12 @@
                                                                 <tr>
                                                                     <td
                                                                         class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">
-                                                                        {{ '第二製造部' }}
+                                                                        {{ '部門二' }}
                                                                     </td>
                                                                     <td
                                                                         class="px-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                                         {{ '2222' }}&ensp;
-                                                                        {{ '長島 美楽乃' }}</td>
+                                                                        {{ '申請者さん' }}</td>
                                                                     <td
                                                                         class="pl-4 pr-2 py-4 whitespace-nowrap text-sm text-right text-gray-800 ">
                                                                         <div style="display: ">
@@ -3777,12 +3305,12 @@
                                                                 <tr>
                                                                     <td
                                                                         class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 ">
-                                                                        {{ '第二製造部' }}
+                                                                        {{ '部門二' }}
                                                                     </td>
                                                                     <td
                                                                         class="px-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
                                                                         {{ '3000' }}&ensp;
-                                                                        {{ '長島 利休' }}</td>
+                                                                        {{ '申請者よん' }}</td>
                                                                     <td
                                                                         class="pl-4 pr-2 py-4 whitespace-nowrap text-sm text-right text-gray-800 ">
                                                                         <div style="display: ">
@@ -3842,10 +3370,10 @@
                                         <option value=''>部署</option>
                                         <option value=''>全て</option>
                                         <option>
-                                            {{ '第一製造部' }}
+                                            {{ '部門一' }}
                                         </option>
                                         <option>
-                                            {{ '第二製造部' }}
+                                            {{ '部門二' }}
                                         </option>
                                     </x-select>
                                     <x-select id="department_id" class="block text-xs w-40">
@@ -3949,7 +3477,7 @@
                                                                 <tr style="display:" class="hover:bg-gray-100 ">
                                                                     <td
                                                                         class="pl-4 pr-1 py-4 whitespace-nowrap text-sm text-gray-800 ">
-                                                                        {{ '第二製造部' }}
+                                                                        {{ '部門二' }}
                                                                     </td>
                                                                     <td
                                                                         class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 ">
@@ -3957,7 +3485,7 @@
                                                                     </td>
                                                                     <td
                                                                         class="pl-1 pr-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
-                                                                        {{ '長島 美楽乃' }}
+                                                                        {{ '申請者さん' }}
                                                                     </td>
                                                                     <td
                                                                         class="px-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
@@ -3992,7 +3520,7 @@
                                                                 <tr style="display:" class="hover:bg-gray-100 ">
                                                                     <td
                                                                         class="pl-4 pr-1 py-4 whitespace-nowrap text-sm text-gray-800 ">
-                                                                        {{ '第二製造部' }}
+                                                                        {{ '部門二' }}
                                                                     </td>
                                                                     <td
                                                                         class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 ">
@@ -4038,7 +3566,7 @@
                                                                 <tr style="display:" class="hover:bg-gray-100 ">
                                                                     <td
                                                                         class="pl-4 pr-1 py-4 whitespace-nowrap text-sm text-gray-800 ">
-                                                                        {{ '第三製造部' }}
+                                                                        {{ '部門二' }}
                                                                     </td>
                                                                     <td
                                                                         class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 ">
@@ -4046,7 +3574,7 @@
                                                                     </td>
                                                                     <td
                                                                         class="pl-1 pr-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
-                                                                        {{ '長島 利休' }}
+                                                                        {{ '申請者よん' }}
                                                                     </td>
                                                                     <td
                                                                         class="px-4 py-4 whitespace-nowrap text-sm text-gray-800 ">
@@ -4163,7 +3691,7 @@
                                     <!-- 基本機能 start -->
                                     <div class="max-w-md mx-auto grid grid-cols-1 mb-10">
                                         <a href="#report-create"
-                                            class="block text-center items-center p-3 my-2 text-white rounded-xl border border-gray-500 bg-cyan-500 hover:text-gray-600 hover:bg-white focus:text-cyan-500 ">
+                                            class="block text-center items-center p-3 my-2 rounded-xl border border-gray-500 text-white bg-sky-400 hover:text-gray-600 hover:bg-white focus:text-sky-500">
                                             <div class="flex justify-center items-center text-2xl">
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                                                     fill="currentColor" class="w-6 h-6">
@@ -4178,7 +3706,7 @@
                                         </a>
 
                                         <a href="#remaining-my-index"
-                                            class="block text-center items-center p-3 my-2 text-white rounded-xl border border-gray-500 bg-fuchsia-400 hover:text-gray-600 hover:bg-white focus:text-fuchsia-400">
+                                            class="block text-center items-center p-3 my-2 rounded-xl border border-gray-500 text-white bg-sky-400 hover:text-gray-600 hover:bg-white focus:text-sky-500">
                                             <div class="flex justify-center items-center text-2xl">
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                                                     fill="currentColor" class="w-6 h-6">
@@ -4194,7 +3722,7 @@
                                         </a>
 
                                         <a href="#report-my-index"
-                                            class="block text-center items-center p-3 my-2 text-white rounded-xl border border-gray-500 bg-amber-400 hover:text-gray-600 hover:bg-white focus:text-amber-400">
+                                            class="block text-center items-center p-3 my-2 rounded-xl border border-gray-500 text-white bg-sky-400 hover:text-gray-600 hover:bg-white focus:text-sky-500">
                                             <div class="flex justify-center items-center text-2xl">
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                                                     fill="currentColor" class="w-6 h-6">
@@ -4530,14 +4058,14 @@
                                                                 <tr>
                                                                     <td
                                                                         class="px-4 py-4 whitespace-nowrap text-xs font-medium text-gray-800">
-                                                                        {{ '第一製造部' }}
+                                                                        {{ '部門一' }}
                                                                     </td>
                                                                     <td
                                                                         class="pl-4 py-4 whitespace-nowrap text-sm text-center text-gray-800">
                                                                         {{ '1000' }}</td>
                                                                     <td
                                                                         class="px-4 py-4 whitespace-nowrap text-sm text-left text-gray-800">
-                                                                        {{ '長島 秋休' }}</td>
+                                                                        {{ '申請者いち' }}</td>
                                                                     <td id="remaining_data"
                                                                         class="px-4 py-4 whitespace-nowrap text-sm text-right text-gray-800 ">
                                                                         <div>
@@ -4557,14 +4085,14 @@
                                                                 <tr>
                                                                     <td
                                                                         class="px-4 py-4 whitespace-nowrap text-xs font-medium text-gray-800">
-                                                                        {{ '第二製造部' }}
+                                                                        {{ '部門二' }}
                                                                     </td>
                                                                     <td
                                                                         class="pl-4 py-4 whitespace-nowrap text-sm text-center text-gray-800">
                                                                         {{ '2000' }}</td>
                                                                     <td
                                                                         class="px-4 py-4 whitespace-nowrap text-sm text-left text-gray-800">
-                                                                        {{ '長島 島子' }}</td>
+                                                                        {{ '申請者に' }}</td>
                                                                     <td id="remaining_data"
                                                                         class="px-4 py-4 whitespace-nowrap text-sm text-right text-gray-800 ">
                                                                         <div>
@@ -4584,14 +4112,14 @@
                                                                 <tr>
                                                                     <td
                                                                         class="px-4 py-4 whitespace-nowrap text-xs font-medium text-gray-800">
-                                                                        {{ '第二製造部' }}
+                                                                        {{ '部門' }}
                                                                     </td>
                                                                     <td
                                                                         class="pl-4 py-4 whitespace-nowrap text-sm text-center text-gray-800">
                                                                         {{ '2222' }}</td>
                                                                     <td
                                                                         class="px-4 py-4 whitespace-nowrap text-sm text-left text-gray-800">
-                                                                        {{ '長島 美楽乃' }}</td>
+                                                                        {{ '申請者さん' }}</td>
                                                                     <td id="remaining_data"
                                                                         class="px-4 py-4 whitespace-nowrap text-sm text-right text-gray-800 ">
                                                                         <div>
@@ -4611,14 +4139,14 @@
                                                                 <tr>
                                                                     <td
                                                                         class="px-4 py-4 whitespace-nowrap text-xs font-medium text-gray-800">
-                                                                        {{ '第三製造部' }}
+                                                                        {{ '部門二' }}
                                                                     </td>
                                                                     <td
                                                                         class="pl-4 py-4 whitespace-nowrap text-sm text-center text-gray-800">
                                                                         {{ '3000' }}</td>
                                                                     <td
                                                                         class="px-4 py-4 whitespace-nowrap text-sm text-left text-gray-800">
-                                                                        {{ '長島 利休' }}</td>
+                                                                        {{ '申請者よん' }}</td>
                                                                     <td id="remaining_data"
                                                                         class="px-4 py-4 whitespace-nowrap text-sm text-right text-gray-800 ">
                                                                         <div>
@@ -4691,7 +4219,7 @@
                                                                     <td
                                                                         class="px-4 py-3 whitespace-nowrap text-center font-medium text-gray-800">
                                                                         {{ '1000' }}
-                                                                        {{ '水島寒月' }}
+                                                                        {{ '申請者' }}
                                                                     </td>
                                                                     <td
                                                                         class="px-4 py-3 whitespace-nowrap text-center font-medium text-gray-800">
@@ -4902,10 +4430,10 @@
                                                                     </td>
                                                                     <td
                                                                         class="px-4 py-4 whitespace-nowrap text-left text-gray-800">
-                                                                        {{ '長島 秋休' }}
+                                                                        {{ '申請者いち' }}
                                                                     </td>
                                                                     <td class="px-4 py-4 whitespace-nowrap text-gray-800">
-                                                                        {{ '第一製造部' }}
+                                                                        {{ '部門一' }}
                                                                         {{ 'グループ1' }}
                                                                     </td>
                                                                     <td class="px-1 py-4 whitespace-nowrap text-gray-800">
@@ -4922,10 +4450,10 @@
                                                                     </td>
                                                                     <td
                                                                         class="px-4 py-4 whitespace-nowrap text-left text-gray-800">
-                                                                        {{ '長島 島子' }}
+                                                                        {{ '申請者に' }}
                                                                     </td>
                                                                     <td class="px-4 py-4 whitespace-nowrap text-gray-800">
-                                                                        {{ '第二製造部' }}
+                                                                        {{ '部門二' }}
                                                                         {{ 'グループ1' }}
                                                                     </td>
                                                                     <td class="px-1 py-4 whitespace-nowrap text-gray-800">
@@ -4942,10 +4470,10 @@
                                                                     </td>
                                                                     <td
                                                                         class="px-4 py-4 whitespace-nowrap text-left text-gray-800">
-                                                                        {{ '長島 美楽乃' }}
+                                                                        {{ '申請者さん' }}
                                                                     </td>
                                                                     <td class="px-4 py-4 whitespace-nowrap text-gray-800">
-                                                                        {{ '第二製造部' }}
+                                                                        {{ '部門二' }}
                                                                         {{ 'グループ2' }}
                                                                     </td>
                                                                     <td class="px-1 py-4 whitespace-nowrap text-gray-800">
@@ -4962,10 +4490,10 @@
                                                                     </td>
                                                                     <td
                                                                         class="px-4 py-4 whitespace-nowrap text-left text-gray-800">
-                                                                        {{ '長島 利休' }}
+                                                                        {{ '申請者よん' }}
                                                                     </td>
                                                                     <td class="px-4 py-4 whitespace-nowrap text-gray-800">
-                                                                        {{ '第三製造部' }}
+                                                                        {{ '部門二' }}
                                                                         {{ 'グループ3' }}
                                                                     </td>
                                                                     <td class="px-1 py-4 whitespace-nowrap text-gray-800">
@@ -5040,7 +4568,7 @@
                                                                     </td>
                                                                     <td
                                                                         class="px-4 py-4 whitespace-nowrap text-sm text-center text-gray-800 ">
-                                                                        {{ '長島 秋休' }}
+                                                                        {{ '申請者いち' }}
                                                                     </td>
                                                                     <form action="#user-update">
                                                                         <td
@@ -5048,13 +4576,13 @@
                                                                             <x-select id="factory_id"
                                                                                 class="block mt-1 w-32 text-sm">
                                                                                 <option>
-                                                                                    {{ '第一製造部' }}
+                                                                                    {{ '部門一' }}
                                                                                 </option>
                                                                                 <option>
-                                                                                    {{ '第二製造部' }}
+                                                                                    {{ '部門二' }}
                                                                                 </option>
                                                                                 <option>
-                                                                                    {{ '第三製造部' }}
+                                                                                    {{ '部門二' }}
                                                                                 </option>
                                                                             </x-select>
                                                                         </td>
@@ -5178,7 +4706,7 @@
                                                                     </td>
                                                                     <td
                                                                         class="px-4 py-4 whitespace-nowrap text-sm text-center text-gray-800 ">
-                                                                        {{ '長島 秋休' }}
+                                                                        {{ '申請者いち' }}
                                                                     </td>
                                                                     <form action="#user-update">
                                                                         <td
@@ -5186,13 +4714,13 @@
                                                                             <x-select id="factory_id"
                                                                                 class="block mt-1 w-32 text-sm">
                                                                                 <option>
-                                                                                    {{ '第一製造部' }}
+                                                                                    {{ '部門一' }}
                                                                                 </option>
                                                                                 <option>
-                                                                                    {{ '第二製造部' }}
+                                                                                    {{ '部門二' }}
                                                                                 </option>
                                                                                 <option>
-                                                                                    {{ '第三製造部' }}
+                                                                                    {{ '部門二' }}
                                                                                 </option>
                                                                             </x-select>
                                                                         </td>
@@ -5312,9 +4840,9 @@
                                     <div class="mt-4">
                                         <x-label for="factory_id" :value="__('Factory')" />
                                         <x-select id="factory_id" class="block w-full p-2.5">
-                                            <option>{{ '第一製造部' }}</option>
-                                            <option>{{ '第二製造部' }}</option>
-                                            <option>{{ '第三製造部' }}</option>
+                                            <option>{{ '部門一' }}</option>
+                                            <option>{{ '部門二' }}</option>
+                                            <option>{{ '部門二' }}</option>
                                         </x-select>
                                     </div>
                                     <!-- Department_id -->
@@ -5466,7 +4994,7 @@
                                                                     <td
                                                                         class="px-4 py-4 whitespace-nowrap text-sm text-left text-gray-800">
                                                                         {{ '1000' }}
-                                                                        {{ '長島 秋休' }}
+                                                                        {{ '申請者いち' }}
                                                                     </td>
                                                                     <td
                                                                         class="px-4 py-4 whitespace-nowrap text-xs text-gray-800">
@@ -5489,11 +5017,11 @@
                                                                     <td
                                                                         class="px-4 py-4 whitespace-nowrap text-sm text-left text-gray-800">
                                                                         {{ '1000' }}
-                                                                        {{ '長島 秋休' }}
+                                                                        {{ '申請者いち' }}
                                                                     </td>
                                                                     <td
                                                                         class="px-4 py-4 whitespace-nowrap text-xs text-gray-800">
-                                                                        {{ '第一製造部' }}
+                                                                        {{ '部門一' }}
                                                                         {{ 'グループ1' }}
                                                                     </td>
                                                                     <td
@@ -5512,11 +5040,11 @@
                                                                     <td
                                                                         class="px-4 py-4 whitespace-nowrap text-sm text-left text-gray-800">
                                                                         {{ '2000' }}
-                                                                        {{ '金田' }}
+                                                                        {{ '申請者ご' }}
                                                                     </td>
                                                                     <td
                                                                         class="px-4 py-4 whitespace-nowrap text-xs text-gray-800">
-                                                                        {{ '第一製造部' }}
+                                                                        {{ '部門一' }}
                                                                         {{ 'グループ1' }}
                                                                     </td>
                                                                     <td
@@ -5535,11 +5063,11 @@
                                                                     <td
                                                                         class="px-4 py-4 whitespace-nowrap text-sm text-left text-gray-800">
                                                                         {{ '3000' }}
-                                                                        {{ '長島 利休' }}
+                                                                        {{ '申請者よん' }}
                                                                     </td>
                                                                     <td
                                                                         class="px-4 py-4 whitespace-nowrap text-xs text-gray-800">
-                                                                        {{ '第一製造部' }}
+                                                                        {{ '部門一' }}
                                                                         {{ 'グループ1' }}
                                                                     </td>
                                                                     <td
@@ -5612,7 +5140,7 @@
                                                                     <td
                                                                         class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-800">
                                                                         {{ '1000' }}&ensp;
-                                                                        {{ '長島 秋休' }}
+                                                                        {{ '申請者いち' }}
                                                                     </td>
                                                                     <form action="#approval-index">
                                                                         <td
@@ -5621,8 +5149,8 @@
                                                                                 class="w-32 border-gray-300 text-gray-900 text-sm p-2.5">
                                                                                 <option>
                                                                                     {{ '全部' }}
-                                                                                    {{ '第一製造部' }}
-                                                                                    {{ '第二製造部' }}
+                                                                                    {{ '部門一' }}
+                                                                                    {{ '部門二' }}
                                                                                 </option>
                                                                             </x-select>
                                                                         </td>
@@ -5744,7 +5272,7 @@
                                                                     <td
                                                                         class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-800">
                                                                         {{ '1000' }}&ensp;
-                                                                        {{ '長島 秋休' }}
+                                                                        {{ '申請者いち' }}
                                                                     </td>
                                                                     <form action="#approval-index">
                                                                         <td
@@ -5753,8 +5281,8 @@
                                                                                 class="w-32 border-gray-300 text-gray-900 text-sm p-2.5">
                                                                                 <option>
                                                                                     {{ '全部' }}
-                                                                                    {{ '第一製造部' }}
-                                                                                    {{ '第二製造部' }}
+                                                                                    {{ '部門一' }}
+                                                                                    {{ '部門二' }}
                                                                                 </option>
                                                                             </x-select>
                                                                         </td>
@@ -5889,16 +5417,16 @@
                                                                             <x-select name="user_id"
                                                                                 class="w-40 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5">
                                                                                 <option>
-                                                                                    {{ '1000' }}&ensp;{{ '長島 秋休' }}
+                                                                                    {{ '1000' }}&ensp;{{ '申請者いち' }}
                                                                                 </option>
                                                                                 <option>
-                                                                                    {{ '2000' }}&ensp;{{ '長島 島子' }}
+                                                                                    {{ '2000' }}&ensp;{{ '申請者に' }}
                                                                                 </option>
                                                                                 <option>
-                                                                                    {{ '2222' }}&ensp;{{ '長島 美楽乃' }}
+                                                                                    {{ '2222' }}&ensp;{{ '申請者さん' }}
                                                                                 </option>
                                                                                 <option>
-                                                                                    {{ '3000' }}&ensp;{{ '長島 利休' }}
+                                                                                    {{ '3000' }}&ensp;{{ '申請者よん' }}
                                                                                 </option>
                                                                             </x-select>
                                                                         </td>
@@ -5910,13 +5438,13 @@
                                                                                     {{ '全部' }}
                                                                                 </option>
                                                                                 <option>
-                                                                                    {{ '第一製造部' }}
+                                                                                    {{ '部門一' }}
                                                                                 </option>
                                                                                 <option>
-                                                                                    {{ '第二製造部' }}
+                                                                                    {{ '部門二' }}
                                                                                 </option>
                                                                                 <option>
-                                                                                    {{ '第三製造部' }}
+                                                                                    {{ '部門' }}
                                                                                 </option>
                                                                             </x-select>
                                                                         </td>
@@ -5993,7 +5521,7 @@
         </div>
 
         <!-- ボタン -->
-        <button class="fixed right-4 bottom-16 bg-green-700/80 text-white px-2 py-2 rounded-full shadow"
+        <button class="fixed right-4 bottom-16 bg-sky-400/80 text-white px-2 py-2 rounded-full shadow"
             onclick="location.href='{{ route('menu') }}'">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="w-6 h-6">
@@ -6002,7 +5530,7 @@
             </svg>
         </button>
         <button id="scrollTopBtn"
-            class="fixed right-4 bottom-4 bg-green-700/80 text-white px-2 py-2 rounded-full shadow"
+            class="fixed right-4 bottom-4 bg-sky-400/80 text-white px-2 py-2 rounded-full shadow"
             onclick="scrollToTop()">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="w-6 h-6">
@@ -6044,17 +5572,6 @@
                 dropdownMenu4.classList.toggle("hidden");
             });
         });
-
-        // function dropDownswich1() {
-        //     let dropDown1 = document.getElementById('dropDown1');
-        //     console.log(dropDown1);
-        //     if (dropDown1.style.display = 'none') {
-        //         dropDown1.style.display = '';
-        //     } 
-        //     if (dropDown1.style.display = '') {
-        //         dropDown1.style.display = 'none';
-        //     }
-        // }
     </script>
 
 </x-app-layout>

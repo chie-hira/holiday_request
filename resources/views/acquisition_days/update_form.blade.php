@@ -3,7 +3,7 @@
     <section class="text-gray-600 body-font">
         <div class="container w-full md:w-2/3 px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-12">
-                <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">有給休暇日数の更新</h1>
+                <h1 class="sm:text-3xl text-2xl font-medium ZenMaruGothic title-font mb-4 text-gray-900">有給休暇日数の更新</h1>
                 <div class="text-left mx-auto leading-relaxed text-sm mb-1">
                     <x-info>
                         <p>
@@ -65,9 +65,7 @@
                             {{-- {{ pathinfo($file, PATHINFO_FILENAME) }} --}}
                         </p>
                         <x-show-a-button href="{{ asset($path) }}"
-                        {{-- http://localhost/storage/excels/public/excels/20231017_list.xlsx --}}
-                        {{-- <x-show-a-button href="{{ Storage::url($file) }}" --}}
-                            class="text-xs px-2 py-1 my-1 focus:ring focus:ring-green-300">
+                            class="text-xs px-2 py-1 my-1">
                             ダウンロード
                             </x-a>
                     </div>

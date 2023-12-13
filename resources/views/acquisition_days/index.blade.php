@@ -42,8 +42,8 @@
     </div>
     <section class="text-gray-600 body-font">
         <div class="container max-w-3xl px-5 py-16 mx-auto">
-            <div class="flex flex-col text-center w-full mb-6">
-                <h1 class="sm:text-4xl text-3xl font-medium title-font mb-4 text-gray-900">{{ __('Rest Days') }}一覧</h1>
+            <div class="flex flex-col text-center ZenMaruGothic w-full mb-6">
+                <h1 class="sm:text-4xl text-3xl font-medium title-font mb-4 text-gray-800">{{ __('Rest Days') }}一覧</h1>
                 <p id="report_name-1" style="display: " class="lg:w-2/3 mx-auto text-lg leading-relaxed">
                     {{ $report_categories->where('id', 1)->first()->report_name }}
                 </p>
@@ -80,18 +80,13 @@
                 <p id="report_name-16" style="display: none" class="lg:w-2/3 mx-auto text-lg leading-relaxed">
                     {{ $report_categories->where('id', 16)->first()->report_name }}
                 </p> --}}
-                <h2 id="paid_holiday_update" style="display: " class="text-right">
-                    @can('general_admin')
-                        <x-circle-button href="{{ route('acquisition_days.update_form') }}">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-                                <path fill-rule="evenodd"
-                                    d="M12 5.25c1.213 0 2.415.046 3.605.135a3.256 3.256 0 013.01 3.01c.044.583.077 1.17.1 1.759L17.03 8.47a.75.75 0 10-1.06 1.06l3 3a.75.75 0 001.06 0l3-3a.75.75 0 00-1.06-1.06l-1.752 1.751c-.023-.65-.06-1.296-.108-1.939a4.756 4.756 0 00-4.392-4.392 49.422 49.422 0 00-7.436 0A4.756 4.756 0 003.89 8.282c-.017.224-.033.447-.046.672a.75.75 0 101.497.092c.013-.217.028-.434.044-.651a3.256 3.256 0 013.01-3.01c1.19-.09 2.392-.135 3.605-.135zm-6.97 6.22a.75.75 0 00-1.06 0l-3 3a.75.75 0 101.06 1.06l1.752-1.751c.023.65.06 1.296.108 1.939a4.756 4.756 0 004.392 4.392 49.413 49.413 0 007.436 0 4.756 4.756 0 004.392-4.392c.017-.223.032-.447.046-.672a.75.75 0 00-1.497-.092c-.013.217-.028.434-.044.651a3.256 3.256 0 01-3.01 3.01 47.953 47.953 0 01-7.21 0 3.256 3.256 0 01-3.01-3.01 47.759 47.759 0 01-.1-1.759L6.97 15.53a.75.75 0 001.06-1.06l-3-3z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                        </x-circle-button>
-                    @endcan
-                </h2>
             </div>
+            @can('general_admin')
+                <h2 id="paid_holiday_update" style="display: " class="text-right mb-4">
+                    <x-show-a-button href="{{ route('acquisition_days.update_form') }}"
+                        class="px-2 py-1">日数更新</x-show-button>
+                </h2>
+            @endcan
 
             <div class="max-w-3xl w-full mx-auto">
                 <x-notice :notice="session('notice')" />
@@ -107,13 +102,8 @@
                                         <tr>
                                             <th
                                                 class="w-40 px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                {{-- {{ __('Affiliation') }} --}}
                                                 {{ __('Employee Name') }}
                                             </th>
-                                            {{-- <th
-                                                class="w-24 px-6 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
-                                                {{ __('Employee Name') }}
-                                            </th> --}}
                                             <th
                                                 class="w-24 px-2 py-3 text-center text-xs font-medium text-gray-500 tracking-wider">
                                                 {{ __('Remaining Days') }}
@@ -128,23 +118,8 @@
                                     <tbody class="divide-y divide-gray-200 ">
                                         @foreach ($users as $user)
                                             <tr>
-                                                {{-- <td
-                                                    class="px-4 py-4 whitespace-nowrap text-xs font-medium text-gray-800 ">
-                                                    {{ $user->affiliation_name }}
-                                                </td>
                                                 <td
-                                                    class="px-4 py-4 whitespace-nowrap text-sm text-left text-gray-800 ">
-                                                    @if (Str::length($user->employee) == 1)
-                                                        &ensp;&ensp;
-                                                    @endif
-                                                    @if (Str::length($user->employee) == 2)
-                                                        &ensp;
-                                                    @endif
-                                                    {{ $user->employee }}&ensp;
-                                                    {{ $user->name }}
-                                                </td> --}}
-                                                <td
-                                                    class="hidden md:block text-xs text-blue-500 pl-4 pr-2 py-3 whitespace-nowrap font-medium ">
+                                                    class="hidden md:block text-xs text-sky-500 pl-4 pr-2 py-3 whitespace-nowrap font-medium ">
                                                     <x-affiliation-name :affiliation="$user->affiliation" />
                                                     <div class="text-sm text-gray-800">
                                                         @if (Str::length($user->employee) == 1)
@@ -158,7 +133,7 @@
                                                     </div>
                                                 </td>
                                                 <td
-                                                    class="block md:hidden text-xxs text-blue-500 pl-4 pr-2 py-3 whitespace-nowrap font-medium ">
+                                                    class="block md:hidden text-xxs text-sky-500 pl-4 pr-2 py-3 whitespace-nowrap font-medium ">
                                                     <x-affiliation-name-limit :affiliation="$user->affiliation" />
                                                     <div class="text-xs text-gray-800">
                                                         @if (Str::length($user->employee) == 1)
@@ -404,6 +379,26 @@
                     {{ __('Back') }}
                 </x-back-home-button>
             </div>
+        </div>
+
+        <!-- ボタン -->
+        <div class="w-full max-w-3xl px-5 mx-auto grid grid-cols-1 gap-2">
+            <button class="fixed right-16 bottom-16 bg-sky-400/80 text-white px-2 py-2 rounded-full shadow"
+                onclick="window.history.back();">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                    <path fill-rule="evenodd"
+                        d="M9.53 2.47a.75.75 0 010 1.06L4.81 8.25H15a6.75 6.75 0 010 13.5h-3a.75.75 0 010-1.5h3a5.25 5.25 0 100-10.5H4.81l4.72 4.72a.75.75 0 11-1.06 1.06l-6-6a.75.75 0 010-1.06l6-6a.75.75 0 011.06 0z"
+                        clip-rule="evenodd" />
+                </svg>
+            </button>
+            {{-- <button class="fixed right-16 bottom-28 bg-sky-400/80 text-white px-2 py-2 rounded-full shadow"
+            onclick="location.href='{{ route('menu') }}'">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+            </svg>
+        </button> --}}
         </div>
     </section>
 
