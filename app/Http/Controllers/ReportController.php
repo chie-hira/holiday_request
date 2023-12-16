@@ -13,12 +13,10 @@ use App\Models\SubReportCategory;
 use App\Models\ShiftCategory;
 use App\Models\User;
 use App\Models\Approval;
-use App\Models\FactoryCategory;
 use App\Exports\ReportFormExport;
 use App\Imports\ReportImport;
 use App\Models\Affiliation;
 use App\Models\Calender;
-use App\Models\DepartmentCategory;
 use App\Models\Reason;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -29,7 +27,6 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -127,13 +124,13 @@ class ReportController extends Controller
                 ->sortByDesc('start_date')
                 ->sortByDesc('report_date');
         }
-        // ページ番号と1ページあたりのアイテム数を指定
-        $page = request()->get('page', 1); // 現在のページ番号を取得、デフォルトは1
-        $perPage = 25; // 1ページあたりのアイテム数を設定
+        // 現在のページ番号からページ番号と1ページあたりのアイテム数を指定
+        $page = request()->get('page', 1);
+        $perPage = 10; // 1ページあたりのアイテム数
 
         // コレクションをページネーションする
         $paginator = new LengthAwarePaginator(
-            $reports->forPage($page, $perPage), // ページに表示するアイテムを取得
+            $reports->forPage($page, $perPage), // ページに表示するアイテム取得
             $reports->count(), // 全体のアイテム数
             $perPage, // 1ページあたりのアイテム数
             $page, // 現在のページ番号
@@ -1785,7 +1782,7 @@ class ReportController extends Controller
 
         // ページ番号と1ページあたりのアイテム数を指定
         $page = request()->get('page', 1); // 現在のページ番号を取得、デフォルトは1
-        $perPage = 25; // 1ページあたりのアイテム数を設定
+        $perPage = 10; // 1ページあたりのアイテム数を設定
 
         // コレクションをページネーションする
         $paginator = new LengthAwarePaginator(

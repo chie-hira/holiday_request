@@ -30,5 +30,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ReasonSeeder::class);
         // $this->call(AcquisitionDaySeeder::class);
         $this->call(ShiftCategorySeeder::class);
+        $this->call(ReportSeeder::class);
     }
 }

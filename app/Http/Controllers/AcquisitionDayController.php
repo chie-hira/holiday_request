@@ -518,7 +518,6 @@ class AcquisitionDayController extends Controller
                     'user_id' => $user->id,
                     'report_id' => $report->id,
                     'remaining_days' => $report->max_days,
-                    // 'remaining_days' => ($report->max_days != null ? $report->max_days : 0),
                 ];
             }
 

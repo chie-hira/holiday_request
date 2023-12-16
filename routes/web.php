@@ -19,12 +19,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })
-//     ->middleware(['auth'])
-//     ->name('dashboard');
-
 # reportルーティング
 Route::resource('reports', ReportController::class)
     ->only('create')
@@ -72,12 +66,6 @@ Route::get('/update_form', [AcquisitionDayController::class, 'updateForm'])
     ->name('acquisition_days.update_form')
     ->middleware('can:general_admin')
     ->middleware('auth');
-// Route::get('/update_form', function () {
-//     return view('acquisition_days.update_form');
-// })
-//     ->name('acquisition_days.update_form')
-//     ->middleware('can:general_admin')
-//     ->middleware('auth');
 Route::post('/add_remainings', [
     AcquisitionDayController::class,
     'addRemainings',

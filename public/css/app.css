@@ -1376,17 +1376,9 @@ select {
   --tw-bg-opacity: 1;
   background-color: rgb(34 211 238 / var(--tw-bg-opacity));
 }
-.bg-cyan-500 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(6 182 212 / var(--tw-bg-opacity));
-}
 .bg-fuchsia-300 {
   --tw-bg-opacity: 1;
   background-color: rgb(240 171 252 / var(--tw-bg-opacity));
-}
-.bg-fuchsia-400 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(232 121 249 / var(--tw-bg-opacity));
 }
 .bg-gray-100 {
   --tw-bg-opacity: 1;
@@ -1410,9 +1402,6 @@ select {
 }
 .bg-green-100\/60 {
   background-color: rgb(220 252 231 / 0.6);
-}
-.bg-green-700\/80 {
-  background-color: rgb(21 128 61 / 0.8);
 }
 .bg-indigo-50 {
   --tw-bg-opacity: 1;
@@ -2205,25 +2194,13 @@ select {
   --tw-text-opacity: 1;
   color: rgb(252 211 77 / var(--tw-text-opacity));
 }
-.focus\:text-amber-400:focus {
-  --tw-text-opacity: 1;
-  color: rgb(251 191 36 / var(--tw-text-opacity));
-}
 .focus\:text-cyan-400:focus {
   --tw-text-opacity: 1;
   color: rgb(34 211 238 / var(--tw-text-opacity));
 }
-.focus\:text-cyan-500:focus {
-  --tw-text-opacity: 1;
-  color: rgb(6 182 212 / var(--tw-text-opacity));
-}
 .focus\:text-fuchsia-300:focus {
   --tw-text-opacity: 1;
   color: rgb(240 171 252 / var(--tw-text-opacity));
-}
-.focus\:text-fuchsia-400:focus {
-  --tw-text-opacity: 1;
-  color: rgb(232 121 249 / var(--tw-text-opacity));
 }
 .focus\:text-gray-800:focus {
   --tw-text-opacity: 1;
@@ -2532,11 +2509,6 @@ select {
   .sm\:text-4xl {
     font-size: 2.25rem;
     line-height: 2.5rem;
-  }
-
-  .sm\:text-lg {
-    font-size: 1.125rem;
-    line-height: 1.75rem;
   }
 }
 @media (min-width: 768px) {
