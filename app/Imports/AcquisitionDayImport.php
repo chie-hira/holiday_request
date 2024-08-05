@@ -19,10 +19,6 @@ class AcquisitionDayImport implements ToModel, WithHeadingRow
 
     public function model(array $row)
     {
-        // return new AcquisitionDay([
-        //     //
-        // ]);
-
         // 既存のレコードをIDで検索して取得
         $existingRecord = AcquisitionDay::where('user_id', $row['user_id'])
             ->where('report_id', $row['report_id'])

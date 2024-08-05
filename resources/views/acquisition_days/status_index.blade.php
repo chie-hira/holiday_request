@@ -3,22 +3,22 @@
     <div class="border-b-2 border-gray-200">
         <nav class="px-4 -mb-0.5 flex space-x-2 overflow-x-auto">
             <x-nav-button onclick="reportChange1()">
-                {{ $report_categories->where('id', 1)->first()->report_name }}
+                {{ $reportCategories->where('id', 1)->first()->report_name }}
             </x-nav-button>
             <x-nav-button onclick="reportChange2()">
-                {{ $report_categories->where('id', 2)->first()->report_name }}
+                {{ $reportCategories->where('id', 2)->first()->report_name }}
             </x-nav-button>
             <x-nav-button onclick="reportChange12()">
-                {{ $report_categories->where('id', 12)->first()->report_name }}
+                {{ $reportCategories->where('id', 12)->first()->report_name }}
             </x-nav-button>
             <x-nav-button onclick="reportChange13()">
-                {{ $report_categories->where('id', 13)->first()->report_name }}
+                {{ $reportCategories->where('id', 13)->first()->report_name }}
             </x-nav-button>
             <x-nav-button onclick="reportChange14()">
-                {{ $report_categories->where('id', 14)->first()->report_name }}
+                {{ $reportCategories->where('id', 14)->first()->report_name }}
             </x-nav-button>
             <x-nav-button onclick="reportChange15()">
-                {{ $report_categories->where('id', 15)->first()->report_name }}
+                {{ $reportCategories->where('id', 15)->first()->report_name }}
             </x-nav-button>
         </nav>
     </div>
@@ -27,22 +27,22 @@
             <div class="flex flex-col ZenMaruGothic text-center w-full mb-6">
                 <h1 class="sm:text-4xl text-3xl font-medium title-font mb-4 text-gray-800">{{ __('休暇取得状況') }}</h1>
                 <p id="report_name-1" style="display: " class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
-                    {{ $report_categories->where('id', 1)->first()->report_name }}
+                    {{ $reportCategories->where('id', 1)->first()->report_name }}
                 </p>
                 <p id="report_name-2" style="display: none" class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
-                    {{ $report_categories->where('id', 2)->first()->report_name }}
+                    {{ $reportCategories->where('id', 2)->first()->report_name }}
                 </p>
                 <p id="report_name-12" style="display: none" class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
-                    {{ $report_categories->where('id', 12)->first()->report_name }}
+                    {{ $reportCategories->where('id', 12)->first()->report_name }}
                 </p>
                 <p id="report_name-13" style="display: none" class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
-                    {{ $report_categories->where('id', 13)->first()->report_name }}
+                    {{ $reportCategories->where('id', 13)->first()->report_name }}
                 </p>
                 <p id="report_name-14" style="display: none" class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
-                    {{ $report_categories->where('id', 14)->first()->report_name }}
+                    {{ $reportCategories->where('id', 14)->first()->report_name }}
                 </p>
                 <p id="report_name-15" style="display: none" class="lg:w-2/3 mx-auto mb-2 text-lg leading-relaxed">
-                    {{ $report_categories->where('id', 15)->first()->report_name }}
+                    {{ $reportCategories->where('id', 15)->first()->report_name }}
                 </p>
             </div>
 

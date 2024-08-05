@@ -19,7 +19,7 @@
                         <x-select name="select_report" id="select_report" class="block text-xs w-40 mr-2 my-1">
                             <option value=''>{{ __('Report Category') }}</option>
                             <option value=''>全て</option>
-                            @foreach ($report_categories as $report_category)
+                            @foreach ($reportCategories as $report_category)
                                 <option value="{{ $report_category->id }}"
                                     @if ($report_category->id == request('select_report')) selected @endif>
                                     {{ $report_category->report_name }}
@@ -33,7 +33,7 @@
                         <x-select name="select_reason" id="select_reason" class="block text-xs w-40 mr-2 my-1">
                             <option value=''>{{ __('Reason') }}</option>
                             <option value=''>全て</option>
-                            @foreach ($reason_categories as $reason)
+                            @foreach ($reasonCategories as $reason)
                                 <option value="{{ $reason->id }}" @if ($reason->id == request('select_reason')) selected @endif>
                                     {{ $reason->reason }}
                                 </option>

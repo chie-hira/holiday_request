@@ -33,10 +33,10 @@
                         <x-select name="select_report" id="select_report" class="block text-xs w-40 mr-2 my-1">
                             <option value=''>{{ __('Report Category') }}</option>
                             <option value=''>全て</option>
-                            @foreach ($report_categories as $report_category)
-                                <option value="{{ $report_category->id }}"
-                                    @if ($report_category->id == request('select_report')) selected @endif>
-                                    {{ $report_category->report_name }}
+                            @foreach ($reportCategories as $reportCategory)
+                                <option value="{{ $reportCategory->id }}"
+                                    @if ($reportCategory->id == request('select_report')) selected @endif>
+                                    {{ $reportCategory->report_name }}
                                 </option>
                             @endforeach
                         </x-select>
@@ -197,10 +197,10 @@
                                                 </td>
                                                 {{-- <td
                                                     class="px-4 py-3 whitespace-nowrap text-sm text-center text-gray-800 ">
-                                                    {{ $report->shift_category->shift_code }}
+                                                    {{ $report->shiftCategory->shift_code }}
                                                     <div class="text-xxs text-blue-500">
-                                                        {{ $report->shift_category->start_time_hm }} ~
-                                                        {{ $report->shift_category->end_time_hm }}
+                                                        {{ $report->shiftCategory->start_time_hm }} ~
+                                                        {{ $report->shiftCategory->end_time_hm }}
                                                     </div>
                                                 </td> --}}
                                                 <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800 ">

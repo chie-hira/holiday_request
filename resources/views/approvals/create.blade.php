@@ -66,7 +66,7 @@
                                                 <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
                                                     <x-select name="approval_id" class="block mt-1 w-32 text-sm"
                                                         required>
-                                                        @foreach ($approval_categories as $approval_category)
+                                                        @foreach ($approvalCategories as $approval_category)
                                                             <option value="{{ $approval_category->id }}"
                                                                 @if ($approval_category->id === (int) old('approval_id')) selected @endif>
                                                                 {{ $approval_category->approval_name }}</option>

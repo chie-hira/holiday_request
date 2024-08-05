@@ -49,20 +49,11 @@
             </form>
             <!-- 更新日form - end -->
 
-            {{-- <x-notice :notice="session('notice')" />
-            @if (session('downloadUrl'))
-                <x-show-a-button href="{{ session('downloadUrl') }}" class="p-2">
-                    ダウンロード
-                    </x-a>
-            @endif --}}
-
             <div class="mt-8">
-                @foreach ($file_paths as $path)
-                {{-- @foreach ($files as $file) --}}
+                @foreach ($filePaths as $path)
                     <div class="flex items-center">
                         <p class="text-sm pr-2">
                             {{ pathinfo($path, PATHINFO_FILENAME) }}
-                            {{-- {{ pathinfo($file, PATHINFO_FILENAME) }} --}}
                         </p>
                         <x-show-a-button href="{{ asset($path) }}"
                             class="text-xs px-2 py-1 my-1">

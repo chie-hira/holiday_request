@@ -65,7 +65,7 @@
                                                         required autofocus>
                                                         <option value="{{ $approval->approval_id }}">
                                                             {{ $approval->approval_category->approval_name }}</option>
-                                                        @foreach ($approval_categories as $approval_category)
+                                                        @foreach ($approvalCategories as $approval_category)
                                                             <option value="{{ $approval_category->id }}"
                                                                 @if ($approval_category->id === (int) old('approval_id')) selected @endif>
                                                                 {{ $approval_category->approval_name }}</option>

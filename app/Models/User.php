@@ -119,7 +119,7 @@ class User extends Authenticatable
     public function getDepartmentGroupNameAttribute()
     {
         if ($this->affiliation->department_id == 1) {
-            $affiliation_name = '工場長';
+            $affiliation_name = '部長';
         } elseif (
             $this->affiliation->department_id != 1 &&
             $this->affiliation->group_id == 1

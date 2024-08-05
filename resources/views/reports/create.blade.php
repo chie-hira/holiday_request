@@ -19,6 +19,7 @@
                     @csrf
 
                     <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                        <!-- 申請日 -->
                         <div>
                             <label for="report_date" class="block mb-2 text-sm font-medium text-gray-900">
                                 {{ __('Report Date') }}
@@ -26,6 +27,7 @@
                             <x-input type="date" id="report_date" name="report_date" class="block mt-1 w-full"
                                 :value="date('Y-m-d')" required readonly />
                         </div>
+                        <!-- 名前 -->
                         <div>
                             <label for="user_id" class="block mb-2 text-sm font-medium text-gray-900">
                                 {{ __('Name') }}
@@ -35,27 +37,28 @@
                                 readonly />
                         </div>
                         <input type="hidden" name="shift_id" id="shift_id" value="1">
+                        <!-- 休暇種類 -->
                         <div>
                             <label for="report_id" class="block mb-2 text-sm font-medium text-gray-900">
                                 {{ __('Report Category') }}
                             </label>
                             <x-select name="report_id" id="report_id" onchange="reportChange();"
                                 class="block mt-1 w-full" required autofocus>
-                                @foreach ($report_categories as $report_category)
+                                @foreach ($reportCategories as $report_category)
                                     <option value="{{ $report_category->id }}"
                                         @if ($report_category->id === (int) old('report_id')) selected @endif>
                                         {{ $report_category->report_name }}</option>
                                 @endforeach
                             </x-select>
                         </div>
-
+                        <!-- 取得形態 -->
                         <div>
                             <p class="block mb-2 text-sm font-medium text-gray-900">
                                 {{ __('Sub Report Category') }}
                             </p>
                             <div class="flex gap-x-6">
                                 <div class="flex mt-2">
-                                    @foreach ($sub_report_categories as $sub_category)
+                                    @foreach ($subReportCategories as $sub_category)
                                         <input type="radio" name="sub_report_id"
                                             id="sub_report_id_{{ $sub_category->id }}" onclick="subReportChange()"
                                             value="{{ $sub_category->id }}"
@@ -329,9 +332,9 @@
         let subReportRemarksContener = document.getElementById('sub_report_remarks_contener');
         let subReportRemarks = document.getElementById('sub_report_remarks');
         const reasons = @json($reasons);
-        const reportCategories = @json($report_categories);
+        const reportCategories = @json($reportCategories);
         const reportCategoryArray = Object.values(reportCategories); // オブジェクト変換
-        const subReportCategories = @json($sub_report_categories);
+        const subReportCategories = @json($subReportCategories);
         const subReportCategoryArray = Object.values(subReportCategories); // オブジェクト変換
 
         // リダイレクト時の表示切替
@@ -644,7 +647,7 @@
                 reasonCategory.removeChild(reasonCategory.childNodes[0]);
             }
 
-            const reportReasons = @json($report_reasons);
+            const reportReasons = @json($reportReasons);
             const reportReasonsArray = Object.values(reportReasons);
             let selectReportId = reportCategory.value;
 
@@ -735,11 +738,11 @@
             let dayOffs = 0;
 
             // 土曜日の営業日
-            const businessDayCalender = @json($business_day_calender);
+            const businessDayCalender = @json($businessDayCalender);
             const saturdays = businessDayCalender.map(item => item.date);
 
             // 祝祭日等(休暇取得推進日含む)
-            const holidayCalender = @json($holiday_calender);
+            const holidayCalender = @json($holidayCalender);
             const holidays = holidayCalender.map(item => item.date);
 
             //土曜日、日曜日をdayOffsに集計
@@ -953,7 +956,7 @@
             document.getElementById('acquisition_hours').setAttribute('value', acquisitionHours);
             document.getElementById('acquisition_minutes').setAttribute('value', acquisitionMinutes);
 
-            const myAcquisitionDays = @json($my_acquisition_days);
+            const myAcquisitionDays = @json($myAcquisitionDays);
             const myAcquisitionDaysArray = Object.values(myAcquisitionDays);
             let selectReportId = reportCategory.value;
             let remainingDays = 0;
@@ -1112,7 +1115,7 @@
             // 重複確認関数
             function duplicationCheck() {
                 console.log('duplicationCheck'); // 起動確認
-                const myReports = @json($my_reports);
+                const myReports = @json($myReports);
                 const myReportsArray = Object.values(myReports);
                 let duplication = false;
                 myReportsArray.forEach(el => {

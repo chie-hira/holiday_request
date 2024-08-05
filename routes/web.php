@@ -118,14 +118,14 @@ Route::put('/reports/approved/{report}/cancel', [
     ->middleware('auth');
 
 # エクスポート
-Route::get('/export_form', [ReportController::class, 'export_form'])
+Route::get('/export_form', [ReportController::class, 'exportForm'])
     ->name('reports.export_form')
     ->middleware('can:approver_reader')
     ->middleware('auth');
 Route::get('/export', [ReportController::class, 'export'])
     ->name('reports.export')
     ->middleware('auth');
-Route::get('/all_export', [ReportController::class, 'all_export'])->middleware(
+Route::get('/all_export', [ReportController::class, 'allExport'])->middleware(
     'auth'
 );
 
@@ -150,14 +150,14 @@ Route::post('/acquisition_days_import', [
 ])->name('acquisition_days_import');
 Route::get('/initial_import', [
     AcquisitionDayController::class,
-    'initial_import',
+    'initialImport',
 ])->name('initial_import');
 
 # 検索
 Route::get('/search', [ReportController::class, 'search'])
     ->name('search')
     ->middleware('auth');
-Route::get('/export_search', [ReportController::class, 'export_search'])
+Route::get('/export_search', [ReportController::class, 'exportSearch'])
     ->name('export_search')
     ->middleware('auth');
 
@@ -172,7 +172,6 @@ Route::middleware('auth')->group(function () {
 
 #profile_admin
 Route::middleware('auth')->group(function () {
-    // Route::get('/account', [ProfileController::class, 'account'])->name('profile.edit');
     Route::get('users/{user}/email_edit', [UserController::class, 'email_edit'])->name('users.email_edit');
     Route::get('users/{user}/password_edit', [UserController::class, 'password_edit'])->name('users.password_edit');
     Route::patch('users/email_update/{user}', [UserController::class, 'email_update'])->name('users.email_update');
