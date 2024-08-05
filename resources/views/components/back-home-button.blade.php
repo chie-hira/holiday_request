@@ -1,5 +1,5 @@
 <a
-    {{ $attributes->merge(['class' => 'flex items-center justify-center text-center px-3 py-1 text-sm text-green-800 border-2 border-green-800 rounded-full bg-green-100/60 hover:text-white hover:font-semibold hover:bg-green-800']) }}>
+    {{ $attributes->merge(['class' => 'flex items-center justify-center text-center px-3 py-1 text-sm text-gray-700 border border-gray-700 rounded-full bg-white hover:text-white hover:font-semibold hover:bg-sky-300 focus:ring focus:ring-sky-300 focus:text-sky-300']) }}>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" 
             class="w-5 h-5 mr-2 leading-6">
             <path

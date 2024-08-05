@@ -16,10 +16,9 @@ class FactoryCategorySeeder extends Seeder
     {
         // クライアントに合わせて修正
         $param = [
-            ['factory_name' => '全部'],
-            ['factory_name' => '第1製造部'],
-            ['factory_name' => '第2製造部'],
-            ['factory_name' => '総務・経理部'],
+            ['factory_name' => '全部門'],
+            ['factory_name' => '部門1'],
+            ['factory_name' => '部門2'],
         ];
         DB::table('factory_categories')->insert($param);
     }

@@ -13,12 +13,10 @@ use App\Models\SubReportCategory;
 use App\Models\ShiftCategory;
 use App\Models\User;
 use App\Models\Approval;
-use App\Models\FactoryCategory;
 use App\Exports\ReportFormExport;
 use App\Imports\ReportImport;
 use App\Models\Affiliation;
 use App\Models\Calender;
-use App\Models\DepartmentCategory;
 use App\Models\Reason;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -29,7 +27,6 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
@@ -127,13 +124,13 @@ class ReportController extends Controller
                 ->sortByDesc('start_date')
                 ->sortByDesc('report_date');
         }
-        // ページ番号と1ページあたりのアイテム数を指定
-        $page = request()->get('page', 1); // 現在のページ番号を取得、デフォルトは1
-        $perPage = 25; // 1ページあたりのアイテム数を設定
+        // 現在のページ番号からページ番号と1ページあたりのアイテム数を指定
+        $page = request()->get('page', 1);
+        $perPage = 10; // 1ページあたりのアイテム数
 
         // コレクションをページネーションする
         $paginator = new LengthAwarePaginator(
-            $reports->forPage($page, $perPage), // ページに表示するアイテムを取得
+            $reports->forPage($page, $perPage), // ページに表示するアイテム取得
             $reports->count(), // 全体のアイテム数
             $perPage, // 1ページあたりのアイテム数
             $page, // 現在のページ番号
@@ -145,8 +142,8 @@ class ReportController extends Controller
             'department',
             'group',
         ]);
-        $report_categories = ReportCategory::all();
-        $reason_categories = ReasonCategory::all();
+        $reportCategories = ReportCategory::all();
+        $reasonCategories = ReasonCategory::all();
         $users = User::all('id', 'employee', 'name')->sortBy('employee');
 
         return view('reports.index')->with(
@@ -154,8 +151,7 @@ class ReportController extends Controller
                 // 'reports',
                 'paginator',
                 'affiliations',
-                'report_categories',
-                'reason_categories',
+                'reportCategories',
                 'users'
             )
         );
@@ -169,15 +165,15 @@ class ReportController extends Controller
     // create()
     public function create()
     {
-        $sub_report_categories = SubReportCategory::all();
+        $subReportCategories = SubReportCategory::all();
         $reasons = ReasonCategory::all();
-        $report_reasons = Reason::with('reason_category')->get();
+        $reportReasons = Reason::with('reason_category')->get();
         $shifts = ShiftCategory::all();
-        $my_acquisition_days = Auth::user()->acquisition_days->load(
+        $myAcquisitionDays = Auth::user()->acquisition_days->load(
             'report_category.reports.shift_category'
         );
-        $my_reports = Auth::user()->reports->load('shift_category');
-        $holiday_calender = Calender::whereHas('calender_category', function (
+        $myReports = Auth::user()->reports->load('shift_category');
+        $holidayCalender = Calender::whereHas('calender_category', function (
             $query
         ) {
             $query
@@ -187,7 +183,7 @@ class ReportController extends Controller
                 )
                 ->where('date_id', 1);
         })->get('date');
-        $business_day_calender = Calender::whereHas(
+        $businessDayCalender = Calender::whereHas(
             'calender_category',
             function ($query) {
                 $query
@@ -200,7 +196,7 @@ class ReportController extends Controller
         )->get('date');
 
         /** 残日数が0ではないreport_categoryを取得 */
-        $report_categories = ReportCategory::whereHas(
+        $reportCategories = ReportCategory::whereHas(
             'acquisition_days',
             function ($query) {
                 $query
@@ -215,11 +211,11 @@ class ReportController extends Controller
             ->load('acquisition_form');
 
         // 新入社員で有給取得できない場合
-        $release_date = now()
+        $releaseDate = now()
             ->subMonth(3)
             ->format('Y-m-d');
-        if (Auth::user()->adoption_date > $release_date) {
-            $report_categories = $report_categories->reject(function ($query) {
+        if (Auth::user()->adoption_date > $releaseDate) {
+            $reportCategories = $reportCategories->reject(function ($query) {
                 return $query->id == 1;
             });
         }
@@ -232,20 +228,20 @@ class ReportController extends Controller
             now()->subMonths(1) > $birthday ||
             now()->addMonths(1) < $birthday
         ) {
-            $report_categories = $report_categories->where('id', '!=', 2);
+            $reportCategories = $reportCategories->where('id', '!=', 2);
         }
 
         return view('reports.create')->with(
             compact(
-                'report_categories',
-                'sub_report_categories',
+                'reportCategories',
+                'subReportCategories',
                 'reasons',
-                'report_reasons',
+                'reportReasons',
                 'shifts',
-                'my_acquisition_days',
-                'my_reports',
-                'holiday_calender',
-                'business_day_calender'
+                'myAcquisitionDays',
+                'myReports',
+                'holidayCalender',
+                'businessDayCalender'
             )
         );
     }
@@ -323,8 +319,8 @@ class ReportController extends Controller
             );
         }
 
-        $apply_on_the_day = ReportCategory::where('apply_on_the_day', 1)->get();
-        if (!$apply_on_the_day->contains('id', $request->report_id)) {
+        $applyOnTheDay = ReportCategory::where('apply_on_the_day', 1)->get();
+        if (!$applyOnTheDay->contains('id', $request->report_id)) {
             $request->validate([
                 'start_date' => 'after:today',
             ]);
@@ -359,29 +355,29 @@ class ReportController extends Controller
                 ]
             );
         }
-        $acquisition_day = AcquisitionDay::where('user_id', $request->user_id)
+        $acquisitionDay = AcquisitionDay::where('user_id', $request->user_id)
             ->where('report_id', $request->report_id)
             ->first();
-        if (!empty($acquisition_day->remaining_days)) {
-            $remaining_days =
-                $acquisition_day->remaining_days -
-                $acquisition_day->pending_acquisition_days -
+        if (!empty($acquisitionDay->remaining_days)) {
+            $remainingDays =
+                $acquisitionDay->remaining_days -
+                $acquisitionDay->pending_acquisition_days -
                 $request->acquisition_days;
-            $remaining_hours =
-                $acquisition_day->remaining_hours -
-                $acquisition_day->pending_acquisition_hours -
+            $remainingHours =
+                $acquisitionDay->remaining_hours -
+                $acquisitionDay->pending_acquisition_hours -
                 $request->acquisition_hours;
-            $remaining_minutes =
-                $acquisition_day->remaining_minutes -
-                $acquisition_day->pending_acquisition_minutes -
+            $remainingMinutes =
+                $acquisitionDay->remaining_minutes -
+                $acquisitionDay->pending_acquisition_minutes -
                 $request->acquisition_minutes;
-            if ($remaining_minutes < 0) {
-                $remaining_hours -= 1;
+            if ($remainingMinutes < 0) {
+                $remainingHours -= 1;
             }
-            if ($remaining_hours < 0) {
-                $remaining_days -= 1;
+            if ($remainingHours < 0) {
+                $remainingDays -= 1;
             }
-            if ($remaining_days < 0) {
+            if ($remainingDays < 0) {
                 throw ValidationException::withMessages([
                     'acquisition_days' => ['取得上限を超えています'],
                 ]);
@@ -389,11 +385,11 @@ class ReportController extends Controller
         }
 
         // 当日申請可能な休暇は適用外
-        $start_date = new Carbon($request->start_date);
+        $startDate = new Carbon($request->start_date);
         $now = Carbon::now();
         if (
-            !$apply_on_the_day->contains('id', $request->report_id) &&
-            $now->addDay() >= $start_date->addHour(16)
+            !$applyOnTheDay->contains('id', $request->report_id) &&
+            $now->addDay() >= $startDate->addHour(16)
         ) {
             throw ValidationException::withMessages([
                 'start_date' => [
@@ -427,7 +423,7 @@ class ReportController extends Controller
                 self::acquisitionSave($report);
                 DB::commit(); # トランザクション成功終了
                 // 管轄内の課長・GLにメール通知
-                $gl_approvals = Approval::whereHas('affiliation', function (
+                $glApprovers = Approval::whereHas('affiliation', function (
                     $query
                 ) use ($report) {
                     $query
@@ -452,8 +448,8 @@ class ReportController extends Controller
                     ->with('user')
                     ->get();
                 // 承認済みをメール通知
-                if ($gl_approvals) {
-                    foreach ($gl_approvals as $approval) {
+                if ($glApprovers) {
+                    foreach ($glApprovers as $approval) {
                         $approval->user->Approved($report);
                     }
                 }
@@ -465,9 +461,8 @@ class ReportController extends Controller
                 DB::rollBack(); # トランザクション失敗終了
                 // 例外情報をログに出力
                 Log::error('Exception caught: ' . $e->getMessage());
-                // エラー内容をそのまま表示しない
-                return back()->with($e);
-                // return back()->withErrors('エラーが発生しました');
+                // return back()->with($e);
+                return back()->withErrors('エラーが発生しました');
             }
         }
 
@@ -530,13 +525,12 @@ class ReportController extends Controller
             } catch (\Throwable $th) {
                 // 例外情報をログに出力
                 Log::error('Exception caught: ' . $th->getMessage());
-                // エラー内容をそのまま表示しない
                 return back()->withErrors('エラーが発生しました');
             }
         }
 
         /** GLの承認後でないと工場長は承認できないようにするための付加 start */
-        $gl_approvals = Approval::whereHas('affiliation', function (
+        $glApprovers = Approval::whereHas('affiliation', function (
             $query
         ) use ($report) {
             $query
@@ -558,7 +552,7 @@ class ReportController extends Controller
             ->get();
 
         // GLがいないとき工場長がGL承認する
-        if (empty($gl_approvals->first())) {
+        if (empty($glApprovers->first())) {
             $report->approval2 = 1;
         }
         /** GLの承認後でないと工場長は承認できないようにするための付加 end */
@@ -625,7 +619,6 @@ class ReportController extends Controller
                             });
                     });
             })->get();
-            // dd($approvers);
 
             if ($approvers) {
                 foreach ($approvers as $approver) {
@@ -665,17 +658,17 @@ class ReportController extends Controller
     // edit()
     public function edit(Report $report)
     {
-        $sub_report_categories = SubReportCategory::all();
+        $subReportCategories = SubReportCategory::all();
         $reasons = ReasonCategory::all();
-        $report_reasons = Reason::with('reason_category')->get();
+        $reportReasons = Reason::with('reason_category')->get();
         $shifts = ShiftCategory::all();
-        $my_acquisition_days = Auth::user()->acquisition_days->load(
+        $myAcquisitionDays = Auth::user()->acquisition_days->load(
             'report_category.reports.shift_category'
         );
-        $my_reports = Auth::user()
+        $myReports = Auth::user()
             ->reports->where('id', '!=', $report->id)
             ->load('shift_category');
-        $holiday_calender = Calender::whereHas('calender_category', function (
+        $holidayCalender = Calender::whereHas('calender_category', function (
             $query
         ) {
             $query
@@ -685,7 +678,7 @@ class ReportController extends Controller
                 )
                 ->where('date_id', 1);
         })->get('date');
-        $business_day_calender = Calender::whereHas(
+        $businessDayCalender = Calender::whereHas(
             'calender_category',
             function ($query) {
                 $query
@@ -697,7 +690,7 @@ class ReportController extends Controller
             }
         )->get('date');
 
-        $report_categories = ReportCategory::whereHas(
+        $reportCategories = ReportCategory::whereHas(
             'acquisition_days',
             function ($query) {
                 $query
@@ -708,12 +701,6 @@ class ReportController extends Controller
         )
             ->orWhere(function ($query) {
                 $query->where('max_days', null);
-                // ->where('id', 12)
-                // ->orWhere('id', 13)
-                // ->orWhere('id', 14)
-                // ->orWhere('id', 15)
-                // ->orWhere('id', 17)
-                // ->orWhere('id', 18);
             })
             ->get();
 
@@ -724,21 +711,21 @@ class ReportController extends Controller
             now()->subMonths(3) > $birthday ||
             now()->addMonths(3) < $birthday
         ) {
-            $report_categories = $report_categories->where('id', '!=', 2);
+            $reportCategories = $reportCategories->where('id', '!=', 2);
         }
 
         return view('reports.edit')->with(
             compact(
                 'report',
-                'report_categories',
-                'sub_report_categories',
+                'reportCategories',
+                'subReportCategories',
                 'reasons',
-                'report_reasons',
+                'reportReasons',
                 'shifts',
-                'my_acquisition_days',
-                'my_reports',
-                'holiday_calender',
-                'business_day_calender'
+                'myAcquisitionDays',
+                'myReports',
+                'holidayCalender',
+                'businessDayCalender'
             )
         );
     }
@@ -816,8 +803,8 @@ class ReportController extends Controller
             );
         }
 
-        $apply_on_the_day = ReportCategory::where('apply_on_the_day', 1)->get();
-        if (!$apply_on_the_day->contains('id', $request->report_id)) {
+        $applyOnTheDay = ReportCategory::where('apply_on_the_day', 1)->get();
+        if (!$applyOnTheDay->contains('id', $request->report_id)) {
             $request->validate([
                 'start_date' => 'after:today',
             ]);
@@ -852,29 +839,29 @@ class ReportController extends Controller
                 ]
             );
         }
-        $acquisition_day = AcquisitionDay::where('user_id', $request->user_id)
+        $acquisitionDay = AcquisitionDay::where('user_id', $request->user_id)
             ->where('report_id', $request->report_id)
             ->first();
-        if (!empty($acquisition_day->remaining_days)) {
-            $remaining_days =
-                $acquisition_day->remaining_days -
-                $acquisition_day->pending_acquisition_days -
+        if (!empty($acquisitionDay->remaining_days)) {
+            $remainingDays =
+                $acquisitionDay->remaining_days -
+                $acquisitionDay->pending_acquisition_days -
                 $request->acquisition_days;
-            $remaining_hours =
-                $acquisition_day->remaining_hours -
-                $acquisition_day->pending_acquisition_hours -
+            $remainingHours =
+                $acquisitionDay->remaining_hours -
+                $acquisitionDay->pending_acquisition_hours -
                 $request->acquisition_hours;
-            $remaining_minutes =
-                $acquisition_day->remaining_minutes -
-                $acquisition_day->pending_acquisition_minutes -
+            $remainingMinutes =
+                $acquisitionDay->remaining_minutes -
+                $acquisitionDay->pending_acquisition_minutes -
                 $request->acquisition_minutes;
-            if ($remaining_minutes < 0) {
-                $remaining_hours -= 1;
+            if ($remainingMinutes < 0) {
+                $remainingHours -= 1;
             }
-            if ($remaining_hours < 0) {
-                $remaining_days -= 1;
+            if ($remainingHours < 0) {
+                $remainingDays -= 1;
             }
-            if ($remaining_days < 0) {
+            if ($remainingDays < 0) {
                 throw ValidationException::withMessages([
                     'acquisition_days' => ['取得上限を超えています'],
                 ]);
@@ -951,7 +938,7 @@ class ReportController extends Controller
         }
 
         /** GLの承認後でないと工場長は承認できないようにするための付加 start */
-        $gl_approvals = Approval::whereHas('affiliation', function (
+        $glApprovers = Approval::whereHas('affiliation', function (
             $query
         ) use ($report) {
             $query
@@ -973,7 +960,7 @@ class ReportController extends Controller
             ->get();
 
         // GLがいないとき工場長がGL承認する
-        if (empty($gl_approvals->first())) {
+        if (empty($glApprovers->first())) {
             $report->approval2 = 1;
         }
         /** GLの承認後でないと工場長は承認できないようにするための付加 end */
@@ -1174,7 +1161,7 @@ class ReportController extends Controller
             // 工場長が承認している場合
             if ($report->approval1 == 1 && $report->approval2 == 0) {
                 // 工場長に通知
-                $approved_persons = User::whereHas('approvals', function (
+                $notifiers = User::whereHas('approvals', function (
                     $query
                 ) use ($report) {
                     $query
@@ -1198,11 +1185,10 @@ class ReportController extends Controller
                                 });
                         });
                 })->get();
-                // dd($approvers);
             }
             // Glが承認している場合
             if ($report->approval1 == 0 && $report->approval2 == 1) {
-                $gl_approvers = Approval::whereHas('affiliation', function (
+                $glApprovers = Approval::whereHas('affiliation', function (
                     $query
                 ) use ($report) {
                     $query
@@ -1227,12 +1213,12 @@ class ReportController extends Controller
                     ->get();
 
                 // GLがいない部署はGL承認を削除
-                if (empty($gl_approvers->first())) {
+                if (empty($glApprovers->first())) {
                     $report->approval2 = 0;
                 }
 
                 // GLに通知
-                $approved_persons = User::whereHas('approvals', function (
+                $notifiers = User::whereHas('approvals', function (
                     $query
                 ) use ($report) {
                     $query
@@ -1262,9 +1248,9 @@ class ReportController extends Controller
             }
 
             // 承認したapproversに取消確認の通知メール送信
-            if ($approved_persons->first()) {
-                foreach ($approved_persons as $approver) {
-                    $approver->cancelReport($report);
+            if ($notifiers->first()) {
+                foreach ($notifiers as $notifier) {
+                    $notifier->cancelReport($report);
                 }
                 return redirect()
                     ->route('reports.my_index')
@@ -1360,16 +1346,10 @@ class ReportController extends Controller
                         ->where('department_id', 1);
                 });
             });
-        })
-            // ->where('approved', 1)
-            // ->where('cancel', 0)
-            ->get();
-        // dd($reports);
+        })->get();
+
         // 全体の閲覧権限があるときは全てのレポートを取得
         if ($approvals->contains('affiliation_id', 1)) {
-            // $reports = Report::where('approved', 1)
-            //     ->where('cancel', 0)
-            //     ->get();
             $reports = Report::all();
         }
 
@@ -1393,94 +1373,94 @@ class ReportController extends Controller
                 ->sortByDesc('report_date');
         }
 
-        $affiliation_id = $request->select_affiliation;
-        $user_id = $request->select_user;
-        $report_id = $request->select_report;
+        $affiliationId = $request->select_affiliation;
+        $userId = $request->select_user;
+        $reportId = $request->select_report;
         $month = $request->select_month;
-        $affiliation = Affiliation::find($affiliation_id);
+        $affiliation = Affiliation::find($affiliationId);
 
         # monthから月初め日、月終わり日を定義
         if ($month) {
             $carbon = new Carbon($month);
-            $start_date = $carbon->format('Y-m-d');
-            $end_date = $carbon
+            $startDate = $carbon->format('Y-m-d');
+            $endDate = $carbon
                 ->addMonth()
                 ->subDay()
                 ->format('Y-m-d');
         }
 
         /** 条件に従って帳票出力するreportを取得 */
-        if ($affiliation_id == 1) {
-            if ($report_id != null && $user_id == null && $month == null) {
+        if ($affiliationId == 1) {
+            if ($reportId != null && $userId == null && $month == null) {
                 # 休暇種類を指定
-                $reports = $reports->where('report_id', $report_id);
+                $reports = $reports->where('report_id', $reportId);
             } elseif (
-                $report_id == null &&
-                $user_id != null &&
+                $reportId == null &&
+                $userId != null &&
                 $month == null
             ) {
                 # 理由を指定
-                $reports = $reports->where('user_id', $user_id);
+                $reports = $reports->where('user_id', $userId);
             } elseif (
-                $report_id == null &&
-                $user_id == null &&
+                $reportId == null &&
+                $userId == null &&
                 $month != null
             ) {
                 # 月を指定
                 $reports = $reports
-                    ->where('start_date', '>=', $start_date)
-                    ->where('start_date', '<=', $end_date);
+                    ->where('start_date', '>=', $startDate)
+                    ->where('start_date', '<=', $endDate);
             } elseif (
-                $report_id != null &&
-                $user_id != null &&
+                $reportId != null &&
+                $userId != null &&
                 $month == null
             ) {
                 # 休暇種類,理由を指定
                 $reports = $reports
-                    ->where('report_id', $report_id)
-                    ->where('user_id', $user_id);
+                    ->where('report_id', $reportId)
+                    ->where('user_id', $userId);
             } elseif (
-                $report_id != null &&
-                $user_id == null &&
+                $reportId != null &&
+                $userId == null &&
                 $month != null
             ) {
                 # 休暇種類,月を指定
                 $reports = $reports
-                    ->where('report_id', $report_id)
-                    ->where('start_date', '>=', $start_date)
-                    ->where('start_date', '<=', $end_date);
+                    ->where('report_id', $reportId)
+                    ->where('start_date', '>=', $startDate)
+                    ->where('start_date', '<=', $endDate);
             } elseif (
-                $report_id == null &&
-                $user_id != null &&
+                $reportId == null &&
+                $userId != null &&
                 $month != null
             ) {
                 # 理由,月を指定
                 $reports = $reports
-                    ->where('start_date', '>=', $start_date)
-                    ->where('start_date', '<=', $end_date)
-                    ->where('user_id', $user_id);
+                    ->where('start_date', '>=', $startDate)
+                    ->where('start_date', '<=', $endDate)
+                    ->where('user_id', $userId);
             } elseif (
-                $report_id != null &&
-                $user_id != null &&
+                $reportId != null &&
+                $userId != null &&
                 $month != null
             ) {
                 # 休暇種類,理由,月を指定
                 $reports = $reports
-                    ->where('start_date', '>=', $start_date)
-                    ->where('start_date', '<=', $end_date)
-                    ->where('report_id', $report_id)
-                    ->where('user_id', $user_id);
+                    ->where('start_date', '>=', $startDate)
+                    ->where('start_date', '<=', $endDate)
+                    ->where('report_id', $reportId)
+                    ->where('user_id', $userId);
             }
         } else {
             if (
-                $affiliation_id != null &&
-                $report_id == null &&
-                $user_id == null &&
+                $affiliationId != null &&
+                $reportId == null &&
+                $userId == null &&
                 $month == null
             ) {
                 # 所属を指定
                 $reports = $reports->filter(function ($item) use (
-                    $affiliation_id,
+                    $affiliationId,
                     $affiliation
                 ) {
                     if ($affiliation->department_id == 1) {
@@ -1495,45 +1475,45 @@ class ReportController extends Controller
                             $item->user->affiliation->department_id ==
                                 $affiliation->department_id;
                     } else {
-                        return $item->user->affiliation_id == $affiliation_id;
+                        return $item->user->affiliation_id == $affiliationId;
                     }
                 });
             } elseif (
-                $affiliation_id == null &&
-                $report_id != null &&
-                $user_id == null &&
+                $affiliationId == null &&
+                $reportId != null &&
+                $userId == null &&
                 $month == null
             ) {
                 # 休暇種類を指定
-                $reports = $reports->where('report_id', $report_id);
+                $reports = $reports->where('report_id', $reportId);
             } elseif (
-                $affiliation_id == null &&
-                $report_id == null &&
-                $user_id != null &&
+                $affiliationId == null &&
+                $reportId == null &&
+                $userId != null &&
                 $month == null
             ) {
                 # 理由を指定
-                $reports = $reports->where('user_id', $user_id);
+                $reports = $reports->where('user_id', $userId);
             } elseif (
-                $affiliation_id == null &&
-                $report_id == null &&
-                $user_id == null &&
+                $affiliationId == null &&
+                $reportId == null &&
+                $userId == null &&
                 $month != null
             ) {
                 # 月を指定
                 $reports = $reports
-                    ->where('start_date', '>=', $start_date)
-                    ->where('start_date', '<=', $end_date);
+                    ->where('start_date', '>=', $startDate)
+                    ->where('start_date', '<=', $endDate);
             } elseif (
-                $affiliation_id != null &&
-                $report_id != null &&
-                $user_id == null &&
+                $affiliationId != null &&
+                $reportId != null &&
+                $userId == null &&
                 $month == null
             ) {
                 # 所属,休暇種類を指定
                 $reports = $reports
                     ->filter(function ($item) use (
-                        $affiliation_id,
+                        $affiliationId,
                         $affiliation
                     ) {
                         if ($affiliation->department_id == 1) {
@@ -1549,20 +1529,20 @@ class ReportController extends Controller
                                     $affiliation->department_id;
                         } else {
                             return $item->user->affiliation_id ==
-                                $affiliation_id;
+                                $affiliationId;
                         }
                     })
-                    ->where('report_id', $report_id);
+                    ->where('report_id', $reportId);
             } elseif (
-                $affiliation_id != null &&
-                $report_id == null &&
-                $user_id != null &&
+                $affiliationId != null &&
+                $reportId == null &&
+                $userId != null &&
                 $month == null
             ) {
                 # 所属,理由を指定
                 $reports = $reports
                     ->filter(function ($item) use (
-                        $affiliation_id,
+                        $affiliationId,
                         $affiliation
                     ) {
                         if ($affiliation->department_id == 1) {
@@ -1578,20 +1558,20 @@ class ReportController extends Controller
                                     $affiliation->department_id;
                         } else {
                             return $item->user->affiliation_id ==
-                                $affiliation_id;
+                                $affiliationId;
                         }
                     })
-                    ->where('user_id', $user_id);
+                    ->where('user_id', $userId);
             } elseif (
-                $affiliation_id != null &&
-                $report_id == null &&
-                $user_id == null &&
+                $affiliationId != null &&
+                $reportId == null &&
+                $userId == null &&
                 $month != null
             ) {
                 # 所属,月を指定
                 $reports = $reports
                     ->filter(function ($item) use (
-                        $affiliation_id,
+                        $affiliationId,
                         $affiliation
                     ) {
                         if ($affiliation->department_id == 1) {
@@ -1607,53 +1587,53 @@ class ReportController extends Controller
                                     $affiliation->department_id;
                         } else {
                             return $item->user->affiliation_id ==
-                                $affiliation_id;
+                                $affiliationId;
                         }
                     })
-                    ->where('start_date', '>=', $start_date)
-                    ->where('start_date', '<=', $end_date);
+                    ->where('start_date', '>=', $startDate)
+                    ->where('start_date', '<=', $endDate);
             } elseif (
-                $affiliation_id == null &&
-                $report_id != null &&
-                $user_id != null &&
+                $affiliationId == null &&
+                $reportId != null &&
+                $userId != null &&
                 $month == null
             ) {
                 # 休暇種類,理由を指定
                 $reports = $reports
-                    ->where('report_id', $report_id)
-                    ->where('user_id', $user_id);
+                    ->where('report_id', $reportId)
+                    ->where('user_id', $userId);
             } elseif (
-                $affiliation_id == null &&
-                $report_id != null &&
-                $user_id == null &&
+                $affiliationId == null &&
+                $reportId != null &&
+                $userId == null &&
                 $month != null
             ) {
                 # 休暇種類,月を指定
                 $reports = $reports
-                    ->where('report_id', $report_id)
-                    ->where('start_date', '>=', $start_date)
-                    ->where('start_date', '<=', $end_date);
+                    ->where('report_id', $reportId)
+                    ->where('start_date', '>=', $startDate)
+                    ->where('start_date', '<=', $endDate);
             } elseif (
-                $affiliation_id == null &&
-                $report_id == null &&
-                $user_id != null &&
+                $affiliationId == null &&
+                $reportId == null &&
+                $userId != null &&
                 $month != null
             ) {
                 # 理由,月を指定
                 $reports = $reports
-                    ->where('start_date', '>=', $start_date)
-                    ->where('start_date', '<=', $end_date)
-                    ->where('user_id', $user_id);
+                    ->where('start_date', '>=', $startDate)
+                    ->where('start_date', '<=', $endDate)
+                    ->where('user_id', $userId);
             } elseif (
-                $affiliation_id != null &&
-                $report_id != null &&
-                $user_id != null &&
+                $affiliationId != null &&
+                $reportId != null &&
+                $userId != null &&
                 $month == null
             ) {
                 # 所属,休暇種類,理由を指定
                 $reports = $reports
                     ->filter(function ($item) use (
-                        $affiliation_id,
+                        $affiliationId,
                         $affiliation
                     ) {
                         if ($affiliation->department_id == 1) {
@@ -1669,21 +1649,21 @@ class ReportController extends Controller
                                     $affiliation->department_id;
                         } else {
                             return $item->user->affiliation_id ==
-                                $affiliation_id;
+                                $affiliationId;
                         }
                     })
-                    ->where('report_id', $report_id)
-                    ->where('user_id', $user_id);
+                    ->where('report_id', $reportId)
+                    ->where('user_id', $userId);
             } elseif (
-                $affiliation_id != null &&
-                $report_id != null &&
-                $user_id == null &&
+                $affiliationId != null &&
+                $reportId != null &&
+                $userId == null &&
                 $month != null
             ) {
                 # 所属,休暇種類,月を指定
                 $reports = $reports
                     ->filter(function ($item) use (
-                        $affiliation_id,
+                        $affiliationId,
                         $affiliation
                     ) {
                         if ($affiliation->department_id == 1) {
@@ -1699,22 +1679,22 @@ class ReportController extends Controller
                                     $affiliation->department_id;
                         } else {
                             return $item->user->affiliation_id ==
-                                $affiliation_id;
+                                $affiliationId;
                         }
                     })
-                    ->where('start_date', '>=', $start_date)
-                    ->where('start_date', '<=', $end_date)
-                    ->where('report_id', $report_id);
+                    ->where('start_date', '>=', $startDate)
+                    ->where('start_date', '<=', $endDate)
+                    ->where('report_id', $reportId);
             } elseif (
-                $affiliation_id != null &&
-                $report_id == null &&
-                $user_id != null &&
+                $affiliationId != null &&
+                $reportId == null &&
+                $userId != null &&
                 $month != null
             ) {
                 # 所属,理由,月を指定
                 $reports = $reports
                     ->filter(function ($item) use (
-                        $affiliation_id,
+                        $affiliationId,
                         $affiliation
                     ) {
                         if ($affiliation->department_id == 1) {
@@ -1730,34 +1710,34 @@ class ReportController extends Controller
                                     $affiliation->department_id;
                         } else {
                             return $item->user->affiliation_id ==
-                                $affiliation_id;
+                                $affiliationId;
                         }
                     })
-                    ->where('start_date', '>=', $start_date)
-                    ->where('start_date', '<=', $end_date)
-                    ->where('user_id', $user_id);
+                    ->where('start_date', '>=', $startDate)
+                    ->where('start_date', '<=', $endDate)
+                    ->where('user_id', $userId);
             } elseif (
-                $affiliation_id == null &&
-                $report_id != null &&
-                $user_id != null &&
+                $affiliationId == null &&
+                $reportId != null &&
+                $userId != null &&
                 $month != null
             ) {
                 # 休暇種類,理由,月を指定
                 $reports = $reports
-                    ->where('start_date', '>=', $start_date)
-                    ->where('start_date', '<=', $end_date)
-                    ->where('report_id', $report_id)
-                    ->where('user_id', $user_id);
+                    ->where('start_date', '>=', $startDate)
+                    ->where('start_date', '<=', $endDate)
+                    ->where('report_id', $reportId)
+                    ->where('user_id', $userId);
             } elseif (
-                $affiliation_id != null &&
-                $report_id != null &&
-                $user_id != null &&
+                $affiliationId != null &&
+                $reportId != null &&
+                $userId != null &&
                 $month != null
             ) {
                 # すべて指定
                 $reports = $reports
                     ->filter(function ($item) use (
-                        $affiliation_id,
+                        $affiliationId,
                         $affiliation
                     ) {
                         if ($affiliation->department_id == 1) {
@@ -1773,19 +1753,19 @@ class ReportController extends Controller
                                     $affiliation->department_id;
                         } else {
                             return $item->user->affiliation_id ==
-                                $affiliation_id;
+                                $affiliationId;
                         }
                     })
-                    ->where('report_id', $report_id)
-                    ->where('user_id', $user_id)
-                    ->where('start_date', '>=', $start_date)
-                    ->where('start_date', '<=', $end_date);
+                    ->where('report_id', $reportId)
+                    ->where('user_id', $userId)
+                    ->where('start_date', '>=', $startDate)
+                    ->where('start_date', '<=', $endDate);
             }
         }
 
         // ページ番号と1ページあたりのアイテム数を指定
         $page = request()->get('page', 1); // 現在のページ番号を取得、デフォルトは1
-        $perPage = 25; // 1ページあたりのアイテム数を設定
+        $perPage = 10; // 1ページあたりのアイテム数を設定
 
         // コレクションをページネーションする
         $paginator = new LengthAwarePaginator(
@@ -1801,16 +1781,16 @@ class ReportController extends Controller
             'department',
             'group',
         ]);
-        $report_categories = ReportCategory::all();
-        $reason_categories = ReasonCategory::all();
+        $reportCategories = ReportCategory::all();
+        $reasonCategories = ReasonCategory::all();
         $users = User::all('id', 'employee', 'name')->sortBy('employee');
 
         return view('reports.index')->with(
             compact(
                 'paginator',
                 'affiliations',
-                'report_categories',
-                'reason_categories',
+                'reportCategories',
+                'reasonCategories',
                 'users'
             )
         );
@@ -1884,7 +1864,7 @@ class ReportController extends Controller
                 });
         })->get();
 
-        /** 部長・工場長承認権限をもつ者が自身の申請を取消す場合 */
+        /** 部長承認権限をもつ者が自身の申請を取消す場合 */
         if (
             !empty(
                 Auth::user()
@@ -1899,7 +1879,7 @@ class ReportController extends Controller
             $report->approval1 = 0;
             $report->approval2 = 0;
 
-            $gl_approvals = Approval::whereHas('affiliation', function (
+            $glApprovers = Approval::whereHas('affiliation', function (
                 $query
             ) use ($report) {
                 $query
@@ -1923,7 +1903,7 @@ class ReportController extends Controller
                 ->where('approval_id', 3)
                 ->get();
 
-            $acquisition_day = AcquisitionDay::all()
+            $acquisitionDay = AcquisitionDay::all()
                 ->where('report_id', $report->report_id)
                 ->where('user_id', $report->user_id)
                 ->first();
@@ -1932,18 +1912,18 @@ class ReportController extends Controller
             try {
                 self::acquisitionCancel($report);
                 // $report->save();
-                // if (!empty($acquisition_day)) {
-                //     if (!empty($acquisition_day->remaining_days)) {
-                //         $acquisition_day->remaining_days += $report->get_days;
+                // if (!empty($acquisitionDay)) {
+                //     if (!empty($acquisitionDay->remaining_days)) {
+                //         $acquisitionDay->remaining_days += $report->get_days;
                 //     }
-                //     $acquisition_day->acquisition_days -= $report->get_days;
-                //     $acquisition_day->save(); # 残日数を保存
+                //     $acquisitionDay->acquisition_days -= $report->get_days;
+                //     $acquisitionDay->save(); # 残日数を保存
                 // }
                 // $report->delete();
                 DB::commit(); # トランザクション成功終了
                 // 管轄内の課長・GLにメール通知
-                if ($gl_approvals) {
-                    foreach ($gl_approvals as $approval) {
+                if ($glApprovers) {
+                    foreach ($glApprovers as $approval) {
                         $approval->user->destroyReport($report);
                     }
                 }
@@ -2032,7 +2012,7 @@ class ReportController extends Controller
         //             ->orWhere('group_id', 1);
         //     })
         //     ->get();
-        $gl_approvals = Approval::whereHas('affiliation', function (
+        $glApprovers = Approval::whereHas('affiliation', function (
             $query
         ) use ($report) {
             $query
@@ -2052,7 +2032,6 @@ class ReportController extends Controller
         })
             ->where('approval_id', 3)
             ->get();
-        // dd($gl_approval);
 
         foreach ($approvals as $approval) {
             if (
@@ -2067,7 +2046,7 @@ class ReportController extends Controller
                 // GLがいないとき工場長がGL承認する
                 // これは申請時点で既に承認済みになるので必要ないが、
                 // GLがいるときに申請してGL承認前にGLがいなくなったときのための処理
-                if (empty($gl_approvals->first())) {
+                if (empty($glApprovers->first())) {
                     $report->approval2 = 1;
                 }
             } elseif (
@@ -2118,7 +2097,7 @@ class ReportController extends Controller
     public function approvalCancel(Report $report)
     {
         $approvals = Auth::user()->approvals->whereIn('approval_id', [2, 3]);
-        $gl_approvals = Approval::whereHas('affiliation', function (
+        $glApprovers = Approval::whereHas('affiliation', function (
             $query
         ) use ($report) {
             $query
@@ -2149,7 +2128,7 @@ class ReportController extends Controller
                     $approval->affiliation->department_id == 1)
             ) {
                 $report->approval1 = 0;
-                if (empty($gl_approvals->first())) {
+                if (empty($glApprovers->first())) {
                     $report->approval2 = 0;
                 }
             } elseif (
@@ -2234,83 +2213,83 @@ class ReportController extends Controller
          * $work_hours = $report->shift_category->work_hours;
          * $work_minutes = $report->shift_category->work_minutes;
          */
-        $acquisition_day = AcquisitionDay::where('user_id', $report->user_id)
+        $acquisitionDay = AcquisitionDay::where('user_id', $report->user_id)
             ->where('report_id', $report->report_id)
             ->first();
-        if (!empty($acquisition_day)) {
+        if (!empty($acquisitionDay)) {
             if ($report->sub_report_id == 3) {
                 // 半日休は0.5日で格納
-                $acquisition_day->acquisition_days += 0.5;
-                $acquisition_day->remaining_days -= 0.5;
+                $acquisitionDay->acquisition_days += 0.5;
+                $acquisitionDay->remaining_days -= 0.5;
             } elseif ($report->sub_report_id == 4) {
                 // 時間休は時間で取得だけ格納
-                $acquisition_day->acquisition_minutes +=
+                $acquisitionDay->acquisition_minutes +=
                     $report->acquisition_minutes;
-                if ($acquisition_day->acquisition_minutes > 60) {
+                if ($acquisitionDay->acquisition_minutes > 60) {
                     // minutesからhoursに1時間繰上げ
-                    $acquisition_day->acquisition_minutes -= 60;
-                    $acquisition_day->acquisition_hours += 1;
+                    $acquisitionDay->acquisition_minutes -= 60;
+                    $acquisitionDay->acquisition_hours += 1;
                 }
-                $acquisition_day->acquisition_hours +=
+                $acquisitionDay->acquisition_hours +=
                     $report->acquisition_hours;
                 // else {
             } else {
                 if ($report->report_id <= 10) {
                     // 終日休、連休は日で格納
-                    $acquisition_day->remaining_days -=
+                    $acquisitionDay->remaining_days -=
                         $report->acquisition_days;
-                    $acquisition_day->acquisition_days +=
+                    $acquisitionDay->acquisition_days +=
                         $report->acquisition_days;
                 } else {
-                    $acquisition_day->acquisition_days +=
+                    $acquisitionDay->acquisition_days +=
                         $report->acquisition_days;
                 }
 
                 /**
                  * // ここから下は有給休暇に時間休を追加するときに使用
                  * // のこり日数を登録
-                 * $acquisition_day->remaining_minutes -=
+                 * $acquisitionDay->remaining_minutes -=
                  *     $report->acquisition_minutes;
-                 * if ($acquisition_day->remaining_minutes < 0) {
+                 * if ($acquisitionDay->remaining_minutes < 0) {
                  *     // hoursからminutesに1時間繰下げ
-                 *     $acquisition_day->remaining_hours -= 1;
-                 *     $acquisition_day->remaining_minutes += 60;
+                 *     $acquisitionDay->remaining_hours -= 1;
+                 *     $acquisitionDay->remaining_minutes += 60;
                  * }
                  *
-                 * $acquisition_day->remaining_hours -= $report->acquisition_hours;
-                 * if ($acquisition_day->remaining_hours < 0) {
+                 * $acquisitionDay->remaining_hours -= $report->acquisition_hours;
+                 * if ($acquisitionDay->remaining_hours < 0) {
                  *     // daysからhoursに1日繰下げ
-                 *     $acquisition_day->remaining_days -= 1;
-                 *     $acquisition_day->remaining_hours += $work_hours;
-                 *     $acquisition_day->remaining_minutes += $work_minutes;
+                 *     $acquisitionDay->remaining_days -= 1;
+                 *     $acquisitionDay->remaining_hours += $work_hours;
+                 *     $acquisitionDay->remaining_minutes += $work_minutes;
                  * }
-                 * $acquisition_day->remaining_days -= $report->acquisition_days;
+                 * $acquisitionDay->remaining_days -= $report->acquisition_days;
                  *
                  * 取得日数を登録
-                 * $acquisition_day->acquisition_minutes +=
+                 * $acquisitionDay->acquisition_minutes +=
                  *     $report->acquisition_minutes;
-                 * if ($acquisition_day->acquisition_minutes > 60) {
+                 * if ($acquisitionDay->acquisition_minutes > 60) {
                  *     // minutesからhoursに1時間繰上げ
-                 *     $acquisition_day->acquisition_minutes -= 60;
-                 *     $acquisition_day->acquisition_hours += 1;
+                 *     $acquisitionDay->acquisition_minutes -= 60;
+                 *     $acquisitionDay->acquisition_hours += 1;
                  * }
                  *
-                 * $acquisition_day->acquisition_hours +=
+                 * $acquisitionDay->acquisition_hours +=
                  *     $report->acquisition_hours;
                  * if (
-                 *     $acquisition_day->acquisition_hours > $work_hours ||
-                 *     ($acquisition_day->acquisition_hours == $work_hours &&
-                 *         $acquisition_day->acquisition_minutes == $work_minutes)
+                 *     $acquisitionDay->acquisition_hours > $work_hours ||
+                 *     ($acquisitionDay->acquisition_hours == $work_hours &&
+                 *         $acquisitionDay->acquisition_minutes == $work_minutes)
                  * ) {
                  *     // hoursからdaysに1日繰上げ
-                 *     $acquisition_day->acquisition_hours -= $work_hours;
-                 *     $acquisition_day->acquisition_minutes -= $work_minutes;
-                 *     $acquisition_day->acquisition_days += 1;
+                 *     $acquisitionDay->acquisition_hours -= $work_hours;
+                 *     $acquisitionDay->acquisition_minutes -= $work_minutes;
+                 *     $acquisitionDay->acquisition_days += 1;
                  * }
-                 * $acquisition_day->acquisition_days += $report->acquisition_days;
+                 * $acquisitionDay->acquisition_days += $report->acquisition_days;
                  */
             }
-            $acquisition_day->save(); # 残日数を保存
+            $acquisitionDay->save(); # 残日数を保存
         }
     }
 
@@ -2323,31 +2302,31 @@ class ReportController extends Controller
     function acquisitionCancel(Report $report)
     {
         $report->save();
-        $acquisition_day = AcquisitionDay::where('user_id', $report->user_id)
+        $acquisitionDay = AcquisitionDay::where('user_id', $report->user_id)
             ->where('report_id', $report->report_id)
             ->first();
-        if (!empty($acquisition_day)) {
+        if (!empty($acquisitionDay)) {
             if ($report->sub_report_id == 3) {
                 // 半日休は0.5日で格納
-                $acquisition_day->acquisition_days -= 0.5;
-                $acquisition_day->remaining_days += 0.5;
+                $acquisitionDay->acquisition_days -= 0.5;
+                $acquisitionDay->remaining_days += 0.5;
             } elseif ($report->sub_report_id == 4) {
                 // 時間休は時間で取得だけ格納
-                $acquisition_day->acquisition_minutes -=
+                $acquisitionDay->acquisition_minutes -=
                     $report->acquisition_minutes;
-                if ($acquisition_day->acquisition_minutes < 0) {
+                if ($acquisitionDay->acquisition_minutes < 0) {
                     // minutesからhoursに1時間繰下げ
-                    $acquisition_day->acquisition_minutes += 60;
-                    $acquisition_day->acquisition_hours -= 1;
+                    $acquisitionDay->acquisition_minutes += 60;
+                    $acquisitionDay->acquisition_hours -= 1;
                 }
-                $acquisition_day->acquisition_hours -=
+                $acquisitionDay->acquisition_hours -=
                     $report->acquisition_hours;
             } else {
                 // 終日休、連休は日で格納
-                $acquisition_day->remaining_days += $report->acquisition_days;
-                $acquisition_day->acquisition_days -= $report->acquisition_days;
+                $acquisitionDay->remaining_days += $report->acquisition_days;
+                $acquisitionDay->acquisition_days -= $report->acquisition_days;
             }
-            $acquisition_day->save(); # 残日数を保存
+            $acquisitionDay->save(); # 残日数を保存
         }
         $report->delete();
     }
@@ -2596,8 +2575,8 @@ class ReportController extends Controller
         );
     }
 
-    // export_form
-    public function export_form()
+    // exportForm
+    public function exportForm()
     {
         $approvals = Auth::user()
             ->approvals->where('approval_id', '!=', 1)
@@ -2706,8 +2685,8 @@ class ReportController extends Controller
             'department',
             'group',
         ]);
-        $report_categories = ReportCategory::all();
-        $reason_categories = ReasonCategory::all();
+        $reportCategories = ReportCategory::all();
+        $reasonCategories = ReasonCategory::all();
         $users = User::all('id', 'employee');
 
         // sessionリセット
@@ -2719,15 +2698,15 @@ class ReportController extends Controller
             compact(
                 'paginator',
                 'affiliations',
-                'report_categories',
-                'reason_categories',
+                'reportCategories',
+                'reasonCategories',
                 'users'
             )
         );
     }
 
     // export_search
-    public function export_search(Request $request)
+    public function exportSearch(Request $request)
     {
         // 管理者権限は設定についての権限なので、一覧に影響しない
         $approvals = Auth::user()
@@ -2821,94 +2800,94 @@ class ReportController extends Controller
                 ->sortByDesc('report_date');
         }
 
-        $affiliation_id = $request->select_affiliation;
+        $affiliationId = $request->select_affiliation;
         $reason_id = $request->select_reason;
-        $report_id = $request->select_report;
+        $reportId = $request->select_report;
         $month = $request->select_month;
-        $affiliation = Affiliation::find($affiliation_id);
+        $affiliation = Affiliation::find($affiliationId);
 
         # monthから月初め日、月終わり日を定義
         if ($month) {
             $carbon = new Carbon($month);
-            $start_date = $carbon->format('Y-m-d');
-            $end_date = $carbon
+            $startDate = $carbon->format('Y-m-d');
+            $endDate = $carbon
                 ->addMonth()
                 ->subDay()
                 ->format('Y-m-d');
         }
 
         /** 条件に従って帳票出力するreportを取得 */
-        if ($affiliation_id == 1) {
-            if ($report_id != null && $reason_id == null && $month == null) {
+        if ($affiliationId == 1) {
+            if ($reportId != null && $reason_id == null && $month == null) {
                 # 休暇種類を指定
-                $reports = $reports->where('report_id', $report_id);
+                $reports = $reports->where('report_id', $reportId);
             } elseif (
-                $report_id == null &&
+                $reportId == null &&
                 $reason_id != null &&
                 $month == null
             ) {
                 # 理由を指定
                 $reports = $reports->where('reason_id', $reason_id);
             } elseif (
-                $report_id == null &&
+                $reportId == null &&
                 $reason_id == null &&
                 $month != null
             ) {
                 # 月を指定
                 $reports = $reports
-                    ->where('start_date', '>=', $start_date)
-                    ->where('start_date', '<=', $end_date);
+                    ->where('start_date', '>=', $startDate)
+                    ->where('start_date', '<=', $endDate);
             } elseif (
-                $report_id != null &&
+                $reportId != null &&
                 $reason_id != null &&
                 $month == null
             ) {
                 # 休暇種類,理由を指定
                 $reports = $reports
-                    ->where('report_id', $report_id)
+                    ->where('report_id', $reportId)
                     ->where('reason_id', $reason_id);
             } elseif (
-                $report_id != null &&
+                $reportId != null &&
                 $reason_id == null &&
                 $month != null
             ) {
                 # 休暇種類,月を指定
                 $reports = $reports
-                    ->where('report_id', $report_id)
-                    ->where('start_date', '>=', $start_date)
-                    ->where('start_date', '<=', $end_date);
+                    ->where('report_id', $reportId)
+                    ->where('start_date', '>=', $startDate)
+                    ->where('start_date', '<=', $endDate);
             } elseif (
-                $report_id == null &&
+                $reportId == null &&
                 $reason_id != null &&
                 $month != null
             ) {
                 # 理由,月を指定
                 $reports = $reports
-                    ->where('start_date', '>=', $start_date)
-                    ->where('start_date', '<=', $end_date)
+                    ->where('start_date', '>=', $startDate)
+                    ->where('start_date', '<=', $endDate)
                     ->where('reason_id', $reason_id);
             } elseif (
-                $report_id != null &&
+                $reportId != null &&
                 $reason_id != null &&
                 $month != null
             ) {
                 # 休暇種類,理由,月を指定
                 $reports = $reports
-                    ->where('start_date', '>=', $start_date)
-                    ->where('start_date', '<=', $end_date)
-                    ->where('report_id', $report_id)
+                    ->where('start_date', '>=', $startDate)
+                    ->where('start_date', '<=', $endDate)
+                    ->where('report_id', $reportId)
                     ->where('reason_id', $reason_id);
             }
         } else {
             if (
-                $affiliation_id != null &&
-                $report_id == null &&
+                $affiliationId != null &&
+                $reportId == null &&
                 $reason_id == null &&
                 $month == null
             ) {
                 # 所属を指定
                 $reports = $reports->filter(function ($item) use (
-                    $affiliation_id,
+                    $affiliationId,
                     $affiliation
                 ) {
                     if ($affiliation->department_id == 1) {
@@ -2923,45 +2902,45 @@ class ReportController extends Controller
                             $item->user->affiliation->department_id ==
                                 $affiliation->department_id;
                     } else {
-                        return $item->user->affiliation_id == $affiliation_id;
+                        return $item->user->affiliation_id == $affiliationId;
                     }
                 });
             } elseif (
-                $affiliation_id == null &&
-                $report_id != null &&
+                $affiliationId == null &&
+                $reportId != null &&
                 $reason_id == null &&
                 $month == null
             ) {
                 # 休暇種類を指定
-                $reports = $reports->where('report_id', $report_id);
+                $reports = $reports->where('report_id', $reportId);
             } elseif (
-                $affiliation_id == null &&
-                $report_id == null &&
+                $affiliationId == null &&
+                $reportId == null &&
                 $reason_id != null &&
                 $month == null
             ) {
                 # 理由を指定
                 $reports = $reports->where('reason_id', $reason_id);
             } elseif (
-                $affiliation_id == null &&
-                $report_id == null &&
+                $affiliationId == null &&
+                $reportId == null &&
                 $reason_id == null &&
                 $month != null
             ) {
                 # 月を指定
                 $reports = $reports
-                    ->where('start_date', '>=', $start_date)
-                    ->where('start_date', '<=', $end_date);
+                    ->where('start_date', '>=', $startDate)
+                    ->where('start_date', '<=', $endDate);
             } elseif (
-                $affiliation_id != null &&
-                $report_id != null &&
+                $affiliationId != null &&
+                $reportId != null &&
                 $reason_id == null &&
                 $month == null
             ) {
                 # 所属,休暇種類を指定
                 $reports = $reports
                     ->filter(function ($item) use (
-                        $affiliation_id,
+                        $affiliationId,
                         $affiliation
                     ) {
                         if ($affiliation->department_id == 1) {
@@ -2977,20 +2956,20 @@ class ReportController extends Controller
                                     $affiliation->department_id;
                         } else {
                             return $item->user->affiliation_id ==
-                                $affiliation_id;
+                                $affiliationId;
                         }
                     })
-                    ->where('report_id', $report_id);
+                    ->where('report_id', $reportId);
             } elseif (
-                $affiliation_id != null &&
-                $report_id == null &&
+                $affiliationId != null &&
+                $reportId == null &&
                 $reason_id != null &&
                 $month == null
             ) {
                 # 所属,理由を指定
                 $reports = $reports
                     ->filter(function ($item) use (
-                        $affiliation_id,
+                        $affiliationId,
                         $affiliation
                     ) {
                         if ($affiliation->department_id == 1) {
@@ -3006,20 +2985,20 @@ class ReportController extends Controller
                                     $affiliation->department_id;
                         } else {
                             return $item->user->affiliation_id ==
-                                $affiliation_id;
+                                $affiliationId;
                         }
                     })
                     ->where('reason_id', $reason_id);
             } elseif (
-                $affiliation_id != null &&
-                $report_id == null &&
+                $affiliationId != null &&
+                $reportId == null &&
                 $reason_id == null &&
                 $month != null
             ) {
                 # 所属,月を指定
                 $reports = $reports
                     ->filter(function ($item) use (
-                        $affiliation_id,
+                        $affiliationId,
                         $affiliation
                     ) {
                         if ($affiliation->department_id == 1) {
@@ -3035,53 +3014,53 @@ class ReportController extends Controller
                                     $affiliation->department_id;
                         } else {
                             return $item->user->affiliation_id ==
-                                $affiliation_id;
+                                $affiliationId;
                         }
                     })
-                    ->where('start_date', '>=', $start_date)
-                    ->where('start_date', '<=', $end_date);
+                    ->where('start_date', '>=', $startDate)
+                    ->where('start_date', '<=', $endDate);
             } elseif (
-                $affiliation_id == null &&
-                $report_id != null &&
+                $affiliationId == null &&
+                $reportId != null &&
                 $reason_id != null &&
                 $month == null
             ) {
                 # 休暇種類,理由を指定
                 $reports = $reports
-                    ->where('report_id', $report_id)
+                    ->where('report_id', $reportId)
                     ->where('reason_id', $reason_id);
             } elseif (
-                $affiliation_id == null &&
-                $report_id != null &&
+                $affiliationId == null &&
+                $reportId != null &&
                 $reason_id == null &&
                 $month != null
             ) {
                 # 休暇種類,月を指定
                 $reports = $reports
-                    ->where('report_id', $report_id)
-                    ->where('start_date', '>=', $start_date)
-                    ->where('start_date', '<=', $end_date);
+                    ->where('report_id', $reportId)
+                    ->where('start_date', '>=', $startDate)
+                    ->where('start_date', '<=', $endDate);
             } elseif (
-                $affiliation_id == null &&
-                $report_id == null &&
+                $affiliationId == null &&
+                $reportId == null &&
                 $reason_id != null &&
                 $month != null
             ) {
                 # 理由,月を指定
                 $reports = $reports
-                    ->where('start_date', '>=', $start_date)
-                    ->where('start_date', '<=', $end_date)
+                    ->where('start_date', '>=', $startDate)
+                    ->where('start_date', '<=', $endDate)
                     ->where('reason_id', $reason_id);
             } elseif (
-                $affiliation_id != null &&
-                $report_id != null &&
+                $affiliationId != null &&
+                $reportId != null &&
                 $reason_id != null &&
                 $month == null
             ) {
                 # 所属,休暇種類,理由を指定
                 $reports = $reports
                     ->filter(function ($item) use (
-                        $affiliation_id,
+                        $affiliationId,
                         $affiliation
                     ) {
                         if ($affiliation->department_id == 1) {
@@ -3097,21 +3076,21 @@ class ReportController extends Controller
                                     $affiliation->department_id;
                         } else {
                             return $item->user->affiliation_id ==
-                                $affiliation_id;
+                                $affiliationId;
                         }
                     })
-                    ->where('report_id', $report_id)
+                    ->where('report_id', $reportId)
                     ->where('reason_id', $reason_id);
             } elseif (
-                $affiliation_id != null &&
-                $report_id != null &&
+                $affiliationId != null &&
+                $reportId != null &&
                 $reason_id == null &&
                 $month != null
             ) {
                 # 所属,休暇種類,月を指定
                 $reports = $reports
                     ->filter(function ($item) use (
-                        $affiliation_id,
+                        $affiliationId,
                         $affiliation
                     ) {
                         if ($affiliation->department_id == 1) {
@@ -3127,22 +3106,22 @@ class ReportController extends Controller
                                     $affiliation->department_id;
                         } else {
                             return $item->user->affiliation_id ==
-                                $affiliation_id;
+                                $affiliationId;
                         }
                     })
-                    ->where('start_date', '>=', $start_date)
-                    ->where('start_date', '<=', $end_date)
-                    ->where('report_id', $report_id);
+                    ->where('start_date', '>=', $startDate)
+                    ->where('start_date', '<=', $endDate)
+                    ->where('report_id', $reportId);
             } elseif (
-                $affiliation_id != null &&
-                $report_id == null &&
+                $affiliationId != null &&
+                $reportId == null &&
                 $reason_id != null &&
                 $month != null
             ) {
                 # 所属,理由,月を指定
                 $reports = $reports
                     ->filter(function ($item) use (
-                        $affiliation_id,
+                        $affiliationId,
                         $affiliation
                     ) {
                         if ($affiliation->department_id == 1) {
@@ -3158,34 +3137,34 @@ class ReportController extends Controller
                                     $affiliation->department_id;
                         } else {
                             return $item->user->affiliation_id ==
-                                $affiliation_id;
+                                $affiliationId;
                         }
                     })
-                    ->where('start_date', '>=', $start_date)
-                    ->where('start_date', '<=', $end_date)
+                    ->where('start_date', '>=', $startDate)
+                    ->where('start_date', '<=', $endDate)
                     ->where('reason_id', $reason_id);
             } elseif (
-                $affiliation_id == null &&
-                $report_id != null &&
+                $affiliationId == null &&
+                $reportId != null &&
                 $reason_id != null &&
                 $month != null
             ) {
                 # 休暇種類,理由,月を指定
                 $reports = $reports
-                    ->where('start_date', '>=', $start_date)
-                    ->where('start_date', '<=', $end_date)
-                    ->where('report_id', $report_id)
+                    ->where('start_date', '>=', $startDate)
+                    ->where('start_date', '<=', $endDate)
+                    ->where('report_id', $reportId)
                     ->where('reason_id', $reason_id);
             } elseif (
-                $affiliation_id != null &&
-                $report_id != null &&
+                $affiliationId != null &&
+                $reportId != null &&
                 $reason_id != null &&
                 $month != null
             ) {
                 # すべて指定
                 $reports = $reports
                     ->filter(function ($item) use (
-                        $affiliation_id,
+                        $affiliationId,
                         $affiliation
                     ) {
                         if ($affiliation->department_id == 1) {
@@ -3201,13 +3180,13 @@ class ReportController extends Controller
                                     $affiliation->department_id;
                         } else {
                             return $item->user->affiliation_id ==
-                                $affiliation_id;
+                                $affiliationId;
                         }
                     })
-                    ->where('report_id', $report_id)
+                    ->where('report_id', $reportId)
                     ->where('reason_id', $reason_id)
-                    ->where('start_date', '>=', $start_date)
-                    ->where('start_date', '<=', $end_date);
+                    ->where('start_date', '>=', $startDate)
+                    ->where('start_date', '<=', $endDate);
             }
         }
 
@@ -3229,8 +3208,8 @@ class ReportController extends Controller
             'department',
             'group',
         ]);
-        $report_categories = ReportCategory::all();
-        $reason_categories = ReasonCategory::all();
+        $reportCategories = ReportCategory::all();
+        $reasonCategories = ReasonCategory::all();
         $users = User::all('id', 'employee', 'name')->sortBy('employee');
 
         // sessionリセット
@@ -3242,8 +3221,8 @@ class ReportController extends Controller
             compact(
                 'paginator',
                 'affiliations',
-                'report_categories',
-                'reason_categories',
+                'reportCategories',
+                'reasonCategories',
                 'users'
             )
         );
@@ -3269,16 +3248,11 @@ class ReportController extends Controller
             ->with('notice', '申請インポート完了！');
     }
 
-    public function all_export()
+    public function allExport()
     {
         # 全データ出力
         return Excel::download(new MultipleExport(), 'pp.xlsx');
     }
-
-    // public function import_form()
-    // {
-    //     return view('menu.import_form');
-    // }
 
     function monitor()
     {
@@ -3300,7 +3274,6 @@ class ReportController extends Controller
                     'count' => $query->count(),
                 ];
             });
-        // dd(count($pending_reports));
         return view('reports.monitor')->with(compact('pending_reports'));
     }
 }

@@ -2,7 +2,8 @@
     <section class="text-gray-600 body-font">
         <div class="container max-w-2xl px-5 py-6 mx-auto">
             <div class="flex flex-col text-center w-full mb-4">
-                <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">{{ __('Rest Days') }}</h1>
+                <h1 class="sm:text-3xl text-2xl font-medium ZenMaruGothic title-font mb-4 text-gray-800">
+                    {{ __('Rest Days') }}</h1>
                 <div class="text-left mx-auto leading-relaxed text-sm mb-1">
                     <x-info>
                         <p class="text-sm">
@@ -15,7 +16,7 @@
                                 0)
                             <p class="text-sm">
                                 有給休暇の取得推進日数はあと<span
-                                    class="font-semibold text-red-500">{{ 5 -Auth::user()->acquisition_days->where('report_id', 1)->first()->acquisition_days }}日</span>です。
+                                    class="font-semibold">{{ 5 -Auth::user()->acquisition_days->where('report_id', 1)->first()->acquisition_days }}日</span>です。
                             </p>
                         @else
                             <p class="text-sm">
@@ -51,55 +52,56 @@
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-200">
-                                        @foreach ($acquisition_days as $acquisition_day)
+                                        @foreach ($acquisitionDays as $acquisitionDay)
                                             <tr class="">
                                                 <td
                                                     class="hidden md:block pl-4 pr-2 py-3 whitespace-nowrap text-sm font-medium text-gray-800 ">
-                                                    {{ $acquisition_day->report_category->report_name }}
-                                                    {{-- @if ($acquisition_day->report_category->report_name == '介護休業' || $acquisition_day->report_category->report_name == '育児休業')
+                                                    {{ $acquisitionDay->report_category->report_name }}
+                                                    {{-- @if ($acquisitionDay->report_category->report_name == '介護休業' || $acquisitionDay->report_category->report_name == '育児休業')
                                                         <span class="text-blue-400 text-xs">{{ __('※') }}</span>
                                                     @endif --}}
                                                     @if (
-                                                        $acquisition_day->report_category->report_name == '有給休暇' &&
+                                                        $acquisitionDay->report_category->report_name == '有給休暇' &&
                                                             Auth::user()->adoption_date >
                                                                 now()->subMonth(3)->format('Y-m-d'))
-                                                        <span class="text-blue-400 text-xs">{{ __('(採用から3か月後に申請できます)') }}</span>
+                                                        <span
+                                                            class="text-blue-400 text-xs">{{ __('(採用から3か月後に申請できます)') }}</span>
                                                     @endif
                                                 </td>
                                                 <td
                                                     class="block md:hidden pl-4 pr-2 py-3 whitespace-nowrap text-xs font-medium text-gray-800 ">
-                                                    {{ Str::limit($acquisition_day->report_category->report_name, 20) }}
+                                                    {{ Str::limit($acquisitionDay->report_category->report_name, 20) }}
                                                 </td>
                                                 <td
                                                     class="px-4 pt-3 pb-1 whitespace-nowrap text-right text-sm font-medium">
                                                     <span class=" font-bold">
-                                                        @if (isset($acquisition_day->remaining_days))
-                                                            {{ $acquisition_day->remaining_days }}日
+                                                        @if (isset($acquisitionDay->remaining_days))
+                                                            {{ $acquisitionDay->remaining_days }}日
                                                         @endif
-                                                        @if (!empty($acquisition_day->remaining_hours))
-                                                            &ensp;{{ $acquisition_day->remaining_hours }} 時間
+                                                        @if (!empty($acquisitionDay->remaining_hours))
+                                                            &ensp;{{ $acquisitionDay->remaining_hours }} 時間
                                                         @endif
-                                                        @if (!empty($acquisition_day->remaining_minutes))
-                                                            &ensp;{{ $acquisition_day->remaining_minutes }} 分
+                                                        @if (!empty($acquisitionDay->remaining_minutes))
+                                                            &ensp;{{ $acquisitionDay->remaining_minutes }} 分
                                                         @endif
                                                     </span>
                                                     <p class="text-blue-400 text-xs">
-                                                        @if ($acquisition_day->remaining_days != null)
-                                                            @if (Auth::user()->reports->where('report_id', $acquisition_day->report_id)->where('approved', 0)->where('cancel', 0)->first())
+                                                        @if ($acquisitionDay->remaining_days != null)
+                                                            @if (Auth::user()->reports->where('report_id', $acquisitionDay->report_id)->where('approved', 0)->where('cancel', 0)->first())
                                                                 @if (
-                                                                    ($acquisition_day->expectation_remaining_days == 0 &&
-                                                                        $acquisition_day->expectation_remaining_hours == 0 &&
-                                                                        $acquisition_day->expectation_remaining_minutes == 0) ||
-                                                                        $acquisition_day->expectation_remaining_days != 0)
-                                                                    {{ $acquisition_day->expectation_remaining_days }}
+                                                                    ($acquisitionDay->expectation_remaining_days == 0 &&
+                                                                        $acquisitionDay->expectation_remaining_hours == 0 &&
+                                                                        $acquisitionDay->expectation_remaining_minutes == 0) ||
+                                                                        $acquisitionDay->expectation_remaining_days != 0)
+                                                                    {{ $acquisitionDay->expectation_remaining_days }}
                                                                     日
                                                                 @endif
-                                                                @if ($acquisition_day->expectation_remaining_hours != 0)
-                                                                    {{ $acquisition_day->expectation_remaining_hours }}
+                                                                @if ($acquisitionDay->expectation_remaining_hours != 0)
+                                                                    {{ $acquisitionDay->expectation_remaining_hours }}
                                                                     時間
                                                                 @endif
-                                                                @if ($acquisition_day->expectation_remaining_minutes != 0)
-                                                                    {{ $acquisition_day->expectation_remaining_minutes }}
+                                                                @if ($acquisitionDay->expectation_remaining_minutes != 0)
+                                                                    {{ $acquisitionDay->expectation_remaining_minutes }}
                                                                     分
                                                                 @endif
                                                             @endif
@@ -109,33 +111,33 @@
                                                 <td
                                                     class="px-4 pt-3 pb-1 whitespace-nowrap text-right text-sm font-medium">
                                                     <span class=" font-bold">
-                                                        @if ($acquisition_day->report_category->acquisition_id != 7)
-                                                            {{ $acquisition_day->acquisition_days }} 日
-                                                            @if (!empty($acquisition_day->acquisition_hours))
-                                                                &ensp;{{ $acquisition_day->acquisition_hours }} 時間
+                                                        @if ($acquisitionDay->report_category->acquisition_id != 7)
+                                                            {{ $acquisitionDay->acquisition_days }} 日
+                                                            @if (!empty($acquisitionDay->acquisition_hours))
+                                                                &ensp;{{ $acquisitionDay->acquisition_hours }} 時間
                                                             @endif
-                                                            @if (!empty($acquisition_day->acquisition_minutes))
-                                                                &ensp;{{ $acquisition_day->acquisition_minutes }} 分
+                                                            @if (!empty($acquisitionDay->acquisition_minutes))
+                                                                &ensp;{{ $acquisitionDay->acquisition_minutes }} 分
                                                             @endif
                                                         @else
-                                                            {{ $acquisition_day->acquisition_hours }} 時間
-                                                            @if (!empty($acquisition_day->acquisition_minutes))
-                                                                &ensp;{{ $acquisition_day->acquisition_minutes }} 分
+                                                            {{ $acquisitionDay->acquisition_hours }} 時間
+                                                            @if (!empty($acquisitionDay->acquisition_minutes))
+                                                                &ensp;{{ $acquisitionDay->acquisition_minutes }} 分
                                                             @endif
                                                         @endif
                                                     </span>
                                                     <p class="text-blue-400 text-xs">
-                                                        {{-- @if ($acquisition_day->pending_acquisition_days != 0) --}}
-                                                        @if ($acquisition_day->pending_acquisition_days != 0)
-                                                            {{ $acquisition_day->pending_acquisition_days }}
+                                                        {{-- @if ($acquisitionDay->pending_acquisition_days != 0) --}}
+                                                        @if ($acquisitionDay->pending_acquisition_days != 0)
+                                                            {{ $acquisitionDay->pending_acquisition_days }}
                                                             日
                                                         @endif
-                                                        @if ($acquisition_day->pending_acquisition_hours != 0)
-                                                            {{ $acquisition_day->pending_acquisition_hours }}
+                                                        @if ($acquisitionDay->pending_acquisition_hours != 0)
+                                                            {{ $acquisitionDay->pending_acquisition_hours }}
                                                             時間
                                                         @endif
-                                                        @if ($acquisition_day->pending_acquisition_minutes != 0)
-                                                            {{ $acquisition_day->pending_acquisition_minutes }}
+                                                        @if ($acquisitionDay->pending_acquisition_minutes != 0)
+                                                            {{ $acquisitionDay->pending_acquisition_minutes }}
                                                             分
                                                         @endif
                                                         {{-- @endif --}}
@@ -173,6 +175,26 @@
                     {{ __('Back') }}
                 </x-back-home-button>
             </div>
+        </div>
+
+        <!-- ボタン -->
+        <div class="w-full max-w-3xl px-5 mx-auto grid grid-cols-1 gap-2">
+            <button class="fixed right-16 bottom-16 bg-sky-400/80 text-white px-2 py-2 rounded-full shadow"
+                onclick="window.history.back();">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                    <path fill-rule="evenodd"
+                        d="M9.53 2.47a.75.75 0 010 1.06L4.81 8.25H15a6.75 6.75 0 010 13.5h-3a.75.75 0 010-1.5h3a5.25 5.25 0 100-10.5H4.81l4.72 4.72a.75.75 0 11-1.06 1.06l-6-6a.75.75 0 010-1.06l6-6a.75.75 0 011.06 0z"
+                        clip-rule="evenodd" />
+                </svg>
+            </button>
+            {{-- <button class="fixed right-16 bottom-28 bg-sky-400/80 text-white px-2 py-2 rounded-full shadow"
+            onclick="location.href='{{ route('menu') }}'">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+            </svg>
+        </button> --}}
         </div>
     </section>
 </x-app-layout>

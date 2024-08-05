@@ -23,14 +23,14 @@ class ApprovalController extends Controller
      */
     public function index()
     {
-        $my_approvals = Auth::user()
+        $myApprovals = Auth::user()
             ->approvals->where('approval_id', 1)
             ->load('affiliation');
         $approvals = Approval::whereHas('user', function ($query) use (
-            $my_approvals
+            $myApprovals
         ) {
-            $query->where(function ($query) use ($my_approvals) {
-                foreach ($my_approvals as $approval) {
+            $query->where(function ($query) use ($myApprovals) {
+                foreach ($myApprovals as $approval) {
                     if ($approval->affiliation->department_id == 1) {
                         $query->orWhere(function ($query) use ($approval) {
                             $query->whereHas('affiliation', function (
@@ -63,7 +63,7 @@ class ApprovalController extends Controller
             });
         })->get();
 
-        if ($my_approvals->contains('affiliation_id', 1)) {
+        if ($myApprovals->contains('affiliation_id', 1)) {
             $approvals = Approval::all();
         }
 
@@ -92,14 +92,14 @@ class ApprovalController extends Controller
      */
     public function create()
     {
-        $my_approvals = Auth::user()
+        $myApprovals = Auth::user()
             ->approvals->where('approval_id', 1)
             ->load('affiliation');
         $users = User::whereHas('affiliation', function ($query) use (
-            $my_approvals
+            $myApprovals
         ) {
-            $query->where(function ($query) use ($my_approvals) {
-                foreach ($my_approvals as $approval) {
+            $query->where(function ($query) use ($myApprovals) {
+                foreach ($myApprovals as $approval) {
                     if ($approval->affiliation->department_id == 1) {
                         $query->orWhere(
                             'factory_id',
@@ -140,12 +140,11 @@ class ApprovalController extends Controller
             });
         })->get();
 
-        // TODO:権限の組み合わせにルールをつける
-        // 1はdepartmentまでgroupは必ず1
+        // TODO:権限の組み合わせにルールをつける 1はdepartmentまでgroupは必ず1など
         $affiliations = Affiliation::where(function ($query) use (
-            $my_approvals
+            $myApprovals
         ) {
-            foreach ($my_approvals as $approval) {
+            foreach ($myApprovals as $approval) {
                 $query->orWhere(function ($query) use ($approval) {
                     if (
                         $approval->affiliation->factory_id != 1 &&
@@ -173,20 +172,20 @@ class ApprovalController extends Controller
             }
         })->get();
 
-        $approval_categories = ApprovalCategory::where('id', '!=', 1)->get();
+        $approvalCategories = ApprovalCategory::where('id', '!=', 1)->get();
 
-        if ($my_approvals->contains('affiliation_id', 1)) {
+        if ($myApprovals->contains('affiliation_id', 1)) {
             $users = User::all()->sortBy('employee');
             $affiliations = Affiliation::all()->load([
                 'factory',
                 'department',
                 'group',
             ]);
-            $approval_categories = ApprovalCategory::all();
+            $approvalCategories = ApprovalCategory::all();
         }
 
         return view('approvals.create')->with(
-            compact('users', 'affiliations', 'approval_categories')
+            compact('users', 'affiliations', 'approvalCategories')
         );
     }
 
@@ -234,12 +233,12 @@ class ApprovalController extends Controller
      */
     public function edit(Approval $approval)
     {
-        $my_approvals = Auth::user()->approvals->where('approval_id', 1);
+        $myApprovals = Auth::user()->approvals->where('approval_id', 1);
 
         $affiliations = Affiliation::where(function ($query) use (
-            $my_approvals
+            $myApprovals
         ) {
-            foreach ($my_approvals as $approval) {
+            foreach ($myApprovals as $approval) {
                 $query->orWhere(function ($query) use ($approval) {
                     if (
                         $approval->affiliation->factory_id != 1 &&
@@ -269,19 +268,19 @@ class ApprovalController extends Controller
             ->get()
             ->load(['factory', 'department', 'group']);
 
-        $approval_categories = ApprovalCategory::where('id', '!=', 1)->where('id', '!=', 5)->get();
+        $approvalCategories = ApprovalCategory::where('id', '!=', 1)->where('id', '!=', 5)->get();
 
-        if ($my_approvals->contains('affiliation_id', 1)) {
+        if ($myApprovals->contains('affiliation_id', 1)) {
             $affiliations = Affiliation::all()->load([
                 'factory',
                 'department',
                 'group',
             ]);
-            $approval_categories = ApprovalCategory::all();
+            $approvalCategories = ApprovalCategory::all();
         }
 
         return view('approvals.edit')->with(
-            compact('approval', 'affiliations', 'approval_categories')
+            compact('approval', 'affiliations', 'approvalCategories')
         );
     }
 
@@ -331,9 +330,9 @@ class ApprovalController extends Controller
 
     public function import(Request $request)
     {
-        $excel_file = $request->file('excel_file');
-        $excel_file->store('excels');
-        Excel::import(new ApprovalImport(), $excel_file);
+        $excelFile = $request->file('excel_file');
+        $excelFile->store('excels');
+        Excel::import(new ApprovalImport(), $excelFile);
 
         return redirect()
             ->route('import_form')

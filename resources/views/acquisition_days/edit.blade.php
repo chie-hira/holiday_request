@@ -2,7 +2,7 @@
     <section class="text-gray-600 body-font">
         <div class="container px-5 py-24 mx-auto">
             <div class="flex flex-col text-center w-full mb-10">
-                <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">{{ __('Rest Days') }}の修正</h1>
+                <h1 class="sm:text-3xl text-2xl font-medium ZenMaruGothic title-font mb-4 text-gray-800">{{ __('Rest Days') }}の修正</h1>
                 <x-info class="mx-auto">
                     <p class="text-sm">
                         {{ __('Rest Days') }}を変更できます。
@@ -41,32 +41,32 @@
                                         <tr class="hover:bg-gray-100">
                                             <td
                                                 class="px-4 py-3 whitespace-nowrap text-center text-sm font-medium text-gray-800">
-                                                {{ $acquisition_day->user->employee }}
-                                                {{ $acquisition_day->user->name }}
+                                                {{ $acquisitionDay->user->employee }}
+                                                {{ $acquisitionDay->user->name }}
                                             </td>
                                             <td
                                                 class="px-4 py-3 whitespace-nowrap text-center text-sm font-medium text-gray-800">
-                                                {{ $acquisition_day->report_category->report_name }}
+                                                {{ $acquisitionDay->report_category->report_name }}
                                             </td>
-                                            <form action="{{ route('acquisition_days.update', $acquisition_day) }}"
+                                            <form action="{{ route('acquisition_days.update', $acquisitionDay) }}"
                                                 method="POST">
                                                 @csrf
                                                 @method('PUT')
                                                 <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
-                                                    <x-input name="remaining_days" type="number" step="{{ $acquisition_day->report_id == 2 ? 1 : 0.5 }}"
-                                                        max="{{ $acquisition_day->report_category->max_days }}"
+                                                    <x-input name="remaining_days" type="number" step="{{ $acquisitionDay->report_id == 2 ? 1 : 0.5 }}"
+                                                        max="{{ $acquisitionDay->report_category->max_days }}"
                                                         min="0" class="inline h-8 mt-1 w-20" :value="old(
                                                             'remaining_days',
-                                                            $acquisition_day->remaining_days,
+                                                            $acquisitionDay->remaining_days,
                                                         )" />
                                                     日
                                                 </td>
                                                 <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
-                                                    <x-input name="acquisition_days" type="number" step="{{ $acquisition_day->report_id == 2 ? 1 : 0.5 }}"
-                                                        max="{{ $acquisition_day->report_id == 1 || $acquisition_day->report_id == 2 ? $acquisition_day->report_category->max_days : 30 }}"
+                                                    <x-input name="acquisition_days" type="number" step="{{ $acquisitionDay->report_id == 2 ? 1 : 0.5 }}"
+                                                        max="{{ $acquisitionDay->report_id == 1 || $acquisitionDay->report_id == 2 ? $acquisitionDay->report_category->max_days : 30 }}"
                                                         min="0" class="inline h-8 mt-1 w-20" :value="old(
                                                             'acquisition_days',
-                                                            $acquisition_day->acquisition_days,
+                                                            $acquisitionDay->acquisition_days,
                                                         )" />
                                                     日
                                                 </td>

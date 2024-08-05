@@ -20,9 +20,9 @@ class DatabaseSeeder extends Seeder
         $this->call(DateCategorySeeder::class);
         $this->call(CalenderSeeder::class);
         $this->call(AffiliationSeeder::class);
-        // $this->call(UsersTableSeeder::class);
+        $this->call(UsersTableSeeder::class);
         $this->call(ApprovalCategorySeeder::class);
-        // $this->call(ApprovalSeeder::class);
+        $this->call(ApprovalSeeder::class);
         $this->call(AcquisitionFormSeeder::class);
         $this->call(ReportCategorySeeder::class);
         $this->call(SubReportCategorySeeder::class);
@@ -30,5 +30,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ReasonSeeder::class);
         // $this->call(AcquisitionDaySeeder::class);
         $this->call(ShiftCategorySeeder::class);
+        $this->call(ReportSeeder::class);
     }
 }

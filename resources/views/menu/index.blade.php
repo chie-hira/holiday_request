@@ -5,25 +5,17 @@
             <!-- 有休残日数 -->
             <x-info>
                 <p>
-                    {{ __('有給休暇残日数') }}&ensp;:&ensp;
+                    {{ __('有給残') }}&ensp;:&ensp;
                     @if (!empty($paid_holidays->remaining_days))
                         <span class="font-bold">
                             {{ $paid_holidays->remaining_days }}
                         </span> 日
                     @endif
-                    {{-- @if (!empty($paid_holidays->remaining_hours))
-                        <span class="font-bold">
-                            &ensp;{{ $paid_holidays->remaining_hours }}
-                        </span> 時間
-                    @endif --}}
                     @empty($paid_holidays->remaining_days)
                         0日
                     @endempty
                 </p>
             </x-info>
-            {{-- <div class="pl-2 -mt-2 mb-1">
-                <span class="text-xs text-blue-500">有給休暇取得推進日を除く</span>
-            </div> --}}
             <!-- バースデイ休暇notice -->
             @if (now()->subMonths(1) <= $birthday && now()->addMonths(1) >= $birthday)
                 <x-info>
@@ -84,7 +76,6 @@
                 </div>
             @endif
             <!-- 有給休暇取得推進alert -->
-            {{-- 3日は取得推進日として最初から差し引いている --}}
             @if (now()->addMonth() >= $year_end && Auth::user()->acquisition_paid_holidays < 2)
                 <x-alert>
                     有給休暇を取得してください
@@ -147,7 +138,7 @@
                 <!-- 基本機能 start -->
                 <div class="max-w-md mx-auto grid grid-cols-1 mb-10">
                     <a href={{ route('reports.create') }}
-                        class="block text-center items-center p-3 my-2 rounded-xl border border-gray-500 bg-cyan-400 hover:text-gray-600 hover:bg-white focus:text-cyan-400 ">
+                        class="block text-center items-center p-3 my-2 rounded-xl border border-gray-500 text-white bg-sky-400 hover:text-gray-600 hover:bg-white focus:text-sky-400 focus:bg-sky-400 focus:ring focus:ring-sky-400">
                         <div class="flex justify-center items-center text-2xl">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                                 <path
@@ -161,7 +152,7 @@
                     </a>
 
                     <a href={{ route('acquisition_days.my_index') }}
-                        class="block text-center items-center p-3 my-2 rounded-xl border border-gray-500 bg-fuchsia-300 hover:text-gray-600 hover:bg-white focus:text-fuchsia-300">
+                        class="block text-center items-center p-3 my-2 rounded-xl border border-gray-500 text-white bg-sky-400 hover:text-gray-600 hover:bg-white focus:text-sky-500">
                         <div class="flex justify-center items-center text-2xl">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                                 <path fill-rule="evenodd"
@@ -176,7 +167,7 @@
                     </a>
 
                     <a href={{ route('reports.my_index') }}
-                        class="block text-center items-center p-3 my-2 rounded-xl border border-gray-500 bg-amber-300 hover:text-gray-600 hover:bg-white focus:text-amber-300">
+                        class="block text-center items-center p-3 my-2 rounded-xl border border-gray-500 text-white bg-sky-400 hover:text-gray-600 hover:bg-white focus:text-sky-500">
                         <div class="flex justify-center items-center text-2xl">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
                                 <path fill-rule="evenodd"
@@ -288,13 +279,13 @@
             <div class="text-left w-full my-12">
                 <ul class="text-sm">
                     @foreach (Auth::user()->approvals->load(['affiliation.factory', 'affiliation.department', 'affiliation.group', 'approval_category']) as $approval)
-                        <x-list>
+                        <x-authority-list>
                             {{ $approval->affiliation->factory->factory_name }}
                             @if ($approval->affiliation->department_id != 1)
                                 {{ $approval->affiliation->department->department_name }}
                             @endif
                             ・{{ $approval->approval_category->approval_name }}
-                        </x-list>
+                        </x-authority-list>
                     @endforeach
                 </ul>
             </div>

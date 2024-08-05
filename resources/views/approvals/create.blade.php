@@ -2,7 +2,7 @@
     <section class="text-gray-600 body-font">
         <div class="container max-w-4xl px-5 py-16 w-full mx-auto">
             <div class="flex flex-col text-center w-full mb-10">
-                <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">権限の追加</h1>
+                <h1 class="sm:text-3xl text-2xl font-medium ZenMaruGothic title-font mb-4 text-gray-900">権限の追加</h1>
                 <x-info class="mx-auto">
                     <p class="text-sm">
                         <span class="font-bold">新しく権限を設定する</span>ときはこちらから追加してください。
@@ -38,7 +38,7 @@
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-200">
-                                        <tr class="hover:bg-gray-100">
+                                        <tr>
                                             <form action="{{ route('approvals.store') }}" method="POST">
                                                 @csrf
                                                 <td
@@ -66,7 +66,7 @@
                                                 <td class="px-2 py-3 whitespace-nowrap text-center text-sm font-medium">
                                                     <x-select name="approval_id" class="block mt-1 w-32 text-sm"
                                                         required>
-                                                        @foreach ($approval_categories as $approval_category)
+                                                        @foreach ($approvalCategories as $approval_category)
                                                             <option value="{{ $approval_category->id }}"
                                                                 @if ($approval_category->id === (int) old('approval_id')) selected @endif>
                                                                 {{ $approval_category->approval_name }}</option>

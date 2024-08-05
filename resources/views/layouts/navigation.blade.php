@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="bg-green-800">
+<nav x-data="{ open: false }" class="bg-gradient-to-b from-sky-400 to-sky-100">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-12">
@@ -13,7 +13,7 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-6 sm:flex">
                     <x-nav-link :href="route('menu')" :active="request()->routeIs('dashboard')">
-                        休暇申請アプリ
+                        {{ config('app.name', 'Laravel') }}
                     </x-nav-link>
                 </div>
 
@@ -22,7 +22,7 @@
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6">
                 @auth
-                    <p class="text-sm text-white">
+                    <p class="text-sm text-gray-800">
                         {{ Auth::user()->affiliation_name }}
                         &emsp;/&emsp;
                     </p>
@@ -31,7 +31,7 @@
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button 
-                            class="flex items-center text-sm font-medium text-white transition duration-150 ease-in-out hover:text-red-800">
+                            class="flex items-center text-sm font-medium text-gray-800 transition duration-150 ease-in-out hover:text-white">
                             @auth
                                 <div>{{ Auth::user()->employee }}&ensp;{{ Auth::user()->name }}</div>
                             @else
