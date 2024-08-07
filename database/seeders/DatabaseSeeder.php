@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
         $this->call(SubReportCategorySeeder::class);
         $this->call(ReasonCategorySeeder::class);
         $this->call(ReasonSeeder::class);
-        // $this->call(AcquisitionDaySeeder::class);
+        $this->call(AcquisitionDaySeeder::class);
         $this->call(ShiftCategorySeeder::class);
         $this->call(ReportSeeder::class);
     }
