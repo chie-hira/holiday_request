@@ -1577,9 +1577,6 @@ select {
 .pb-2 {
   padding-bottom: 0.5rem;
 }
-.pb-3 {
-  padding-bottom: 0.75rem;
-}
 .pb-6 {
   padding-bottom: 1.5rem;
 }
@@ -1820,6 +1817,10 @@ select {
 .text-sky-600 {
   --tw-text-opacity: 1;
   color: rgb(2 132 199 / var(--tw-text-opacity));
+}
+.text-sky-800 {
+  --tw-text-opacity: 1;
+  color: rgb(7 89 133 / var(--tw-text-opacity));
 }
 .text-slate-700 {
   --tw-text-opacity: 1;
@@ -2080,10 +2081,6 @@ select {
   --tw-text-opacity: 1;
   color: rgb(22 101 52 / var(--tw-text-opacity));
 }
-.hover\:text-red-800:hover {
-  --tw-text-opacity: 1;
-  color: rgb(153 27 27 / var(--tw-text-opacity));
-}
 .hover\:text-sky-500:hover {
   --tw-text-opacity: 1;
   color: rgb(14 165 233 / var(--tw-text-opacity));
@@ -2095,6 +2092,10 @@ select {
 .hover\:text-sky-700:hover {
   --tw-text-opacity: 1;
   color: rgb(3 105 161 / var(--tw-text-opacity));
+}
+.hover\:text-sky-800:hover {
+  --tw-text-opacity: 1;
+  color: rgb(7 89 133 / var(--tw-text-opacity));
 }
 .hover\:text-slate-900:hover {
   --tw-text-opacity: 1;
@@ -2210,10 +2211,6 @@ select {
   --tw-text-opacity: 1;
   color: rgb(55 48 163 / var(--tw-text-opacity));
 }
-.focus\:text-red-800:focus {
-  --tw-text-opacity: 1;
-  color: rgb(153 27 27 / var(--tw-text-opacity));
-}
 .focus\:text-sky-300:focus {
   --tw-text-opacity: 1;
   color: rgb(125 211 252 / var(--tw-text-opacity));
@@ -2225,6 +2222,10 @@ select {
 .focus\:text-sky-500:focus {
   --tw-text-opacity: 1;
   color: rgb(14 165 233 / var(--tw-text-opacity));
+}
+.focus\:text-sky-800:focus {
+  --tw-text-opacity: 1;
+  color: rgb(7 89 133 / var(--tw-text-opacity));
 }
 .focus\:outline-none:focus {
   outline: 2px solid transparent;

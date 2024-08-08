@@ -58,7 +58,7 @@
                         <x-show-a-button href="{{ asset($path) }}"
                             class="text-xs px-2 py-1 my-1">
                             ダウンロード
-                            </x-a>
+                        </x-a>
                     </div>
                 @endforeach
             </div>
