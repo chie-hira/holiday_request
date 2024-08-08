@@ -52,6 +52,8 @@ class StoreReportRequest extends FormRequest
         return [
             'get_days.required' =>
                 '日付を入力して、日付算出ボタンを押してください。',
+            'end_date.after_or_equal' =>
+                '休暇予定日が正しくありません。',
         ];
     }
 }

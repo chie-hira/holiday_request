@@ -162,8 +162,8 @@ return [
     ],
 
     'attributes' => [
-        'report_date' => '届出日',
-        'start_date' => '開始日付',
+        'report_date' => '申請日',
+        'start_date' => '休暇予定日',
         'end_date' => '終了日付',
         'sub_report_id' => '取得形態',
         'start_time' => '開始時間',

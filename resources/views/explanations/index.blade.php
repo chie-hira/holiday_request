@@ -96,7 +96,7 @@
                                             d="M5 2L10.6464 7.64645C10.8417 7.84171 10.8417 8.15829 10.6464 8.35355L5 14"
                                             stroke="currentColor" stroke-width="2" stroke-linecap="round" />
                                     </svg>
-                                    自分の申請を一覧表示
+                                    自分の申請一覧を表示
                                 </a>
                             </li>
                             <li class="ml-2">
@@ -482,8 +482,8 @@
                                 <h2 class="text-md font-bold text-gray-700 hover:text-gray-600 hover:underline"
                                     tabindex="0">基本メニュー</h2>
                                 <p class="mt-2 text-sm text-gray-600">
-                                    &emsp;基本メニューは、申請書作成、休暇日数、My申請一覧の3つあります。
-                                    申請書の作成と提出、休暇日数の取得日数と残日数の確認、自身の申請書の一覧の確認ができます。</p>
+                                    &emsp;基本メニューは、申請書作成、休暇日数、My申請一覧の3つです。
+                                    各メニューで申請書の作成、休暇取得日数と残日数の確認、自身の申請書一覧の確認ができます。</p>
                             </div>
                         </div>
                         <section class="text-gray-600 body-font border-b-2">
@@ -547,15 +547,15 @@
                                 </h2>
                                 <p class="mt-2 text-sm text-gray-600">
                                     &emsp;基本メニューの<a href="#base"
-                                        class="text-blue-600 hover:underline">申請書作成</a>をクリックして、申請書作成ページにすすみます。<br>
-                                    &emsp;休暇種類、取得形態、休暇期間、事由は必須項目です。
-                                    事由で「その他」「体調不良」を選択した場合は、事由の詳細を入力してください。
-                                    取得日数と残日数は自動計算されます。入力が終わったら提出ボタンを押してください。<br>
+                                        class="text-blue-600 hover:underline">申請書作成</a>を選択して、申請書作成ページに進みます。<br>
+                                    &emsp;休暇種類、取得形態、休暇期間、理由は必須項目です。
+                                    理由の「その他」「体調不良」を選択した場合は、理由の詳細を入力してください。
+                                    取得日数と残日数は自動計算されます。必須項目をすべて入力して提出ボタンを押してください。<br>
                                     &emsp;正しく提出されたときは、<a href="#report-show"
                                         class="text-blue-600 hover:underline">申請書</a>が表示されます。提出できないときは、<a
                                         href="#report-error"
                                         class="text-blue-600 hover:underline">エラーメッセージ</a>が表示されます。
-                                    エラーメッセージを確認して、休暇種類を修正して提出してください。
+                                    エラーメッセージを確認し、入力内容を修正して提出してください。
                                 </p>
                             </div>
                         </div>
@@ -645,7 +645,7 @@
                                         <div>
                                             <label for="reason_id"
                                                 class="block mb-2 text-sm font-medium text-gray-900">
-                                                事 由
+                                                理 由
                                             </label>
                                             <x-select id="reason_id" class="block mt-1 w-full">
                                                 <option>
@@ -662,7 +662,7 @@
                                         <div>
                                             <label for="reason_detail"
                                                 class="block mb-2 text-sm font-medium text-gray-900">
-                                                事由の詳細・備考
+                                                理由の詳細・備考
                                             </label>
                                             <x-input id="reason_detail" type="text"
                                                 placeholder="詳細・備考があれば記載してください" class="block mt-1 w-full" />
@@ -834,7 +834,7 @@
                                         <div>
                                             <label for="reason_id"
                                                 class="block mb-2 text-sm font-medium text-gray-900">
-                                                事 由
+                                                理 由
                                             </label>
                                             <x-select id="reason_id" class="block mt-1 w-full">
                                                 <option>{{ __('誕生日') }}</option>
@@ -844,7 +844,7 @@
                                         <div id="reason_detail_form">
                                             <label for="reason_detail"
                                                 class="block mb-2 text-sm font-medium text-gray-900">
-                                                事由の詳細・備考
+                                                理由の詳細・備考
                                             </label>
                                             <x-input type="text" id="reason_detail"
                                                 placeholder="詳細・備考があれば記載してください" class="block mt-1 w-full"
@@ -946,7 +946,7 @@
                                 </h2>
                                 <p class="mt-2 text-sm text-gray-600">
                                     &emsp;申請書を提出すると承認中の申請書が表示されます。
-                                    承認中の申請は、係長と上長の2人が承認すると承認済みに変わります。<br>
+                                    承認中の申請は、係長と上長の2人が承認すると承認済みになります。<br>
                                     &emsp;提出した申請書は<a href="#report-my-index"
                                         class="text-blue-600 hover:underline">My申請一覧</a>から確認できます。
                                 </p>
@@ -1025,7 +1025,7 @@
                                                 <div class="flex items-center pb-1">
                                                     <p
                                                         class="w-16 text-center border rounded border-gray-700 py-1 text-gray-800">
-                                                        事 由
+                                                        理 由
                                                     </p>
                                                     <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
                                                         {{ __('怪我') }}
@@ -1158,7 +1158,7 @@
                                                 <div class="flex items-center pb-1">
                                                     <p
                                                         class="w-16 text-center border rounded border-gray-700 py-1 text-gray-800">
-                                                        事 由
+                                                        理 由
                                                     </p>
                                                     <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
                                                         {{ __('怪我') }}
@@ -1231,12 +1231,12 @@
                             <div class="max-w-2xl px-4 py-2 bg-white rounded-lg shadow-md mx-auto my-2">
                                 <div class="mt-2">
                                     <h2 class="text-md font-bold text-gray-700 hover:text-gray-600 hover:underline"
-                                        tabindex="0">自分の申請を一覧表示
+                                        tabindex="0">自分の申請一覧を表示
                                     </h2>
                                     <p class="mt-2 text-sm text-gray-600">
                                         &emsp;提出した申請書は基本メニューの<a href="#base"
                                             class="text-blue-600 hover:underline">My申請一覧</a>から確認できます。一覧は横にスクロールして申請日、状態、休暇種類、休暇期間、休暇日数を確認できます。<br>
-                                        &emsp;休暇事由や承認の状態を詳しく確認したいときは、表示ボタンから申請書を表示できます。
+                                        &emsp;休暇理由や承認の状態を詳しく確認したいときは、表示ボタンから申請書を表示できます。
                                     </p>
                                 </div>
                             </div>
@@ -1418,7 +1418,7 @@
                                     <p class="mt-2 text-sm text-gray-600">
                                         &emsp;提出した申請書は承認前であれば編集することができます。申請書を編集すると承認はリセットされます。<a
                                             href="#report-my-index"
-                                            class="text-blue-600 hover:underline">My申請一覧</a>の一覧から編集したい申請の編集ボタンを選択して申請書編集ページにすすみます。<br>
+                                            class="text-blue-600 hover:underline">My申請一覧</a>の一覧から編集したい申請の編集ボタンを選択し、申請書編集ページに進みます。<br>
                                         &emsp;編集が終わったら更新ボタンを押してください。
                                         正しく更新されたときは、<a href="#report-show"
                                             class="text-blue-600 hover:underline">申請書</a>が表示されます。更新できないときは、<a
@@ -1509,7 +1509,7 @@
                                             <div>
                                                 <label for="reason_id"
                                                     class="block mb-2 text-sm font-medium text-gray-900">
-                                                    事 由
+                                                    理 由
                                                 </label>
                                                 <x-select id="reason_id" class="block mt-1 w-full">
                                                     <option>
@@ -1529,13 +1529,13 @@
                                             <div>
                                                 <label for="reason_detail"
                                                     class="block mb-2 text-sm font-medium text-gray-900">
-                                                    事由の詳細・備考
+                                                    理由の詳細・備考
                                                 </label>
                                                 <x-input id="reason_detail" type="text"
                                                     placeholder="詳細・備考があれば記載してください" class="block mt-1 w-full"
                                                     :value="'骨折'" />
                                             </div>
-                                            <!-- 事由 - end -->
+                                            <!-- 理由 - end -->
                                         </div>
 
                                         <div class="flex my-6">
@@ -1687,7 +1687,7 @@
                                                     <div class="flex items-center pb-1">
                                                         <p
                                                             class="w-16 text-center border rounded border-gray-700 py-1 text-gray-800">
-                                                            事 由
+                                                            理 由
                                                         </p>
                                                         <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
                                                             {{ __('怪我') }}
@@ -2734,7 +2734,7 @@
                                                     <div class="flex items-center pb-1">
                                                         <p
                                                             class="w-16 text-center border rounded border-gray-700 py-1 text-gray-800">
-                                                            事 由
+                                                            理 由
                                                         </p>
                                                         <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
                                                             {{ __('怪我') }}
@@ -3061,7 +3061,7 @@
                                                     <div class="flex items-center pb-1">
                                                         <p
                                                             class="w-16 text-center border rounded border-gray-700 py-1 text-gray-800">
-                                                            事 由
+                                                            理 由
                                                         </p>
                                                         <p class="ZenKurenaido font-semibold text-gray-700 ml-4">
                                                             {{ __('怪我') }}
@@ -3405,7 +3405,7 @@
                                     </x-select>
                                     <!-- 理由選択 - start -->
                                     <x-select id="reason_id" class="block text-xs w-40">
-                                        <option value=''>事由</option>
+                                        <option value=''>理由</option>
                                         <option value=''>全て</option>
                                         <option>
                                             {{ '私用' }}
