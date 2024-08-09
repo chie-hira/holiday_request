@@ -317,6 +317,12 @@ class ApprovalController extends Controller
     {
         Log::info('Destroy data:', $approval->getAttributes());
 
+        $isAdmin = Auth::user()->approvals->where('approval_id', 1);
+
+        if ($approval->approval_id === 1 && $isAdmin->count() === 1) {
+            return back()->withErrors('1人以上の管理者が必要です。管理者を削除することはできません。');
+        }
+
         try {
             $approval->delete();
             return redirect()
